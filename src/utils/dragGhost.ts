@@ -1,3 +1,11 @@
+/*
+ * Notebook Navigator - Plugin for Obsidian
+ * Copyright (c) 2025-2026 Johan Sanneblad
+ * SPDX-License-Identifier: LicenseRef-NotebookNavigator
+ *
+ * Licensed under the Notebook Navigator License Agreement (see LICENSE).
+ */
+
 import { App, setIcon } from 'obsidian';
 import { ItemType } from '../types';
 import { getDBInstance } from '../storage/fileOperations';

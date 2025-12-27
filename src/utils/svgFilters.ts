@@ -1,3 +1,11 @@
+/*
+ * Notebook Navigator - Plugin for Obsidian
+ * Copyright (c) 2025-2026 Johan Sanneblad
+ * SPDX-License-Identifier: LicenseRef-NotebookNavigator
+ *
+ * Licensed under the Notebook Navigator License Agreement (see LICENSE).
+ */
+
 const SVG_NAMESPACE = 'http://www.w3.org/2000/svg';
 
 const NOTEBOOK_NAVIGATOR_SVG_FILTERS_ID = 'notebook-navigator-svg-filters';
