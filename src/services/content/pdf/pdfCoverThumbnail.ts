@@ -177,10 +177,12 @@ async function acquireRenderSlot(): Promise<() => void> {
     }
 
     await new Promise<void>(resolve => {
-        renderWaiters.push(resolve);
+        renderWaiters.push(() => {
+            activeRenders += 1;
+            resolve();
+        });
     });
 
-    activeRenders += 1;
     return () => releaseRenderSlot();
 }
 
