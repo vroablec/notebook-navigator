@@ -97,13 +97,14 @@ export class FeatureImageContentProvider extends BaseContentProvider {
         }
 
         if (file.extension !== 'md') {
-            return !fileData || fileData.featureImage === null || fileData.featureImageKey === null;
+            // The featureImageKey is the durable "processed" marker even when no blob is stored.
+            return !fileData || fileData.featureImageKey === null;
         }
 
         const fileModified = fileData !== null && fileData.mtime !== file.stat.mtime;
         // `null` indicates content has not been generated yet.
-        // Non-null blobs include the empty-blob sentinel (`size === 0`) which means "resolved but no thumbnail".
-        return !fileData || fileData.featureImage === null || fileData.featureImageKey === null || fileModified;
+        // Missing blobs do not force regeneration; the key tracks the last processed reference.
+        return !fileData || fileData.featureImageKey === null || fileModified;
     }
 
     protected async processFile(
@@ -125,7 +126,9 @@ export class FeatureImageContentProvider extends BaseContentProvider {
         if (job.file.extension !== 'md') {
             const nextKey = '';
             const nextImage = this.createEmptyBlob();
-            if (fileData && fileData.featureImageKey === nextKey && fileData.featureImage !== null && fileData.featureImage.size === 0) {
+            // Empty blobs are used as a processed marker; storage drops them and keeps the key.
+            // A new key (reference change) is required before another attempt is recorded.
+            if (fileData && fileData.featureImageKey === nextKey) {
                 return null;
             }
             return {
@@ -142,12 +145,9 @@ export class FeatureImageContentProvider extends BaseContentProvider {
             if (!reference) {
                 const nextKey = '';
                 const nextImage = this.createEmptyBlob();
-                if (
-                    fileData &&
-                    fileData.featureImageKey === nextKey &&
-                    fileData.featureImage !== null &&
-                    fileData.featureImage.size === 0
-                ) {
+                // Empty blobs are used as a processed marker; storage drops them and keeps the key.
+                // A new key (reference change) is required before another attempt is recorded.
+                if (fileData && fileData.featureImageKey === nextKey) {
                     return null;
                 }
                 return {
@@ -159,20 +159,18 @@ export class FeatureImageContentProvider extends BaseContentProvider {
 
             const featureImageKey = this.getFeatureImageKey(reference);
 
-            // The key represents the selected source. If it hasn't changed and we already have a resolved value
-            // (including the empty-blob sentinel), skip regeneration.
-            if (fileData && fileData.featureImageKey === featureImageKey && fileData.featureImage !== null) {
+            // The key represents the selected source and is the durable "processed" marker.
+            // Key matches skip regeneration even when no blob is stored; only key changes re-enable processing.
+            if (fileData && fileData.featureImageKey === featureImageKey) {
                 return null;
             }
 
             const thumbnail = await this.createThumbnailBlob(reference, settings);
             if (!thumbnail) {
                 const empty = this.createEmptyBlob();
-                // Mark as resolved with an empty blob. This records that the reference was evaluated but no thumbnail
-                // could be produced (invalid/unreachable URL, unsupported image type, or decode/resize failure).
-                //
-                // This prevents repeated download/thumbnail attempts for the same key on every scan. To retry, the
-                // reference must change (e.g., remove the image link so key becomes `''`, then add it back).
+                // Store an empty blob with the current key to mark the reference as processed.
+                // Storage drops empty blobs, so the key is the durable marker for this state.
+                // A new key is required before another thumbnail attempt is recorded.
                 return {
                     path: job.file.path,
                     featureImage: empty,
@@ -542,6 +540,7 @@ export class FeatureImageContentProvider extends BaseContentProvider {
 
     private async createThumbnailBlobFromBuffer(buffer: ArrayBuffer, mimeType: string): Promise<Blob | null> {
         if (mimeType === 'image/svg+xml') {
+            // Keep SVG data as-is without raster encoding.
             return new Blob([buffer], { type: mimeType });
         }
 
@@ -553,12 +552,11 @@ export class FeatureImageContentProvider extends BaseContentProvider {
                 return null;
             }
 
-            const { width, height, shouldResize } = this.calculateThumbnailDimensions(sourceWidth, sourceHeight);
-
-            if (!shouldResize) {
+            const { width, height } = this.calculateThumbnailDimensions(sourceWidth, sourceHeight);
+            if (width === sourceWidth && height === sourceHeight) {
+                // Skip re-encoding when the image is already within thumbnail limits.
                 return new Blob([buffer], { type: mimeType });
             }
-
             return await this.resizeImageToBlob(image, width, height);
         });
     }
@@ -572,9 +570,11 @@ export class FeatureImageContentProvider extends BaseContentProvider {
         const imageUrl = URL.createObjectURL(blob);
 
         try {
+            // Decode the image via an object URL and pass it to the handler.
             const image = await this.loadImage(imageUrl);
             return await handler(image);
         } finally {
+            // Always revoke the object URL after decoding.
             URL.revokeObjectURL(imageUrl);
         }
     }
@@ -593,6 +593,7 @@ export class FeatureImageContentProvider extends BaseContentProvider {
         ctx.imageSmoothingQuality = 'high';
         ctx.drawImage(image, 0, 0, width, height);
 
+        // Encode to WebP first; fall back to PNG when WebP encoding fails.
         const primary = await this.canvasToBlob(canvas, THUMBNAIL_OUTPUT_MIME);
         if (primary) {
             return primary;
@@ -601,11 +602,11 @@ export class FeatureImageContentProvider extends BaseContentProvider {
         return this.canvasToBlob(canvas, 'image/png');
     }
 
-    private calculateThumbnailDimensions(srcWidth: number, srcHeight: number): { width: number; height: number; shouldResize: boolean } {
+    private calculateThumbnailDimensions(srcWidth: number, srcHeight: number): { width: number; height: number } {
         let width = srcWidth;
         let height = srcHeight;
-        let shouldResize = false;
 
+        // Constrain the thumbnail to the max dimensions while preserving aspect ratio.
         if (srcWidth > MAX_THUMBNAIL_WIDTH || srcHeight > MAX_THUMBNAIL_HEIGHT) {
             const aspectRatio = srcWidth / srcHeight;
 
@@ -616,11 +617,9 @@ export class FeatureImageContentProvider extends BaseContentProvider {
                 width = MAX_THUMBNAIL_WIDTH;
                 height = Math.round(width / aspectRatio);
             }
-
-            shouldResize = true;
         }
 
-        return { width, height, shouldResize };
+        return { width, height };
     }
 
     private loadImage(url: string): Promise<HTMLImageElement> {
@@ -633,6 +632,7 @@ export class FeatureImageContentProvider extends BaseContentProvider {
     }
 
     private async canvasToBlob(canvas: HTMLCanvasElement, mimeType: string): Promise<Blob | null> {
+        // Wrap canvas.toBlob in a promise-based API.
         return await new Promise<Blob | null>(resolve => {
             canvas.toBlob(resolve, mimeType);
         });

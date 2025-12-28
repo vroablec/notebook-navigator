@@ -39,7 +39,7 @@
 import React, { useRef, useMemo, useEffect, useState, useCallback, useId } from 'react';
 import { TFile, TFolder, setTooltip, setIcon } from 'obsidian';
 import { useServices } from '../context/ServicesContext';
-import type { FileContentChange } from '../storage/IndexedDBStorage';
+import type { FeatureImageStatus, FileContentChange } from '../storage/IndexedDBStorage';
 import { useMetadataService } from '../context/ServicesContext';
 import { useActiveProfile, useSettingsDerived, useSettingsState } from '../context/SettingsContext';
 import { useUXPreferences } from '../context/UXPreferencesContext';
@@ -57,6 +57,7 @@ import { openFileInContext } from '../utils/openFileInContext';
 import { FILE_VISIBILITY, getExtensionSuffix, isImageFile, shouldDisplayFile, shouldShowExtensionSuffix } from '../utils/fileTypeUtils';
 import { resolveFileDragIconId, resolveFileIconId } from '../utils/fileIconUtils';
 import { getDateField, naturalCompare } from '../utils/sortUtils';
+import { shouldShowFeatureImageArea } from '../utils/listPaneMeasurements';
 import { getIconService, useIconServiceVersion } from '../services/icons';
 import type { SearchResultMeta } from '../types/search';
 import { createHiddenTagVisibility } from '../utils/tagPrefixMatcher';
@@ -294,22 +295,21 @@ export const FileItem = React.memo(function FileItem({
         const preview = appearanceSettings.showPreview && file.extension === 'md' ? db.getCachedPreviewText(file.path) : '';
 
         const tagList = [...(db.getCachedTags(file.path) ?? [])];
+        // Pull the feature image key from the cache; blobs load asynchronously.
+        const record = db.getFile(file.path);
+        const featureImageKey = record?.featureImageKey ?? null;
+        const featureImageStatus: FeatureImageStatus = record?.featureImageStatus ?? 'unprocessed';
 
         let imageUrl: string | null = null;
-        let featureImageBlob: Blob | null = null;
-        if (appearanceSettings.showImage) {
-            if (isImageFile(file)) {
-                try {
-                    imageUrl = app.vault.getResourcePath(file);
-                } catch {
-                    imageUrl = null;
-                }
-            } else {
-                featureImageBlob = db.getCachedFeatureImageBlob(file.path);
+        if (appearanceSettings.showImage && isImageFile(file)) {
+            try {
+                imageUrl = app.vault.getResourcePath(file);
+            } catch {
+                imageUrl = null;
             }
         }
 
-        return { preview, tags: tagList, imageUrl, featureImageBlob };
+        return { preview, tags: tagList, imageUrl, featureImageKey, featureImageStatus };
     }, [appearanceSettings.showImage, appearanceSettings.showPreview, app, file, getDB]);
 
     // === State ===
@@ -322,7 +322,8 @@ export const FileItem = React.memo(function FileItem({
 
     const [previewText, setPreviewText] = useState<string>(initialData.preview);
     const [tags, setTags] = useState<string[]>(initialData.tags);
-    const [featureImageBlob, setFeatureImageBlob] = useState<Blob | null>(initialData.featureImageBlob);
+    const [featureImageKey, setFeatureImageKey] = useState<string | null>(initialData.featureImageKey);
+    const [featureImageStatus, setFeatureImageStatus] = useState<FeatureImageStatus>(initialData.featureImageStatus);
     const [featureImageUrl, setFeatureImageUrl] = useState<string | null>(initialData.imageUrl);
     const [featureImageAspectRatio, setFeatureImageAspectRatio] = useState<number | null>(null);
     const [isFeatureImageHidden, setIsFeatureImageHidden] = useState(false);
@@ -697,10 +698,18 @@ export const FileItem = React.memo(function FileItem({
         [effectivePreviewText, searchMeta]
     );
 
+    // Determine if we should show the feature image area (either with an image or extension badge)
+    const showFeatureImageArea = shouldShowFeatureImageArea({
+        showImage: appearanceSettings.showImage,
+        file,
+        featureImageStatus,
+        hasFeatureImageUrl: Boolean(featureImageUrl)
+    });
+
     const shouldUseSingleLineForDateAndPreview = pinnedItemShouldUseCompactLayout || appearanceSettings.previewRows < 2;
     const shouldUseMultiLinePreviewLayout = !pinnedItemShouldUseCompactLayout && appearanceSettings.previewRows >= 2;
-    const shouldCollapseEmptyPreviewSpace = heightOptimizationEnabled && !hasPreviewContent; // Optimization: compact layout for empty preview
-    const shouldAlwaysReservePreviewSpace = heightOptimizationDisabled || hasPreviewContent; // Show full layout when not optimizing OR has content
+    const shouldCollapseEmptyPreviewSpace = heightOptimizationEnabled && !hasPreviewContent && !showFeatureImageArea; // Optimization: compact layout for empty preview
+    const shouldAlwaysReservePreviewSpace = heightOptimizationDisabled || hasPreviewContent || showFeatureImageArea; // Show full layout when not optimizing OR has content
 
     // Determine parent folder display metadata
     const parentFolderSource = file.parent;
@@ -744,13 +753,6 @@ export const FileItem = React.memo(function FileItem({
                 onReveal={settings.parentFolderClickRevealsFile ? revealFileInNavigation : undefined}
             />
         ) : null;
-
-    // Determine if we should show the feature image area (either with an image or extension badge)
-    const shouldShowFeatureImageArea =
-        appearanceSettings.showImage &&
-        (featureImageUrl || // Has an actual image (markdown with feature image, or image files)
-            file.extension === 'canvas' ||
-            file.extension === 'base');
 
     // Reset image hidden state when the feature image URL changes
     useEffect(() => {
@@ -804,12 +806,18 @@ export const FileItem = React.memo(function FileItem({
 
     // Handle file changes and subscribe to content updates
     useEffect(() => {
-        const { preview, tags: initialTags, featureImageBlob: initialBlob } = loadFileData();
+        const {
+            preview,
+            tags: initialTags,
+            featureImageKey: initialFeatureImageKey,
+            featureImageStatus: initialFeatureImageStatus
+        } = loadFileData();
 
         // Only update state if values actually changed to prevent unnecessary re-renders
         setPreviewText(prev => (prev === preview ? prev : preview));
         setTags(prev => (areStringArraysEqual(prev, initialTags) ? prev : initialTags));
-        setFeatureImageBlob(prev => (prev === initialBlob ? prev : initialBlob));
+        setFeatureImageKey(prev => (prev === initialFeatureImageKey ? prev : initialFeatureImageKey));
+        setFeatureImageStatus(prev => (prev === initialFeatureImageStatus ? prev : initialFeatureImageStatus));
 
         const db = getDB();
         const unsubscribe = db.onFileContentChange(file.path, (changes: FileContentChange['changes']) => {
@@ -818,12 +826,13 @@ export const FileItem = React.memo(function FileItem({
                 const nextPreview = changes.preview || '';
                 setPreviewText(prev => (prev === nextPreview ? prev : nextPreview));
             }
-            // Update feature image when it changes
-            if (changes.featureImage !== undefined && appearanceSettings.showImage) {
-                if (!isImageFile(file)) {
-                    const nextBlob = changes.featureImage && changes.featureImage.size > 0 ? changes.featureImage : null;
-                    setFeatureImageBlob(prev => (prev === nextBlob ? prev : nextBlob));
-                }
+            // Update feature image key when it changes
+            if (changes.featureImageKey !== undefined) {
+                setFeatureImageKey(prev => (prev === changes.featureImageKey ? prev : (changes.featureImageKey ?? null)));
+            }
+            if (changes.featureImageStatus !== undefined) {
+                const nextStatus = changes.featureImageStatus;
+                setFeatureImageStatus(prev => (prev === nextStatus ? prev : nextStatus));
             }
             // Update tags when they change
             if (changes.tags !== undefined) {
@@ -852,35 +861,71 @@ export const FileItem = React.memo(function FileItem({
     }, []);
 
     useEffect(() => {
+        let isActive = true;
+
+        // Clear any previous object URL before loading a new one.
         if (featureImageObjectUrlRef.current) {
             URL.revokeObjectURL(featureImageObjectUrlRef.current);
             featureImageObjectUrlRef.current = null;
         }
 
         if (!appearanceSettings.showImage) {
+            // Hide feature images when the setting is disabled.
             setFeatureImageUrl(null);
-            return;
+            return () => {
+                isActive = false;
+            };
         }
 
         if (isImageFile(file)) {
+            // Image files render directly from the vault resource path.
             try {
                 const url = app.vault.getResourcePath(file);
                 setFeatureImageUrl(url);
             } catch {
                 setFeatureImageUrl(null);
             }
-            return;
+            return () => {
+                isActive = false;
+            };
         }
 
-        if (featureImageBlob) {
-            const url = URL.createObjectURL(featureImageBlob);
+        if (featureImageStatus !== 'has') {
+            // Skip blob fetch when no thumbnail blob is recorded.
+            setFeatureImageUrl(null);
+            return () => {
+                isActive = false;
+            };
+        }
+
+        if (!featureImageKey || featureImageKey === '') {
+            // Skip blob fetch when no key is recorded.
+            setFeatureImageUrl(null);
+            return () => {
+                isActive = false;
+            };
+        }
+
+        const db = getDB();
+        const expectedKey = featureImageKey;
+        void db.getFeatureImageBlob(file.path, expectedKey).then(blob => {
+            if (!isActive) {
+                return;
+            }
+            if (!blob) {
+                setFeatureImageUrl(null);
+                return;
+            }
+            // Create an object URL for the blob and store it for cleanup.
+            const url = URL.createObjectURL(blob);
             featureImageObjectUrlRef.current = url;
             setFeatureImageUrl(url);
-            return;
-        }
+        });
 
-        setFeatureImageUrl(null);
-    }, [appearanceSettings.showImage, app, featureImageBlob, file]);
+        return () => {
+            isActive = false;
+        };
+    }, [appearanceSettings.showImage, app, featureImageKey, featureImageStatus, file, getDB]);
 
     useEffect(() => {
         if (!featureImageUrl || settings.forceSquareFeatureImage) {
@@ -1355,7 +1400,7 @@ export const FileItem = React.memo(function FileItem({
                             </div>
                             {/* ========== FEATURE IMAGE AREA ========== */}
                             {/* Shows either actual image or extension badge for non-markdown files */}
-                            {shouldShowFeatureImageArea && (
+                            {showFeatureImageArea && (
                                 <div className={featureImageContainerClassName} style={featureImageStyle}>
                                     {featureImageUrl ? (
                                         <img
@@ -1369,11 +1414,11 @@ export const FileItem = React.memo(function FileItem({
                                                 setIsFeatureImageHidden(true);
                                             }}
                                         />
-                                    ) : (
+                                    ) : file.extension === 'canvas' || file.extension === 'base' ? (
                                         <div className="nn-file-extension-badge">
                                             <span className="nn-file-extension-text">{file.extension}</span>
                                         </div>
-                                    )}
+                                    ) : null}
                                 </div>
                             )}
                         </>

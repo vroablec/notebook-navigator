@@ -8,7 +8,6 @@
 
 import { setIcon } from 'obsidian';
 import { ItemType } from '../types';
-import { getDBInstance } from '../storage/fileOperations';
 import { getIconService } from '../services/icons';
 
 /**
@@ -41,14 +40,13 @@ export interface DragGhostManager {
 
 /**
  * Creates a drag ghost manager that displays custom drag previews.
- * Shows icons, images, or badges depending on the dragged content.
+ * Shows icons or badges depending on the dragged content.
  */
 export function createDragGhostManager(): DragGhostManager {
     let dragGhostElement: HTMLElement | null = null;
     let windowDragEndHandler: ((event: DragEvent) => void) | null = null;
     let windowDropHandler: ((event: DragEvent) => void) | null = null;
     let cursorOffset: { x: number; y: number } = { x: 10, y: 10 };
-    let featureImageObjectUrl: string | null = null;
 
     /**
      * Updates ghost position using CSS custom properties for transform-based positioning
@@ -81,10 +79,6 @@ export function createDragGhostManager(): DragGhostManager {
             document.removeEventListener('dragover', updateDragGhostPosition, dragOverListenerCapture);
             dragGhostElement.remove();
             dragGhostElement = null;
-        }
-        if (featureImageObjectUrl) {
-            URL.revokeObjectURL(featureImageObjectUrl);
-            featureImageObjectUrl = null;
         }
         if (windowDragEndHandler) {
             window.removeEventListener('dragend', windowDragEndHandler);
@@ -193,33 +187,8 @@ export function createDragGhostManager(): DragGhostManager {
                 iconWrapper.style.fill = iconColor;
                 iconWrapper.style.stroke = iconColor;
 
-                if (options.itemType === ItemType.FILE && options.path) {
-                    let featureImageBlob: Blob | null = null;
-                    try {
-                        featureImageBlob = getDBInstance().getCachedFeatureImageBlob(options.path);
-                    } catch (error) {
-                        void error;
-                        // Ignore cache errors and fall back to icon rendering
-                    }
-                    let imageLoaded = false;
-                    if (featureImageBlob) {
-                        iconWrapper.className = 'nn-drag-ghost-icon nn-drag-ghost-featured-image';
-                        const img = document.createElement('img');
-                        featureImageObjectUrl = URL.createObjectURL(featureImageBlob);
-                        img.src = featureImageObjectUrl;
-                        iconWrapper.appendChild(img);
-                        imageLoaded = true;
-                    }
-
-                    if (!imageLoaded) {
-                        if (!renderIcon(options.icon, iconWrapper) && !renderIcon(resolvedIcon, iconWrapper)) {
-                            iconWrapper.innerHTML = '';
-                        }
-                    }
-                } else {
-                    if (!renderIcon(options.icon, iconWrapper) && !renderIcon(resolvedIcon, iconWrapper)) {
-                        iconWrapper.innerHTML = '';
-                    }
+                if (!renderIcon(options.icon, iconWrapper) && !renderIcon(resolvedIcon, iconWrapper)) {
+                    iconWrapper.innerHTML = '';
                 }
 
                 baseGhost.appendChild(iconWrapper);

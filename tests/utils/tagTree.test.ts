@@ -29,6 +29,7 @@ function createFileData(tags: string[] | null): FileData {
         tags,
         preview: null,
         featureImage: null,
+        featureImageStatus: 'unprocessed',
         featureImageKey: null,
         metadata: null
     };

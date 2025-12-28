@@ -764,7 +764,9 @@ export default class NotebookNavigatorPlugin extends Plugin implements ISettings
         // Initialize database early for StorageContext consumers
         try {
             const appId = (this.app as ExtendedApp).appId || '';
-            await initializeDatabase(appId);
+            // Use a fixed per-platform LRU size for feature image blobs.
+            const featureImageCacheMaxEntries = Platform.isMobile ? 200 : 1000;
+            await initializeDatabase(appId, { featureImageCacheMaxEntries });
         } catch (e) {
             console.error('Failed to initialize database during plugin load:', e);
             // Fail fast: abort plugin load if database cannot initialize

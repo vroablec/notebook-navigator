@@ -162,7 +162,7 @@ function filterFilesRequiringMetadataSources(files: TFile[], types: ContentType[
         }
 
         // Include files missing feature image
-        if (needsFeatureImage && (record.featureImage === null || record.featureImageKey === null)) {
+        if (needsFeatureImage && record.featureImageStatus === 'unprocessed') {
             return true;
         }
 
@@ -1366,8 +1366,7 @@ export function StorageProvider({ app, api, children }: StorageProviderProps) {
 
                                         return (
                                             (settings.showFilePreview && fileData.preview === null && file.extension === 'md') ||
-                                            (featureImageEnabled &&
-                                                (fileData.featureImage === null || fileData.featureImageKey === null)) ||
+                                            (featureImageEnabled && fileData.featureImageStatus === 'unprocessed') ||
                                             (metadataEnabled && fileData.metadata === null && file.extension === 'md')
                                         );
                                     });
@@ -1507,6 +1506,15 @@ export function StorageProvider({ app, api, children }: StorageProviderProps) {
                         pendingRenameDataRef.current.set(file.path, existing);
                         // Preload memory cache with existing data to avoid re-fetching after rename
                         db.seedMemoryFile(file.path, existing);
+                        runAsyncAction(async () => {
+                            try {
+                                // Move the blob entry before the rebuild that may remove the old path.
+                                await db.moveFeatureImageBlob(oldPath, file.path);
+                            } finally {
+                                rebuildFileCache();
+                            }
+                        });
+                        return;
                     }
                 } catch (error: unknown) {
                     console.error('Failed to capture renamed file data:', error);
@@ -1738,7 +1746,7 @@ export function StorageProvider({ app, api, children }: StorageProviderProps) {
                                 if (fileData.mtime !== file.stat.mtime) return true;
                                 const needsContent =
                                     (settings.showFilePreview && fileData.preview === null && file.extension === 'md') ||
-                                    (featureImageEnabled && (fileData.featureImage === null || fileData.featureImageKey === null)) ||
+                                    (featureImageEnabled && fileData.featureImageStatus === 'unprocessed') ||
                                     (metadataEnabled && fileData.metadata === null && file.extension === 'md');
                                 return needsContent;
                             });

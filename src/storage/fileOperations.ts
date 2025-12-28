@@ -34,6 +34,8 @@ let dbInstance: IndexedDBStorage | null = null;
 let appId: string | null = null;
 let isInitializing = false;
 let isShuttingDown = false;
+// Configured feature image blob cache size for the current platform.
+let featureImageCacheMaxEntries: number | null = null;
 
 /**
  * Indicates whether a database shutdown is currently in progress.
@@ -54,7 +56,8 @@ export function getDBInstance(): IndexedDBStorage {
         if (!appId) {
             throw new Error('Database not initialized. Call initializeDatabase(appId) first.');
         }
-        dbInstance = new IndexedDBStorage(appId);
+        // Pass the configured blob cache size into the storage instance.
+        dbInstance = new IndexedDBStorage(appId, featureImageCacheMaxEntries !== null ? { featureImageCacheMaxEntries } : undefined);
     }
     return dbInstance;
 }
@@ -65,7 +68,12 @@ export function getDBInstance(): IndexedDBStorage {
  *
  * @param appIdParam - The app ID to use for database naming
  */
-export async function initializeDatabase(appIdParam: string): Promise<void> {
+export async function initializeDatabase(
+    appIdParam: string,
+    options?: {
+        featureImageCacheMaxEntries?: number;
+    }
+): Promise<void> {
     // Idempotent: if already initialized or in progress, skip
     if (isInitializing) return;
     const existing = dbInstance;
@@ -74,6 +82,10 @@ export async function initializeDatabase(appIdParam: string): Promise<void> {
     isInitializing = true;
     try {
         appId = appIdParam;
+        if (options?.featureImageCacheMaxEntries !== undefined) {
+            // Persist feature image cache size for the singleton instance.
+            featureImageCacheMaxEntries = options.featureImageCacheMaxEntries;
+        }
         const db = getDBInstance();
         await db.init();
     } finally {
@@ -148,6 +160,7 @@ export async function recordFileChanges(
                 tags: null, // TagContentProvider will extract these
                 preview: null, // PreviewContentProvider will generate these
                 featureImage: null, // FeatureImageContentProvider will generate these
+                featureImageStatus: 'unprocessed',
                 featureImageKey: null, // FeatureImageContentProvider will generate these
                 metadata: null // MetadataContentProvider will extract these
             };
@@ -206,6 +219,7 @@ export async function markFilesForRegeneration(files: TFile[]): Promise<void> {
                     tags: null,
                     preview: null,
                     featureImage: null,
+                    featureImageStatus: 'unprocessed',
                     featureImageKey: null,
                     metadata: null
                 }
