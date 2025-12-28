@@ -79,13 +79,15 @@ const RELEASE_NOTES: ReleaseNote[] = [
             'New command: ==Create new note from template==. If you have the plugin **Templater** installed you can now create a new note with template in the current folder or tag.',
             'New commands: ==Open shortcut 1-9==. Use this to quickly open your shortcut files, navigate to folders/tags, or load a custom search filter.',
             'New setting: Navigation pane > Shortcuts & recent items > ==Shortcut badge==. You can now choose to show index number (1-9) to help with shortcut commands, show item count or show no badge next to shortcuts. Default is index (1-9).',
+            'New setting: General > Behavior > ==Single pane animation==. You can now customize the new animation speed when switching between navigation pane and list pane.',
             'New theme variable: ==--nn-theme-mobile-bg== to change mobile background color. Set it in Style settings or through themes / CSS.'
         ],
         improved: [
             '==Links to external images and YouTube videos now show as feature images== in the list pane, as long as you prefix them with !.',
             '==PDF files and inline PDF documents such as ![[mydocument.pdf]] now show the first page as a feature image== in the list pane.',
             '==Excalidraw drawings now show as feature images== in the list pane.',
-            'Switching between navigation pane and list pane on desktop in single pane mode is now animated.',
+            '**Significantly improved scrolling performance** since all feature images are now rendered from cached thumbnails.',
+            'Switching between navigation pane and list pane on desktop in single pane mode **is now animated**.',
             'On iOS devices you can now swipe anywhere to go from the list pane to navigation pane, this matches Obsidian default behavior.',
             "You can now use spaces in file icon mappings, e.g. 'ai ' to prevent matching titles like 'mail'.",
             'Improved toolbar button layout on all Android devices and iOS devices running Obsidian 1.10 and earlier.',
