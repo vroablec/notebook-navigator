@@ -19,6 +19,7 @@ import { BaseContentProvider } from './BaseContentProvider';
 const MAX_THUMBNAIL_WIDTH = 256;
 const MAX_THUMBNAIL_HEIGHT = 144;
 const THUMBNAIL_OUTPUT_MIME = 'image/webp';
+const THUMBNAIL_OUTPUT_QUALITY = 0.75;
 // Per-request timeout for external image fetches.
 // YouTube thumbnails try multiple candidates, so total time can exceed this value.
 const EXTERNAL_REQUEST_TIMEOUT_MS = 10000;
@@ -546,6 +547,11 @@ export class FeatureImageContentProvider extends BaseContentProvider {
             return new Blob([buffer], { type: mimeType });
         }
 
+        const bitmapResult = await this.tryCreateThumbnailFromBitmap(buffer, mimeType);
+        if (bitmapResult) {
+            return bitmapResult;
+        }
+
         return await this.withImageFromBuffer(buffer, mimeType, async image => {
             const sourceWidth = image.naturalWidth || image.width || 0;
             const sourceHeight = image.naturalHeight || image.height || 0;
@@ -561,6 +567,46 @@ export class FeatureImageContentProvider extends BaseContentProvider {
             }
             return await this.resizeImageToBlob(image, width, height);
         });
+    }
+
+    private async tryCreateThumbnailFromBitmap(buffer: ArrayBuffer, mimeType: string): Promise<Blob | null> {
+        if (typeof createImageBitmap === 'undefined') {
+            return null;
+        }
+
+        const blob = new Blob([buffer], { type: mimeType });
+
+        let bitmap: ImageBitmap | null = null;
+        try {
+            bitmap = await createImageBitmap(blob);
+        } catch {
+            return null;
+        }
+
+        try {
+            const sourceWidth = bitmap.width || 0;
+            const sourceHeight = bitmap.height || 0;
+
+            if (sourceWidth <= 0 || sourceHeight <= 0) {
+                return null;
+            }
+
+            const { width, height } = this.calculateThumbnailDimensions(sourceWidth, sourceHeight);
+            if (width === sourceWidth && height === sourceHeight) {
+                // Skip re-encoding when the image is already within thumbnail limits.
+                return blob;
+            }
+
+            return await this.resizeSourceToBlob(bitmap, width, height);
+        } finally {
+            if (bitmap) {
+                try {
+                    bitmap.close();
+                } catch {
+                    // ignore
+                }
+            }
+        }
     }
 
     private async withImageFromBuffer<T>(
@@ -582,26 +628,47 @@ export class FeatureImageContentProvider extends BaseContentProvider {
     }
 
     private async resizeImageToBlob(image: HTMLImageElement, width: number, height: number): Promise<Blob | null> {
-        const canvas = document.createElement('canvas');
+        return await this.resizeSourceToBlob(image, width, height);
+    }
+
+    private async resizeSourceToBlob(source: CanvasImageSource, width: number, height: number): Promise<Blob | null> {
+        if (width <= 0 || height <= 0) {
+            return null;
+        }
+
+        const canvas = this.createCanvas(width, height);
         const ctx = canvas.getContext('2d');
 
         if (!ctx) {
             return null;
         }
 
-        canvas.width = width;
-        canvas.height = height;
         ctx.clearRect(0, 0, width, height);
-        ctx.imageSmoothingQuality = 'high';
-        ctx.drawImage(image, 0, 0, width, height);
+        if ('imageSmoothingQuality' in ctx) {
+            ctx.imageSmoothingQuality = 'high';
+        }
+        ctx.drawImage(source, 0, 0, width, height);
 
         // Encode to WebP first; fall back to PNG when WebP encoding fails.
-        const primary = await this.canvasToBlob(canvas, THUMBNAIL_OUTPUT_MIME);
+        const primary = await this.canvasToBlob(canvas, THUMBNAIL_OUTPUT_MIME, THUMBNAIL_OUTPUT_QUALITY);
         if (primary) {
             return primary;
         }
 
         return this.canvasToBlob(canvas, 'image/png');
+    }
+
+    private createCanvas(width: number, height: number): HTMLCanvasElement | OffscreenCanvas {
+        if (typeof OffscreenCanvas !== 'undefined') {
+            const canvas = new OffscreenCanvas(width, height);
+            if (typeof canvas.convertToBlob === 'function') {
+                return canvas;
+            }
+        }
+        const canvas = document.createElement('canvas');
+        canvas.width = width;
+        canvas.height = height;
+        return canvas;
     }
 
     private calculateThumbnailDimensions(srcWidth: number, srcHeight: number): { width: number; height: number } {
@@ -621,7 +688,7 @@ export class FeatureImageContentProvider extends BaseContentProvider {
             }
         }
 
-        return { width, height };
+        return { width: Math.max(1, width), height: Math.max(1, height) };
     }
 
     private loadImage(url: string): Promise<HTMLImageElement> {
@@ -633,10 +700,22 @@ export class FeatureImageContentProvider extends BaseContentProvider {
         });
     }
 
-    private async canvasToBlob(canvas: HTMLCanvasElement, mimeType: string): Promise<Blob | null> {
+    private isOffscreenCanvas(canvas: HTMLCanvasElement | OffscreenCanvas): canvas is OffscreenCanvas {
+        return typeof OffscreenCanvas !== 'undefined' && canvas instanceof OffscreenCanvas;
+    }
+
+    private async canvasToBlob(canvas: HTMLCanvasElement | OffscreenCanvas, mimeType: string, quality?: number): Promise<Blob | null> {
         // Wrap canvas.toBlob in a promise-based API.
+        if (this.isOffscreenCanvas(canvas)) {
+            try {
+                return await canvas.convertToBlob({ type: mimeType, quality });
+            } catch {
+                return null;
+            }
+        }
+
         return await new Promise<Blob | null>(resolve => {
-            canvas.toBlob(resolve, mimeType);
+            canvas.toBlob(resolve, mimeType, quality);
         });
     }
 
