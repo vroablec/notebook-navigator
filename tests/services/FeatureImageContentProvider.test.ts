@@ -415,6 +415,100 @@ describe('FeatureImageContentProvider scanning', () => {
         expect(result).toBeNull();
     });
 
+    it('acknowledges mtime mismatch when featureImageKey matches and a thumbnail exists', async () => {
+        const { app } = createApp();
+        const provider = new TestFeatureImageContentProvider(app);
+        const settings = createSettings();
+        const noteFile = createFile('notes/note.md');
+        noteFile.stat.mtime = 200;
+
+        const metadata: CachedMetadata = {
+            frontmatter: {
+                thumbnail: 'https://example.com/cover.jpg'
+            }
+        };
+        app.metadataCache.getFileCache = () => metadata;
+
+        const fileData: FileData = {
+            mtime: 100,
+            tags: null,
+            preview: null,
+            featureImage: null,
+            featureImageStatus: 'has',
+            featureImageKey: 'e:https://example.com/cover.jpg',
+            metadata: null
+        };
+
+        const result = await provider.runProcessFileWithData(noteFile, fileData, settings);
+
+        expect(result).toEqual({ path: noteFile.path, featureImageKey: 'e:https://example.com/cover.jpg' });
+        expect(result?.featureImage).toBeUndefined();
+    });
+
+    it('retries external downloads when the file changed but the featureImageKey did not', async () => {
+        const { app } = createApp();
+        const provider = new TestFeatureImageContentProvider(app);
+        const settings = createSettings({ downloadExternalFeatureImages: true });
+        const noteFile = createFile('notes/note.md');
+        noteFile.stat.mtime = 200;
+
+        const metadata: CachedMetadata = {
+            frontmatter: {
+                thumbnail: 'https://example.com/cover.jpg'
+            }
+        };
+        app.metadataCache.getFileCache = () => metadata;
+
+        const fileData: FileData = {
+            mtime: 100,
+            tags: null,
+            preview: null,
+            featureImage: null,
+            featureImageStatus: 'none',
+            featureImageKey: 'e:https://example.com/cover.jpg',
+            metadata: null
+        };
+
+        const result = await provider.runProcessFileWithData(noteFile, fileData, settings);
+
+        expect(result).not.toBeNull();
+        expect(result?.featureImageKey).toBe('e:https://example.com/cover.jpg');
+        expect(result?.featureImage).toBeInstanceOf(Blob);
+        expect(result?.featureImage?.size).toBe(0);
+    });
+
+    it('retries YouTube thumbnails when the file changed but the featureImageKey did not', async () => {
+        const { app } = createApp();
+        const provider = new TestFeatureImageContentProvider(app);
+        const settings = createSettings({ downloadExternalFeatureImages: true });
+        const noteFile = createFile('notes/note.md');
+        noteFile.stat.mtime = 200;
+
+        const metadata: CachedMetadata = {
+            frontmatter: {
+                thumbnail: 'https://youtu.be/abc123'
+            }
+        };
+        app.metadataCache.getFileCache = () => metadata;
+
+        const fileData: FileData = {
+            mtime: 100,
+            tags: null,
+            preview: null,
+            featureImage: null,
+            featureImageStatus: 'none',
+            featureImageKey: 'y:abc123',
+            metadata: null
+        };
+
+        const result = await provider.runProcessFileWithData(noteFile, fileData, settings);
+
+        expect(result).not.toBeNull();
+        expect(result?.featureImageKey).toBe('y:abc123');
+        expect(result?.featureImage).toBeInstanceOf(Blob);
+        expect(result?.featureImage?.size).toBe(0);
+    });
+
     it('stores empty blob when external download fails', async () => {
         const { app } = createApp();
         const provider = new TestFeatureImageContentProvider(app);

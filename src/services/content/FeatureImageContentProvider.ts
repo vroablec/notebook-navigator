@@ -203,6 +203,7 @@ export class FeatureImageContentProvider extends BaseContentProvider {
             }
 
             const metadata = this.app.metadataCache.getFileCache(job.file);
+            const fileModified = fileData !== null && fileData.mtime !== job.file.stat.mtime;
             const reference = await this.findFeatureImageReference(job.file, metadata, settings);
 
             if (!reference) {
@@ -211,7 +212,9 @@ export class FeatureImageContentProvider extends BaseContentProvider {
                 // Empty blobs are used as a processed marker; storage drops them and keeps the key.
                 // A new key (reference change) is required before another attempt is recorded.
                 if (fileData && fileData.featureImageKey === nextKey) {
-                    return null;
+                    // If the file changed but the selected reference did not, return a no-op update
+                    // so the base provider can update the stored mtime and clear the mismatch.
+                    return fileModified ? { path: job.file.path, featureImageKey: nextKey } : null;
                 }
                 return {
                     path: job.file.path,
@@ -223,9 +226,16 @@ export class FeatureImageContentProvider extends BaseContentProvider {
             const featureImageKey = this.getFeatureImageKey(reference);
 
             // The key represents the selected source and is the durable "processed" marker.
-            // Key matches skip regeneration even when no blob is stored; only key changes re-enable processing.
             if (fileData && fileData.featureImageKey === featureImageKey) {
-                return null;
+                if (!fileModified) {
+                    return null;
+                }
+                // File contents changed but the extracted image reference did not.
+                // When a thumbnail already exists, keep it and only acknowledge the mtime mismatch.
+                // When no thumbnail exists, retry to handle transient download/decoding failures.
+                if (fileData.featureImageStatus === 'has') {
+                    return { path: job.file.path, featureImageKey };
+                }
             }
 
             const thumbnail = await this.createThumbnailBlob(reference, settings);
