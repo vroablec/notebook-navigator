@@ -68,6 +68,7 @@ export class ContentProviderRegistry {
         // Check each provider to see if it's affected
         for (const provider of this.providers.values()) {
             if (provider.shouldRegenerate(oldSettings, newSettings)) {
+                provider.stopProcessing();
                 // Clear content for this provider
                 clearPromises.push(provider.clearContent());
                 affectedTypes.push(provider.getContentType());

@@ -259,6 +259,12 @@ export function StorageProvider({ app, api, children }: StorageProviderProps) {
 
     const cacheRebuildNoticeRef = useRef<ReturnType<typeof showNotice> | null>(null);
     const cacheRebuildIntervalRef = useRef<number | null>(null);
+    const featureImageSettingsRunIdRef = useRef(0);
+    const featureImageMetadataWaitDisposersRef = useRef<Set<() => void>>(new Set());
+    const settingsChangeProcessingRef = useRef(false);
+    const pendingSettingsChangeRef = useRef<NotebookNavigatorSettings | null>(null);
+    const lastHandledSettingsRef = useRef<NotebookNavigatorSettings | null>(null);
+    const pendingSettingsChangeTimeoutIdRef = useRef<number | null>(null);
 
     // State tracking whether storage system and IndexedDB are fully initialized
     const [isStorageReady, setIsStorageReady] = useState(false);
@@ -366,6 +372,50 @@ export function StorageProvider({ app, api, children }: StorageProviderProps) {
         [app.metadataCache, app.vault, clearCacheRebuildNotice]
     );
 
+    const disposeFeatureImageMetadataWaitDisposers = useCallback(() => {
+        const featureImageDisposers = featureImageMetadataWaitDisposersRef.current;
+        if (featureImageDisposers.size === 0) {
+            return;
+        }
+
+        const metadataDisposers = metadataWaitDisposersRef.current;
+        for (const dispose of featureImageDisposers) {
+            metadataDisposers.delete(dispose);
+            try {
+                dispose();
+            } catch {
+                // ignore errors during cleanup
+            }
+        }
+        featureImageDisposers.clear();
+    }, []);
+
+    const disposeMetadataWaitDisposers = useCallback(() => {
+        const metadataDisposers = metadataWaitDisposersRef.current;
+        if (metadataDisposers.size === 0) {
+            return;
+        }
+
+        for (const dispose of metadataDisposers) {
+            try {
+                dispose();
+            } catch {
+                // ignore errors during cleanup
+            }
+        }
+        metadataDisposers.clear();
+    }, []);
+
+    const clearPendingSettingsChangeTimer = useCallback(() => {
+        if (pendingSettingsChangeTimeoutIdRef.current === null) {
+            return;
+        }
+        if (typeof window !== 'undefined') {
+            window.clearTimeout(pendingSettingsChangeTimeoutIdRef.current);
+        }
+        pendingSettingsChangeTimeoutIdRef.current = null;
+    }, []);
+
     // Returns markdown files visible in the UI after applying exclusion filters
     const getVisibleMarkdownFiles = useCallback((): TFile[] => {
         return getFilteredMarkdownFiles(app, latestSettingsRef.current, { showHiddenItems });
@@ -472,21 +522,12 @@ export function StorageProvider({ app, api, children }: StorageProviderProps) {
             return;
         }
 
-        // Clean up all active metadata wait disposers
-        if (metadataWaitDisposersRef.current.size > 0) {
-            for (const dispose of metadataWaitDisposersRef.current) {
-                try {
-                    dispose();
-                } catch {
-                    // ignore cleanup errors
-                }
-            }
-            metadataWaitDisposersRef.current.clear();
-        }
+        disposeFeatureImageMetadataWaitDisposers();
+        disposeMetadataWaitDisposers();
 
         // Clear the set of paths waiting for metadata
         pendingMetadataWaitPathsRef.current.clear();
-    }, [settings.showTags]);
+    }, [disposeFeatureImageMetadataWaitDisposers, disposeMetadataWaitDisposers, settings.showTags]);
 
     /**
      * Waits until all provided markdown files have entries in Obsidian's metadata cache.
@@ -664,11 +705,20 @@ export function StorageProvider({ app, api, children }: StorageProviderProps) {
      * once Obsidian's metadata cache has entries for the provided files.
      */
     const queueMetadataContentWhenReady = useCallback(
-        (files: TFile[], includeTypes?: ContentType[], settingsOverride?: NotebookNavigatorSettings) => {
+        (
+            files: TFile[],
+            includeTypes?: ContentType[],
+            settingsOverride?: NotebookNavigatorSettings,
+            featureImageSettingsRunId?: number
+        ) => {
             const baseSettings = settingsOverride ?? latestSettingsRef.current;
             const requestedTypes = resolveMetadataDependentTypes(baseSettings, includeTypes);
 
             if (requestedTypes.length === 0) {
+                return;
+            }
+
+            if (featureImageSettingsRunId !== undefined && featureImageSettingsRunIdRef.current !== featureImageSettingsRunId) {
                 return;
             }
 
@@ -715,6 +765,9 @@ export function StorageProvider({ app, api, children }: StorageProviderProps) {
             // Queues files for content generation with the requested types
             const queueFilesForTypes = (targetFiles: TFile[]) => {
                 if (targetFiles.length === 0 || stoppedRef.current) {
+                    return;
+                }
+                if (featureImageSettingsRunId !== undefined && featureImageSettingsRunIdRef.current !== featureImageSettingsRunId) {
                     return;
                 }
                 const latestSettings = latestSettingsRef.current;
@@ -770,7 +823,11 @@ export function StorageProvider({ app, api, children }: StorageProviderProps) {
                 releaseTrackedPaths();
                 if (cleanupWrapper) {
                     metadataWaitDisposersRef.current.delete(cleanupWrapper);
+                    featureImageMetadataWaitDisposersRef.current.delete(cleanupWrapper);
                     cleanupWrapper = null;
+                }
+                if (featureImageSettingsRunId !== undefined && featureImageSettingsRunIdRef.current !== featureImageSettingsRunId) {
+                    return;
                 }
                 queueFilesForTypes(waitingFiles);
             };
@@ -794,6 +851,9 @@ export function StorageProvider({ app, api, children }: StorageProviderProps) {
                     }
                 };
                 metadataWaitDisposersRef.current.add(cleanupWrapper);
+                if (featureImageSettingsRunId !== undefined) {
+                    featureImageMetadataWaitDisposersRef.current.add(cleanupWrapper);
+                }
             } else if (!firedImmediately) {
                 releaseTrackedPaths();
                 if (rawCleanup) {
@@ -854,16 +914,8 @@ export function StorageProvider({ app, api, children }: StorageProviderProps) {
         }
 
         // Clean up all tracked metadata wait disposers
-        if (metadataWaitDisposersRef.current.size > 0) {
-            for (const dispose of metadataWaitDisposersRef.current) {
-                try {
-                    dispose();
-                } catch {
-                    // ignore errors during cleanup
-                }
-            }
-            metadataWaitDisposersRef.current.clear();
-        }
+        disposeFeatureImageMetadataWaitDisposers();
+        disposeMetadataWaitDisposers();
 
         pendingMetadataWaitPathsRef.current.clear();
 
@@ -918,7 +970,15 @@ export function StorageProvider({ app, api, children }: StorageProviderProps) {
 
         // Restore the original processing state
         stoppedRef.current = previousStopped;
-    }, [api, clearCacheRebuildNotice, getIndexableMarkdownFiles, startCacheRebuildNotice, tagTreeService]);
+    }, [
+        api,
+        clearCacheRebuildNotice,
+        disposeFeatureImageMetadataWaitDisposers,
+        disposeMetadataWaitDisposers,
+        getIndexableMarkdownFiles,
+        startCacheRebuildNotice,
+        tagTreeService
+    ]);
 
     const getFileDisplayName = useCallback(
         (file: TFile): string => {
@@ -1063,10 +1123,26 @@ export function StorageProvider({ app, api, children }: StorageProviderProps) {
                 return;
             }
 
+            const featureImageProvider = registry.getProvider('featureImage');
+            const shouldRestartFeatureImage = featureImageProvider?.shouldRegenerate(oldSettings, newSettings) ?? false;
+            let featureImageSettingsRunId: number | null = null;
+
+            if (shouldRestartFeatureImage) {
+                featureImageSettingsRunIdRef.current += 1;
+                featureImageSettingsRunId = featureImageSettingsRunIdRef.current;
+
+                disposeFeatureImageMetadataWaitDisposers();
+
+                featureImageProvider?.stopProcessing();
+            }
+
             // Let the registry handle settings changes
             const affectedTypes = await registry.handleSettingsChange(oldSettings, newSettings);
 
             if (affectedTypes.includes('featureImage')) {
+                if (featureImageSettingsRunId !== null && featureImageSettingsRunIdRef.current !== featureImageSettingsRunId) {
+                    return;
+                }
                 if (newSettings.showFeatureImage && !stoppedRef.current) {
                     const db = getDBInstance();
                     const total = db.getFilesNeedingContent('featureImage').size;
@@ -1090,10 +1166,79 @@ export function StorageProvider({ app, api, children }: StorageProviderProps) {
             contentRegistry.current.queueFilesForAllProviders(allFiles, newSettings, options);
 
             if (metadataDependentTypes.length > 0) {
-                queueMetadataContentWhenReady(allFiles, metadataDependentTypes, newSettings);
+                const guardRunId =
+                    featureImageSettingsRunId !== null && metadataDependentTypes.includes('featureImage')
+                        ? featureImageSettingsRunId
+                        : undefined;
+                queueMetadataContentWhenReady(allFiles, metadataDependentTypes, newSettings, guardRunId);
             }
         },
-        [clearCacheRebuildNotice, getIndexableMarkdownFiles, queueMetadataContentWhenReady, startCacheRebuildNotice]
+        [
+            clearCacheRebuildNotice,
+            disposeFeatureImageMetadataWaitDisposers,
+            getIndexableMarkdownFiles,
+            queueMetadataContentWhenReady,
+            startCacheRebuildNotice
+        ]
+    );
+
+    const drainPendingSettingsChanges = useCallback(async () => {
+        if (settingsChangeProcessingRef.current) {
+            return;
+        }
+
+        settingsChangeProcessingRef.current = true;
+
+        try {
+            while (!stoppedRef.current) {
+                const nextSettings = pendingSettingsChangeRef.current;
+                if (!nextSettings) {
+                    return;
+                }
+                pendingSettingsChangeRef.current = null;
+
+                const previousHandled = lastHandledSettingsRef.current;
+                if (!previousHandled) {
+                    lastHandledSettingsRef.current = nextSettings;
+                    continue;
+                }
+
+                await handleSettingsChanges(previousHandled, nextSettings);
+                lastHandledSettingsRef.current = nextSettings;
+            }
+        } finally {
+            settingsChangeProcessingRef.current = false;
+        }
+    }, [handleSettingsChanges]);
+
+    const scheduleSettingsChanges = useCallback(
+        (oldSettings: NotebookNavigatorSettings, newSettings: NotebookNavigatorSettings) => {
+            if (stoppedRef.current) {
+                return;
+            }
+
+            if (!lastHandledSettingsRef.current) {
+                lastHandledSettingsRef.current = oldSettings;
+            }
+
+            pendingSettingsChangeRef.current = newSettings;
+
+            if (settingsChangeProcessingRef.current) {
+                return;
+            }
+
+            clearPendingSettingsChangeTimer();
+            if (typeof window === 'undefined') {
+                runAsyncAction(() => drainPendingSettingsChanges());
+                return;
+            }
+
+            pendingSettingsChangeTimeoutIdRef.current = window.setTimeout(() => {
+                pendingSettingsChangeTimeoutIdRef.current = null;
+                runAsyncAction(() => drainPendingSettingsChanges());
+            }, TIMEOUTS.DEBOUNCE_CONTENT);
+        },
+        [clearPendingSettingsChangeTimer, drainPendingSettingsChanges]
     );
 
     // ==================== Effects ====================
@@ -1624,9 +1769,6 @@ export function StorageProvider({ app, api, children }: StorageProviderProps) {
         const metadataEvent = app.metadataCache.on('changed', handleMetadataChange);
         activeMetadataEventRef.current = metadataEvent;
 
-        // Cleanup
-        const activeMetadataWaitDisposers = metadataWaitDisposersRef.current;
-
         return () => {
             buildFileCacheFnRef.current = null;
             vaultEvents.forEach(eventRef => app.vault.offref(eventRef));
@@ -1650,21 +1792,18 @@ export function StorageProvider({ app, api, children }: StorageProviderProps) {
                 waitDisposerRef.current = null;
             }
 
-            // Clean up all metadata wait disposers that were queued
-            if (activeMetadataWaitDisposers.size > 0) {
-                for (const dispose of activeMetadataWaitDisposers) {
-                    try {
-                        dispose();
-                    } catch {
-                        // ignore errors during cleanup
-                    }
-                }
-                activeMetadataWaitDisposers.clear();
-            }
+            disposeFeatureImageMetadataWaitDisposers();
+            disposeMetadataWaitDisposers();
+
+            clearPendingSettingsChangeTimer();
+            pendingSettingsChangeRef.current = null;
         };
     }, [
         app,
         api,
+        clearPendingSettingsChangeTimer,
+        disposeFeatureImageMetadataWaitDisposers,
+        disposeMetadataWaitDisposers,
         isIndexedDBReady,
         getIndexableMarkdownFiles,
         rebuildTagTree,
@@ -1696,7 +1835,13 @@ export function StorageProvider({ app, api, children }: StorageProviderProps) {
         }
         // Settings UIs debounce excluded folders/files edits, so this effect only runs after the user stops typing
         // Use captured previousSettings variable instead of ref to ensure consistent comparison
-        runAsyncAction(() => handleSettingsChanges(previousSettings, settings));
+        const registry = contentRegistry.current;
+        const relevantSettings = registry?.getAllRelevantSettings() ?? [];
+        const hasRelevantSettingsChange =
+            !registry || relevantSettings.some(settingKey => previousSettings[settingKey] !== settings[settingKey]);
+        if (hasRelevantSettingsChange) {
+            scheduleSettingsChanges(previousSettings, settings);
+        }
 
         // Detect exclusion setting changes and resync cache / tag tree
         const previousHiddenFolders = getActiveHiddenFolders(previousSettings);
@@ -1805,7 +1950,8 @@ export function StorageProvider({ app, api, children }: StorageProviderProps) {
         handleSettingsChanges,
         rebuildTagTree,
         getIndexableMarkdownFiles,
-        queueMetadataContentWhenReady
+        queueMetadataContentWhenReady,
+        scheduleSettingsChanges
     ]);
 
     /**
@@ -1829,6 +1975,8 @@ export function StorageProvider({ app, api, children }: StorageProviderProps) {
             stopAllProcessing: () => {
                 // Mark stopped to gate any subsequent event handlers
                 stoppedRef.current = true;
+                clearPendingSettingsChangeTimer();
+                pendingSettingsChangeRef.current = null;
                 // Stop all provider processing
                 if (contentRegistry.current) {
                     contentRegistry.current.stopAllProcessing();
@@ -1869,20 +2017,19 @@ export function StorageProvider({ app, api, children }: StorageProviderProps) {
                     waitDisposerRef.current = null;
                 }
                 // Clean up all tracked metadata wait disposers on shutdown
-                if (metadataWaitDisposersRef.current.size > 0) {
-                    for (const dispose of metadataWaitDisposersRef.current) {
-                        try {
-                            dispose();
-                        } catch {
-                            // ignore errors during cleanup
-                        }
-                    }
-                    metadataWaitDisposersRef.current.clear();
-                }
+                disposeFeatureImageMetadataWaitDisposers();
+                disposeMetadataWaitDisposers();
                 pendingMetadataWaitPathsRef.current.clear();
             }
         };
-    }, [contextValue, app.vault, app.metadataCache]);
+    }, [
+        clearPendingSettingsChangeTimer,
+        contextValue,
+        disposeFeatureImageMetadataWaitDisposers,
+        disposeMetadataWaitDisposers,
+        app.vault,
+        app.metadataCache
+    ]);
 
     return <StorageContext.Provider value={contextWithControls}>{children}</StorageContext.Provider>;
 }
