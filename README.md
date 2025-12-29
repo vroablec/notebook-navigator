@@ -921,4 +921,4 @@ Feel free to connect with me on [LinkedIn](https://www.linkedin.com/in/johansan/
 
 ## 12 License
 
-This project is licensed under the Notebook Navigator License Agreement - see the [LICENSE](https://github.com/johansan/notebook-navigator/blob/main/LICENSE) file for details.
+This project is licensed under the GNU General Public License v3.0 - see the [LICENSE](https://github.com/johansan/notebook-navigator/blob/main/LICENSE) file for details.
