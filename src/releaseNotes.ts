@@ -74,21 +74,26 @@ export interface ReleaseNote {
 const RELEASE_NOTES: ReleaseNote[] = [
     {
         version: '2.0.1',
-        date: '2025-12-29',
+        date: '2025-12-30',
         showOnUpdate: true,
+        info: 'Fixed an issue where Style Settings did not open correctly, and also improved startup performance.',
         new: [],
-        improved: ['==License is back to GPL 3== after discussions with the Obsidian team.'],
+        improved: [
+            '**License is back to GPL 3** after clarifications from the Obsidian team.',
+            'Internal: Improved database hydration performance moving from cursor to batched reads.',
+            'Internal: Moved preview text to a separate cache store which is now loaded on demand during scrolling.'
+        ],
         changed: [],
         fixed: [
             'Fixed **Style settings** not opening due to misaligned CSS variable names.',
             '**Navigation Pane > Appearance > Root item spacing** now properly updates the view when changed.',
-            'Internal: normalized **content-type headers** for better external image support (e.g. some web sites provide `image/jpg` for JPEG or `image/x-png` for PNG).',
-            'Internal: hardened the **thumbnail LRU cache** to prevent possible race conditions after invalidation.'
+            'Internal: Normalized **content-type headers** for better external image support (e.g. some web sites provide image/jpg for JPEG or image/x-png for PNG).',
+            'Internal: Hardened the **thumbnail LRU cache** to prevent possible race conditions after invalidation.'
         ]
     },
     {
         version: '2.0.0',
-        date: '2025-12-28',
+        date: '2025-12-29',
         showOnUpdate: true,
         info: '==Notebook Navigator 2.0== is here and there are so many new features! First off: ==Notebook Navigator now automatically creates thumbnails for all your notes== and saves them to the metadata cache database for super fast scrolling! 🎉 If enabled, Notebook Navigator will now also download external images and YouTube thumbnails for feature images! We also have ==Templater support!== You can now create new notes from templates directly in the navigation pane or in the current folder / tag using the new command! Also there are lots of other improvements in this release like a new ==visual editor for file icons== and the option to ==change all user interface icons==! Happy new year! 🎉',
         new: [
