@@ -120,7 +120,7 @@ Finally, go into Settings, Notes and enable Icons by file type in the Icon secti
 
 [pause]
 
-Now let me quickly change the interface back to dual pane mode. 
+Now let me quickly change the interface back to dual pane mode.
 
 [pause]
 
@@ -152,7 +152,7 @@ Then you have your FOLDERS tree, and finally your TAGS tree.
 
 [pause]
 
-And a pro tip: There are commands to open shortcuts one through nine directly, so you can bind them to keyboard shortcuts like Command-1 for instant access!
+And a pro tip: There are commands to open shortcuts one through nine directly, so you can bind them to keyboard shortcuts like Control-1 for instant access!
 
 [pause]
 
@@ -232,7 +232,7 @@ Click Sort to see your options: modified date, created date, or alphabetical... 
 
 [pause]
 
-If you set a custom sort for a folder, it's remembered. Navigate away and come back... your preference is still there.
+If you set a custom sort for a folder, it's remembered. Navigate away and come back... your preference is still there. Appearance and sort order settings are also synced between all your devices.
 
 [short pause]
 
@@ -252,7 +252,7 @@ Just type to search by filename. Add a HASHTAG to filter by tag.
 
 [short pause]
 
-You can combine them. For example, "sony hashtag 50mm" finds notes with "sony" in the name AND the 50mm tag.
+You can also combine different search filters. For example, "sony hashtag 50mm" finds notes with "sony" in the name AND the 50mm tag. In the navigation pane you can see all tags currently used by the current filter.
 
 [short pause]
 
@@ -262,7 +262,7 @@ Use an EXCLAMATION MARK to exclude notes. "Exclamation hashtag 50mm" hides all n
 
 Here's a power tip: In the list pane, you can Command-click or Control-click on a tag chip to add it to your search filter. Hold Shift for an OR search.
 
-[short pause]
+[pause]
 
 Found a search you use often? Save it as a shortcut! Click the save icon next to the search field, give it a name, and it'll appear in your shortcuts section for one-click access.
 
@@ -276,7 +276,7 @@ Tags in Notebook Navigator are fully interactive.
 
 [short pause]
 
-To ADD a tag to notes, just drag them onto a tag in the navigation pane. Works with multiple notes too!
+To ADD a tag to notes, just drag them onto a tag in the navigation pane. This works with multiple notes too!
 
 [short pause]
 
@@ -308,15 +308,11 @@ Pinning keeps important notes at the top of your list.
 
 [short pause]
 
-Right-click a note and select Pin note. It moves to a pinned section at the top.
+Right-click a note and select Pin note. It moves to a pinned section at the top. You can also use one of the quick actions button to quickly pin notes.
 
 [pause]
 
-Here's something useful to know: folder pins and tag pins are SEPARATE. A note can be pinned in your folder view but not in your tag view, or vice versa, or both.
-
-[short pause]
-
-This gives you flexibility to organize differently depending on how you're browsing.
+Here's something useful to know: folder pins and tag pins are SEPARATE. A note can be pinned in your folder view but not in your tag view, or vice versa, or both. This gives you flexibility to organize differently depending on how you're browsing.
 
 [pause]
 
@@ -344,7 +340,7 @@ You can also customize individual files... right-click any note to change its ic
 
 [short pause]
 
-For power users, there are settings to automatically assign icons based on filename patterns or file types. Go into settings and Notes tab and you will find "Icons by file name" and "Icons by file type". You can also enable "Use frontmatter metadata" to read filename, color and icon information from frontmatter. If this setting is enabled you can also save icon and color information to frontmatter.
+For power users, there are settings to automatically assign icons based on filename patterns or file types. Go into Settings and the Notes tab and you will find "Icons by file name" and "Icons by file type". You can also enable "Use frontmatter metadata" to read filename, color and icon information from frontmatter. If this setting is enabled you can also save icon and color information to frontmatter.
 
 [pause]
 
