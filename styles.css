@@ -1320,7 +1320,7 @@ body {
     left: 20%;
     right: 20%;
     bottom: 3px;
-    height: 6px;
+    height: 5px;
     background-color: var(--nn-theme-divider-border-color);
     border-radius: 3px;
     pointer-events: none;
