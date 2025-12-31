@@ -18,6 +18,8 @@ Here's the vault we'll be working with today. It's called Demo, and it has two f
 
 Let's get started.
 
+[pause]
+
 ---
 
 ## 2 INSTALLATION
@@ -42,22 +44,23 @@ There it is! Click Install. [short pause] Then click Enable. Close the window.
 
 [short pause]
 
-As you can see, the left panel has now changed and all our files are showing with text previews, tags and thumbnail previews. On the first launch Notebook Navigator will generate thumbnails for all your notes with PDF documents, images or YouTube links, so you will see a notice while the cache is being built.
+As you can see, the left panel has now changed and all our files will now be showing with text previews, tags and thumbnail previews. On the first launch Notebook Navigator will generate thumbnails for all your notes with PDF documents, images or YouTube links, so you will see a notice while the cache is being built.
 
 [pause]
 
 Let's get started!
 
+[pause]
+
 ---
 
 ## 3 INTERFACE
 
-Depending on the width of the left panel you will either see a single pane interface like this, or a dual-pane interface. [short pause] To switch to dual-pane mode from single-pane mode, first switch to navigation pane by pressing the back button in the top left corner. Then increase the size of the left panel and click the "Show dual panes" button. Resize the panes if needed.
+Depending on the initial width of the left panel you will either see a single pane interface like this, or a dual-pane interface. [short pause] To switch to dual-pane mode from single-pane mode, first switch to navigation pane by pressing the back button in the top left corner. Then increase the size of the left panel and click the "Show dual panes" button. Resize the panes if needed, especially if you do not see the list pane.
 
 [pause]
 
-The interface is split into two panes. On the left is the NAVIGATION pane. This is where you'll find your folders, tags,
-shortcuts, and recent notes.
+The interface is split into two panes. On the left is the NAVIGATION pane. This is where you'll find your folders, tags, shortcuts, and recent notes.
 
 [short pause]
 
@@ -73,12 +76,33 @@ Tags work the same way. I'll click the tag ai slash anthropic, and now I see all
 
 [pause]
 
-At the top of the list pane, you'll find controls for search, sorting, appearance, and this important toggle... Show
-notes from subfolders and descendants.
+At the top of the list pane, you'll find controls for search, sort, appearance, and this important toggle... Show notes from subfolders and descendants.
+
+[pause]
 
 ---
 
-## 4 SINGLE PANE
+## 4 DESCENDANTS
+
+Let's talk about this descendants toggle... it's REALLY important and it's enabled by default.
+
+[pause]
+
+When it's ON, selecting a folder shows notes from that folder AND all its subfolders. Same with tags... you'll see notes from the selected tag and all child tags.
+
+[short pause]
+
+When it's OFF, you only see notes that are DIRECTLY in that folder or have EXACTLY that tag.
+
+[pause]
+
+If you ever think "why am I seeing so many files?"... check this toggle first.
+
+[pause]
+
+---
+
+## 5 SINGLE PANE
 
 If you prefer the single pane layout, there are some settings to customize it.
 
@@ -94,28 +118,11 @@ Next, enable Compact mode. Go into Settings, List pane, Appearance and change De
 
 Finally, go into Settings, Notes and enable Icons by file type in the Icon section. This adds category icons next to your files based on their type... images, PDFs, canvases, bases, and more. It's a quick way to see what kind of content you have at a glance.
 
----
-
-## 5 DESCENDANTS
-
-Let's talk about this descendants toggle... it's REALLY important.
-
 [pause]
 
-When it's ON, selecting a folder shows notes from that folder AND all its subfolders. Same with tags... you'll see notes
-from the selected tag and all child tags.
-
-[short pause]
-
-When it's OFF, you only see notes that are DIRECTLY in that folder or have EXACTLY that tag.
+Now let me quickly change the interface back to dual pane mode. 
 
 [pause]
-
-If you ever think "why am I seeing so many files?"... check this toggle first.
-
-[short pause]
-
-It's enabled by default, and your preference is saved per device.
 
 ---
 
@@ -125,8 +132,7 @@ The navigation pane has four main sections.
 
 [short pause]
 
-At the top, you have SHORTCUTS. This is your quick access area... pin your most-used notes, folders, tags, or even saved
-searches here. Let me show you how this works.
+At the top, you have SHORTCUTS. This is your quick access area... pin your most-used notes, folders, tags, or even saved searches here. Let me show you how this works.
 
 [short pause]
 
@@ -134,8 +140,7 @@ You can pin files, folders or tags by just dragging them to the shortcuts area l
 
 [short pause]
 
-Or you can add them by right clicking and selecting add to shortcuts, like this. You can also rearrange shortcuts by
-just dragging them, like this.
+Or you can add them by right clicking and selecting add to shortcuts, like this.
 
 [short pause]
 
@@ -147,18 +152,19 @@ Then you have your FOLDERS tree, and finally your TAGS tree.
 
 [pause]
 
-And finally a pro tip: There are commands to open shortcuts one through nine directly, so you can bind them to keyboard
-shortcuts like Command-1 for instant access!
+And a pro tip: There are commands to open shortcuts one through nine directly, so you can bind them to keyboard shortcuts like Command-1 for instant access!
+
+[pause]
 
 ---
 
 ## 7 REORDER
 
-Don't like the default order? You can customize it.
+Don't like the default order? Maybe you want tags to be shown above your folders? You can customize it!
 
 [short pause]
 
-Click Reorder navigation in the toolbar.
+Click the "Reorder navigation" button in the toolbar.
 
 [pause]
 
@@ -170,16 +176,17 @@ You can also reorder your ROOT folders and ROOT tags to put your most-used items
 
 [short pause]
 
-When using custom sort order new items are placed at the bottom of each category. If you want to reset to alphabetical
-order, just click the reset button.
+When using a custom sort order new items are placed at the bottom of each category. If you want to reset to alphabetical order, just click the reset button.
 
 [short pause]
 
-Click Done reordering when you're finished.
+Click "Done reordering" toolbar button when you're finished.
 
 [pause]
 
-Another pro tip: Tags can be sorted based on frequency, just go into settings and the Folders & tags tab to change it.
+Another pro tip: Tags can also be sorted based on frequency, just go into settings and the Folders & tags tab to change it.
+
+[pause]
 
 ---
 
@@ -189,13 +196,11 @@ The list pane has two display modes: Standard and Compact.
 
 [short pause]
 
-In STANDARD mode, each note shows its title, modification date, a preview of the content, and... if available... a
-feature image thumbnail.
+In STANDARD mode, each note shows its title, modification date, a preview of the content, and... if available... a feature image thumbnail.
 
 [pause]
 
-[excited] One of my favorite features is that Notebook Navigator automatically generates thumbnails from the first image
-in your notes. It even works with external images, YouTube thumbnails, PDFs, and Excalidraw drawings!
+[excited] One of my favorite features is that Notebook Navigator automatically generates thumbnails from the first image in your notes. It even works with external images, YouTube thumbnails, PDFs, and Excalidraw drawings!
 
 [pause]
 
@@ -203,13 +208,13 @@ In COMPACT mode, you just see the title... great for maximum density.
 
 [short pause]
 
-Click Appearance to customize. You can adjust how many lines of title and preview text to show, and enable grouping by
-date or by subfolder.
+Click Appearance to customize. You can adjust how many lines of title and preview text to show, and enable grouping by date or by subfolder.
 
 [short pause]
 
-The best part? These settings can be customized PER FOLDER and PER TAG. To change the default appearance for all folders
-you have extensive options in settings. You can change almost everything about how notes appear in the list pane.
+The best part? These settings can be customized PER FOLDER and PER TAG. To change the default appearance for all folders you have extensive options in settings. You can change almost everything about how notes appear in the list pane.
+
+[pause]
 
 ---
 
@@ -233,6 +238,8 @@ If you set a custom sort for a folder, it's remembered. Navigate away and come b
 
 To clear a custom sort, just select Default.
 
+[pause]
+
 ---
 
 ## 10 SEARCH
@@ -249,18 +256,17 @@ You can combine them. For example, "sony hashtag 50mm" finds notes with "sony" i
 
 [short pause]
 
-Use an EXCLAMATION MARK to exclude. "Exclamation hashtag 50mm" hides all notes with the tag 50mm. To hide all notes with
-tags you can just put "Exclamation hashtag".
+Use an EXCLAMATION MARK to exclude notes. "Exclamation hashtag 50mm" hides all notes with the tag 50mm. To hide all notes that have tags you can just put "Exclamation hashtag".
 
 [pause]
 
-Here's a power tip: In the list pane, you can Command-click or Control-click on a tag chip to add it to your search
-filter. Hold Shift for an OR search.
+Here's a power tip: In the list pane, you can Command-click or Control-click on a tag chip to add it to your search filter. Hold Shift for an OR search.
 
 [short pause]
 
-Found a search you use often? Save it as a shortcut! Click the save icon next to the search field, give it a name, and
-it'll appear in your shortcuts section for one-click access.
+Found a search you use often? Save it as a shortcut! Click the save icon next to the search field, give it a name, and it'll appear in your shortcuts section for one-click access.
+
+[pause]
 
 ---
 
@@ -292,6 +298,8 @@ Want to promote a nested tag to the root level? Drag it onto the Tags header.
 
 All tag changes update your actual note files... nothing is stored separately.
 
+[pause]
+
 ---
 
 ## 12 PINNING
@@ -304,12 +312,13 @@ Right-click a note and select Pin note. It moves to a pinned section at the top.
 
 [pause]
 
-Here's something useful to know: folder pins and tag pins are SEPARATE. A note can be pinned in your folder view but not
-in your tag view, or vice versa, or both.
+Here's something useful to know: folder pins and tag pins are SEPARATE. A note can be pinned in your folder view but not in your tag view, or vice versa, or both.
 
 [short pause]
 
 This gives you flexibility to organize differently depending on how you're browsing.
+
+[pause]
 
 ---
 
@@ -323,19 +332,21 @@ Right-click any folder to access Change icon, Change color, and Change backgroun
 
 [short pause]
 
-By default the icon picker includes Lucide icons shipped with Obsidian and emojis. To download additional icons go into Notebook Navigator settings, click Icon packs, and download the icon packs you want. These icon packs are downloaded from the public GitHub repo for Notebook Navigator, and you can choose from popular icon packs like Font Awesome, Material Icons, and Bootstrap icons.
+By default the icon picker includes Lucide icons and emojis. To download additional icons go into Notebook Navigator settings, click Icon packs, and download the icon packs you want. These icon packs are downloaded from the public GitHub repo for Notebook Navigator, and you can choose from popular icon packs like Font Awesome, Material Icons, and Bootstrap icons.
 
 [pause]
 
 Want to apply the same style to multiple items? Use the Style menu. Copy a style from one folder, then paste it onto others.
 
-[short pause]
+[pause]
 
 You can also customize individual files... right-click any note to change its icon or color.
 
 [short pause]
 
 For power users, there are settings to automatically assign icons based on filename patterns or file types. Go into settings and Notes tab and you will find "Icons by file name" and "Icons by file type". You can also enable "Use frontmatter metadata" to read filename, color and icon information from frontmatter. If this setting is enabled you can also save icon and color information to frontmatter.
+
+[pause]
 
 ---
 
@@ -367,20 +378,14 @@ And Icon packs is where you enable additional icon libraries.
 
 I won't go through every option... just explore and read the descriptions to see what they do!
 
+[pause]
+
 ---
 
 ## 15 GET STARTED
 
-That's Notebook Navigator!
+That's Notebook Navigator! A two-pane interface that makes navigating large vaults intuitive and fast.
 
 [short pause]
 
-A two-pane interface that makes navigating large vaults intuitive and fast.
-
-[short pause]
-
-If you have questions, check out the plugin settings or visit the GitHub page.
-
-[short pause]
-
-Thanks for watching, and happy note-taking!
+If you have questions, check out the plugin settings or visit the GitHub page. Thanks for watching, and happy note-taking!
