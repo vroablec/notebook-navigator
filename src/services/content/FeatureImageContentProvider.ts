@@ -35,7 +35,7 @@ import { isImageExtension, isImageFile, isPdfFile } from '../../utils/fileTypeUt
 import { BaseContentProvider } from './BaseContentProvider';
 import { renderExcalidrawThumbnail } from './excalidraw/excalidrawThumbnail';
 import { renderPdfCoverThumbnail } from './pdf/pdfCoverThumbnail';
-import { getImageDimensionsFromBuffer, normalizeImageMimeType } from './thumbnail/imageDimensions';
+import { detectImageMimeTypeFromBuffer, getImageDimensionsFromBuffer, normalizeImageMimeType } from './thumbnail/imageDimensions';
 import { createOnceLogger, createRenderBudgetLimiter, createRenderLimiter } from './thumbnail/thumbnailRuntimeUtils';
 
 const MAX_THUMBNAIL_WIDTH = 256;
@@ -63,6 +63,8 @@ const SUPPORTED_IMAGE_MIME_TYPES = new Set([
     'image/webp',
     'image/svg+xml',
     'image/avif',
+    'image/heic',
+    'image/heif',
     'image/bmp'
 ]);
 
@@ -74,6 +76,8 @@ const MIME_TYPE_BY_EXTENSION: Record<string, string> = {
     webp: 'image/webp',
     svg: 'image/svg+xml',
     avif: 'image/avif',
+    heic: 'image/heic',
+    heif: 'image/heif',
     bmp: 'image/bmp'
 };
 
@@ -838,19 +842,29 @@ export class FeatureImageContentProvider extends BaseContentProvider {
     // Resizes an image buffer to thumbnail dimensions with platform-aware pixel limits
     private async createThumbnailBlobFromBuffer(buffer: ArrayBuffer, mimeType: string, source: string): Promise<Blob | null> {
         const normalizedMimeType = normalizeImageMimeType(mimeType);
+        const detectedMimeType = detectImageMimeTypeFromBuffer(buffer);
+        const effectiveMimeType =
+            detectedMimeType && SUPPORTED_IMAGE_MIME_TYPES.has(detectedMimeType) ? detectedMimeType : normalizedMimeType;
 
-        if (normalizedMimeType === 'image/svg+xml') {
+        if (detectedMimeType && detectedMimeType !== normalizedMimeType && SUPPORTED_IMAGE_MIME_TYPES.has(detectedMimeType)) {
+            this.logOnce(
+                `featureImage-mime-mismatch:${normalizedMimeType}:${detectedMimeType}:${source}`,
+                `[${source}] Detected ${detectedMimeType} content for declared ${normalizedMimeType}`
+            );
+        }
+
+        if (effectiveMimeType === 'image/svg+xml') {
             // Keep SVG data as-is without raster encoding.
-            return new Blob([buffer], { type: normalizedMimeType });
+            return new Blob([buffer], { type: effectiveMimeType });
         }
 
         // Extract dimensions from the image header to determine if resizing is needed.
         // Skip images with unknown dimensions to avoid memory issues during decoding.
-        const dimensions = getImageDimensionsFromBuffer(buffer, normalizedMimeType);
+        const dimensions = getImageDimensionsFromBuffer(buffer, effectiveMimeType);
         if (!dimensions) {
             this.logOnce(
-                `featureImage-unknown-dimensions:${normalizedMimeType}:${source}`,
-                `[${source}] Skipping ${normalizedMimeType} (${buffer.byteLength} bytes) - unable to determine image dimensions`
+                `featureImage-unknown-dimensions:${effectiveMimeType}:${source}`,
+                `[${source}] Skipping ${effectiveMimeType} (${buffer.byteLength} bytes) - unable to determine image dimensions`
             );
             return null;
         }
@@ -860,8 +874,8 @@ export class FeatureImageContentProvider extends BaseContentProvider {
         const maxPixels = Platform.isMobile ? 80_000_000 : 200_000_000;
         if (pixelCount > maxPixels) {
             this.logOnce(
-                `featureImage-too-large:${normalizedMimeType}:${dimensions.width}x${dimensions.height}:${source}`,
-                `[${source}] Skipping ${normalizedMimeType} (${dimensions.width}x${dimensions.height}) - image too large`
+                `featureImage-too-large:${effectiveMimeType}:${dimensions.width}x${dimensions.height}:${source}`,
+                `[${source}] Skipping ${effectiveMimeType} (${dimensions.width}x${dimensions.height}) - image too large`
             );
             return null;
         }
@@ -869,13 +883,13 @@ export class FeatureImageContentProvider extends BaseContentProvider {
         const { width: targetWidth, height: targetHeight } = this.calculateThumbnailDimensions(dimensions.width, dimensions.height);
         if (targetWidth === dimensions.width && targetHeight === dimensions.height) {
             // Skip decoding when the image is already within thumbnail limits.
-            return new Blob([buffer], { type: normalizedMimeType });
+            return new Blob([buffer], { type: effectiveMimeType });
         }
 
         const releaseDecodeBudget = await this.imageDecodeLimiter.acquire(pixelCount);
 
         try {
-            const sourceBlob = new Blob([buffer], { type: normalizedMimeType });
+            const sourceBlob = new Blob([buffer], { type: effectiveMimeType });
 
             // Attempt direct bitmap resize which is more memory-efficient for large images.
             const resizedBitmapResult = await this.tryCreateThumbnailFromResizedBitmap(sourceBlob, targetWidth, targetHeight);
@@ -887,8 +901,8 @@ export class FeatureImageContentProvider extends BaseContentProvider {
             const maxFallbackPixels = Platform.isMobile ? 16_000_000 : 80_000_000;
             if (pixelCount > maxFallbackPixels) {
                 this.logOnce(
-                    `featureImage-fallback-skip:${normalizedMimeType}:${dimensions.width}x${dimensions.height}:${source}`,
-                    `[${source}] Skipping ${normalizedMimeType} (${dimensions.width}x${dimensions.height}) - thumbnail decode fallback disabled for large images`
+                    `featureImage-fallback-skip:${effectiveMimeType}:${dimensions.width}x${dimensions.height}:${source}`,
+                    `[${source}] Skipping ${effectiveMimeType} (${dimensions.width}x${dimensions.height}) - thumbnail decode fallback disabled for large images`
                 );
                 return null;
             }

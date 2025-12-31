@@ -92,9 +92,9 @@ function getSupportedExtensions(app: App): Set<string> {
 
 /**
  * Common image extensions that can be displayed as feature images.
- * Limited to formats with reliable cross-platform support.
+ * Used by the feature image pipeline.
  */
-const SUPPORTED_IMAGE_EXTENSIONS = ['png', 'jpg', 'jpeg', 'gif', 'svg', 'webp', 'avif', 'bmp'] as const;
+const SUPPORTED_IMAGE_EXTENSIONS = ['png', 'jpg', 'jpeg', 'gif', 'svg', 'webp', 'avif', 'heic', 'heif', 'bmp'] as const;
 const IMAGE_EXTENSIONS = new Set<string>(SUPPORTED_IMAGE_EXTENSIONS);
 
 export function isImageExtension(extension: string): boolean {

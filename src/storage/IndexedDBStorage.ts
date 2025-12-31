@@ -31,7 +31,7 @@ import { isMarkdownPath } from '../utils/fileTypeUtils';
 const STORE_NAME = 'keyvaluepairs';
 const PREVIEW_STORE_NAME = 'filePreviews';
 const DB_SCHEMA_VERSION = 3; // IndexedDB structure version
-const DB_CONTENT_VERSION = 1; // Data format version
+const DB_CONTENT_VERSION = 2; // Data format version
 
 export type FeatureImageStatus = 'unprocessed' | 'none' | 'has';
 export type PreviewStatus = 'unprocessed' | 'none' | 'has';
