@@ -1350,6 +1350,18 @@ body {
     border-right: none;
 }
 
+/* Mobile: pinned shortcuts can live inside the navigation scroller (above the virtualized tree). */
+.notebook-navigator-mobile .nn-navigation-pane-scroller > .nn-shortcut-pinned {
+    /* Keep shortcuts pinned at the top while scrolling folders/tags below. */
+    position: sticky;
+    top: 0;
+    /* Ensure the sticky header stays above virtual list rows and dividers. */
+    z-index: 3;
+    /* The scroller applies horizontal padding for rows; offset it so the pinned block aligns to the pane edge. */
+    margin-left: calc(-1 * var(--nn-scroller-padding));
+    margin-right: calc(-1 * var(--nn-scroller-padding));
+}
+
 /* Mobile-only: hide the pinned shortcuts shadow overlay. */
 .notebook-navigator-mobile .nn-shortcut-pinned::after {
     content: none;

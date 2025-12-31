@@ -277,6 +277,16 @@ export const NavigationPane = React.memo(
         const pinnedShortcutsContainerRef = useRef<HTMLDivElement>(null);
         const [pinnedShortcutsScrollElement, setPinnedShortcutsScrollElement] = useState<HTMLDivElement | null>(null);
         const [pinnedShortcutsHasOverflow, setPinnedShortcutsHasOverflow] = useState(false);
+        // On mobile, pinned shortcuts are rendered inside the navigation scroller (instead of above it).
+        // This means they become part of the scrollable content, but they are not part of the virtualized
+        // list items. During mobile swipe transitions, Obsidian can temporarily report the pane/scroller
+        // as 0x0 while it animates in/out; anchoring pinned content to the same scroll container keeps the
+        // pinned header/resizer stable and avoids a separate layout context.
+        //
+        // We measure the pinned section height and use it as the "scroll margin" for virtualization so:
+        // - Visible range calculations ignore the pinned section offset (scrollTop includes it).
+        // - scrollToIndex aligns items below the pinned section instead of under it.
+        const [pinnedShortcutsScrollMargin, setPinnedShortcutsScrollMargin] = useState<number>(0);
         const pinnedShortcutsResizeFrameRef = useRef<number | null>(null);
         const pinnedShortcutsResizeHeightRef = useRef<number>(0);
         const { startPointerDrag } = usePointerDrag();
@@ -919,11 +929,61 @@ export const NavigationPane = React.memo(
         }, [pinnedRecentNotesItems, sectionOrder, shortcutItems, shouldPinRecentNotes, shouldPinShortcuts]);
         // Banner should be shown in pinned area only when shortcuts are pinned and banner is configured
         const shouldShowPinnedBanner = Boolean(navigationBannerPath && pinnedNavigationItems.length > 0);
+        // Pinned shortcuts are shown in normal navigation mode (but hidden during reorder mode).
+        const shouldRenderPinnedShortcuts = pinnedNavigationItems.length > 0 && !isRootReorderMode;
+        // Mobile-only: render pinned shortcuts inside the scroller so they share the same layout/scroll
+        // lifecycle as the virtualized list (single scroll context).
+        const shouldRenderPinnedShortcutsInScroller = isMobile && shouldRenderPinnedShortcuts;
 
         // Recalculates overflow when pinned items or banner visibility changes
         useLayoutEffect(() => {
             updatePinnedShortcutsOverflow(pinnedShortcutsScrollElement);
         }, [pinnedNavigationItems, pinnedShortcutsScrollElement, shouldShowPinnedBanner, updatePinnedShortcutsOverflow]);
+
+        useLayoutEffect(() => {
+            if (!shouldRenderPinnedShortcutsInScroller) {
+                setPinnedShortcutsScrollMargin(0);
+                return;
+            }
+
+            const pinnedElement = pinnedShortcutsContainerRef.current;
+            if (!pinnedElement) {
+                setPinnedShortcutsScrollMargin(0);
+                return;
+            }
+
+            // Virtualization reads scrollTop from the scroller, which includes the pinned shortcuts section.
+            // Measuring the pinned section height lets the virtualizer treat the list as if it starts "after"
+            // the pinned section, keeping range calculations and scrollToIndex alignment consistent.
+            const updateScrollMargin = () => {
+                const height = Math.round(pinnedElement.getBoundingClientRect().height);
+                setPinnedShortcutsScrollMargin(prev => (prev === height ? prev : height));
+            };
+
+            updateScrollMargin();
+
+            if (typeof ResizeObserver === 'undefined') {
+                const handleResize = () => updateScrollMargin();
+                window.addEventListener('resize', handleResize);
+                return () => {
+                    window.removeEventListener('resize', handleResize);
+                };
+            }
+
+            // Use ResizeObserver so changes from:
+            // - adding/removing pinned items,
+            // - banner visibility,
+            // - user resizing the pinned area,
+            // are reflected immediately in the virtualizer offset.
+            const resizeObserver = new ResizeObserver(() => {
+                updateScrollMargin();
+            });
+            resizeObserver.observe(pinnedElement);
+
+            return () => {
+                resizeObserver.disconnect();
+            };
+        }, [shouldRenderPinnedShortcutsInScroller]);
 
         // We only reserve gutter space when a banner exists because Windows scrollbars
         // change container width by ~7px when they appear. That width change used to
@@ -1002,7 +1062,8 @@ export const NavigationPane = React.memo(
             pathToIndex,
             isVisible,
             activeShortcutKey,
-            bannerHeight
+            bannerHeight,
+            scrollMargin: shouldRenderPinnedShortcutsInScroller ? pinnedShortcutsScrollMargin : 0
         });
 
         /** Converts a potentially transparent background color into a solid color by compositing with the pane surface. */
@@ -2601,8 +2662,47 @@ export const NavigationPane = React.memo(
                         pinToggleLabel={pinToggleLabel}
                     />
                 )}
-                {pinnedNavigationItems.length > 0 && !isRootReorderMode ? (
-                    <>
+                {!isMobile && shouldRenderPinnedShortcuts ? (
+                    <div
+                        className="nn-shortcut-pinned"
+                        ref={pinnedShortcutsContainerRef}
+                        role="presentation"
+                        data-has-banner={shouldShowPinnedBanner ? 'true' : undefined}
+                        data-scroll={pinnedShortcutsHasOverflow ? 'true' : undefined}
+                        style={pinnedShortcutsMaxHeight !== null ? { maxHeight: pinnedShortcutsMaxHeight } : undefined}
+                        onDragOver={allowEmptyShortcutDrop ? handleShortcutRootDragOver : undefined}
+                        onDrop={allowEmptyShortcutDrop ? handleShortcutRootDrop : undefined}
+                    >
+                        <div className="nn-shortcut-pinned-scroll" ref={pinnedShortcutsScrollRefCallback}>
+                            {shouldShowPinnedBanner && navigationBannerPath ? (
+                                <NavigationBanner path={navigationBannerPath} onHeightChange={handleBannerHeightChange} />
+                            ) : null}
+                            <div className="nn-shortcut-pinned-inner">
+                                {pinnedNavigationItems.map(pinnedItem => (
+                                    <React.Fragment key={pinnedItem.key}>{renderItem(pinnedItem)}</React.Fragment>
+                                ))}
+                            </div>
+                        </div>
+                        <div
+                            className="nn-shortcuts-resize-handle"
+                            role="separator"
+                            aria-orientation="horizontal"
+                            aria-label="Resize pinned shortcuts"
+                            onPointerDown={handlePinnedShortcutsResizePointerDown}
+                        />
+                    </div>
+                ) : null}
+                <div
+                    ref={scrollContainerRefCallback}
+                    className="nn-navigation-pane-scroller"
+                    // Reserve permanent gutter width when a banner is visible so the scrollbar
+                    // never changes clientWidth mid-resize (prevents RO feedback loops).
+                    data-banner={hasNavigationBannerConfigured ? 'true' : undefined}
+                    data-pane="navigation"
+                    role={isRootReorderMode ? 'list' : 'tree'}
+                    tabIndex={-1}
+                >
+                    {isMobile && shouldRenderPinnedShortcuts ? (
                         <div
                             className="nn-shortcut-pinned"
                             ref={pinnedShortcutsContainerRef}
@@ -2631,18 +2731,7 @@ export const NavigationPane = React.memo(
                                 onPointerDown={handlePinnedShortcutsResizePointerDown}
                             />
                         </div>
-                    </>
-                ) : null}
-                <div
-                    ref={scrollContainerRefCallback}
-                    className="nn-navigation-pane-scroller"
-                    // Reserve permanent gutter width when a banner is visible so the scrollbar
-                    // never changes clientWidth mid-resize (prevents RO feedback loops).
-                    data-banner={hasNavigationBannerConfigured ? 'true' : undefined}
-                    data-pane="navigation"
-                    role={isRootReorderMode ? 'list' : 'tree'}
-                    tabIndex={-1}
-                >
+                    ) : null}
                     {isRootReorderMode ? (
                         <NavigationRootReorderPanel
                             sectionItems={sectionReorderItems}
@@ -2696,7 +2785,17 @@ export const NavigationPane = React.memo(
                                             className="nn-virtual-nav-item"
                                             ref={measureRef}
                                             style={{
-                                                transform: `translateY(${virtualItem.start}px)`
+                                                // When pinned shortcuts are inside the scroller, TanStack Virtual is configured
+                                                // with a scrollMargin equal to the pinned section height. That keeps scrollTop
+                                                // and scrollToIndex semantics relative to the start of the list, but it also
+                                                // means virtualItem.start includes that margin. The virtual container itself
+                                                // is rendered below the pinned section in normal flow, so we subtract the
+                                                // pinned height to position items at the correct Y within the container.
+                                                transform: `translateY(${
+                                                    shouldRenderPinnedShortcutsInScroller
+                                                        ? Math.max(0, virtualItem.start - pinnedShortcutsScrollMargin)
+                                                        : virtualItem.start
+                                                }px)`
                                             }}
                                         >
                                             {renderItem(item)}

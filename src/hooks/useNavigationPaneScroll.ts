@@ -71,6 +71,16 @@ interface UseNavigationPaneScrollParams {
     activeShortcutKey: string | null;
     /** Measured height of the navigation banner (if configured) */
     bannerHeight: number;
+    /**
+     * Top offset inside the scroll container before the virtual list begins.
+     *
+     * On mobile, pinned shortcuts can be rendered inside the navigation scroller as a sticky header.
+     * That header contributes to scrollTop, but it is not part of the virtualized item list.
+     * Providing its height here keeps:
+     * - visible range calculations aligned with the list content,
+     * - scrollToIndex alignment below the pinned header.
+     */
+    scrollMargin: number;
 }
 
 /**
@@ -103,7 +113,8 @@ export function useNavigationPaneScroll({
     pathToIndex,
     isVisible,
     activeShortcutKey,
-    bannerHeight
+    bannerHeight,
+    scrollMargin
 }: UseNavigationPaneScrollParams): UseNavigationPaneScrollResult {
     const { isMobile } = useServices();
     const selectionState = useSelectionState();
@@ -246,9 +257,14 @@ export function useNavigationPaneScroll({
     /**
      * Initialize TanStack Virtual virtualizer with dynamic heights for navigation items
      */
+    const effectiveScrollMargin = Number.isFinite(scrollMargin) && scrollMargin > 0 ? scrollMargin : 0;
     const rowVirtualizer = useVirtualizer({
         count: items.length,
         getScrollElement: () => scrollContainerRef.current,
+        // Align virtualizer scroll math with the start of the list content (excluding pinned headers).
+        scrollMargin: effectiveScrollMargin,
+        // Ensure scrollToIndex aligns items below the pinned header instead of under it.
+        scrollPaddingStart: effectiveScrollMargin,
         estimateSize: index => {
             const item = items[index];
 
