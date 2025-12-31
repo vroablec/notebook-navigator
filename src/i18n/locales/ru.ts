@@ -106,7 +106,7 @@ export const STRINGS_RU = {
         hideFolders: 'Скрыть навигацию', // Tooltip for button to hide the navigation pane (English: Hide navigation)
         reorderRootFolders: 'Изменить порядок навигации',
         finishRootFolderReorder: 'Готово',
-        toggleDescendantNotes: 'Показать заметки из подпапок / потомков (не синхронизируется)', // Tooltip: include descendants for folders and tags
+        toggleDescendantNotes: 'Показать заметки из подпапок / потомков', // Tooltip: include descendants for folders and tags
         autoExpandFoldersTags: 'Разворачивать при выборе', // Tooltip for button to toggle auto-expanding folders and tags when selected (English: Expand on selection)
         showExcludedItems: 'Показать скрытые папки, теги и заметки', // Tooltip for button to show hidden items (English: Show hidden items)
         hideExcludedItems: 'Скрыть скрытые папки, теги и заметки', // Tooltip for button to hide hidden items (English: Hide hidden items)

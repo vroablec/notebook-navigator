@@ -106,7 +106,7 @@ export const STRINGS_AR = {
         hideFolders: 'إخفاء التنقل', // Tooltip for button to hide the navigation pane (English: Hide navigation)
         reorderRootFolders: 'إعادة ترتيب التنقل',
         finishRootFolderReorder: 'تم',
-        toggleDescendantNotes: 'إظهار ملاحظات المجلدات الفرعية / الفروع (غير متزامن)', // Tooltip: include descendants for folders and tags
+        toggleDescendantNotes: 'إظهار ملاحظات المجلدات الفرعية / الفروع', // Tooltip: include descendants for folders and tags
         autoExpandFoldersTags: 'توسيع عند التحديد', // Tooltip for button to toggle auto-expanding folders and tags when selected (English: Expand on selection)
         showExcludedItems: 'إظهار المجلدات والوسوم والملاحظات المخفية', // Tooltip for button to show hidden items (English: Show hidden items)
         hideExcludedItems: 'إخفاء المجلدات والوسوم والملاحظات المخفية', // Tooltip for button to hide hidden items (English: Hide hidden items)

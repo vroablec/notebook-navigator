@@ -106,7 +106,7 @@ export const STRINGS_FA = {
         hideFolders: 'مخفی کردن ناوبری',
         reorderRootFolders: 'مرتب‌سازی مجدد ناوبری',
         finishRootFolderReorder: 'تمام',
-        toggleDescendantNotes: 'نمایش یادداشت‌ها از زیرپوشه‌ها / زیرمجموعه‌ها (همگام‌سازی نمی‌شود)',
+        toggleDescendantNotes: 'نمایش یادداشت‌ها از زیرپوشه‌ها / زیرمجموعه‌ها',
         autoExpandFoldersTags: 'باز کردن هنگام انتخاب',
         showExcludedItems: 'نمایش پوشه‌ها، برچسب‌ها و یادداشت‌های پنهان',
         hideExcludedItems: 'مخفی کردن پوشه‌ها، برچسب‌ها و یادداشت‌های پنهان',

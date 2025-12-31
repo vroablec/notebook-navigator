@@ -106,7 +106,7 @@ export const STRINGS_TR = {
         hideFolders: 'Gezinmeyi gizle', // Tooltip for button to hide the navigation pane (English: Hide navigation)
         reorderRootFolders: 'Gezinmeyi yeniden sırala',
         finishRootFolderReorder: 'Tamamlandı',
-        toggleDescendantNotes: 'Alt klasörlerden / alt öğelerden notları göster (senkronize edilmez)', // Tooltip: include descendants for folders and tags
+        toggleDescendantNotes: 'Alt klasörlerden / alt öğelerden notları göster', // Tooltip: include descendants for folders and tags
         autoExpandFoldersTags: 'Seçimde genişlet', // Tooltip for button to toggle auto-expanding folders and tags when selected (English: Expand on selection)
         showExcludedItems: 'Gizli klasörleri, etiketleri ve notları göster', // Tooltip for button to show hidden items (English: Show hidden items)
         hideExcludedItems: 'Gizli klasörleri, etiketleri ve notları gizle', // Tooltip for button to hide hidden items (English: Hide hidden items)

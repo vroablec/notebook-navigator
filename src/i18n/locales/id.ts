@@ -106,7 +106,7 @@ export const STRINGS_ID = {
         hideFolders: 'Sembunyikan navigasi',
         reorderRootFolders: 'Atur ulang navigasi',
         finishRootFolderReorder: 'Selesai',
-        toggleDescendantNotes: 'Tampilkan catatan dari subfolder / turunan (tidak disinkronkan)',
+        toggleDescendantNotes: 'Tampilkan catatan dari subfolder / turunan',
         autoExpandFoldersTags: 'Luaskan saat dipilih',
         showExcludedItems: 'Tampilkan folder, tag, dan catatan tersembunyi',
         hideExcludedItems: 'Sembunyikan folder, tag, dan catatan tersembunyi',

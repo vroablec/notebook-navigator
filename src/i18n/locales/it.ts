@@ -106,7 +106,7 @@ export const STRINGS_IT = {
         hideFolders: 'Nascondi navigazione', // Tooltip for button to hide the navigation pane (English: Hide navigation)
         reorderRootFolders: 'Riordina navigazione',
         finishRootFolderReorder: 'Fatto',
-        toggleDescendantNotes: 'Mostra note da sottocartelle / discendenti (non sincronizzato)', // Tooltip: include descendants for folders and tags
+        toggleDescendantNotes: 'Mostra note da sottocartelle / discendenti', // Tooltip: include descendants for folders and tags
         autoExpandFoldersTags: 'Espandi alla selezione', // Tooltip for button to toggle auto-expanding folders and tags when selected (English: Expand on selection)
         showExcludedItems: 'Mostra cartelle, tag e note nascosti', // Tooltip for button to show hidden items (English: Show hidden items)
         hideExcludedItems: 'Nascondi cartelle, tag e note nascosti', // Tooltip for button to hide hidden items (English: Hide hidden items)

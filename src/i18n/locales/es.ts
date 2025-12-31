@@ -105,7 +105,7 @@ export const STRINGS_ES = {
         hideFolders: 'Ocultar navegación', // Tooltip for button to hide the navigation pane (English: Hide navigation)
         reorderRootFolders: 'Reordenar navegación',
         finishRootFolderReorder: 'Listo',
-        toggleDescendantNotes: 'Mostrar notas de subcarpetas / descendientes (no sincronizado)', // Tooltip for button to toggle showing notes from descendants (English: Show notes from subfolders / descendants (not synced))
+        toggleDescendantNotes: 'Mostrar notas de subcarpetas / descendientes', // Tooltip for button to toggle showing notes from descendants (English: Show notes from subfolders / descendants)
         autoExpandFoldersTags: 'Expandir carpetas y etiquetas automáticamente', // Tooltip for button to toggle auto-expanding folders and tags when selected (English: Auto-expand folders and tags)
         showExcludedItems: 'Mostrar carpetas, etiquetas y notas ocultas', // Tooltip for button to show hidden items (English: Show hidden items)
         hideExcludedItems: 'Ocultar carpetas, etiquetas y notas ocultas', // Tooltip for button to hide hidden items (English: Hide hidden items)

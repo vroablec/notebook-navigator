@@ -1969,7 +1969,11 @@ export const NavigationPane = React.memo(
                         const shortcutBackground = isMissing ? undefined : getSolidBackground(item.backgroundColor);
 
                         const shortcutProps = {
-                            icon: isMissing ? 'lucide-alert-triangle' : (item.icon ?? 'lucide-folder'),
+                            icon: isMissing
+                                ? 'lucide-alert-triangle'
+                                : item.isExcluded && !showHiddenItems
+                                  ? 'lucide-eye-off'
+                                  : (item.icon ?? 'lucide-folder'),
                             color: isMissing ? undefined : item.color,
                             backgroundColor: shortcutBackground,
                             label: folderName,
@@ -2042,7 +2046,11 @@ export const NavigationPane = React.memo(
                                 : { type: 'missing', key: item.key, kind: 'note' };
 
                         const shortcutProps = {
-                            icon: isMissing ? 'lucide-alert-triangle' : (item.icon ?? 'lucide-file-text'),
+                            icon: isMissing
+                                ? 'lucide-alert-triangle'
+                                : item.isExcluded && !showHiddenItems
+                                  ? 'lucide-eye-off'
+                                  : (item.icon ?? 'lucide-file-text'),
                             color: isMissing ? undefined : item.color,
                             label,
                             description: undefined,
@@ -2050,6 +2058,7 @@ export const NavigationPane = React.memo(
                             type: 'note' as const,
                             badge: shortcutNumberBadgesByKey.get(item.key),
                             forceShowCount: shouldShowShortcutCounts,
+                            isExcluded: !isMissing ? item.isExcluded : undefined,
                             isDisabled: isMissing,
                             isMissing,
                             onClick: () => {
@@ -2135,7 +2144,11 @@ export const NavigationPane = React.memo(
                         const shortcutBackground = isMissing ? undefined : getSolidBackground(item.backgroundColor);
 
                         const shortcutProps = {
-                            icon: isMissing ? 'lucide-alert-triangle' : (item.icon ?? 'lucide-tags'),
+                            icon: isMissing
+                                ? 'lucide-alert-triangle'
+                                : item.isExcluded && !showHiddenItems
+                                  ? 'lucide-eye-off'
+                                  : (item.icon ?? 'lucide-tags'),
                             color: isMissing ? undefined : item.color,
                             backgroundColor: shortcutBackground,
                             label: item.displayName,
@@ -2145,6 +2158,7 @@ export const NavigationPane = React.memo(
                             countInfo: !isMissing && shouldShowShortcutCounts ? tagCountInfo : undefined,
                             badge: shortcutNumberBadgesByKey.get(item.key),
                             forceShowCount: shouldShowShortcutCounts,
+                            isExcluded: !isMissing ? item.isExcluded : undefined,
                             isDisabled: isMissing,
                             isMissing,
                             onClick: () => {
@@ -2447,6 +2461,7 @@ export const NavigationPane = React.memo(
                 shouldShowShortcutCounts,
                 shortcutsExpanded,
                 shouldPinShortcuts,
+                showHiddenItems,
                 recentNotesExpanded,
                 getFileDisplayName,
                 shortcutDragHandleConfig,

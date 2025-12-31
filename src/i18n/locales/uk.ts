@@ -106,7 +106,7 @@ export const STRINGS_UK = {
         hideFolders: 'Сховати навігацію', // Tooltip for button to hide the navigation pane (English: Hide navigation)
         reorderRootFolders: 'Змінити порядок навігації',
         finishRootFolderReorder: 'Готово',
-        toggleDescendantNotes: 'Показати нотатки з підпапок / нащадків (не синхронізується)', // Tooltip: include descendants for folders and tags
+        toggleDescendantNotes: 'Показати нотатки з підпапок / нащадків', // Tooltip: include descendants for folders and tags
         autoExpandFoldersTags: 'Розгортати при виборі', // Tooltip for button to toggle auto-expanding folders and tags when selected (English: Expand on selection)
         showExcludedItems: 'Показати приховані папки, теги та нотатки', // Tooltip for button to show hidden items (English: Show hidden items)
         hideExcludedItems: 'Сховати приховані папки, теги та нотатки', // Tooltip for button to hide hidden items (English: Hide hidden items)

@@ -105,7 +105,7 @@ export const STRINGS_KO = {
         hideFolders: '탐색 숨기기', // Tooltip for button to hide the navigation pane (English: Hide navigation)
         reorderRootFolders: '내비게이션 재정렬',
         finishRootFolderReorder: '완료',
-        toggleDescendantNotes: '하위 폴더 / 하위 항목 노트 표시 (동기화 안 됨)', // Tooltip: include descendants for folders and tags
+        toggleDescendantNotes: '하위 폴더 / 하위 항목 노트 표시', // Tooltip: include descendants for folders and tags
         autoExpandFoldersTags: '폴더 및 태그 자동 펼치기', // Tooltip for button to toggle auto-expanding folders and tags when selected (English: Auto-expand folders and tags)
         showExcludedItems: '숨긴 폴더, 태그, 노트 표시', // Tooltip for button to show hidden items (English: Show hidden items)
         hideExcludedItems: '숨긴 폴더, 태그, 노트 숨기기', // Tooltip for button to hide hidden items (English: Hide hidden items)

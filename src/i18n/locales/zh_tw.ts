@@ -106,7 +106,7 @@ export const STRINGS_ZH_TW = {
         hideFolders: '隱藏導覽', // 隱藏導覽窗格按鈕的工具提示 (英文: Hide navigation)
         reorderRootFolders: '重新排列導覽',
         finishRootFolderReorder: '完成',
-        toggleDescendantNotes: '顯示子資料夾/後代中的筆記（不同步）', // 工具提示：包含資料夾和標籤的後代
+        toggleDescendantNotes: '顯示子資料夾/後代中的筆記', // 工具提示：包含資料夾和標籤的後代
         autoExpandFoldersTags: '自動展開資料夾和標籤', // 選取時自動展開資料夾和標籤的切換按鈕工具提示 (英文: Auto-expand folders and tags)
         showExcludedItems: '顯示隱藏的資料夾、標籤和筆記', // 顯示隱藏項目的按鈕工具提示 (英文: Show hidden items)
         hideExcludedItems: '隱藏隱藏的資料夾、標籤和筆記', // 隱藏隱藏項目的按鈕工具提示 (英文: Hide hidden items)

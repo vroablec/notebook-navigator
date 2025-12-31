@@ -142,7 +142,7 @@ export function NavigationListRow({
             classList.push('nn-shortcut-disabled');
         }
         if (isExcluded) {
-            classList.push('nn-shortcut-excluded');
+            classList.push('nn-excluded');
         }
         if (dragHandleConfig?.visible) {
             classList.push('nn-drag-item-has-handle');

@@ -106,7 +106,7 @@ export const STRINGS_PT_BR = {
         hideFolders: 'Ocultar navegação',
         reorderRootFolders: 'Reordenar navegação',
         finishRootFolderReorder: 'Concluído',
-        toggleDescendantNotes: 'Mostrar notas de subpastas / descendentes (não sincronizado)',
+        toggleDescendantNotes: 'Mostrar notas de subpastas / descendentes',
         autoExpandFoldersTags: 'Expandir automaticamente pastas e tags',
         showExcludedItems: 'Mostrar pastas, tags e notas ocultas',
         hideExcludedItems: 'Ocultar pastas, tags e notas ocultas',

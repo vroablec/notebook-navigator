@@ -105,7 +105,7 @@ export const STRINGS_ZH_CN = {
         hideFolders: '隐藏导航', // Tooltip for button to hide the navigation pane (English: Hide navigation)
         reorderRootFolders: '重新排列导航',
         finishRootFolderReorder: '完成',
-        toggleDescendantNotes: '显示子文件夹/后代的笔记（不同步）', // Tooltip for button to toggle showing notes from descendants (English: Show notes from subfolders / descendants (not synced))
+        toggleDescendantNotes: '显示子文件夹/后代的笔记', // Tooltip for button to toggle showing notes from descendants (English: Show notes from subfolders / descendants)
         autoExpandFoldersTags: '自动展开文件夹和标签', // Tooltip for button to toggle auto-expanding folders and tags when selected (English: Auto-expand folders and tags)
         showExcludedItems: '显示隐藏的文件夹、标签和笔记', // Tooltip for button to show hidden items (English: Show hidden items)
         hideExcludedItems: '隐藏隐藏的文件夹、标签和笔记', // Tooltip for button to hide hidden items (English: Hide hidden items)

@@ -105,7 +105,7 @@ export const STRINGS_JA = {
         hideFolders: 'ナビゲーションを非表示', // Tooltip for button to hide the navigation pane (English: Hide navigation)
         reorderRootFolders: 'ナビゲーションを並び替え',
         finishRootFolderReorder: '完了',
-        toggleDescendantNotes: 'サブフォルダ / 子孫のノートを表示（同期されません）', // Tooltip for button to toggle showing notes from descendants (English: Show notes from subfolders / descendants (not synced))
+        toggleDescendantNotes: 'サブフォルダ / 子孫のノートを表示', // Tooltip for button to toggle showing notes from descendants (English: Show notes from subfolders / descendants)
         autoExpandFoldersTags: 'フォルダとタグを自動展開', // Tooltip for button to toggle auto-expanding folders and tags when selected (English: Auto-expand folders and tags)
         showExcludedItems: '非表示のフォルダ・タグ・ノートを表示', // Tooltip for button to show hidden items (English: Show hidden items)
         hideExcludedItems: '非表示のフォルダ・タグ・ノートを非表示', // Tooltip for button to hide hidden items (English: Hide hidden items)

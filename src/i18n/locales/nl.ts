@@ -106,7 +106,7 @@ export const STRINGS_NL = {
         hideFolders: 'Navigatie verbergen',
         reorderRootFolders: 'Navigatie herschikken',
         finishRootFolderReorder: 'Klaar',
-        toggleDescendantNotes: 'Notities uit submappen / afstammelingen tonen (niet gesynchroniseerd)',
+        toggleDescendantNotes: 'Notities uit submappen / afstammelingen tonen',
         autoExpandFoldersTags: 'Mappen en tags automatisch uitklappen',
         showExcludedItems: 'Verborgen mappen, tags en notities tonen',
         hideExcludedItems: 'Verborgen mappen, tags en notities verbergen',

@@ -106,7 +106,7 @@ export const STRINGS_TH = {
         hideFolders: 'ซ่อนการนำทาง',
         reorderRootFolders: 'จัดเรียงการนำทางใหม่',
         finishRootFolderReorder: 'เสร็จสิ้น',
-        toggleDescendantNotes: 'แสดงโน้ตจากโฟลเดอร์ย่อย / ลูกหลาน (ไม่ซิงค์)',
+        toggleDescendantNotes: 'แสดงโน้ตจากโฟลเดอร์ย่อย / ลูกหลาน',
         autoExpandFoldersTags: 'ขยายเมื่อเลือก',
         showExcludedItems: 'แสดงโฟลเดอร์ แท็ก และโน้ตที่ซ่อน',
         hideExcludedItems: 'ซ่อนโฟลเดอร์ แท็ก และโน้ตที่ซ่อน',

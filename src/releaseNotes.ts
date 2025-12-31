@@ -74,12 +74,13 @@ export interface ReleaseNote {
 const RELEASE_NOTES: ReleaseNote[] = [
     {
         version: '2.0.3',
-        date: '2026-01-05',
+        date: '2025-12-31',
         showOnUpdate: true,
         new: [],
         improved: [
             'Improved preview text render performance - preview text is now asyncronously filling up a memory cache after startup, so text is instantly available.',
-            'Added HEIC and HEIF image support for feature images (common on Apple devices). We now support PNG, JPEG, GIF, WebP, AVIF, HEIC, HEIF, SVG, and BMP formats for feature images.'
+            'Added HEIC and HEIF image support for feature images (common on Apple devices). We now support PNG, JPEG, GIF, WebP, AVIF, HEIC, HEIF, SVG, and BMP formats for feature images.',
+            'Shortcuts to hidden files, folders and tags are now shown dimmed.'
         ],
         changed: ['Bumped DB_CONTENT_VERSION so feature image thumbnails will be re-built on upgrade.'],
         fixed: [
