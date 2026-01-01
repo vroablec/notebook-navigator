@@ -1230,7 +1230,7 @@ export const FileItem = React.memo(function FileItem({
                 setIcon(addTagIconRef.current, 'lucide-tag');
             }
             if (addShortcutIconRef.current && shouldShowShortcutAction) {
-                setIcon(addShortcutIconRef.current, hasShortcut ? 'lucide-bookmark-x' : 'lucide-bookmark');
+                setIcon(addShortcutIconRef.current, hasShortcut ? 'lucide-star-off' : 'lucide-star');
             }
             if (pinNoteIconRef.current && shouldShowPinNote) {
                 setIcon(pinNoteIconRef.current, isPinned ? 'lucide-pin-off' : 'lucide-pin');

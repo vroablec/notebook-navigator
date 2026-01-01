@@ -241,11 +241,11 @@ export function buildFileMenu(params: FileMenuBuilderParams): void {
 
             menu.addItem((item: MenuItem) => {
                 if (existingShortcutKey) {
-                    setAsyncOnClick(item.setTitle(strings.shortcuts.remove).setIcon('lucide-bookmark-x'), async () => {
+                    setAsyncOnClick(item.setTitle(strings.shortcuts.remove).setIcon('lucide-star-off'), async () => {
                         await removeShortcut(existingShortcutKey);
                     });
                 } else {
-                    setAsyncOnClick(item.setTitle(strings.shortcuts.add).setIcon('lucide-bookmark'), async () => {
+                    setAsyncOnClick(item.setTitle(strings.shortcuts.add).setIcon('lucide-star'), async () => {
                         await addNoteShortcut(file.path);
                     });
                 }
@@ -588,7 +588,7 @@ function addMultipleFilesShortcutOption(
     const label = labelTemplate.replace('{count}', selectedFiles.length.toString());
 
     menu.addItem((item: MenuItem) => {
-        setAsyncOnClick(item.setTitle(label).setIcon('lucide-bookmark'), async () => {
+        setAsyncOnClick(item.setTitle(label).setIcon('lucide-star'), async () => {
             // Re-resolve files from selection state to get current paths
             const currentFiles = Array.from(selectionState.selectedFiles)
                 .map(path => app.vault.getFileByPath(path))

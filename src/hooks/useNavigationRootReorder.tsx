@@ -580,7 +580,7 @@ export function useNavigationRootReorder(options: UseNavigationRootReorderOption
             let color: string | undefined;
 
             if (identifier === NavigationSectionId.SHORTCUTS) {
-                icon = 'lucide-bookmark';
+                icon = 'lucide-star';
                 label = strings.navigationPane.shortcutsHeader;
             } else if (identifier === NavigationSectionId.RECENT) {
                 icon = 'lucide-history';
