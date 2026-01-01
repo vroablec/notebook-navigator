@@ -85,6 +85,7 @@ export const STRINGS_TH = {
         add: 'เพิ่มในทางลัด',
         addNotesCount: 'เพิ่ม {count} โน้ตไปยังทางลัด',
         addFilesCount: 'เพิ่ม {count} ไฟล์ไปยังทางลัด',
+        rename: 'เปลี่ยนชื่อทางลัด',
         remove: 'นำออกจากทางลัด',
         removeAll: 'ลบทางลัดทั้งหมด',
         removeAllConfirm: 'ลบทางลัดทั้งหมด?',

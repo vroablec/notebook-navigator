@@ -84,6 +84,7 @@ export const STRINGS_KO = {
         add: '바로가기에 추가',
         addNotesCount: '바로가기에 노트 {count}개 추가',
         addFilesCount: '바로가기에 파일 {count}개 추가',
+        rename: '바로가기 이름 변경',
         remove: '바로가기에 제거',
         removeAll: '모든 바로가기 제거',
         removeAllConfirm: '모든 바로가기를 제거하시겠습니까?',

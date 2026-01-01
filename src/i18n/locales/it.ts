@@ -85,6 +85,7 @@ export const STRINGS_IT = {
         add: 'Aggiungi alle scorciatoie',
         addNotesCount: 'Aggiungi {count} note alle scorciatoie',
         addFilesCount: 'Aggiungi {count} file alle scorciatoie',
+        rename: 'Rinomina scorciatoia',
         remove: 'Rimuovi dalle scorciatoie',
         removeAll: 'Rimuovi tutte le scorciatoie',
         removeAllConfirm: 'Rimuovere tutte le scorciatoie?',

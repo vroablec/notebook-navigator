@@ -85,6 +85,7 @@ export const STRINGS_FA = {
         add: 'افزودن به میانبرها',
         addNotesCount: 'افزودن {count} یادداشت‌ها به میانبرها',
         addFilesCount: 'افزودن {count} فایل به میانبرها',
+        rename: 'تغییر نام میانبر',
         remove: 'حذف از میانبرها',
         removeAll: 'حذف همه میانبرها',
         removeAllConfirm: 'حذف همه میانبرها؟',

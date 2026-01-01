@@ -84,6 +84,7 @@ export const STRINGS_PL = {
         add: 'Dodaj do skrótów',
         addNotesCount: 'Dodaj {count} notatek do skrótów',
         addFilesCount: 'Dodaj {count} plików do skrótów',
+        rename: 'Zmień nazwę skrótu',
         remove: 'Usuń ze skrótów',
         removeAll: 'Usuń wszystkie skróty',
         removeAllConfirm: 'Usunąć wszystkie skróty?',

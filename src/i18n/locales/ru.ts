@@ -85,6 +85,7 @@ export const STRINGS_RU = {
         add: 'Добавить в ярлыки',
         addNotesCount: 'Добавить {count} заметок в ярлыки',
         addFilesCount: 'Добавить {count} файлов в ярлыки',
+        rename: 'Переименовать ярлык',
         remove: 'Убрать из ярлыков',
         removeAll: 'Удалить все ярлыки',
         removeAllConfirm: 'Удалить все ярлыки?',

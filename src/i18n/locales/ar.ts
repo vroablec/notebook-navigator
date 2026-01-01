@@ -85,6 +85,7 @@ export const STRINGS_AR = {
         add: 'إضافة إلى الاختصارات',
         addNotesCount: 'إضافة {count} ملاحظات إلى الاختصارات',
         addFilesCount: 'إضافة {count} ملفات إلى الاختصارات',
+        rename: 'إعادة تسمية الاختصار',
         remove: 'إزالة من الاختصارات',
         removeAll: 'إزالة جميع الاختصارات',
         removeAllConfirm: 'إزالة جميع الاختصارات؟',

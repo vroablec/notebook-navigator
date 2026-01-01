@@ -27,6 +27,7 @@ import { ItemType } from '../../types';
 import { resetHiddenToggleIfNoSources } from '../../utils/exclusionUtils';
 import { runAsyncAction } from '../async';
 import { setAsyncOnClick } from './menuAsyncHelpers';
+import { addShortcutRenameMenuItem } from './shortcutRenameMenuItem';
 import { getActiveVaultProfile, getHiddenFolderPatternMatch, normalizeHiddenFolderPath } from '../../utils/vaultProfiles';
 import { EXCALIDRAW_PLUGIN_ID, TLDRAW_PLUGIN_ID } from '../../constants/pluginIds';
 import { addStyleMenu } from './styleMenuBuilder';
@@ -299,8 +300,24 @@ export function buildFolderMenu(params: FolderMenuBuilderParams): void {
 
     // Add to shortcuts / Remove from shortcuts
     if (services.shortcuts) {
-        const { folderShortcutKeysByPath, addFolderShortcut, removeShortcut } = services.shortcuts;
+        const { folderShortcutKeysByPath, addFolderShortcut, removeShortcut, renameShortcut, shortcutMap } = services.shortcuts;
         const existingShortcutKey = folderShortcutKeysByPath.get(folder.path);
+
+        if (existingShortcutKey) {
+            const existingShortcut = shortcutMap.get(existingShortcutKey);
+            const defaultLabel = folder.path === '/' ? settings.customVaultName || app.vault.getName() : folder.name;
+
+            addShortcutRenameMenuItem({
+                app,
+                menu,
+                shortcutKey: existingShortcutKey,
+                defaultLabel,
+                existingShortcut,
+                title: strings.shortcuts.rename,
+                placeholder: strings.searchInput.shortcutNamePlaceholder,
+                renameShortcut
+            });
+        }
 
         menu.addItem((item: MenuItem) => {
             if (existingShortcutKey) {

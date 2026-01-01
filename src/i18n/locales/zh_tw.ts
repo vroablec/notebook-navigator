@@ -85,6 +85,7 @@ export const STRINGS_ZH_TW = {
         add: '新增至捷徑',
         addNotesCount: '新增 {count} 個筆記至捷徑',
         addFilesCount: '新增 {count} 個檔案至捷徑',
+        rename: '重新命名捷徑',
         remove: '從捷徑移除',
         removeAll: '移除所有捷徑',
         removeAllConfirm: '移除所有捷徑？',

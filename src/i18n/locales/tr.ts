@@ -85,6 +85,7 @@ export const STRINGS_TR = {
         add: 'Kısayollara ekle',
         addNotesCount: 'Kısayollara {count} not ekle',
         addFilesCount: 'Kısayollara {count} dosya ekle',
+        rename: 'Kısayolu yeniden adlandır',
         remove: 'Kısayollardan kaldır',
         removeAll: 'Tüm kısayolları kaldır',
         removeAllConfirm: 'Tüm kısayolları kaldır?',

@@ -85,6 +85,7 @@ export const STRINGS_UK = {
         add: 'Додати до ярликів',
         addNotesCount: 'Додати {count} нотаток до ярликів',
         addFilesCount: 'Додати {count} файлів до ярликів',
+        rename: 'Перейменувати ярлик',
         remove: 'Вилучити з ярликів',
         removeAll: 'Видалити всі ярлики',
         removeAllConfirm: 'Видалити всі ярлики?',

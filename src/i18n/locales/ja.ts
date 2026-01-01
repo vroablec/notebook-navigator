@@ -84,6 +84,7 @@ export const STRINGS_JA = {
         add: 'ショートカットに追加',
         addNotesCount: 'ショートカットに{count}件のノートを追加',
         addFilesCount: 'ショートカットに{count}件のファイルを追加',
+        rename: 'ショートカット名を変更',
         remove: 'ショートカットから削除',
         removeAll: 'すべてのショートカットを削除',
         removeAllConfirm: 'すべてのショートカットを削除しますか？',

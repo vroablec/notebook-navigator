@@ -85,6 +85,7 @@ export const STRINGS_VI = {
         add: 'Thêm vào lối tắt',
         addNotesCount: 'Thêm {count} ghi chú vào lối tắt',
         addFilesCount: 'Thêm {count} tệp vào lối tắt',
+        rename: 'Đổi tên lối tắt',
         remove: 'Gỡ khỏi lối tắt',
         removeAll: 'Xóa tất cả lối tắt',
         removeAllConfirm: 'Xóa tất cả lối tắt?',

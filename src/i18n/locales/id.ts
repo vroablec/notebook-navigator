@@ -85,6 +85,7 @@ export const STRINGS_ID = {
         add: 'Tambahkan ke pintasan',
         addNotesCount: 'Tambahkan {count} catatan ke pintasan',
         addFilesCount: 'Tambahkan {count} file ke pintasan',
+        rename: 'Ubah nama pintasan',
         remove: 'Hapus dari pintasan',
         removeAll: 'Hapus semua pintasan',
         removeAllConfirm: 'Hapus semua pintasan?',

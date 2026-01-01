@@ -1980,6 +1980,8 @@ export const NavigationPane = React.memo(
                         const folderCountInfo =
                             canInteract && folder && shouldShowShortcutCounts ? getFolderShortcutCount(folder) : ZERO_NOTE_COUNT;
                         const folderNote = canInteract && folder && settings.enableFolderNotes ? getFolderNote(folder, settings) : null;
+                        const folderAlias = isFolderShortcut(item.shortcut) ? item.shortcut.alias : undefined;
+                        const folderLabel = folderAlias && folderAlias.length > 0 ? folderAlias : folderName;
 
                         const dragHandlers = buildShortcutExternalHandlers(item.key);
                         const isDragSource = shouldUseShortcutDnd && activeShortcutId === item.key;
@@ -1998,7 +2000,7 @@ export const NavigationPane = React.memo(
                                   : (item.icon ?? 'lucide-folder'),
                             color: isMissing ? undefined : item.color,
                             backgroundColor: shortcutBackground,
-                            label: folderName,
+                            label: folderLabel,
                             description: undefined,
                             level: item.level,
                             type: 'folder' as const,
@@ -2056,7 +2058,7 @@ export const NavigationPane = React.memo(
                         const dragHandlers = buildShortcutExternalHandlers(item.key);
                         const isDragSource = shouldUseShortcutDnd && activeShortcutId === item.key;
 
-                        const label = (() => {
+                        const defaultLabel = (() => {
                             if (!note || !canInteract) {
                                 return getMissingNoteLabel(notePath);
                             }
@@ -2064,6 +2066,8 @@ export const NavigationPane = React.memo(
                             const extensionSuffix = shouldShowExtensionSuffix(note) ? getExtensionSuffix(note) : '';
                             return extensionSuffix ? `${displayName}${extensionSuffix}` : displayName;
                         })();
+                        const noteAlias = isNoteShortcut(item.shortcut) ? item.shortcut.alias : undefined;
+                        const label = noteAlias && noteAlias.length > 0 ? noteAlias : defaultLabel;
 
                         const contextTarget: ShortcutContextMenuTarget =
                             canInteract && note
@@ -2165,6 +2169,8 @@ export const NavigationPane = React.memo(
                         const isMissing = Boolean(item.isMissing);
                         const tagPath = isTagShortcut(item.shortcut) ? item.shortcut.tagPath : item.tagPath;
                         const tagCountInfo = !isMissing && shouldShowShortcutCounts ? getTagShortcutCount(tagPath) : ZERO_NOTE_COUNT;
+                        const tagAlias = isTagShortcut(item.shortcut) ? item.shortcut.alias : undefined;
+                        const tagLabel = tagAlias && tagAlias.length > 0 ? tagAlias : item.displayName;
 
                         const dragHandlers = buildShortcutExternalHandlers(item.key);
                         const isDragSource = shouldUseShortcutDnd && activeShortcutId === item.key;
@@ -2182,7 +2188,7 @@ export const NavigationPane = React.memo(
                                   : (item.icon ?? 'lucide-tags'),
                             color: isMissing ? undefined : item.color,
                             backgroundColor: shortcutBackground,
-                            label: item.displayName,
+                            label: tagLabel,
                             description: undefined,
                             level: item.level,
                             type: 'tag' as const,

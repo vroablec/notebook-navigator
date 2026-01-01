@@ -21,6 +21,8 @@ import { FileMenuBuilderParams } from './menuTypes';
 import { strings } from '../../i18n';
 import { getInternalPlugin } from '../../utils/typeGuards';
 import { getFilesForFolder, getFilesForTag } from '../../utils/fileFinder';
+import { getFileDisplayName } from '../../utils/fileNameUtils';
+import { getExtensionSuffix, shouldShowExtensionSuffix } from '../../utils/fileTypeUtils';
 import { ItemType, NavigatorContext } from '../../types';
 import { ShortcutType } from '../../types/shortcuts';
 import { MetadataService } from '../../services/MetadataService';
@@ -30,6 +32,7 @@ import type { ShortcutsContextValue } from '../../context/ShortcutsContext';
 import { NotebookNavigatorSettings } from '../../settings';
 import { CommandQueueService } from '../../services/CommandQueueService';
 import { setAsyncOnClick } from './menuAsyncHelpers';
+import { addShortcutRenameMenuItem } from './shortcutRenameMenuItem';
 import { openFileInContext } from '../openFileInContext';
 import { showNotice } from '../noticeUtils';
 import { confirmRemoveAllTagsFromFiles, openAddTagToFilesModal, removeTagFromFilesWithPrompt } from '../tagModalHelpers';
@@ -236,8 +239,26 @@ export function buildFileMenu(params: FileMenuBuilderParams): void {
     // Add to shortcuts / Remove from shortcuts and Pin/Unpin - single selection only
     if (!shouldShowMultiOptions) {
         if (services.shortcuts) {
-            const { noteShortcutKeysByPath, addNoteShortcut, removeShortcut } = services.shortcuts;
+            const { noteShortcutKeysByPath, addNoteShortcut, removeShortcut, renameShortcut, shortcutMap } = services.shortcuts;
             const existingShortcutKey = noteShortcutKeysByPath.get(file.path);
+
+            if (existingShortcutKey) {
+                const existingShortcut = shortcutMap.get(existingShortcutKey);
+                const defaultLabel = shouldShowExtensionSuffix(file)
+                    ? `${getFileDisplayName(file)}${getExtensionSuffix(file)}`
+                    : getFileDisplayName(file);
+
+                addShortcutRenameMenuItem({
+                    app,
+                    menu,
+                    shortcutKey: existingShortcutKey,
+                    defaultLabel,
+                    existingShortcut,
+                    title: strings.shortcuts.rename,
+                    placeholder: strings.searchInput.shortcutNamePlaceholder,
+                    renameShortcut
+                });
+            }
 
             menu.addItem((item: MenuItem) => {
                 if (existingShortcutKey) {

@@ -85,6 +85,7 @@ export const STRINGS_NL = {
         add: 'Toevoegen aan snelkoppelingen',
         addNotesCount: 'Voeg {count} notities toe aan snelkoppelingen',
         addFilesCount: 'Voeg {count} bestanden toe aan snelkoppelingen',
+        rename: 'Snelkoppeling hernoemen',
         remove: 'Verwijderen uit snelkoppelingen',
         removeAll: 'Alle snelkoppelingen verwijderen',
         removeAllConfirm: 'Alle snelkoppelingen verwijderen?',

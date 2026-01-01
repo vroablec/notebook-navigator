@@ -84,6 +84,7 @@ export const STRINGS_ZH_CN = {
         add: '添加到快捷方式',
         addNotesCount: '添加 {count} 个笔记到快捷方式',
         addFilesCount: '添加 {count} 个文件到快捷方式',
+        rename: '重命名快捷方式',
         remove: '从快捷方式移除',
         removeAll: '移除所有快捷方式',
         removeAllConfirm: '移除所有快捷方式？',

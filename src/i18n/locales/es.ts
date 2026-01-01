@@ -84,6 +84,7 @@ export const STRINGS_ES = {
         add: 'Agregar a accesos directos',
         addNotesCount: 'Agregar {count} notas a accesos directos',
         addFilesCount: 'Agregar {count} archivos a accesos directos',
+        rename: 'Renombrar acceso directo',
         remove: 'Quitar de accesos directos',
         removeAll: 'Eliminar todos los accesos directos',
         removeAllConfirm: '¿Eliminar todos los accesos directos?',

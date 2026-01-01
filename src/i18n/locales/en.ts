@@ -85,6 +85,7 @@ export const STRINGS_EN = {
         add: 'Add to shortcuts',
         addNotesCount: 'Add {count} notes to shortcuts',
         addFilesCount: 'Add {count} files to shortcuts',
+        rename: 'Rename shortcut',
         remove: 'Remove from shortcuts',
         removeAll: 'Remove all shortcuts',
         removeAllConfirm: 'Remove all shortcuts?',

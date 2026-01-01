@@ -85,6 +85,7 @@ export const STRINGS_PT = {
         add: 'Adicionar aos atalhos',
         addNotesCount: 'Adicionar {count} notas aos atalhos',
         addFilesCount: 'Adicionar {count} ficheiros aos atalhos',
+        rename: 'Renomear atalho',
         remove: 'Remover dos atalhos',
         removeAll: 'Remover todos os atalhos',
         removeAllConfirm: 'Remover todos os atalhos?',

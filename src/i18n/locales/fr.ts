@@ -84,6 +84,7 @@ export const STRINGS_FR = {
         add: 'Ajouter aux raccourcis',
         addNotesCount: 'Ajouter {count} notes aux raccourcis',
         addFilesCount: 'Ajouter {count} fichiers aux raccourcis',
+        rename: 'Renommer le raccourci',
         remove: 'Retirer des raccourcis',
         removeAll: 'Supprimer tous les raccourcis',
         removeAllConfirm: 'Supprimer tous les raccourcis ?',

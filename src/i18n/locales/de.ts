@@ -84,6 +84,7 @@ export const STRINGS_DE = {
         add: 'Zu Lesezeichen hinzufügen',
         addNotesCount: '{count} Notizen zu Lesezeichen hinzufügen',
         addFilesCount: '{count} Dateien zu Lesezeichen hinzufügen',
+        rename: 'Lesezeichen umbenennen',
         remove: 'Aus Lesezeichen entfernen',
         removeAll: 'Alle Lesezeichen entfernen',
         removeAllConfirm: 'Alle Lesezeichen entfernen?',
