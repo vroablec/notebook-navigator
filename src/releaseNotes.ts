@@ -73,6 +73,20 @@ export interface ReleaseNote {
  */
 const RELEASE_NOTES: ReleaseNote[] = [
     {
+        version: '2.0.4',
+        date: '2026-01-05',
+        showOnUpdate: true,
+        new: [
+            'The user interface now has slight transparency for all overlay elements. This can be modified or disabled in Style Settings.',
+            'Two new theme variables: --nn-theme-nav-overlay-opacity and --nn-theme-nav-overlay-filter to control the new overlay opacity.'],
+        improved: [
+        ],
+        changed: [],
+        fixed: [
+            'Fixed pinned shortcuts sometimes appearing blank on mobile after switching from editor to side pane.'
+        ]
+    },
+    {
         version: '2.0.3',
         date: '2025-12-31',
         showOnUpdate: true,
