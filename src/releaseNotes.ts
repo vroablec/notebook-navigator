@@ -81,7 +81,7 @@ const RELEASE_NOTES: ReleaseNote[] = [
             'Two new theme variables: --nn-theme-nav-overlay-opacity and --nn-theme-nav-overlay-filter to control the new overlay opacity.'
         ],
         improved: [],
-        changed: [],
+        changed: ['Changed the default navigation pane width from 300px to 200px so it is smaller than the default width for left panel. This should help with people not finding the list pane when enabling dual pane mode.'],
         fixed: ['Fixed pinned shortcuts sometimes appearing blank on mobile after switching from editor to side pane.']
     },
     {
