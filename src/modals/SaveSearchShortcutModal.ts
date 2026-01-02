@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { App, Modal, Setting } from 'obsidian';
+import { App, Modal } from 'obsidian';
 import { strings } from '../i18n';
 import { runAsyncAction } from '../utils/async';
 import { showNotice } from '../utils/noticeUtils';
@@ -36,6 +36,7 @@ interface SaveSearchShortcutModalOptions {
 export class SaveSearchShortcutModal extends Modal {
     private name: string;
     private readonly onSubmitHandler: SaveSearchShortcutModalOptions['onSubmit'];
+    private inputEl!: HTMLInputElement;
 
     constructor(app: App, { initialName, onSubmit }: SaveSearchShortcutModalOptions) {
         super(app);
@@ -43,47 +44,53 @@ export class SaveSearchShortcutModal extends Modal {
         this.onSubmitHandler = onSubmit;
     }
 
-    onOpen() {
-        const { contentEl } = this;
-        contentEl.empty();
-        contentEl.addClass('nn-modal');
+    onOpen(): void {
+        this.modalEl.addClass('nn-save-search-shortcut-modal');
+        this.titleEl.setText(strings.searchInput.shortcutModalTitle);
 
-        contentEl.createEl('h2', { text: strings.searchInput.shortcutModalTitle });
+        const inputContainer = this.contentEl.createDiv('nn-save-search-shortcut-input-container');
+        const label = inputContainer.createEl('label', { text: strings.searchInput.shortcutNameLabel });
+        label.htmlFor = 'nn-save-search-shortcut-input';
 
-        // Input field for shortcut name
-        new Setting(contentEl).setName(strings.searchInput.shortcutNameLabel).addText(text => {
-            text.setPlaceholder(strings.searchInput.shortcutNamePlaceholder)
-                .setValue(this.name)
-                .onChange(value => {
-                    this.name = value;
-                });
-            // Submit on Enter key
-            text.inputEl.addEventListener('keydown', event => {
-                if (event.key === 'Enter') {
-                    event.preventDefault();
-                    runAsyncAction(() => this.handleSubmit());
-                }
-            });
-            // Auto-focus and select text for easy editing
-            text.inputEl.focus();
-            text.inputEl.setSelectionRange(0, this.name.length);
+        this.inputEl = inputContainer.createEl('input', {
+            type: 'text',
+            attr: { id: 'nn-save-search-shortcut-input' },
+            placeholder: strings.searchInput.shortcutNamePlaceholder,
+            value: this.name
+        });
+        this.inputEl.addClass('nn-input');
+        this.inputEl.addEventListener('input', () => {
+            this.name = this.inputEl.value;
         });
 
-        // Action buttons
-        const actions = new Setting(contentEl);
-        actions.addButton(button =>
-            button.setButtonText(strings.common.cancel).onClick(() => {
-                this.close();
-            })
-        );
-        actions.addButton(button =>
-            button
-                .setCta()
-                .setButtonText(strings.common.submit)
-                .onClick(() => {
-                    runAsyncAction(() => this.handleSubmit());
-                })
-        );
+        const buttonContainer = this.contentEl.createDiv('nn-button-container');
+        const cancelBtn = buttonContainer.createEl('button', { text: strings.common.cancel });
+        cancelBtn.addEventListener('click', () => this.close());
+
+        const submitBtn = buttonContainer.createEl('button', {
+            text: strings.common.submit,
+            cls: 'mod-cta'
+        });
+        submitBtn.addEventListener('click', () => {
+            runAsyncAction(() => this.handleSubmit());
+        });
+
+        this.scope.register([], 'Enter', event => {
+            if (document.activeElement !== this.inputEl) {
+                return;
+            }
+
+            event.preventDefault();
+            runAsyncAction(() => this.handleSubmit());
+        });
+
+        this.inputEl.focus();
+        this.inputEl.select();
+    }
+
+    onClose(): void {
+        this.modalEl.removeClass('nn-save-search-shortcut-modal');
+        this.contentEl.empty();
     }
 
     /**

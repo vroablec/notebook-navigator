@@ -76,6 +76,8 @@ Keep this list ordered: later files override earlier ones.
 /* Modals */
 /* modal-base.css: shared modal inputs and button rows, plus folder note type modal layout. */
 @import './sections/modal-base.css';
+/* modal-save-search-shortcut.css: save search shortcut modal sizing and layout. */
+@import './sections/modal-save-search-shortcut.css';
 /* modal-select-vault-profile.css: vault profile chooser modal layout and focus styles. */
 @import './sections/modal-select-vault-profile.css';
 /* modal-action-button.css: shared 32x32 action button styling used in modal rows. */

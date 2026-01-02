@@ -1,0 +1,25 @@
+/* Source: src/styles/sections/modal-save-search-shortcut.css */
+
+/* ========================================================================
+   Save Search Shortcut Modal
+   ======================================================================== */
+
+.modal.nn-save-search-shortcut-modal {
+    width: 360px;
+    max-width: calc(100vw - 40px);
+}
+
+.modal.nn-save-search-shortcut-modal .modal-content {
+    display: flex;
+    flex-direction: column;
+    gap: var(--size-2-2);
+    padding: var(--size-4-4);
+    box-sizing: border-box;
+}
+
+.nn-save-search-shortcut-input-container {
+    display: flex;
+    flex-direction: column;
+    gap: var(--size-2-2);
+    width: 100%;
+}
