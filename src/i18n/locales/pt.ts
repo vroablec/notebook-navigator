@@ -124,7 +124,6 @@ export const STRINGS_PT = {
         saveSearchShortcut: 'Guardar atalho de pesquisa',
         removeSearchShortcut: 'Remover atalho de pesquisa',
         shortcutModalTitle: 'Guardar atalho de pesquisa',
-        shortcutNameLabel: 'Nome do atalho',
         shortcutNamePlaceholder: 'Introduza o nome do atalho'
     },
 
@@ -1226,7 +1225,8 @@ export const STRINGS_PT = {
                 buttonText: 'Reconstruir cache',
                 success: 'Cache reconstruída',
                 error: 'Falha ao reconstruir cache',
-                progress: 'Notebook Navigator cache:'
+                indexingTitle: 'A indexar o cofre...',
+                progress: 'A atualizar a cache do Notebook Navigator.'
             },
             hotkeys: {
                 intro: 'Edite <plugin folder>/notebook-navigator/data.json para personalizar os atalhos de teclado do Notebook Navigator. Abra o ficheiro e localize a secção "keyboardShortcuts". Cada entrada usa esta estrutura:',

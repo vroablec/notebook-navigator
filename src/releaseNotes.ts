@@ -86,6 +86,7 @@ const RELEASE_NOTES: ReleaseNote[] = [
             'Shortcuts and recent notes with truncated titles now show full title on hover with a tooltip.'
         ],
         changed: [
+            '==Minimum required Obsidian version is now 1.8.7== due to the updated notice system.',
             'Changed the default navigation pane width from 300px to 200px so it is smaller than the default width for left panel. This should help with people not finding the list pane when enabling dual pane mode.',
             'Changed the Shortcuts icon to Star to keep it visually distinct from Obsidian Bookmarks.'
         ],

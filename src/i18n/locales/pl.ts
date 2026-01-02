@@ -123,7 +123,6 @@ export const STRINGS_PL = {
         saveSearchShortcut: 'Zapisz wyszukiwanie w skrótach',
         removeSearchShortcut: 'Usuń wyszukiwanie ze skrótów',
         shortcutModalTitle: 'Zapisz wyszukiwanie',
-        shortcutNameLabel: 'Nazwa skrótu',
         shortcutNamePlaceholder: 'Wprowadź nazwę skrótu'
     },
 
@@ -1228,7 +1227,8 @@ export const STRINGS_PL = {
                 buttonText: 'Odbuduj pamięć podręczną',
                 success: 'Pamięć podręczna została odbudowana',
                 error: 'Nie udało się odbudować pamięci podręcznej',
-                progress: 'Notebook Navigator cache:'
+                indexingTitle: 'Indeksowanie magazynu...',
+                progress: 'Aktualizowanie pamięci podręcznej Notebook Navigator.'
             },
             hotkeys: {
                 intro: 'Edytuj <plugin folder>/notebook-navigator/data.json, aby dostosować skróty Notebook Navigator. Otwórz plik i znajdź sekcję "keyboardShortcuts". Każdy wpis ma następującą strukturę:',

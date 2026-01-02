@@ -123,7 +123,6 @@ export const STRINGS_DE = {
         saveSearchShortcut: 'Such-Lesezeichen speichern',
         removeSearchShortcut: 'Such-Lesezeichen entfernen',
         shortcutModalTitle: 'Such-Lesezeichen speichern',
-        shortcutNameLabel: 'Lesezeichen-Name',
         shortcutNamePlaceholder: 'Lesezeichen-Namen eingeben'
     },
 
@@ -1228,7 +1227,8 @@ export const STRINGS_DE = {
                 buttonText: 'Cache neu aufbauen',
                 success: 'Cache wurde neu aufgebaut',
                 error: 'Cache-Neuaufbau fehlgeschlagen',
-                progress: 'Notebook Navigator Cache:'
+                indexingTitle: 'Tresor wird indexiert...',
+                progress: 'Notebook Navigator-Cache wird aktualisiert.'
             },
             hotkeys: {
                 intro: 'Bearbeite <plugin folder>/notebook-navigator/data.json, um Notebook Navigator-Tastenkürzel anzupassen. Öffne die Datei in einem Texteditor und suche den Abschnitt "keyboardShortcuts". Jede Zuordnung nutzt diese Struktur:',

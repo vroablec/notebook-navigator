@@ -30,6 +30,8 @@ Keep this list ordered: later files override earlier ones.
 @import './sections/layout-base.css';
 /* ui-update-notice.css: update banner and update indicator (`.nn-update-banner`, `.nn-update-indicator`) with mobile breakpoints. */
 @import './sections/ui-update-notice.css';
+/* ui-notices.css: custom Obsidian notices (cache rebuild progress notice). */
+@import './sections/ui-notices.css';
 /* layout-panes.css: pane sizing and orientation (`.nn-navigation-pane`, `.nn-list-pane`), background modes, resize handle. */
 @import './sections/layout-panes.css';
 /* ui-headers.css: pane headers, breadcrumb/profile header, search bar container + input, tag suggestion popover. */
@@ -76,8 +78,6 @@ Keep this list ordered: later files override earlier ones.
 /* Modals */
 /* modal-base.css: shared modal inputs and button rows, plus folder note type modal layout. */
 @import './sections/modal-base.css';
-/* modal-save-search-shortcut.css: save search shortcut modal sizing and layout. */
-@import './sections/modal-save-search-shortcut.css';
 /* modal-select-vault-profile.css: vault profile chooser modal layout and focus styles. */
 @import './sections/modal-select-vault-profile.css';
 /* modal-action-button.css: shared 32x32 action button styling used in modal rows. */

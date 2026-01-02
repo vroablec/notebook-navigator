@@ -124,7 +124,6 @@ export const STRINGS_FA = {
         saveSearchShortcut: 'ذخیره میانبر جستجو',
         removeSearchShortcut: 'حذف میانبر جستجو',
         shortcutModalTitle: 'ذخیره میانبر جستجو',
-        shortcutNameLabel: 'نام میانبر',
         shortcutNamePlaceholder: 'نام میانبر را وارد کنید'
     },
 
@@ -1224,7 +1223,8 @@ export const STRINGS_FA = {
                 buttonText: 'بازسازی کش',
                 success: 'کش بازسازی شد',
                 error: 'بازسازی کش ناموفق بود',
-                progress: 'Notebook Navigator کش:'
+                indexingTitle: 'در حال نمایه\u200cسازی خزانه...',
+                progress: 'Notebook Navigator در حال به\u200cروزرسانی کش است.'
             },
             hotkeys: {
                 intro: 'فایل <پوشه افزونه>/notebook-navigator/data.json را برای سفارشی‌سازی کلیدهای میانبر Notebook Navigator ویرایش کنید. فایل را باز کنید و بخش "keyboardShortcuts" را پیدا کنید. هر ورودی از این ساختار استفاده می‌کند:',

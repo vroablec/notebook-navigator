@@ -125,7 +125,6 @@ export const STRINGS_NL = {
         saveSearchShortcut: 'Zoeksnelkoppeling opslaan',
         removeSearchShortcut: 'Zoeksnelkoppeling verwijderen',
         shortcutModalTitle: 'Zoeksnelkoppeling opslaan',
-        shortcutNameLabel: 'Naam snelkoppeling',
         shortcutNamePlaceholder: 'Voer naam snelkoppeling in'
     },
 
@@ -1228,7 +1227,8 @@ export const STRINGS_NL = {
                 buttonText: 'Cache opnieuw opbouwen',
                 success: 'Cache opnieuw opgebouwd',
                 error: 'Kan cache niet opnieuw opbouwen',
-                progress: 'Notebook Navigator cache:'
+                indexingTitle: 'Kluis wordt geïndexeerd...',
+                progress: 'Notebook Navigator-cache wordt bijgewerkt.'
             },
             hotkeys: {
                 intro: 'Bewerk <plugin folder>/notebook-navigator/data.json om Notebook Navigator sneltoetsen aan te passen. Open het bestand en zoek de sectie "keyboardShortcuts". Elke invoer gebruikt deze structuur:',

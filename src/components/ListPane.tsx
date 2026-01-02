@@ -67,7 +67,7 @@ import { ListPaneHeader } from './ListPaneHeader';
 import { ListToolbar } from './ListToolbar';
 import { SearchInput } from './SearchInput';
 import { ListPaneTitleArea } from './ListPaneTitleArea';
-import { SaveSearchShortcutModal } from '../modals/SaveSearchShortcutModal';
+import { InputModal } from '../modals/InputModal';
 import { useShortcuts } from '../context/ShortcutsContext';
 import type { SearchShortcut } from '../types/shortcuts';
 import { EMPTY_SEARCH_TAG_FILTER_STATE, type SearchProvider, type SearchTagFilterState } from '../types/search';
@@ -82,6 +82,7 @@ import { openFileInContext } from '../utils/openFileInContext';
 import { getListPaneMeasurements } from '../utils/listPaneMeasurements';
 import { ServiceIcon } from './ServiceIcon';
 import { resolveUXIcon } from '../utils/uxIcons';
+import { showNotice } from '../utils/noticeUtils';
 
 /**
  * Renders the list pane displaying files from the selected folder.
@@ -480,19 +481,32 @@ export const ListPane = React.memo(
                 return;
             }
 
-            const modal = new SaveSearchShortcutModal(app, {
-                initialName: normalizedQuery,
-                onSubmit: async name => {
+            let modal: InputModal | null = null;
+
+            modal = new InputModal(
+                app,
+                strings.searchInput.shortcutModalTitle,
+                strings.searchInput.shortcutNamePlaceholder,
+                async rawName => {
+                    const trimmedName = rawName.trim();
+                    if (trimmedName.length === 0) {
+                        showNotice(strings.shortcuts.emptySearchName, { variant: 'warning' });
+                        return;
+                    }
+
                     setIsSavingSearchShortcut(true);
-                    let success = false;
                     try {
-                        success = await addSearchShortcut({ name, query: normalizedQuery, provider: searchProvider });
-                        return success;
+                        const success = await addSearchShortcut({ name: trimmedName, query: normalizedQuery, provider: searchProvider });
+                        if (success) {
+                            modal?.close();
+                        }
                     } finally {
                         setIsSavingSearchShortcut(false);
                     }
-                }
-            });
+                },
+                normalizedQuery,
+                { closeOnSubmit: false }
+            );
             modal.open();
         }, [app, addSearchShortcut, isSavingSearchShortcut, searchProvider, searchQuery]);
 

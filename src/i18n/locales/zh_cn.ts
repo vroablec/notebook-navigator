@@ -123,7 +123,6 @@ export const STRINGS_ZH_CN = {
         saveSearchShortcut: '将搜索保存到快捷方式',
         removeSearchShortcut: '从快捷方式移除搜索',
         shortcutModalTitle: '保存搜索快捷方式',
-        shortcutNameLabel: '快捷方式名称',
         shortcutNamePlaceholder: '输入快捷方式名称'
     },
 
@@ -1225,7 +1224,8 @@ export const STRINGS_ZH_CN = {
                 buttonText: '重建缓存',
                 success: '缓存已重建',
                 error: '重建缓存失败',
-                progress: 'Notebook Navigator 缓存:'
+                indexingTitle: '正在索引仓库...',
+                progress: '正在更新 Notebook Navigator 缓存.'
             },
             hotkeys: {
                 intro: '通过编辑 <plugin folder>/notebook-navigator/data.json 来自定义 Notebook Navigator 快捷键。用文本编辑器打开文件并找到 "keyboardShortcuts" 部分。每个条目都使用以下结构：',

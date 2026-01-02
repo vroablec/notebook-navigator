@@ -124,7 +124,6 @@ export const STRINGS_VI = {
         saveSearchShortcut: 'Lưu lối tắt tìm kiếm',
         removeSearchShortcut: 'Gỡ lối tắt tìm kiếm',
         shortcutModalTitle: 'Lưu lối tắt tìm kiếm',
-        shortcutNameLabel: 'Tên lối tắt',
         shortcutNamePlaceholder: 'Nhập tên lối tắt'
     },
 
@@ -1224,7 +1223,8 @@ export const STRINGS_VI = {
                 buttonText: 'Xây dựng lại cache',
                 success: 'Đã xây dựng lại cache',
                 error: 'Không thể xây dựng lại cache',
-                progress: 'Notebook Navigator cache:'
+                indexingTitle: 'Đang lập chỉ mục vault...',
+                progress: 'Đang cập nhật cache Notebook Navigator.'
             },
             hotkeys: {
                 intro: 'Sửa <plugin folder>/notebook-navigator/data.json để tùy chỉnh phím tắt Notebook Navigator. Mở tệp và tìm phần "keyboardShortcuts". Mỗi mục dùng cấu trúc này:',

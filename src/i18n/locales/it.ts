@@ -124,7 +124,6 @@ export const STRINGS_IT = {
         saveSearchShortcut: 'Salva scorciatoia ricerca',
         removeSearchShortcut: 'Rimuovi scorciatoia ricerca',
         shortcutModalTitle: 'Salva scorciatoia ricerca',
-        shortcutNameLabel: 'Nome scorciatoia',
         shortcutNamePlaceholder: 'Inserisci nome scorciatoia'
     },
 
@@ -1225,7 +1224,8 @@ export const STRINGS_IT = {
                 buttonText: 'Ricostruisci cache',
                 success: 'Cache ricostruita',
                 error: 'Impossibile ricostruire cache',
-                progress: 'Notebook Navigator cache:'
+                indexingTitle: 'Indicizzazione del vault...',
+                progress: 'Aggiornamento della cache di Notebook Navigator.'
             },
             hotkeys: {
                 intro: 'Modifica <cartella plugin>/notebook-navigator/data.json per personalizzare le scorciatoie da tastiera di Notebook Navigator. Apri il file e trova la sezione "keyboardShortcuts". Ogni voce usa questa struttura:',

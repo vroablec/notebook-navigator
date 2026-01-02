@@ -123,7 +123,6 @@ export const STRINGS_FR = {
         saveSearchShortcut: 'Ajouter la recherche aux raccourcis',
         removeSearchShortcut: 'Retirer la recherche des raccourcis',
         shortcutModalTitle: 'Enregistrer la recherche',
-        shortcutNameLabel: 'Nom du raccourci',
         shortcutNamePlaceholder: 'Saisir le nom du raccourci'
     },
 
@@ -1229,7 +1228,8 @@ export const STRINGS_FR = {
                 buttonText: 'Reconstruire le cache',
                 success: 'Cache reconstruit',
                 error: 'Échec de la reconstruction du cache',
-                progress: 'Notebook Navigator cache :'
+                indexingTitle: 'Indexation du coffre...',
+                progress: 'Mise à jour du cache de Notebook Navigator.'
             },
             hotkeys: {
                 intro: 'Modifiez <plugin folder>/notebook-navigator/data.json pour personnaliser les raccourcis de Notebook Navigator. Ouvrez le fichier et repérez la section "keyboardShortcuts". Chaque entrée suit cette structure :',

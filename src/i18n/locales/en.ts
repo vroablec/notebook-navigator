@@ -124,7 +124,6 @@ export const STRINGS_EN = {
         saveSearchShortcut: 'Save search shortcut',
         removeSearchShortcut: 'Remove search shortcut',
         shortcutModalTitle: 'Save search shortcut',
-        shortcutNameLabel: 'Shortcut name',
         shortcutNamePlaceholder: 'Enter shortcut name'
     },
 
@@ -1222,7 +1221,8 @@ export const STRINGS_EN = {
                 buttonText: 'Rebuild cache',
                 success: 'Cache rebuilt',
                 error: 'Failed to rebuild cache',
-                progress: 'Notebook Navigator cache:'
+                indexingTitle: 'Indexing vault...',
+                progress: 'Updating Notebook Navigator cache.'
             },
             hotkeys: {
                 intro: 'Edit <plugin folder>/notebook-navigator/data.json to customize Notebook Navigator hotkeys. Open the file and locate the "keyboardShortcuts" section. Each entry uses this structure:',

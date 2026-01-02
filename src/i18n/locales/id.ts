@@ -124,7 +124,6 @@ export const STRINGS_ID = {
         saveSearchShortcut: 'Simpan pintasan pencarian',
         removeSearchShortcut: 'Hapus pintasan pencarian',
         shortcutModalTitle: 'Simpan pintasan pencarian',
-        shortcutNameLabel: 'Nama pintasan',
         shortcutNamePlaceholder: 'Masukkan nama pintasan'
     },
 
@@ -1225,7 +1224,8 @@ export const STRINGS_ID = {
                 buttonText: 'Bangun ulang cache',
                 success: 'Cache dibangun ulang',
                 error: 'Gagal membangun ulang cache',
-                progress: 'Notebook Navigator cache:'
+                indexingTitle: 'Mengindeks vault...',
+                progress: 'Memperbarui cache Notebook Navigator.'
             },
             hotkeys: {
                 intro: 'Edit <folder plugin>/notebook-navigator/data.json untuk menyesuaikan pintasan keyboard Notebook Navigator. Buka file dan temukan bagian "keyboardShortcuts". Setiap entri menggunakan struktur ini:',

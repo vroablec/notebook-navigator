@@ -124,7 +124,6 @@ export const STRINGS_UK = {
         saveSearchShortcut: 'Зберегти ярлик пошуку',
         removeSearchShortcut: 'Вилучити ярлик пошуку',
         shortcutModalTitle: 'Зберегти ярлик пошуку',
-        shortcutNameLabel: 'Назва ярлика',
         shortcutNamePlaceholder: 'Введіть назву ярлика'
     },
 
@@ -1226,7 +1225,8 @@ export const STRINGS_UK = {
                 buttonText: 'Перебудувати кеш',
                 success: 'Кеш перебудовано',
                 error: 'Не вдалося перебудувати кеш',
-                progress: 'Notebook Navigator кеш:'
+                indexingTitle: 'Індексація сховища...',
+                progress: 'Оновлення кешу Notebook Navigator.'
             },
             hotkeys: {
                 intro: 'Редагуйте <plugin folder>/notebook-navigator/data.json для налаштування гарячих клавіш Notebook Navigator. Відкрийте файл і знайдіть розділ "keyboardShortcuts". Кожен запис використовує таку структуру:',

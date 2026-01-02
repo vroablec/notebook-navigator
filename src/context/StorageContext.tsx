@@ -310,8 +310,55 @@ export function StorageProvider({ app, api, children }: StorageProviderProps) {
                 return;
             }
 
-            const baseLabel = strings.settings.items.rebuildCache.progress;
-            cacheRebuildNoticeRef.current = showNotice(`${baseLabel} 0/${total}`, { variant: 'loading', timeout: 0 });
+            const title = strings.settings.items.rebuildCache.indexingTitle;
+            const description = strings.settings.items.rebuildCache.progress;
+            const trackPreview = enabledTypes.includes('preview');
+            const trackTags = enabledTypes.includes('tags');
+            const trackFeatureImage = enabledTypes.includes('featureImage');
+            const trackMetadata = enabledTypes.includes('metadata');
+
+            let progressBarEl: HTMLProgressElement | null = null;
+            let lastProgressValue: number | null = null;
+
+            const clampProgress = (value: number): number => {
+                return Math.min(total, Math.max(0, value));
+            };
+
+            const updateProgress = (value: number): void => {
+                const nextValue = clampProgress(value);
+
+                if (!progressBarEl) {
+                    return;
+                }
+
+                if (lastProgressValue === nextValue) {
+                    return;
+                }
+
+                lastProgressValue = nextValue;
+
+                progressBarEl.max = total;
+                progressBarEl.value = nextValue;
+            };
+
+            const createCacheRebuildNotice = (): void => {
+                lastProgressValue = null;
+
+                const fragment = document.createDocumentFragment();
+                const wrapper = fragment.createDiv({ cls: 'nn-cache-rebuild-notice' });
+                wrapper.createDiv({ cls: 'nn-cache-rebuild-notice-title', text: title });
+                wrapper.createDiv({ cls: 'nn-cache-rebuild-notice-description', text: description });
+
+                progressBarEl = wrapper.createEl('progress', { cls: 'nn-cache-rebuild-notice-progress-bar' });
+
+                const notice = showNotice(fragment, { timeout: 0 });
+                notice.containerEl.addClass('nn-cache-rebuild-notice-container');
+                notice.messageEl.addClass('nn-cache-rebuild-notice-message');
+                cacheRebuildNoticeRef.current = notice;
+            };
+
+            createCacheRebuildNotice();
+            updateProgress(0);
 
             const db = getDBInstance();
             let hasSeenPending = false;
@@ -325,11 +372,10 @@ export function StorageProvider({ app, api, children }: StorageProviderProps) {
                     return;
                 }
 
-                let notice = cacheRebuildNoticeRef.current;
+                const notice = cacheRebuildNoticeRef.current;
                 const container = notice?.containerEl;
                 if (!container || !container.isConnected) {
-                    notice = showNotice(`${baseLabel} 0/${total}`, { variant: 'loading', timeout: 0 });
-                    cacheRebuildNoticeRef.current = notice;
+                    createCacheRebuildNotice();
                 }
 
                 const getFileByPath = (path: string): TFile | null => {
@@ -340,31 +386,41 @@ export function StorageProvider({ app, api, children }: StorageProviderProps) {
                     return abstract;
                 };
 
-                const remainingPaths = new Set<string>();
+                let readyRemainingCount = 0;
                 let rawRemainingCount = 0;
 
-                for (const type of enabledTypes) {
-                    const rawRemaining = db.getFilesNeedingContent(type);
-                    rawRemainingCount += rawRemaining.size;
-                    for (const path of rawRemaining) {
-                        // Metadata-dependent providers can't run until Obsidian has a metadata cache entry.
-                        // Feature images are metadata-dependent only for markdown documents; PDF covers do not require metadata.
-                        // Don't block the rebuild notice on files that never resolve in the metadata cache.
-                        if (type !== 'preview') {
-                            const file = getFileByPath(path);
-                            if (!file) {
-                                continue;
-                            }
-                            const requiresMetadata = type === 'featureImage' ? file.extension === 'md' : true;
-                            if (requiresMetadata && !app.metadataCache.getFileCache(file)) {
-                                continue;
-                            }
-                        }
-                        remainingPaths.add(path);
-                    }
-                }
+                db.forEachFile((path, data) => {
+                    const needsPreview = trackPreview && isMarkdownPath(path) && data.previewStatus === 'unprocessed';
+                    const needsTags = trackTags && data.tags === null;
+                    const needsFeatureImage = trackFeatureImage && data.featureImageStatus === 'unprocessed';
+                    const needsMetadata = trackMetadata && data.metadata === null;
 
-                if (remainingPaths.size > 0) {
+                    if (!needsPreview && !needsTags && !needsFeatureImage && !needsMetadata) {
+                        return;
+                    }
+
+                    rawRemainingCount += 1;
+
+                    if (needsPreview) {
+                        readyRemainingCount += 1;
+                        return;
+                    }
+
+                    const file = getFileByPath(path);
+                    if (!file) {
+                        return;
+                    }
+
+                    const hasMetadataCache = Boolean(app.metadataCache.getFileCache(file));
+                    const isMetadataReady = hasMetadataCache && (needsTags || needsMetadata);
+                    const isFeatureImageReady = needsFeatureImage && (file.extension !== 'md' || hasMetadataCache);
+
+                    if (isMetadataReady || isFeatureImageReady) {
+                        readyRemainingCount += 1;
+                    }
+                });
+
+                if (readyRemainingCount > 0) {
                     hasSeenPending = true;
                     emptyTicks = 0;
                 }
@@ -380,17 +436,17 @@ export function StorageProvider({ app, api, children }: StorageProviderProps) {
                         clearCacheRebuildNotice();
                         return;
                     }
-                    notice?.setMessage(`${baseLabel} 0/${total}`);
+                    updateProgress(0);
                     return;
                 }
 
-                const done = Math.max(0, total - remainingPaths.size);
-                notice?.setMessage(`${baseLabel} ${done}/${total}`);
+                const done = Math.max(0, total - readyRemainingCount);
+                updateProgress(done);
 
-                if (remainingPaths.size === 0) {
+                if (readyRemainingCount === 0) {
                     clearCacheRebuildNotice();
                 }
-            }, 1500);
+            }, 2000);
         },
         [app.metadataCache, app.vault, clearCacheRebuildNotice]
     );

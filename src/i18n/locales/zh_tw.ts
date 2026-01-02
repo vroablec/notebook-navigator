@@ -124,7 +124,6 @@ export const STRINGS_ZH_TW = {
         saveSearchShortcut: '儲存搜尋捷徑',
         removeSearchShortcut: '移除搜尋捷徑',
         shortcutModalTitle: '儲存搜尋捷徑',
-        shortcutNameLabel: '捷徑名稱',
         shortcutNamePlaceholder: '輸入捷徑名稱'
     },
 
@@ -1223,7 +1222,8 @@ export const STRINGS_ZH_TW = {
                 buttonText: '重建快取',
                 success: '快取已重建',
                 error: '重建快取失敗',
-                progress: 'Notebook Navigator 快取:'
+                indexingTitle: '正在索引儲存庫...',
+                progress: '正在更新 Notebook Navigator 快取.'
             },
             hotkeys: {
                 intro: '編輯 <plugin folder>/notebook-navigator/data.json 以自訂 Notebook Navigator 快捷鍵。開啟檔案並找到 "keyboardShortcuts" 區段。每個條目使用此結構：',

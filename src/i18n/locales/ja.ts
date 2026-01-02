@@ -123,7 +123,6 @@ export const STRINGS_JA = {
         saveSearchShortcut: '検索をショートカットに保存',
         removeSearchShortcut: 'ショートカットから検索を削除',
         shortcutModalTitle: '検索ショートカットを保存',
-        shortcutNameLabel: 'ショートカット名',
         shortcutNamePlaceholder: 'ショートカット名を入力'
     },
 
@@ -1227,7 +1226,8 @@ export const STRINGS_JA = {
                 buttonText: 'キャッシュを再構築',
                 success: 'キャッシュを再構築しました',
                 error: 'キャッシュの再構築に失敗しました',
-                progress: 'Notebook Navigator キャッシュ:'
+                indexingTitle: 'ボールトをインデックス中...',
+                progress: 'Notebook Navigator のキャッシュを更新しています.'
             },
             hotkeys: {
                 intro: 'Notebook Navigator のホットキーは <plugin folder>/notebook-navigator/data.json を編集してカスタマイズします。ファイルをテキストエディタで開き、"keyboardShortcuts" セクションを探してください。各エントリは次の構造です:',

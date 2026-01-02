@@ -124,7 +124,6 @@ export const STRINGS_RU = {
         saveSearchShortcut: 'Сохранить ярлык поиска',
         removeSearchShortcut: 'Удалить ярлык поиска',
         shortcutModalTitle: 'Сохранить ярлык поиска',
-        shortcutNameLabel: 'Название ярлыка',
         shortcutNamePlaceholder: 'Введите название ярлыка'
     },
 
@@ -1227,7 +1226,8 @@ export const STRINGS_RU = {
                 buttonText: 'Пересобрать кэш',
                 success: 'Кэш пересобран',
                 error: 'Не удалось пересобрать кэш',
-                progress: 'Notebook Navigator кэш:'
+                indexingTitle: 'Индексирование хранилища...',
+                progress: 'Обновление кэша Notebook Navigator.'
             },
             hotkeys: {
                 intro: 'Отредактируйте <папка плагина>/notebook-navigator/data.json для настройки горячих клавиш Notebook Navigator. Откройте файл и найдите раздел "keyboardShortcuts". Каждая запись использует такую структуру:',

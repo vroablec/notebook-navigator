@@ -123,7 +123,6 @@ export const STRINGS_KO = {
         saveSearchShortcut: '검색을 바로가기에 저장',
         removeSearchShortcut: '바로가기에서 검색 제거',
         shortcutModalTitle: '검색 바로가기 저장',
-        shortcutNameLabel: '바로가기 이름',
         shortcutNamePlaceholder: '바로가기 이름을 입력하세요'
     },
 
@@ -1224,7 +1223,8 @@ export const STRINGS_KO = {
                 buttonText: '캐시 다시 빌드',
                 success: '캐시가 다시 빌드되었습니다',
                 error: '캐시 다시 빌드 실패',
-                progress: 'Notebook Navigator 캐시:'
+                indexingTitle: '보관함을 인덱싱하는 중...',
+                progress: 'Notebook Navigator 캐시를 업데이트하는 중.'
             },
             hotkeys: {
                 intro: 'Notebook Navigator 단축키는 <plugin folder>/notebook-navigator/data.json을 편집하여 구성합니다. 파일을 텍스트 편집기로 열고 "keyboardShortcuts" 섹션을 확인하세요. 각 항목은 다음 구조를 사용합니다:',
