@@ -35,11 +35,21 @@ function escapeTemplateLiteral(input) {
     return input.replaceAll('`', '\\`').replaceAll('${', '\\${');
 }
 
-// Pass full SVG to addIcon (like obsidian-to-notion does)
-// Obsidian expects viewBox="0 0 100 100" for custom icons
+// Obsidian's addIcon() expects inner content without the <svg> wrapper
+// It wraps the content in its own <svg viewBox="0 0 100 100">
 const svgSource = await fs.readFile(sourceSvgPath, 'utf8');
 const normalizedSvg = normalizeNewlines(svgSource).trim();
-const escapedSvgContent = escapeTemplateLiteral(normalizedSvg);
+
+// Extract content between <svg ...> and </svg>
+const innerContent = normalizedSvg
+    .replace(/<svg[^>]*>/, '') // Remove opening <svg> tag
+    .replace(/<\/svg>$/, '') // Remove closing </svg> tag
+    .trim();
+
+// Add stroke="currentColor" to the root <g> element (inherits from Obsidian's theming)
+const withStroke = innerContent.replace('<g stroke-linecap', '<g stroke="currentColor" fill="none" stroke-linecap');
+
+const escapedSvgContent = escapeTemplateLiteral(withStroke);
 
 const header = [
     '/*',
@@ -73,7 +83,7 @@ const output = `${header}
 // Icon identifier used with Obsidian's addIcon()/setIcon()
 export const NOTEBOOK_NAVIGATOR_ICON_ID = 'notebook-navigator';
 
-// Full SVG content passed to addIcon() (Obsidian expects viewBox="0 0 100 100")
+// Inner SVG content passed to addIcon() (Obsidian wraps this in <svg viewBox="0 0 100 100">)
 export const NOTEBOOK_NAVIGATOR_ICON_SVG = \`${escapedSvgContent}\`;
 `;
 
