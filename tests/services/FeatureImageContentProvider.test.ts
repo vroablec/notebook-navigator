@@ -616,6 +616,59 @@ describe('FeatureImageContentProvider scanning', () => {
         }
     });
 
+    it('generates Excalidraw feature images when excalidraw-plugin frontmatter is set', async () => {
+        const { app } = createApp();
+        const provider = new TestFeatureImageContentProvider(app);
+        const settings = createSettings();
+        const excalidrawFile = createFile('drawings/sketch.md');
+        excalidrawFile.stat.mtime = 321;
+
+        const metadata: CachedMetadata = {
+            frontmatter: {
+                'excalidraw-plugin': 'parsed'
+            }
+        };
+        app.metadataCache.getFileCache = () => metadata;
+
+        const destroy = vi.fn<() => void>();
+        const createPng = vi.fn<
+            (
+                view: undefined,
+                scale: number,
+                exportSettings: object,
+                embeddedFilesLoader: object,
+                theme: undefined,
+                padding: number
+            ) => Promise<Blob | null>
+        >(async () => new Blob([new Uint8Array([1, 2, 3])], { type: 'image/png' }));
+
+        Reflect.set(globalThis, 'ExcalidrawAutomate', {
+            getAPI: () => ({
+                getSceneFromFile: async () => ({ elements: [{ x: 0, y: 0, width: 100, height: 80 }] }),
+                copyViewElementsToEAforEditing: async () => {},
+                getEmbeddedFilesLoader: () => ({}),
+                getExportSettings: () => ({}),
+                createPNG: createPng,
+                destroy
+            })
+        });
+
+        try {
+            const result = await provider.runProcessFile(excalidrawFile, settings);
+
+            expect(result?.featureImageKey).toBe(`x:${excalidrawFile.path}@${excalidrawFile.stat.mtime}`);
+            expect(result?.featureImage).toBeInstanceOf(Blob);
+            expect(result?.featureImage?.size).toBeGreaterThan(0);
+            expect(result?.featureImage?.type).toBe('image/png');
+            expect(createPng).toHaveBeenCalledWith(undefined, expect.any(Number), expect.any(Object), expect.any(Object), undefined, 0);
+            expect(createPng.mock.calls[0]?.[1]).toBeLessThanOrEqual(1);
+            expect(createPng.mock.calls[0]?.[1]).toBeGreaterThan(0);
+            expect(destroy).toHaveBeenCalledTimes(1);
+        } finally {
+            Reflect.deleteProperty(globalThis, 'ExcalidrawAutomate');
+        }
+    });
+
     it('skips Excalidraw regeneration when featureImageKey matches', async () => {
         const { app } = createApp();
         const provider = new TestFeatureImageContentProvider(app);

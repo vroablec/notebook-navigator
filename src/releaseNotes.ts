@@ -83,6 +83,7 @@ const RELEASE_NOTES: ReleaseNote[] = [
         ],
         improved: [
             'Recent files are now saved per vault profile.',
+            'Feature images now treat .md files as Excalidraw drawings when **excalidraw-plugin** is set in frontmatter.',
             'You can now ==rename shortcuts== by right clicking and selecting "Rename shortcut".',
             'You can now quickly ==remove shortcuts by clicking on the (X)== on the right side of each shortcut.',
             'Shortcuts and recent notes with truncated titles now show full title on hover with a tooltip.'

@@ -30,7 +30,7 @@ import { ContentType } from '../../interfaces/IContentProvider';
 import { NotebookNavigatorSettings } from '../../settings';
 import { FileData } from '../../storage/IndexedDBStorage';
 import { getDBInstance } from '../../storage/fileOperations';
-import { isExcalidrawFile } from '../../utils/fileNameUtils';
+import { hasExcalidrawFrontmatterFlag, isExcalidrawFile } from '../../utils/fileNameUtils';
 import { isImageExtension, isImageFile, isPdfFile } from '../../utils/fileTypeUtils';
 import { BaseContentProvider } from './BaseContentProvider';
 import { renderExcalidrawThumbnail } from './excalidraw/excalidrawThumbnail';
@@ -248,8 +248,10 @@ export class FeatureImageContentProvider extends BaseContentProvider {
         }
 
         try {
+            const metadata = this.app.metadataCache.getFileCache(job.file);
+
             // Handle Excalidraw files separately using ExcalidrawAutomate plugin
-            if (isExcalidrawFile(job.file)) {
+            if (isExcalidrawFile(job.file) || hasExcalidrawFrontmatterFlag(metadata?.frontmatter)) {
                 const featureImageKey = this.getExcalidrawFeatureImageKey(job.file);
 
                 if (fileData && fileData.featureImageKey === featureImageKey) {
@@ -273,7 +275,6 @@ export class FeatureImageContentProvider extends BaseContentProvider {
                 };
             }
 
-            const metadata = this.app.metadataCache.getFileCache(job.file);
             const fileModified = fileData !== null && fileData.mtime !== job.file.stat.mtime;
             const reference = await this.findFeatureImageReference(job.file, metadata, settings);
 
