@@ -412,6 +412,17 @@ export const STRINGS_ID = {
                 add: 'untuk menambah tag',
                 remove: 'untuk menghapus tag'
             }
+        },
+        welcome: {
+            title: 'Selamat datang di {pluginName}',
+            introText:
+                'Halo! Sebelum memulai, saya sangat menyarankan Anda menonton lima menit pertama video di bawah ini untuk memahami cara kerja panel dan tombol "Tampilkan catatan dari subfolder".',
+            continueText:
+                'Jika Anda memiliki waktu lima menit lagi, lanjutkan menonton video untuk memahami mode tampilan ringkas dan cara mengatur pintasan dan tombol pintasan penting dengan benar.',
+            thanksText: 'Terima kasih banyak telah mengunduh, selamat menggunakan!',
+            videoAlt: 'Menginstal dan menguasai Notebook Navigator',
+            openVideoButton: 'Putar video',
+            closeButton: 'Nanti saja'
         }
     },
     // File system operations
@@ -1323,6 +1334,10 @@ export const STRINGS_ID = {
                 name: 'Apa yang baru di Notebook Navigator {version}',
                 desc: 'Lihat pembaruan dan peningkatan terbaru',
                 buttonText: 'Lihat pembaruan terbaru'
+            },
+            masteringVideo: {
+                name: 'Menguasai Notebook Navigator (video)',
+                desc: 'Video ini membahas semua yang Anda butuhkan untuk produktif di Notebook Navigator, termasuk pintasan keyboard, pencarian, tag, dan kustomisasi lanjutan.'
             },
             cacheStatistics: {
                 localCache: 'Cache lokal',

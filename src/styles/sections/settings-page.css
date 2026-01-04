@@ -199,6 +199,24 @@
     justify-content: space-between;
 }
 
+/* YouTube-style play button used in settings */
+.nn-youtube-button {
+    background-color: #ff0000 !important;
+    border: none !important;
+    color: #ffffff !important;
+    min-width: 54px;
+}
+
+.nn-youtube-button:hover {
+    background-color: #cc0000 !important;
+}
+
+.nn-youtube-button svg {
+    color: #ffffff !important;
+    fill: #ffffff !important;
+    stroke: none !important;
+}
+
 .is-mobile .nn-toolbar-visibility-toggle {
     width: 44px !important;
     height: 44px !important;

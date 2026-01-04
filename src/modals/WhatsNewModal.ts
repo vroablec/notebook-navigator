@@ -17,6 +17,7 @@
  */
 
 import { App, Modal } from 'obsidian';
+import { SUPPORT_BUY_ME_A_COFFEE_URL } from '../constants/urls';
 import { strings } from '../i18n';
 import { ReleaseNote } from '../releaseNotes';
 import { DateUtils } from '../utils/dateUtils';
@@ -199,7 +200,7 @@ export class WhatsNewModal extends Modal {
         });
         this.domDisposers.push(
             addAsyncEventListener(supportButton, 'click', () => {
-                window.open('https://www.buymeacoffee.com/johansan');
+                window.open(SUPPORT_BUY_ME_A_COFFEE_URL);
             })
         );
 

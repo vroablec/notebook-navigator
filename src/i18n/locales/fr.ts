@@ -412,6 +412,17 @@ export const STRINGS_FR = {
                 add: "pour ajouter l'étiquette",
                 remove: "pour supprimer l'étiquette"
             }
+        },
+        welcome: {
+            title: 'Bienvenue dans {pluginName}',
+            introText:
+                'Bonjour ! Avant de commencer, je vous recommande vivement de regarder les cinq premières minutes de la vidéo ci-dessous pour comprendre comment fonctionnent les panneaux et le bouton « Afficher les notes des sous-dossiers ».',
+            continueText:
+                "Si vous avez encore cinq minutes, continuez à regarder la vidéo pour comprendre les modes d'affichage compacts et comment configurer correctement les raccourcis et les touches de raccourci importantes.",
+            thanksText: 'Merci beaucoup pour le téléchargement et profitez-en !',
+            videoAlt: 'Installer et maîtriser Notebook Navigator',
+            openVideoButton: 'Lire la vidéo',
+            closeButton: 'Je la regarderai plus tard'
         }
     },
 
@@ -1327,6 +1338,10 @@ export const STRINGS_FR = {
                 name: 'Nouveautés dans Notebook Navigator {version}',
                 desc: 'Voir les mises à jour et améliorations récentes',
                 buttonText: 'Voir les mises à jour récentes'
+            },
+            masteringVideo: {
+                name: 'Maîtriser Notebook Navigator (vidéo)',
+                desc: 'Cette vidéo couvre tout ce dont vous avez besoin pour être productif avec Notebook Navigator, y compris les raccourcis clavier, la recherche, les étiquettes et la personnalisation avancée.'
             },
             cacheStatistics: {
                 localCache: 'Cache local',

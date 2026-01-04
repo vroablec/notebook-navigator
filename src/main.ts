@@ -934,6 +934,11 @@ export default class NotebookNavigatorPlugin extends Plugin implements ISettings
 
                 await this.homepageController?.handleWorkspaceReady({ shouldActivateOnStartup });
 
+                if (isFirstLaunch) {
+                    const { WelcomeModal } = await import('./modals/WelcomeModal');
+                    new WelcomeModal(this.app).open();
+                }
+
                 // Check for version updates
                 await this.checkForVersionUpdate();
 

@@ -412,6 +412,15 @@ export const STRINGS_ZH_CN = {
                 add: '添加标签',
                 remove: '移除标签'
             }
+        },
+        welcome: {
+            title: '欢迎使用 {pluginName}',
+            introText: '您好！在开始之前，强烈建议您观看下面视频的前五分钟，以了解面板和开关"显示子文件夹中的笔记"是如何工作的。',
+            continueText: '如果您还有五分钟时间，请继续观看视频以了解紧凑显示模式以及如何正确设置快捷方式和重要的快捷键。',
+            thanksText: '非常感谢您的下载，祝您使用愉快！',
+            videoAlt: '安装和掌握 Notebook Navigator',
+            openVideoButton: '播放视频',
+            closeButton: '稍后观看'
         }
     },
 
@@ -1323,6 +1332,10 @@ export const STRINGS_ZH_CN = {
                 name: 'Notebook Navigator {version} 的最新动态',
                 desc: '查看最近的更新和改进',
                 buttonText: '查看最近更新'
+            },
+            masteringVideo: {
+                name: '精通 Notebook Navigator（视频）',
+                desc: '本视频涵盖了在 Notebook Navigator 中高效工作所需的一切内容，包括快捷键、搜索、标签和高级自定义。'
             },
             cacheStatistics: {
                 localCache: '本地缓存',

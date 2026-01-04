@@ -412,6 +412,17 @@ export const STRINGS_FA = {
                 add: 'برای افزودن برچسب',
                 remove: 'برای حذف برچسب'
             }
+        },
+        welcome: {
+            title: 'به {pluginName} خوش آمدید',
+            introText:
+                'سلام! قبل از شروع، اکیداً توصیه می‌کنم پنج دقیقه اول ویدیوی زیر را تماشا کنید تا نحوه کار پنل‌ها و کلید «نمایش یادداشت‌ها از زیرپوشه‌ها» را درک کنید.',
+            continueText:
+                'اگر پنج دقیقه دیگر وقت دارید، به تماشای ویدیو ادامه دهید تا حالت‌های نمایش فشرده و نحوه تنظیم صحیح میانبرها و کلیدهای میانبر مهم را درک کنید.',
+            thanksText: 'از دانلود شما بسیار سپاسگزارم، لذت ببرید!',
+            videoAlt: 'نصب و تسلط بر Notebook Navigator',
+            openVideoButton: 'پخش ویدیو',
+            closeButton: 'بعداً تماشا می‌کنم'
         }
     },
     // File system operations
@@ -1322,6 +1333,10 @@ export const STRINGS_FA = {
                 name: 'چه چیزی جدید است در Notebook Navigator {version}',
                 desc: 'به‌روزرسانی‌ها و بهبودهای اخیر را ببینید',
                 buttonText: 'مشاهده به‌روزرسانی‌های اخیر'
+            },
+            masteringVideo: {
+                name: 'تسلط بر Notebook Navigator (ویدیو)',
+                desc: 'این ویدیو تمام آنچه برای کار بهره‌ور با Notebook Navigator نیاز دارید را پوشش می‌دهد، از جمله میانبرهای صفحه‌کلید، جستجو، برچسب‌ها و سفارشی‌سازی پیشرفته.'
             },
             cacheStatistics: {
                 localCache: 'کش محلی',

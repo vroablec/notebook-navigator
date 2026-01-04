@@ -412,6 +412,17 @@ export const STRINGS_IT = {
                 add: 'per aggiungere tag',
                 remove: 'per rimuovere tag'
             }
+        },
+        welcome: {
+            title: 'Benvenuto in {pluginName}',
+            introText:
+                'Ciao! Prima di iniziare, ti consiglio vivamente di guardare i primi cinque minuti del video qui sotto per capire come funzionano i pannelli e l\'interruttore "Mostra note dalle sottocartelle".',
+            continueText:
+                'Se hai altri cinque minuti, continua a guardare il video per capire le modalità di visualizzazione compatta e come configurare correttamente le scorciatoie e i tasti di scelta rapida importanti.',
+            thanksText: 'Grazie mille per aver scaricato e buon divertimento!',
+            videoAlt: 'Installare e padroneggiare Notebook Navigator',
+            openVideoButton: 'Riproduci video',
+            closeButton: 'Lo guarderò più tardi'
         }
     },
     // File system operations
@@ -1323,6 +1334,10 @@ export const STRINGS_IT = {
                 name: 'Novità in Notebook Navigator {version}',
                 desc: 'Vedi aggiornamenti e miglioramenti recenti',
                 buttonText: 'Vedi aggiornamenti recenti'
+            },
+            masteringVideo: {
+                name: 'Padroneggiare Notebook Navigator (video)',
+                desc: 'Questo video copre tutto ciò che serve per essere produttivi in Notebook Navigator, incluse scorciatoie da tastiera, ricerca, tag e personalizzazione avanzata.'
             },
             cacheStatistics: {
                 localCache: 'Cache locale',

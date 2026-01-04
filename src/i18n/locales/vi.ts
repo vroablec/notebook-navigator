@@ -412,6 +412,17 @@ export const STRINGS_VI = {
                 add: 'để thêm thẻ',
                 remove: 'để gỡ thẻ'
             }
+        },
+        welcome: {
+            title: 'Chào mừng đến với {pluginName}',
+            introText:
+                'Xin chào! Trước khi bắt đầu, tôi khuyên bạn nên xem năm phút đầu tiên của video bên dưới để hiểu cách hoạt động của các bảng điều khiển và nút chuyển đổi "Hiển thị ghi chú từ thư mục con".',
+            continueText:
+                'Nếu bạn có thêm năm phút nữa, hãy tiếp tục xem video để hiểu các chế độ hiển thị thu gọn và cách thiết lập phím tắt và các phím nóng quan trọng một cách chính xác.',
+            thanksText: 'Cảm ơn bạn rất nhiều vì đã tải xuống, chúc bạn sử dụng vui vẻ!',
+            videoAlt: 'Cài đặt và làm chủ Notebook Navigator',
+            openVideoButton: 'Phát video',
+            closeButton: 'Để sau xem'
         }
     },
     // File system operations
@@ -1322,6 +1333,10 @@ export const STRINGS_VI = {
                 name: 'Có gì mới trong Notebook Navigator {version}',
                 desc: 'Xem cập nhật và cải tiến gần đây',
                 buttonText: 'Xem cập nhật gần đây'
+            },
+            masteringVideo: {
+                name: 'Làm chủ Notebook Navigator (video)',
+                desc: 'Video này bao gồm mọi thứ bạn cần để làm việc hiệu quả với Notebook Navigator, bao gồm phím tắt, tìm kiếm, thẻ và tùy chỉnh nâng cao.'
             },
             cacheStatistics: {
                 localCache: 'Cache cục bộ',

@@ -412,6 +412,15 @@ export const STRINGS_ZH_TW = {
                 add: '新增標籤',
                 remove: '移除標籤'
             }
+        },
+        welcome: {
+            title: '歡迎使用 {pluginName}',
+            introText: '您好！在開始之前，強烈建議您觀看下方影片的前五分鐘，以了解面板和切換開關「顯示子資料夾中的筆記」是如何運作的。',
+            continueText: '如果您還有五分鐘時間，請繼續觀看影片以了解緊湊顯示模式以及如何正確設定捷徑和重要的快捷鍵。',
+            thanksText: '非常感謝您的下載，祝您使用愉快！',
+            videoAlt: '安裝和掌握 Notebook Navigator',
+            openVideoButton: '播放影片',
+            closeButton: '稍後觀看'
         }
     },
     // 檔案系統操作
@@ -1321,6 +1330,10 @@ export const STRINGS_ZH_TW = {
                 name: 'Notebook Navigator {version} 的最新消息',
                 desc: '查看最近的更新和改進',
                 buttonText: '查看最近更新'
+            },
+            masteringVideo: {
+                name: '精通 Notebook Navigator（影片）',
+                desc: '這部影片涵蓋了在 Notebook Navigator 中高效工作所需的一切內容，包括快捷鍵、搜尋、標籤和進階自訂。'
             },
             cacheStatistics: {
                 localCache: '本地快取',

@@ -412,6 +412,17 @@ export const STRINGS_TR = {
                 add: 'etiket eklemek için',
                 remove: 'etiketi kaldırmak için'
             }
+        },
+        welcome: {
+            title: '{pluginName} uygulamasına hoş geldiniz',
+            introText:
+                'Merhaba! Başlamadan önce, panellerin ve "Alt klasörlerden notları göster" düğmesinin nasıl çalıştığını anlamak için aşağıdaki videonun ilk beş dakikasını izlemenizi şiddetle tavsiye ederim.',
+            continueText:
+                'Beş dakikanız daha varsa, kompakt görüntüleme modlarını ve kısayolları ile önemli kısayol tuşlarını doğru şekilde nasıl ayarlayacağınızı anlamak için videoyu izlemeye devam edin.',
+            thanksText: 'İndirdiğiniz için çok teşekkürler, keyifli kullanımlar!',
+            videoAlt: 'Notebook Navigator kurulumu ve ustalaşma',
+            openVideoButton: 'Videoyu oynat',
+            closeButton: 'Daha sonra izleyeceğim'
         }
     },
     // File system operations
@@ -1322,6 +1333,10 @@ export const STRINGS_TR = {
                 name: 'Notebook Navigator {version} yenilikleri',
                 desc: 'Son güncellemeleri ve iyileştirmeleri görün',
                 buttonText: 'Son güncellemeleri görüntüle'
+            },
+            masteringVideo: {
+                name: "Notebook Navigator'da Uzmanlaşma (video)",
+                desc: "Bu video, Notebook Navigator'da verimli olmak için ihtiyacınız olan her şeyi kapsar; kısayol tuşları, arama, etiketler ve gelişmiş özelleştirme dahil."
             },
             cacheStatistics: {
                 localCache: 'Yerel önbellek',

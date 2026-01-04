@@ -80,7 +80,7 @@ const RELEASE_NOTES: ReleaseNote[] = [
             '==The user interface now has a slight transparency== for all overlay elements. This can be modified or disabled in Style Settings.',
             'New theme variable: ==--nn-theme-nav-overlay-opacity==. Sets navigation overlay opacity.',
             'New setting: ==General > Vault title placement==. You can now show the vault title either in the header or in the navigation pane (new default).',
-            "Notebook Navigator now has its own icon! 🎉"
+            'Notebook Navigator now has its own icon! 🎉'
         ],
         improved: [
             'Recent files are now saved per vault profile.',

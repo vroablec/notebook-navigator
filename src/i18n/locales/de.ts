@@ -414,6 +414,17 @@ export const STRINGS_DE = {
                 add: 'zum Hinzufügen des Tags',
                 remove: 'zum Entfernen des Tags'
             }
+        },
+        welcome: {
+            title: 'Willkommen bei {pluginName}',
+            introText:
+                'Hallo! Bevor Sie beginnen, empfehle ich Ihnen, die ersten fünf Minuten des Videos unten anzusehen, um zu verstehen, wie die Bereiche und der Schalter „Notizen aus Unterordnern anzeigen" funktionieren.',
+            continueText:
+                'Wenn Sie weitere fünf Minuten haben, schauen Sie das Video weiter an, um die kompakten Anzeigemodi und die richtige Einrichtung von Lesezeichen und wichtigen Tastenkombinationen zu verstehen.',
+            thanksText: 'Vielen Dank fürs Herunterladen und viel Spaß!',
+            videoAlt: 'Notebook Navigator installieren und beherrschen',
+            openVideoButton: 'Video abspielen',
+            closeButton: 'Ich schaue es später'
         }
     },
 
@@ -1326,6 +1337,10 @@ export const STRINGS_DE = {
                 name: 'Neuigkeiten in Notebook Navigator {version}',
                 desc: 'Letzte Updates und Verbesserungen anzeigen',
                 buttonText: 'Letzte Updates anzeigen'
+            },
+            masteringVideo: {
+                name: 'Notebook Navigator meistern (Video)',
+                desc: 'Dieses Video behandelt alles, was du brauchst, um produktiv mit Notebook Navigator zu arbeiten, einschließlich Tastenkürzel, Suche, Tags und erweiterte Anpassungen.'
             },
             cacheStatistics: {
                 localCache: 'Lokaler Cache',

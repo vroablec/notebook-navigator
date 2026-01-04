@@ -412,6 +412,17 @@ export const STRINGS_JA = {
                 add: 'タグを追加',
                 remove: 'タグを削除'
             }
+        },
+        welcome: {
+            title: '{pluginName}へようこそ',
+            introText:
+                'こんにちは！始める前に、下のビデオの最初の5分間を見て、ペインとトグル「サブフォルダからノートを表示」の仕組みを理解することを強くお勧めします。',
+            continueText:
+                'さらに5分あれば、ビデオを続けて見て、コンパクト表示モードとショートカットや重要なホットキーの適切な設定方法を理解してください。',
+            thanksText: 'ダウンロードいただきありがとうございます。お楽しみください！',
+            videoAlt: 'Notebook Navigatorのインストールとマスター',
+            openVideoButton: 'ビデオを再生',
+            closeButton: 'あとで見る'
         }
     },
 
@@ -1325,6 +1336,10 @@ export const STRINGS_JA = {
                 name: 'Notebook Navigator {version} の新着情報',
                 desc: '最近の更新と改善を確認',
                 buttonText: '最近の更新を表示'
+            },
+            masteringVideo: {
+                name: 'Notebook Navigator をマスターする（動画）',
+                desc: 'この動画では、Notebook Navigator で生産性を高めるために必要なすべてを解説しています。ホットキー、検索、タグ、高度なカスタマイズなどが含まれます。'
             },
             cacheStatistics: {
                 localCache: 'ローカルキャッシュ',

@@ -412,6 +412,17 @@ export const STRINGS_ES = {
                 add: 'para añadir etiqueta',
                 remove: 'para eliminar etiqueta'
             }
+        },
+        welcome: {
+            title: 'Bienvenido a {pluginName}',
+            introText:
+                '¡Hola! Antes de comenzar, te recomiendo que veas los primeros cinco minutos del video a continuación para entender cómo funcionan los paneles y el interruptor "Mostrar notas de subcarpetas".',
+            continueText:
+                'Si tienes cinco minutos más, continúa viendo el video para entender los modos de visualización compacta y cómo configurar correctamente los accesos directos y las teclas de acceso rápido importantes.',
+            thanksText: '¡Muchas gracias por descargar y disfruta!',
+            videoAlt: 'Instalando y dominando Notebook Navigator',
+            openVideoButton: 'Reproducir video',
+            closeButton: 'Lo veré más tarde'
         }
     },
 
@@ -1325,6 +1336,10 @@ export const STRINGS_ES = {
                 name: 'Novedades en Notebook Navigator {version}',
                 desc: 'Ver actualizaciones y mejoras recientes',
                 buttonText: 'Ver actualizaciones recientes'
+            },
+            masteringVideo: {
+                name: 'Dominar Notebook Navigator (vídeo)',
+                desc: 'Este vídeo cubre todo lo que necesitas para ser productivo en Notebook Navigator, incluyendo atajos de teclado, búsqueda, etiquetas y personalización avanzada.'
             },
             cacheStatistics: {
                 localCache: 'Caché local',

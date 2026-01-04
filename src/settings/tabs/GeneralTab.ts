@@ -17,6 +17,7 @@
  */
 
 import { ButtonComponent, DropdownComponent, Platform, Setting, SliderComponent, setIcon } from 'obsidian';
+import { getWelcomeVideoBaseUrl, SUPPORT_BUY_ME_A_COFFEE_URL, SUPPORT_SPONSOR_URL } from '../../constants/urls';
 import { HomepageModal } from '../../modals/HomepageModal';
 import { strings } from '../../i18n';
 import { showNotice } from '../../utils/noticeUtils';
@@ -114,17 +115,31 @@ export function renderGeneralTab(context: SettingsTabContext): void {
     });
 
     supportSetting.addButton(button => {
-        button
-            .setButtonText(strings.settings.items.supportDevelopment.buttonText)
-            .onClick(() => window.open('https://github.com/sponsors/johansan/'));
+        button.setButtonText(strings.settings.items.supportDevelopment.buttonText).onClick(() => window.open(SUPPORT_SPONSOR_URL));
         button.buttonEl.addClass('nn-support-button');
     });
 
     supportSetting.addButton(button => {
         button
             .setButtonText(strings.settings.items.supportDevelopment.coffeeButton)
-            .onClick(() => window.open('https://buymeacoffee.com/johansan'));
+            .onClick(() => window.open(SUPPORT_BUY_ME_A_COFFEE_URL));
         button.buttonEl.addClass('nn-support-button');
+    });
+
+    topGroup.addSetting(setting => {
+        setting
+            .setName(strings.settings.items.masteringVideo.name)
+            .setDesc(strings.settings.items.masteringVideo.desc)
+            .addButton(button => {
+                button
+                    .setIcon('lucide-play')
+                    .setTooltip(strings.modals.welcome.openVideoButton)
+                    .onClick(() => {
+                        window.open(getWelcomeVideoBaseUrl());
+                    });
+                button.buttonEl.addClass('nn-youtube-button');
+                button.buttonEl.setAttr('aria-label', strings.modals.welcome.openVideoButton);
+            });
     });
 
     const filteringGroup = createGroup(strings.settings.groups.general.filtering);

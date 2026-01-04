@@ -3659,6 +3659,93 @@ body.nn-resizing {
 .nn-ux-icon-map-group-heading--spaced {
     margin-top: var(--size-4-4);
 }
+/* Source: src/styles/sections/modal-welcome.css */
+
+/* ========================================================================
+   Welcome Modal
+   ======================================================================== */
+
+.modal.nn-welcome-modal {
+    width: 620px;
+    max-width: calc(100vw - 40px);
+}
+
+.modal.nn-welcome-modal .modal-content {
+    padding: 16px;
+}
+
+.modal.nn-welcome-modal .modal-title {
+    width: 100%;
+    text-align: center;
+}
+
+.modal.nn-welcome-modal .modal-close-button {
+    z-index: 10;
+    pointer-events: auto;
+}
+
+.nn-welcome-body {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    align-items: stretch;
+    text-align: left;
+}
+
+.nn-welcome-text {
+    margin: 0;
+    color: var(--text-normal);
+    line-height: 1.5;
+    font-size: 14px;
+}
+
+.nn-welcome-thumbnail-link {
+    display: block;
+    width: 100%;
+    max-width: 560px;
+    align-self: center;
+}
+
+.nn-welcome-thumbnail-frame {
+    display: block;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    background: var(--background-secondary);
+    border-radius: var(--radius-m);
+    border: 1px solid var(--background-modifier-border);
+    overflow: hidden;
+}
+
+.nn-welcome-thumbnail {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.nn-welcome-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 16px;
+}
+
+@media (max-width: 768px) {
+    .modal.nn-welcome-modal {
+        width: calc(100vw - 40px);
+        max-width: calc(100vw - 40px);
+        margin: 0 auto;
+    }
+
+    .modal.nn-welcome-modal .modal-content {
+        padding: 12px;
+    }
+
+    .nn-welcome-text {
+        font-size: 15px;
+        line-height: 1.6;
+    }
+}
 /* Source: src/styles/sections/modal-whats-new.css */
 
 /* ========================================================================
@@ -4274,6 +4361,24 @@ body.nn-resizing {
     flex-wrap: nowrap;
     gap: 0;
     justify-content: space-between;
+}
+
+/* YouTube-style play button used in settings */
+.nn-youtube-button {
+    background-color: #ff0000 !important;
+    border: none !important;
+    color: #ffffff !important;
+    min-width: 54px;
+}
+
+.nn-youtube-button:hover {
+    background-color: #cc0000 !important;
+}
+
+.nn-youtube-button svg {
+    color: #ffffff !important;
+    fill: #ffffff !important;
+    stroke: none !important;
 }
 
 .is-mobile .nn-toolbar-visibility-toggle {
