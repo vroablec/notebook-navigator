@@ -57,6 +57,8 @@ export interface ReleaseNote {
     date: string;
     /** If false, skip automatic modal display for this version during startup */
     showOnUpdate?: boolean;
+    /** Optional YouTube video URL shown above the release notes for this version */
+    youtubeUrl?: string;
     info?: string; // General information about the release, shown at top without bullets
     new?: string[];
     improved?: string[];
@@ -76,6 +78,7 @@ const RELEASE_NOTES: ReleaseNote[] = [
         version: '2.0.4',
         date: '2026-01-05',
         showOnUpdate: true,
+        youtubeUrl: 'https://www.youtube.com/watch?v=BewIlG8wLAM',
         new: [
             '==The user interface now has a slight transparency== for all overlay elements. This can be modified or disabled in Style Settings.',
             'New theme variables: ==--nn-theme-pane-overlay-opacity== and ==--nn-theme-pane-overlay-filter==. Set pane overlay stack opacity and backdrop filter.',

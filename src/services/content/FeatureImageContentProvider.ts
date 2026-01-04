@@ -32,6 +32,7 @@ import { FileData } from '../../storage/IndexedDBStorage';
 import { getDBInstance } from '../../storage/fileOperations';
 import { hasExcalidrawFrontmatterFlag, isExcalidrawFile } from '../../utils/fileNameUtils';
 import { isImageExtension, isImageFile, isPdfFile } from '../../utils/fileTypeUtils';
+import { getYoutubeThumbnailUrl, getYoutubeVideoId } from '../../utils/youtubeUtils';
 import { BaseContentProvider } from './BaseContentProvider';
 import { renderExcalidrawThumbnail } from './excalidraw/excalidrawThumbnail';
 import { renderPdfCoverThumbnail } from './pdf/pdfCoverThumbnail';
@@ -392,7 +393,7 @@ export class FeatureImageContentProvider extends BaseContentProvider {
         }
 
         const normalized = this.normalizeExternalUrl(url.trim());
-        const videoId = this.getVideoId(normalized);
+        const videoId = getYoutubeVideoId(normalized);
         if (videoId) {
             return { kind: 'youtube', videoId };
         }
@@ -793,7 +794,7 @@ export class FeatureImageContentProvider extends BaseContentProvider {
         ];
 
         for (const candidate of candidates) {
-            const url = this.getYoutubeThumbnailUrl(videoId, candidate.quality);
+            const url = getYoutubeThumbnailUrl(videoId, candidate.quality);
             if (!this.isValidHttpsUrl(url)) {
                 continue;
             }
@@ -1289,44 +1290,6 @@ export class FeatureImageContentProvider extends BaseContentProvider {
         } catch {
             return false;
         }
-    }
-
-    private getVideoId(url: string): string | null {
-        try {
-            const parsedUrl = new URL(url);
-            const hostname = parsedUrl.hostname.toLowerCase();
-            const pathname = parsedUrl.pathname;
-            const searchParams = parsedUrl.searchParams;
-
-            const normalizedHostname = hostname.replace('m.youtube.com', 'youtube.com');
-
-            if (hostname.includes('youtu.be')) {
-                return pathname.slice(1);
-            }
-
-            if (normalizedHostname.includes('youtube.com')) {
-                if (pathname === '/watch') {
-                    return searchParams.get('v');
-                }
-
-                if (pathname.startsWith('/embed/') || pathname.startsWith('/v/') || pathname.startsWith('/shorts/')) {
-                    return pathname.split('/')[2];
-                }
-
-                if (pathname === '/playlist') {
-                    return searchParams.get('v');
-                }
-            }
-            return null;
-        } catch {
-            return null;
-        }
-    }
-
-    private getYoutubeThumbnailUrl(videoId: string, quality: string): string {
-        const isWebp = quality.endsWith('.webp');
-        const baseUrl = isWebp ? 'https://i.ytimg.com/vi_webp' : 'https://img.youtube.com/vi';
-        return `${baseUrl}/${videoId}/${quality}`;
     }
 
     private getMimeTypeFromExtension(extension: string): string | null {
