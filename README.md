@@ -291,6 +291,8 @@ Notebook Navigator runs locally, but some features make HTTP requests from Obsid
 - Downloaded icon packs and images are stored locally (IndexedDB). Recent notes/files and UI state are stored locally (Obsidian local storage).
   <br>
 
+<br>
+
 ## 9 Questions or issues?
 
 **[Join our Discord](https://discord.gg/6eeSUvzEJr)** for support and discussions, or open an issue on the
