@@ -3,7 +3,7 @@
 Read in your language: [English](https://notebooknavigator.com/docs.html) • [العربية](https://notebooknavigator.com/ar/docs.html) • [Deutsch](https://notebooknavigator.com/de/docs.html) • [Español](https://notebooknavigator.com/es/docs.html) • [فارسی](https://notebooknavigator.com/fa/docs.html) • [Français](https://notebooknavigator.com/fr/docs.html) • [Bahasa Indonesia](https://notebooknavigator.com/id/docs.html) • [Italiano](https://notebooknavigator.com/it/docs.html) • [Nederlands](https://notebooknavigator.com/nl/docs.html) • [Polski](https://notebooknavigator.com/pl/docs.html) • [Português](https://notebooknavigator.com/pt/docs.html) • [Português (Brasil)](https://notebooknavigator.com/pt-br/docs.html) • [Русский](https://notebooknavigator.com/ru/docs.html) • [ไทย](https://notebooknavigator.com/th/docs.html) • [Türkçe](https://notebooknavigator.com/tr/docs.html) • [Українська](https://notebooknavigator.com/uk/docs.html) • [Tiếng Việt](https://notebooknavigator.com/vi/docs.html) • [日本語](https://notebooknavigator.com/ja/docs.html) • [한국어](https://notebooknavigator.com/ko/docs.html) • [中文简体](https://notebooknavigator.com/zh-cn/docs.html) • [中文繁體](https://notebooknavigator.com/zh-tw/docs.html)
 
 ![Obsidian Downloads](https://img.shields.io/badge/dynamic/json?logo=obsidian&color=%23483699&label=Downloads&query=%24%5B%22notebook-navigator%22%5D.downloads&url=https%3A%2F%2Fraw.githubusercontent.com%2Fobsidianmd%2Fobsidian-releases%2Fmaster%2Fcommunity-plugin-stats.json)
-![Obsidian Compatibility](https://img.shields.io/badge/Obsidian-v1.8.0+-483699?logo=obsidian&style=flat-square)
+![Obsidian Compatibility](https://img.shields.io/badge/Obsidian-v1.8.7+-483699?logo=obsidian&style=flat-square)
 [![Discord](https://img.shields.io/discord/1405458145974943846?color=7289da&label=Discord&logo=discord&logoColor=white)](https://discord.gg/6eeSUvzEJr)
 
 Notebook Navigator is a plugin for [Obsidian](https://obsidian.md) that replaces the default file explorer with a Notes-style interface with a dual-pane layout.
@@ -54,8 +54,8 @@ The tutorial has subtitles in 21 languages, same as Notebook Navigator.
 ### 3.2 Navigation
 
 - **Vault profiles** - Multiple filtered views with per-profile hidden folders/tags/notes, file visibility, banner, and shortcuts
-- **Shortcuts** - Notes, folders, tags, and saved searches (pinned area, badges, multi-select)
-- **Recent notes** - Recent notes section with pinning support
+- **Shortcuts** - Notes, folders, tags, and saved searches with pinning and reordering
+- **Recent notes/files** - Recent items section stored per vault profile, optionally pinned with shortcuts
 - **Folder tree** - Expand/collapse navigation with manual root folder ordering
 - **Tag tree** - Hierarchical tags with configurable root tag ordering
 - **Auto-reveal active file** - Folder expansion and scroll-to-selection
@@ -70,14 +70,14 @@ The tutorial has subtitles in 21 languages, same as Notebook Navigator.
 - **Per-folder/tag appearances** - Title rows, preview rows, compact mode, descendants toggle
 - **Hidden content** - Hidden folders/tags/notes/files with patterns and frontmatter properties
 - **Color and icon system** - Folder/tag/file colors, icon packs, emoji/Lucide icons, frontmatter read/write, icon mapping by file name and file type category
-- **Creation rules** - Optional invalid character prevention for file/folder creation
+- **Name warnings** - Warn about forbidden filesystem characters and characters that break Obsidian links when naming files and folders
 
 ### 3.4 File display
 
 - **Note previews** - 1–5 preview lines with optional HTML stripping
 - **Thumbnails** - Featured images plus auto-generated thumbnails stored in the metadata cache
 - **External images** - Optional downloads for external images and YouTube thumbnails
-- **Date grouping** - Group notes by Today, Yesterday, This Week when sorted by date
+- **Date grouping** - Group notes by Today, Yesterday, Previous 7 days, Previous 30 days, months, and years when sorted by date
 - **Frontmatter support** - Read note names and timestamps from frontmatter fields
 - **Note metadata** - Show modification date and tags in the file list
 - **Compact mode** - Compact display when preview, date, and images are disabled
@@ -90,7 +90,7 @@ The tutorial has subtitles in 21 languages, same as Notebook Navigator.
 - **Drag and drop** - File moves, tagging, shortcut assignment, tag tree reparenting, spring-loaded folders
 - **Context menus** - Create notes/folders/canvases/bases/drawings and run file/tag actions
 - **Drawings** - Create Excalidraw and Tldraw drawings from navigation and list pane menus
-- **Templates** - New note/file from template commands with the Templater plugin
+- **Templates** - New note from template commands with the Templater plugin
 - **File operations** - Create, rename, duplicate, move, trash files and folders
 - **Filtering** - Folder/tag/note/file exclusions with patterns and frontmatter properties
 
@@ -267,39 +267,32 @@ Feel free to connect with me on [LinkedIn](https://www.linkedin.com/in/johansan/
 
 ## 8 Network Usage Disclosure
 
-**Optional Network Access:** This plugin includes **optional** features that access the GitHub repository for enhanced functionality. All network access is optional and controlled through settings.
+Notebook Navigator runs locally, but some features make HTTP requests from Obsidian.
 
-### 8.1 Release Update Checks (Optional)
+### 8.1 Release update checks (Optional)
 
-- **Purpose:** Check for new plugin releases once per day
-- **Enabled by:** "Check for new version on start" setting (can be disabled)
-- **Source:** GitHub repository (`https://github.com/johansan/notebook-navigator`)
-- **Frequency:** Maximum once per day, only on startup
-- **Data:** Only fetches release version information
+- **Setting:** "Check for new version on start"
+- **Request:** `https://api.github.com/repos/johansan/notebook-navigator/releases/latest`
+- **Frequency:** At most once per 24 hours, on startup
+- **Data:** Sends standard HTTP metadata; does not include vault content
 
-### 8.2 Icon Pack Downloads (Optional)
+### 8.2 Icon pack downloads (Optional)
 
-- **Purpose:** Download additional icon packs for enhanced visual customization
-- **Enabled by:** Manually enabling icon packs in the Icon Packs settings tab
-- **What is downloaded:** Icon font files and metadata (Bootstrap Icons, Font Awesome, Material Icons, Phosphor, RPG Awesome, Simple Icons)
-- **Source:** GitHub repository (`https://raw.githubusercontent.com/johansan/notebook-navigator/main/icon-assets/`)
-- **When:** Only when you explicitly enable icon packs - no automatic downloads
-- **Storage:** Downloaded icons are stored in the local IndexedDB database for offline use
+- **Setting:** Enable an icon pack in the Icon Packs tab
+- **Requests:** `https://raw.githubusercontent.com/johansan/notebook-navigator/main/icon-assets/...` (manifest, font, metadata)
+- **Storage:** Stored locally in IndexedDB
 
-### 8.3 Featured Image Downloads (Optional)
+### 8.3 External images and YouTube thumbnails
 
-- **Purpose:** Download remote images and YouTube thumbnails to display as note previews
-- **Enabled by:** "Download remote images" setting (enabled by default)
-- **What is downloaded:** Remote images referenced in note frontmatter and YouTube video thumbnails
-- **When:** Only when enabled and a note references a remote image URL
-- **Storage:** Downloaded images are cached in the local IndexedDB database for offline use
+- **Feature images (Optional):** Controlled by the "Download external images" setting. Downloads remote images and YouTube thumbnails for feature images and stores them locally in IndexedDB.
+- **Welcome modal (First launch):** Loads a static thumbnail from `https://raw.githubusercontent.com/johansan/notebook-navigator/main/images/youtube-thumbnail.jpg`.
+- **What’s new modal (On update / when opened):** Loads YouTube thumbnails from `https://img.youtube.com/vi/<id>/...` for release notes that include a YouTube link.
 
-### 8.4 Privacy
+### 8.4 Privacy and data handling
 
-- **No telemetry or user data is collected or transmitted**
-- **All features are opt-in and can be disabled**
-- **Network access is limited to the GitHub repository and remote image URLs**
-- **YouTube thumbnail previews load images from `img.youtube.com` and `i.ytimg.com`**
+- Notebook Navigator does not send note content, file names, or tags to a Notebook Navigator server.
+- Requests to GitHub, YouTube, and any external image host are made directly from your device and include standard HTTP metadata (IP address, user-agent, and similar).
+- Downloaded icon packs and images are stored locally (IndexedDB). Recent notes/files and UI state are stored locally (Obsidian local storage).
   <br>
 
 ## 9 Questions or issues?
