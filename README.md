@@ -283,7 +283,13 @@ Notebook Navigator runs locally, but some features make HTTP requests from Obsid
 
 <br>
 
-## 8 Contact
+## 8 Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=johansan/notebook-navigator&type=date&legend=top-left)](https://www.star-history.com/#johansan/notebook-navigator&type=date&legend=top-left)
+
+<br>
+
+## 9 Contact
 
 Notebook Navigator is built and maintained by [Johan Sanneblad](https://www.linkedin.com/in/johansan/). Johan has a PhD in Software Development and has worked with innovation development for companies such as Apple, Electronic Arts, Google, Microsoft, Lego, SKF, Volvo Cars, Volvo Group and Yamaha.
 
@@ -291,13 +297,13 @@ Feel free to connect with me on [LinkedIn](https://www.linkedin.com/in/johansan/
 
 <br>
 
-## 9 Questions or issues?
+## 10 Questions or issues?
 
 **[Join our Discord](https://discord.gg/6eeSUvzEJr)** for support and discussions, or open an issue on the
 [GitHub repository](https://github.com/johansan/notebook-navigator).
 
 <br>
 
-## 10 License
+## 11 License
 
 This project is licensed under the GNU General Public License v3.0 - see the [LICENSE](https://github.com/johansan/notebook-navigator/blob/main/LICENSE) file for details.
