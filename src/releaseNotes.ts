@@ -79,14 +79,14 @@ const RELEASE_NOTES: ReleaseNote[] = [
         date: '2026-01-12',
         showOnUpdate: true,
         new: [
+            'New settings: ==Notes > Custom property==. Display a custom property in the list pane - either a frontmatter property or word count.'
         ],
         improved: [
-            'Improved cache rebuild performance by slowing down tag tree updates during the process.'
+            'Internal: Improved cache rebuild performance by slowing down tag tree updates during the process.',
+            'Internal: Major rewrite of the metadata processing chain. It is now a single sequential pipeline per file instead of multiple parallel provider. It reads markdown content at most once per file per run and writes one merged database update per run. This should make the system handle vaults of virtually any size without performance degradation.'
         ],
-        changed: [
-        ],
-        fixed: [
-        ]
+        changed: [],
+        fixed: []
     },
     {
         version: '2.0.4',
