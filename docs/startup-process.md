@@ -219,13 +219,13 @@ metadata-dependent providers once Obsidian metadata cache entries exist:
 
 ```mermaid
 graph TD
-    Start[From Phase 3:<br/>Database & Providers ready] --> A[processExistingCache (initial)]
+    Start["From Phase 3:<br/>Database & Providers ready"] --> A["processExistingCache (initial)"]
 
-    A --> B[getIndexableFiles<br/>(markdown + PDFs)]
+    A --> B["getIndexableFiles<br/>(markdown + PDFs)"]
     B --> C[calculateFileDiff]
 
-    C --> D[removeFilesFromCache (toRemove)]
-    C --> E[recordFileChanges (toAdd/toUpdate)]
+    C --> D["removeFilesFromCache (toRemove)"]
+    C --> E["recordFileChanges (toAdd/toUpdate)"]
 
     D --> F[rebuildTagTree]
     E --> F
@@ -234,8 +234,8 @@ graph TD
 
     G --> H{Metadata-dependent types enabled?}
     H -->|Yes| I[queueMetadataContentWhenReady]
-    I --> J[waitForMetadataCache<br/>(resolved/changed)]
-    J --> K[Queue markdownPipeline/tags/metadata providers]
+    I --> J["waitForMetadataCache<br/>(resolved/changed)"]
+    J --> K["Queue markdownPipeline/tags/metadata providers"]
     H -->|No| L[Skip metadata gating]
 
     G --> M{Show feature images?}
