@@ -134,11 +134,11 @@ Priority order: folder note styles override custom color styles, which override 
 | `--nn-theme-file-selected-bg`                     | `var(--text-selection)`                       | Selected file background color                                  |
 | `--nn-theme-file-selected-name-color`             | `var(--nn-theme-file-name-color)`             | Text color for file names when selected                         |
 | `--nn-theme-file-selected-preview-color`          | `var(--nn-theme-file-preview-color)`          | Text color for content preview when selected                    |
-| `--nn-theme-file-selected-date-color`             | `var(--nn-theme-file-date-color)`             | Text color for file dates when selected                         |
-| `--nn-theme-file-selected-parent-color`           | `var(--nn-theme-file-parent-color)`           | Text color for parent folder path when selected                 |
-| `--nn-theme-file-selected-tag-color`              | `var(--nn-theme-file-tag-color)`              | Text color for tag pills when selected                          |
+| `--nn-theme-file-selected-date-color`             | `var(--text-muted)`                           | Text color for file dates when selected                         |
+| `--nn-theme-file-selected-parent-color`           | `var(--text-muted)`                           | Text color for parent folder path when selected                 |
+| `--nn-theme-file-selected-tag-color`              | `var(--text-muted)`                           | Text color for tag pills when selected                          |
 | `--nn-theme-file-selected-tag-bg`                 | `var(--nn-theme-file-tag-bg)`                 | Background color for tag pills when selected                    |
-| `--nn-theme-file-selected-custom-property-color`  | `var(--nn-theme-file-custom-property-color)`  | Text color for custom property pill when selected               |
+| `--nn-theme-file-selected-custom-property-color`  | `var(--text-muted)`                           | Text color for custom property pill when selected               |
 | `--nn-theme-file-selected-custom-property-bg`     | `var(--nn-theme-file-custom-property-bg)`     | Background color for custom property pill when selected         |
 | `--nn-theme-file-selected-inactive-bg`            | `var(--background-modifier-hover)`            | Selected file background when pane is inactive (desktop only)   |
 | `--nn-theme-file-selected-inactive-name-color`    | `var(--nn-theme-file-selected-name-color)`    | File name color when selected and pane is inactive              |

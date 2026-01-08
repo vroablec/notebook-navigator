@@ -254,11 +254,11 @@ body {
     --nn-theme-file-selected-bg: var(--text-selection);
     --nn-theme-file-selected-name-color: var(--nn-theme-file-name-color);
     --nn-theme-file-selected-preview-color: var(--nn-theme-file-preview-color);
-    --nn-theme-file-selected-date-color: var(--nn-theme-file-date-color);
-    --nn-theme-file-selected-parent-color: var(--nn-theme-file-parent-color);
-    --nn-theme-file-selected-tag-color: var(--nn-theme-file-tag-color);
+    --nn-theme-file-selected-date-color: var(--text-muted);
+    --nn-theme-file-selected-parent-color: var(--text-muted);
+    --nn-theme-file-selected-tag-color: var(--text-muted);
     --nn-theme-file-selected-tag-bg: var(--nn-theme-file-tag-bg);
-    --nn-theme-file-selected-custom-property-color: var(--nn-theme-file-custom-property-color);
+    --nn-theme-file-selected-custom-property-color: var(--text-muted);
     --nn-theme-file-selected-custom-property-bg: var(--nn-theme-file-custom-property-bg);
     --nn-theme-file-selected-inactive-bg: var(--background-modifier-hover);
     --nn-theme-file-selected-inactive-name-color: var(--nn-theme-file-selected-name-color);
@@ -2599,6 +2599,51 @@ body {
     position: relative;
     scrollbar-width: none;
     -ms-overflow-style: none;
+}
+
+.nn-file-pill-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: var(--nn-file-tag-row-gap);
+    height: var(--nn-file-tag-row-height);
+}
+
+.nn-file-pill-row .nn-file-tags,
+.nn-file-pill-row .nn-file-custom-property-row {
+    margin-top: 0;
+    flex: 1;
+    min-width: 0;
+}
+
+.nn-file-pill-row-icon {
+    width: 14px;
+    height: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.nn-file-pill-row-icon svg {
+    width: 14px;
+    height: 14px;
+}
+
+.nn-file-pill-row-tags .nn-file-pill-row-icon {
+    color: var(--nn-theme-file-tag-color);
+}
+
+.nn-file-pill-row-custom-property .nn-file-pill-row-icon {
+    color: var(--nn-theme-file-custom-property-color);
+}
+
+.nn-file.nn-selected .nn-file-pill-row-tags .nn-file-pill-row-icon {
+    color: var(--nn-selected-file-tag-color);
+}
+
+.nn-file.nn-selected .nn-file-pill-row-custom-property .nn-file-pill-row-icon {
+    color: var(--nn-selected-file-custom-property-color);
 }
 
 .nn-file-tags::-webkit-scrollbar,

@@ -76,6 +76,7 @@ import { areStringArraysEqual, mergeRanges, NumericRange } from '../utils/arrayU
 import { openAddTagToFilesModal } from '../utils/tagModalHelpers';
 import { getTagSearchModifierOperator } from '../utils/tagUtils';
 import type { InclusionOperator } from '../utils/filterSearch';
+import { ObsidianIcon } from './ObsidianIcon';
 
 const FEATURE_IMAGE_MAX_ASPECT_RATIO = 16 / 9;
 const FEATURE_IMAGE_REGEN_THROTTLE_MS = 10000;
@@ -591,6 +592,32 @@ export const FileItem = React.memo(function FileItem({
         return true;
     }, [categorizedTags, isCompactMode, settings.showFileTags, settings.showFileTagsInCompactMode, settings.showTags]);
 
+    const customPropertyLabel = customProperty ?? '';
+    const shouldShowCustomProperty = useMemo(() => {
+        return shouldShowCustomPropertyRow({
+            customPropertyType: settings.customPropertyType,
+            showCustomPropertyInCompactMode: settings.showCustomPropertyInCompactMode,
+            isCompactMode,
+            file,
+            customProperty: customPropertyLabel
+        });
+    }, [customPropertyLabel, file, isCompactMode, settings.customPropertyType, settings.showCustomPropertyInCompactMode]);
+
+    const shouldShowPillRowIcons = useMemo(() => {
+        const tagPillsEnabled = settings.showTags && settings.showFileTags && (!isCompactMode || settings.showFileTagsInCompactMode);
+        const customPropertyPillsEnabled =
+            settings.customPropertyType !== 'none' && (!isCompactMode || settings.showCustomPropertyInCompactMode);
+
+        return tagPillsEnabled && customPropertyPillsEnabled;
+    }, [
+        isCompactMode,
+        settings.customPropertyType,
+        settings.showCustomPropertyInCompactMode,
+        settings.showFileTags,
+        settings.showFileTagsInCompactMode,
+        settings.showTags
+    ]);
+
     const getTagDisplayName = useCallback(
         (tag: string): string => {
             if (settings.showFileTagAncestors) {
@@ -614,7 +641,7 @@ export const FileItem = React.memo(function FileItem({
             return null;
         }
 
-        return (
+        const tagContainer = (
             <div className="nn-file-tags">
                 {categorizedTags.map((tag, index) => {
                     const tagColors = tagColorData.get(tag);
@@ -648,30 +675,45 @@ export const FileItem = React.memo(function FileItem({
                 })}
             </div>
         );
-    }, [categorizedTags, getTagDisplayName, handleTagClick, shouldShowFileTags, tagColorData]);
 
-    const customPropertyLabel = customProperty ?? '';
-    const shouldShowCustomProperty = useMemo(() => {
-        return shouldShowCustomPropertyRow({
-            customPropertyType: settings.customPropertyType,
-            showCustomPropertyInCompactMode: settings.showCustomPropertyInCompactMode,
-            isCompactMode,
-            file,
-            customProperty: customPropertyLabel
-        });
-    }, [customPropertyLabel, file, isCompactMode, settings.customPropertyType, settings.showCustomPropertyInCompactMode]);
+        if (!shouldShowPillRowIcons) {
+            return tagContainer;
+        }
+
+        return (
+            <div className="nn-file-pill-row nn-file-pill-row-tags">
+                <ObsidianIcon name="lucide-tags" className="nn-file-pill-row-icon nn-file-pill-row-icon-tags" aria-hidden={true} />
+                {tagContainer}
+            </div>
+        );
+    }, [categorizedTags, getTagDisplayName, handleTagClick, shouldShowFileTags, shouldShowPillRowIcons, tagColorData]);
 
     const renderCustomProperty = useCallback(() => {
         if (!shouldShowCustomProperty) {
             return null;
         }
 
-        return (
+        const customPropertyContent = (
             <div className="nn-file-custom-property-row">
                 <span className="nn-file-tag nn-file-custom-property">{customPropertyLabel}</span>
             </div>
         );
-    }, [customPropertyLabel, shouldShowCustomProperty]);
+
+        if (!shouldShowPillRowIcons) {
+            return customPropertyContent;
+        }
+
+        return (
+            <div className="nn-file-pill-row nn-file-pill-row-custom-property">
+                <ObsidianIcon
+                    name="lucide-align-left"
+                    className="nn-file-pill-row-icon nn-file-pill-row-icon-custom-property"
+                    aria-hidden={true}
+                />
+                {customPropertyContent}
+            </div>
+        );
+    }, [customPropertyLabel, shouldShowCustomProperty, shouldShowPillRowIcons]);
 
     // Format display date based on current sort
     const displayDate = useMemo(() => {
@@ -1361,7 +1403,7 @@ export const FileItem = React.memo(function FileItem({
                     ) : null}
                     {isCompactMode ? (
                         // ========== COMPACT MODE ==========
-                        // Minimal layout: only file name + tags
+                        // Minimal layout: file name + pills
                         // Used when date, preview, and image are all disabled
                         <div className="nn-compact-file-text-content">
                             <div className="nn-compact-file-header">
@@ -1374,8 +1416,8 @@ export const FileItem = React.memo(function FileItem({
                                     </div>
                                 ) : null}
                             </div>
-                            {renderTags()}
                             {renderCustomProperty()}
+                            {renderTags()}
                         </div>
                     ) : (
                         // ========== NORMAL MODE ==========
@@ -1386,7 +1428,7 @@ export const FileItem = React.memo(function FileItem({
 
                                 {/* ========== SINGLE LINE MODE ========== */}
                                 {/* Conditions: pinnedItemShouldUseCompactLayout OR previewRows < 2 */}
-                                {/* Layout: Date+Preview share one line, tags below, parent folder last */}
+                                {/* Layout: Date+Preview share one line, pills below, parent folder last */}
                                 {shouldUseSingleLineForDateAndPreview && (
                                     <>
                                         {/* Date + Preview on same line */}
@@ -1399,9 +1441,9 @@ export const FileItem = React.memo(function FileItem({
                                             )}
                                         </div>
 
-                                        {/* Tags */}
-                                        {renderTags()}
+                                        {/* Pills */}
                                         {renderCustomProperty()}
+                                        {renderTags()}
 
                                         {/* Parent folder - gets its own line */}
                                         {renderParentFolder()}
@@ -1415,12 +1457,12 @@ export const FileItem = React.memo(function FileItem({
                                     <>
                                         {/* CASE 1: COLLAPSED EMPTY PREVIEW */}
                                         {/* Conditions: heightOptimizationEnabled AND !hasPreviewContent */}
-                                        {/* Layout: Tags first, then Date+Parent on same line (compact) */}
+                                        {/* Layout: Pills, then Date+Parent on same line (compact) */}
                                         {shouldCollapseEmptyPreviewSpace && (
                                             <>
-                                                {/* Tags (show even when no preview text) */}
-                                                {renderTags()}
+                                                {/* Pills (show even when no preview text) */}
                                                 {renderCustomProperty()}
+                                                {renderTags()}
                                                 {/* Date + Parent folder share the second line (compact layout) */}
                                                 <div className="nn-file-second-line">
                                                     {settings.showFileDate && <div className="nn-file-date">{displayDate}</div>}
@@ -1444,9 +1486,9 @@ export const FileItem = React.memo(function FileItem({
                                                     </div>
                                                 )}
 
-                                                {/* Tags row */}
-                                                {renderTags()}
+                                                {/* Pills */}
                                                 {renderCustomProperty()}
+                                                {renderTags()}
 
                                                 {/* Date + Parent folder share the metadata line */}
                                                 <div className="nn-file-second-line">
