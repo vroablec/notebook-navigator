@@ -493,7 +493,6 @@ export class NotebookNavigatorSettingTab extends PluginSettingTab {
             buttonComponent.setButtonText(tab.label);
             buttonComponent.removeCta();
             buttonComponent.buttonEl.addClass('nn-settings-tab-button');
-            buttonComponent.buttonEl.addClass('clickable-icon');
             buttonComponent.buttonEl.setAttribute('role', 'tab');
             buttonComponent.onClick(() => {
                 this.activateTab(tab.id, tabs, contentWrapper);

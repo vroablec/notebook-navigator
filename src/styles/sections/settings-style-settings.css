@@ -51,12 +51,6 @@ settings:
         default-dark: '#'
     -
     -
-        id: nn-navigation-pane-transparent
-        title: Navigation pane transparency
-        description: Make the navigation pane transparent (removes background).
-        type: class-toggle
-    -
-    -
         id: nn-nav-pane-items-heading
         title: Folder & tag items
         type: heading
@@ -417,12 +411,6 @@ settings:
         format: hex
         default-light: '#'
         default-dark: '#'
-    -
-    -
-        id: nn-list-pane-transparent
-        title: List pane transparency
-        description: Make the list pane transparent (removes background).
-        type: class-toggle
     -
     -
         id: nn-theme-list-search-active-bg

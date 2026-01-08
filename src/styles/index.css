@@ -130,8 +130,6 @@ Keep this list ordered: later files override earlier ones.
 @import './sections/icons-system.css';
 /* settings-metadata-info.css: metadata info row styles and menu item trash coloring. */
 @import './sections/settings-metadata-info.css';
-/* theme-transparency-toggles.css: class toggles for transparent nav/list panes and overlay filter removal. */
-@import './sections/theme-transparency-toggles.css';
 
 /* Style settings */
 /* settings-style-settings.css: Style Settings metadata block (`@settings`) for variables and class toggles. */

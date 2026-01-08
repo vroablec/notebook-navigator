@@ -102,14 +102,6 @@
     z-index: 5;
 }
 
-body.nn-navigation-pane-transparent .notebook-navigator-obsidian-1-11-plus-ios .nn-navigation-pane::after {
-    display: none;
-}
-
-body.nn-list-pane-transparent .notebook-navigator-obsidian-1-11-plus-ios .nn-list-pane::after {
-    display: none;
-}
-
 /* Single-pane container - use grid for consistent structure while allowing sliding */
 .nn-split-container.nn-single-pane {
     display: grid;

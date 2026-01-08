@@ -4723,14 +4723,6 @@ body.nn-resizing {
     z-index: 5;
 }
 
-body.nn-navigation-pane-transparent .notebook-navigator-obsidian-1-11-plus-ios .nn-navigation-pane::after {
-    display: none;
-}
-
-body.nn-list-pane-transparent .notebook-navigator-obsidian-1-11-plus-ios .nn-list-pane::after {
-    display: none;
-}
-
 /* Single-pane container - use grid for consistent structure while allowing sliding */
 .nn-split-container.nn-single-pane {
     display: grid;
@@ -6140,70 +6132,6 @@ body.nn-list-pane-transparent .notebook-navigator-obsidian-1-11-plus-ios .nn-lis
 .menu-item:has(.menu-item-icon svg.lucide-trash) .menu-item-icon {
     color: var(--text-error);
 }
-/* Source: src/styles/sections/theme-transparency-toggles.css */
-
-/* ========================================================================
-   Transparency Toggles
-   ======================================================================== */
-
-/* Navigation pane transparency - applied when toggle is enabled */
-body.nn-navigation-pane-transparent .notebook-navigator {
-    background-color: transparent !important;
-}
-
-body.nn-navigation-pane-transparent .nn-navigation-pane {
-    background-color: transparent !important;
-}
-
-body.nn-navigation-pane-transparent .nn-navigation-pane .nn-pane-header {
-    background-color: transparent !important;
-}
-
-body.nn-navigation-pane-transparent .nn-shortcut-pinned {
-    background-color: transparent !important;
-}
-
-body.nn-navigation-pane-transparent .nn-navigation-pane-scroller {
-    background-color: transparent !important;
-}
-
-body.nn-navigation-pane-transparent .nn-navigation-pane-overlay {
-    background: transparent !important;
-    -webkit-backdrop-filter: none !important;
-    backdrop-filter: none !important;
-}
-
-/* List pane transparency - applied when toggle is enabled */
-body.nn-list-pane-transparent .notebook-navigator {
-    background-color: transparent !important;
-}
-
-body.nn-list-pane-transparent .nn-list-pane {
-    background-color: transparent !important;
-}
-
-body.nn-list-pane-transparent .nn-list-pane .nn-pane-header {
-    background-color: transparent !important;
-}
-
-body.nn-list-pane-transparent .nn-list-pane-scroller {
-    background-color: transparent !important;
-}
-
-body.nn-list-pane-transparent .nn-list-title-area {
-    background-color: transparent !important;
-}
-
-body.nn-list-pane-transparent .nn-search-bar-container,
-body.nn-list-pane-transparent .nn-search-input-wrapper {
-    background-color: transparent !important;
-}
-
-body.nn-list-pane-transparent .nn-list-pane-overlay {
-    background: transparent !important;
-    -webkit-backdrop-filter: none !important;
-    backdrop-filter: none !important;
-}
 /* Source: src/styles/sections/settings-style-settings.css */
 
 /* @settings
@@ -6255,12 +6183,6 @@ settings:
         format: hex
         default-light: '#'
         default-dark: '#'
-    -
-    -
-        id: nn-navigation-pane-transparent
-        title: Navigation pane transparency
-        description: Make the navigation pane transparent (removes background).
-        type: class-toggle
     -
     -
         id: nn-nav-pane-items-heading
@@ -6623,12 +6545,6 @@ settings:
         format: hex
         default-light: '#'
         default-dark: '#'
-    -
-    -
-        id: nn-list-pane-transparent
-        title: List pane transparency
-        description: Make the list pane transparent (removes background).
-        type: class-toggle
     -
     -
         id: nn-theme-list-search-active-bg
