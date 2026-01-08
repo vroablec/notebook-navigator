@@ -34,11 +34,11 @@ import { isMarkdownPath } from '../../utils/fileTypeUtils';
  *
  * The polling interval is intentionally coarse because scanning the cache is O(number of files).
  */
-export function useCacheRebuildNotice(params: { app: App; stoppedRef: RefObject<boolean> }): {
+export function useCacheRebuildNotice(params: { app: App; stoppedRef: RefObject<boolean>; onRebuildComplete?: () => void }): {
     clearCacheRebuildNotice: () => void;
     startCacheRebuildNotice: (total: number, enabledTypes: FileContentType[]) => void;
 } {
-    const { app, stoppedRef } = params;
+    const { app, stoppedRef, onRebuildComplete } = params;
 
     const cacheRebuildNoticeRef = useRef<ReturnType<typeof showNotice> | null>(null);
     const cacheRebuildIntervalRef = useRef<number | null>(null);
@@ -200,6 +200,10 @@ export function useCacheRebuildNotice(params: { app: App; stoppedRef: RefObject<
                         // Require a couple of consecutive empty ticks before hiding the notice. This avoids flicker
                         // if the rebuild is still seeding the database.
                         if (emptyTicks >= 2) {
+                            if (db.getFileCount() > 0) {
+                                // Let callers clear persisted rebuild state only after the database has been seeded.
+                                onRebuildComplete?.();
+                            }
                             clearCacheRebuildNotice();
                             return;
                         }
@@ -215,11 +219,13 @@ export function useCacheRebuildNotice(params: { app: App; stoppedRef: RefObject<
                 updateProgress(done);
 
                 if (readyRemainingCount === 0) {
+                    // Notify completion so callers can clear any persisted rebuild markers.
+                    onRebuildComplete?.();
                     clearCacheRebuildNotice();
                 }
             }, 2_000);
         },
-        [app.metadataCache, app.vault, clearCacheRebuildNotice, stoppedRef]
+        [app.metadataCache, app.vault, clearCacheRebuildNotice, onRebuildComplete, stoppedRef]
     );
 
     return { clearCacheRebuildNotice, startCacheRebuildNotice };

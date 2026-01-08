@@ -230,6 +230,7 @@ export interface LocalStorageKeys {
     fileCacheKey: string;
     databaseSchemaVersionKey: string;
     databaseContentVersionKey: string;
+    cacheRebuildNoticeKey: string;
     localStorageVersionKey: string;
     vaultProfileKey: string;
     releaseCheckTimestampKey: string;
@@ -266,6 +267,7 @@ export const STORAGE_KEYS: LocalStorageKeys = {
     fileCacheKey: 'notebook-navigator-file-cache',
     databaseSchemaVersionKey: 'notebook-navigator-db-schema-version',
     databaseContentVersionKey: 'notebook-navigator-db-content-version',
+    cacheRebuildNoticeKey: 'notebook-navigator-cache-rebuild-notice',
     localStorageVersionKey: 'notebook-navigator-localstorage-version',
     vaultProfileKey: 'notebook-navigator-vault-profile',
     releaseCheckTimestampKey: 'notebook-navigator-release-check-timestamp',

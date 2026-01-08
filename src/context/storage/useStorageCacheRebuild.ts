@@ -27,6 +27,7 @@ import type { TagTreeNode } from '../../types/storage';
 import { clearNoteCountCache } from '../../utils/tagTree';
 import type { StorageFileData } from './storageFileData';
 import { getCacheRebuildProgressTypes } from './storageContentTypes';
+import { clearCacheRebuildNoticeState, setCacheRebuildNoticeState } from './cacheRebuildNoticeStorage';
 
 interface TagTreeServiceLike {
     updateTagTree: (tree: Map<string, TagTreeNode>, tagged: number, untagged: number) => void;
@@ -86,6 +87,8 @@ export function useStorageCacheRebuild(params: {
 
     const rebuildCache = useCallback(async () => {
         clearCacheRebuildNotice();
+        // Reset any previously persisted rebuild marker before starting a new rebuild.
+        clearCacheRebuildNoticeState();
 
         // Rebuild runs as an exclusive operation. Store and restore the previous value so rebuild can also be
         // invoked during shutdown without accidentally re-enabling processing afterwards.
@@ -151,12 +154,18 @@ export function useStorageCacheRebuild(params: {
             const liveSettings = latestSettingsRef.current;
             const enabledTypes = getCacheRebuildProgressTypes(liveSettings);
             const total = getIndexableFiles().length;
+            if (total > 0 && enabledTypes.length > 0) {
+                // Persist a rebuild marker so the progress notice can be restored if Obsidian restarts mid-rebuild.
+                setCacheRebuildNoticeState({ total });
+            }
             startCacheRebuildNotice(total, enabledTypes);
 
             hasBuiltInitialCacheRef.current = true;
             await buildCache(true);
         } catch (error: unknown) {
             clearCacheRebuildNotice();
+            // Ensure restarts don't restore a notice when rebuild fails to start/complete.
+            clearCacheRebuildNoticeState();
             hasBuiltInitialCacheRef.current = false;
             stoppedRef.current = previousStopped;
             throw error;

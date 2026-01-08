@@ -39,7 +39,7 @@
  * - Provide metadata extraction methods with frontmatter fallback
  */
 
-import { createContext, useContext, useState, useRef, ReactNode, useMemo, useCallback } from 'react';
+import { createContext, useContext, useState, useRef, ReactNode, useMemo, useCallback, useEffect } from 'react';
 import { App, TFile, debounce, EventRef } from 'obsidian';
 import { ProcessedMetadata, extractMetadata } from '../utils/metadataExtractor';
 import { ContentProviderRegistry } from '../services/content/ContentProviderRegistry';
@@ -65,6 +65,8 @@ import { useSettingsState, useActiveProfile } from './SettingsContext';
 import { useUXPreferences } from './UXPreferencesContext';
 import type { NotebookNavigatorAPI } from '../api/NotebookNavigatorAPI';
 import type { ContentProviderType } from '../interfaces/IContentProvider';
+import { getCacheRebuildProgressTypes } from './storage/storageContentTypes';
+import { clearCacheRebuildNoticeState, getCacheRebuildNoticeState } from './storage/cacheRebuildNoticeStorage';
 
 /**
  * Context value providing both file data (tag tree) and the file cache
@@ -142,7 +144,13 @@ export function StorageProvider({ app, api, children }: StorageProviderProps) {
 
     // Flag preventing duplicate initial cache building during startup
     const hasBuiltInitialCache = useRef(false);
-    const { clearCacheRebuildNotice, startCacheRebuildNotice } = useCacheRebuildNotice({ app, stoppedRef });
+    const { clearCacheRebuildNotice, startCacheRebuildNotice } = useCacheRebuildNotice({
+        app,
+        stoppedRef,
+        onRebuildComplete: clearCacheRebuildNoticeState
+    });
+    // Run rebuild notice restoration once after storage initialization completes.
+    const hasRestoredCacheRebuildNoticeRef = useRef(false);
 
     const { getVisibleMarkdownFiles, getIndexableFiles } = useStorageFileQueries({ app, latestSettingsRef, showHiddenItems });
 
@@ -199,6 +207,27 @@ export function StorageProvider({ app, api, children }: StorageProviderProps) {
         startCacheRebuildNotice,
         getIndexableFiles
     });
+
+    useEffect(() => {
+        if (!isStorageReady || hasRestoredCacheRebuildNoticeRef.current) {
+            return;
+        }
+
+        hasRestoredCacheRebuildNoticeRef.current = true;
+        // Restore rebuild progress notice if a rebuild was in progress during the previous session.
+        const state = getCacheRebuildNoticeState();
+        if (!state) {
+            return;
+        }
+
+        const enabledTypes = getCacheRebuildProgressTypes(latestSettingsRef.current);
+        if (state.total <= 0 || enabledTypes.length === 0) {
+            clearCacheRebuildNoticeState();
+            return;
+        }
+
+        startCacheRebuildNotice(state.total, enabledTypes);
+    }, [isStorageReady, startCacheRebuildNotice]);
 
     const getFileDisplayName = useCallback(
         (file: TFile): string => {
