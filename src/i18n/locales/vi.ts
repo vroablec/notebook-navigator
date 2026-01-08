@@ -790,6 +790,10 @@ export const STRINGS_VI = {
                 name: 'Hiện màu thư mục cha',
                 desc: 'Dùng màu thư mục trên nhãn thư mục cha.'
             },
+            showParentFolderIcon: {
+                name: 'Hiện biểu tượng thư mục cha',
+                desc: 'Hiện biểu tượng thư mục bên cạnh nhãn thư mục cha.'
+            },
             showQuickActions: {
                 name: 'Hiện thao tác nhanh (chỉ máy tính)',
                 desc: 'Hiện nút thao tác khi di chuột qua tệp. Điều khiển nút chọn thao tác xuất hiện.'

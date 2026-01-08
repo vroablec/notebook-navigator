@@ -791,6 +791,10 @@ export const STRINGS_PT_BR = {
                 name: 'Mostrar cor de pasta pai',
                 desc: 'Usar cores de pasta em rótulos de pastas pai.'
             },
+            showParentFolderIcon: {
+                name: 'Mostrar ícone da pasta pai',
+                desc: 'Mostrar ícones de pasta ao lado dos rótulos de pastas pai.'
+            },
             showQuickActions: {
                 name: 'Mostrar ações rápidas (apenas desktop)',
                 desc: 'Mostrar botões de ação ao passar sobre arquivos. Controles de botão selecionam quais ações aparecem.'

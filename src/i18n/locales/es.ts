@@ -791,6 +791,10 @@ export const STRINGS_ES = {
                 name: 'Mostrar color de carpeta principal',
                 desc: 'Usar colores de carpeta en etiquetas de carpetas principales.'
             },
+            showParentFolderIcon: {
+                name: 'Mostrar icono de carpeta principal',
+                desc: 'Mostrar iconos de carpeta junto a las etiquetas de carpetas principales.'
+            },
             showQuickActions: {
                 name: 'Mostrar acciones rápidas (solo escritorio)',
                 desc: 'Mostrar botones de acción al pasar sobre archivos. Los controles de botones seleccionan qué acciones aparecen.'

@@ -788,6 +788,10 @@ export const STRINGS_ZH_CN = {
                 name: '显示父文件夹颜色',
                 desc: '在父文件夹标签上使用文件夹颜色。'
             },
+            showParentFolderIcon: {
+                name: '显示父文件夹图标',
+                desc: '在父文件夹标签旁显示文件夹图标。'
+            },
             showQuickActions: {
                 name: '显示快速操作（仅桌面版）',
                 desc: '悬停在文件上时显示操作按钮。按钮控件选择显示哪些操作。'

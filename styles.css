@@ -2464,11 +2464,29 @@ body {
     color: var(--nn-theme-file-date-color);
     flex-shrink: 0;
     white-space: nowrap;
-    margin-inline-end: 8px;
+    margin-inline-end: 0;
     overflow: hidden;
     text-overflow: ellipsis;
     min-width: auto;
     line-height: var(--nn-file-single-text-line-height);
+}
+
+/* Date + preview (same line): match legacy spacing. */
+.nn-file-second-line > .nn-file-date + .nn-file-preview {
+    margin-inline-start: 8px;
+}
+
+/* Date + parent folder (same line): match legacy spacing when dot separator is disabled. */
+.nn-file-second-line > .nn-file-date + .nn-parent-folder[data-dot-separator='false'] {
+    margin-inline-start: 8px;
+}
+
+/* Date + parent folder (same line): dot separator */
+.nn-file-second-line > .nn-file-date + .nn-parent-folder[data-dot-separator='true']::before {
+    content: '•';
+    flex-shrink: 0;
+    margin-inline-end: 4px;
+    font-size: 0.65em;
 }
 
 /* File preview text - secondary line showing file content */

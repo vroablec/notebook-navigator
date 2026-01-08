@@ -790,6 +790,10 @@ export const STRINGS_TR = {
                 name: 'Üst klasör rengini göster',
                 desc: 'Üst klasör etiketlerinde klasör renklerini kullan.'
             },
+            showParentFolderIcon: {
+                name: 'Üst klasör simgesini göster',
+                desc: 'Üst klasör etiketlerinin yanında klasör simgelerini göster.'
+            },
             showQuickActions: {
                 name: 'Hızlı eylemleri göster (yalnızca masaüstü)',
                 desc: 'Dosyaların üzerine gelirken eylem düğmelerini göster. Düğme kontrolleri hangi eylemlerin görüneceğini seçer.'

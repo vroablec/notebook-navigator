@@ -238,6 +238,7 @@ export interface NotebookNavigatorSettings {
     showParentFolder: boolean;
     parentFolderClickRevealsFile: boolean;
     showParentFolderColor: boolean;
+    showParentFolderIcon: boolean;
 
     // Icon packs tab
     externalIconProviders: Record<string, boolean>;

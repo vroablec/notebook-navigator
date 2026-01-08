@@ -768,6 +768,16 @@ export function renderNotesTab(context: SettingsTabContext): void {
             })
         );
 
+    new Setting(parentFolderSettingsEl)
+        .setName(strings.settings.items.showParentFolderIcon.name)
+        .setDesc(strings.settings.items.showParentFolderIcon.desc)
+        .addToggle(toggle =>
+            toggle.setValue(plugin.settings.showParentFolderIcon).onChange(async value => {
+                plugin.settings.showParentFolderIcon = value;
+                await plugin.saveSettingsAndUpdate();
+            })
+        );
+
     context.registerShowTagsListener(visible => {
         setGroupVisible(tagsGroup.rootEl, visible);
     });

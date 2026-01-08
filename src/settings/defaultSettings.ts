@@ -191,7 +191,8 @@ export const DEFAULT_SETTINGS: NotebookNavigatorSettings = {
     alphabeticalDateMode: 'modified',
     showParentFolder: true,
     parentFolderClickRevealsFile: false,
-    showParentFolderColor: true,
+    showParentFolderColor: false,
+    showParentFolderIcon: false,
 
     // Icon packs tab
     externalIconProviders: {},

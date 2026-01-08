@@ -231,7 +231,7 @@ function ParentFolderLabel({ iconId, label, iconVersion, color, showIcon, applyC
     }, [iconId, iconVersion, showIcon]);
 
     return (
-        <div className="nn-parent-folder">
+        <div className="nn-parent-folder" data-dot-separator={showIcon ? 'false' : 'true'}>
             <div
                 className="nn-parent-folder-content"
                 data-reveal={isRevealEnabled ? 'true' : 'false'}
@@ -765,15 +765,18 @@ export const FileItem = React.memo(function FileItem({
 
         if (shouldShowParentLabel && parentFolderSource.path !== '/') {
             // Use custom icon if set, otherwise use default folder icon
-            const customParentIcon = metadataService.getFolderIcon(parentFolderSource.path);
-            const fallbackParentIcon = parentFolderSource.path === '/' ? 'vault' : 'lucide-folder-closed';
+            const shouldShowParentFolderIcon = settings.showParentFolderIcon;
+            const customParentIcon = shouldShowParentFolderIcon ? metadataService.getFolderIcon(parentFolderSource.path) : undefined;
+            const fallbackParentIcon = 'lucide-folder-closed';
+
             const parentFolderColor = settings.showParentFolderColor ? metadataService.getFolderColor(parentFolderSource.path) : undefined;
+            const shouldShowParentFolderColor = Boolean(parentFolderColor);
             parentFolderMeta = {
                 name: parentFolderSource.name,
                 iconId: customParentIcon ?? fallbackParentIcon,
-                color: parentFolderColor,
-                applyColorToName: Boolean(parentFolderColor) && !settings.colorIconOnly,
-                showIcon: settings.showFolderIcons
+                color: shouldShowParentFolderColor ? parentFolderColor : undefined,
+                applyColorToName: shouldShowParentFolderColor && !settings.colorIconOnly,
+                showIcon: shouldShowParentFolderIcon
             };
         }
     }

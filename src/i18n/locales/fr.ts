@@ -792,6 +792,10 @@ export const STRINGS_FR = {
                 name: 'Afficher la couleur du dossier parent',
                 desc: 'Utiliser les couleurs des dossiers sur les étiquettes des dossiers parents.'
             },
+            showParentFolderIcon: {
+                name: "Afficher l'icône du dossier parent",
+                desc: 'Afficher les icônes de dossier à côté des étiquettes des dossiers parents.'
+            },
             showQuickActions: {
                 name: 'Afficher les actions rapides (bureau uniquement)',
                 desc: "Afficher les boutons d'action au survol des fichiers. Les contrôles des boutons sélectionnent les actions qui apparaissent."

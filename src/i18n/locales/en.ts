@@ -790,6 +790,10 @@ export const STRINGS_EN = {
                 name: 'Show parent folder color',
                 desc: 'Use folder colors on parent folder labels.'
             },
+            showParentFolderIcon: {
+                name: 'Show parent folder icon',
+                desc: 'Show folder icons next to parent folder labels.'
+            },
             showQuickActions: {
                 name: 'Show quick actions (desktop only)',
                 desc: 'Show action buttons when hovering over files. Button controls select which actions appear.'

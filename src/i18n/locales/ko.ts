@@ -790,6 +790,10 @@ export const STRINGS_KO = {
                 name: '상위 폴더 색상 표시',
                 desc: '상위 폴더 레이블에 폴더 색상을 사용합니다.'
             },
+            showParentFolderIcon: {
+                name: '상위 폴더 아이콘 표시',
+                desc: '상위 폴더 레이블 옆에 폴더 아이콘을 표시합니다.'
+            },
             showQuickActions: {
                 name: '빠른 작업 표시 (데스크톱 전용)',
                 desc: '파일 위에 마우스를 올리면 작업 버튼을 표시합니다. 버튼 컨트롤로 표시할 작업을 선택합니다.'

@@ -792,6 +792,10 @@ export const STRINGS_PL = {
                 name: 'Pokaż kolor folderu nadrzędnego',
                 desc: 'Używaj kolorów folderów na etykietach folderów nadrzędnych.'
             },
+            showParentFolderIcon: {
+                name: 'Pokaż ikonę folderu nadrzędnego',
+                desc: 'Pokazuj ikony folderów obok etykiet folderów nadrzędnych.'
+            },
             showQuickActions: {
                 name: 'Pokaż szybkie akcje (tylko desktop)',
                 desc: 'Pokaż przyciski akcji przy najechaniu na pliki. Kontrolki przycisków wybierają, które akcje się pojawiają.'

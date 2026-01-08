@@ -787,6 +787,10 @@ export const STRINGS_ZH_TW = {
                 name: '顯示父資料夾顏色',
                 desc: '在父資料夾標籤上使用資料夾顏色。'
             },
+            showParentFolderIcon: {
+                name: '顯示父資料夾圖示',
+                desc: '在父資料夾標籤旁顯示資料夾圖示。'
+            },
             showQuickActions: {
                 name: '顯示快速操作 (僅限桌面版)',
                 desc: '懸停在檔案上時顯示操作按鈕。按鈕控制項選擇顯示哪些操作。'

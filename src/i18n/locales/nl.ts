@@ -792,6 +792,10 @@ export const STRINGS_NL = {
                 name: 'Bovenliggende mapkleur tonen',
                 desc: 'Mapkleuren gebruiken voor labels van bovenliggende mappen.'
             },
+            showParentFolderIcon: {
+                name: 'Bovenliggende mapicoon tonen',
+                desc: 'Mapiconen tonen naast labels van bovenliggende mappen.'
+            },
             showQuickActions: {
                 name: 'Snelle acties tonen (alleen desktop)',
                 desc: 'Actieknoppen tonen bij zweven over bestanden. Knopbediening selecteert welke acties verschijnen.'

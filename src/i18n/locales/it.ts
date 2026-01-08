@@ -790,6 +790,10 @@ export const STRINGS_IT = {
                 name: 'Mostra colore cartella genitore',
                 desc: 'Usa i colori cartella sulle etichette cartella genitore.'
             },
+            showParentFolderIcon: {
+                name: 'Mostra icona cartella genitore',
+                desc: 'Mostra le icone delle cartelle accanto alle etichette cartella genitore.'
+            },
             showQuickActions: {
                 name: 'Mostra azioni rapide (solo desktop)',
                 desc: 'Mostra pulsanti azione al passaggio del mouse sui file. I controlli pulsanti selezionano quali azioni appaiono.'

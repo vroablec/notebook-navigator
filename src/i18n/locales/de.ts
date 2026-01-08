@@ -794,6 +794,10 @@ export const STRINGS_DE = {
                 name: 'Übergeordnete Ordnerfarbe anzeigen',
                 desc: 'Ordnerfarben auf übergeordnete Ordnerlabels anwenden.'
             },
+            showParentFolderIcon: {
+                name: 'Übergeordnetes Ordnersymbol anzeigen',
+                desc: 'Ordnersymbole neben übergeordneten Ordnerlabels anzeigen.'
+            },
             showQuickActions: {
                 name: 'Schnellaktionen anzeigen (nur Desktop)',
                 desc: 'Aktionsschaltflächen beim Überfahren von Dateien anzeigen. Schaltflächensteuerung wählt aus, welche Aktionen erscheinen.'

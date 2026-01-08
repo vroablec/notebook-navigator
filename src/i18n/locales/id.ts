@@ -790,6 +790,10 @@ export const STRINGS_ID = {
                 name: 'Tampilkan warna folder induk',
                 desc: 'Gunakan warna folder pada label folder induk.'
             },
+            showParentFolderIcon: {
+                name: 'Tampilkan ikon folder induk',
+                desc: 'Tampilkan ikon folder di samping label folder induk.'
+            },
             showQuickActions: {
                 name: 'Tampilkan aksi cepat (desktop saja)',
                 desc: 'Tampilkan tombol aksi saat mengarahkan kursor ke file. Kontrol tombol memilih aksi mana yang muncul.'
