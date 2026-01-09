@@ -40,6 +40,7 @@ import { STRINGS_TR } from './locales/tr';
 import { STRINGS_UK } from './locales/uk';
 import { STRINGS_VI } from './locales/vi';
 import { STRINGS_ZH_CN } from './locales/zh_cn';
+import { STRINGS_ZH_TW } from './locales/zh_tw';
 
 // Type for the translation strings structure
 type TranslationStrings = typeof STRINGS_EN;
@@ -76,7 +77,7 @@ type TranslationStrings = typeof STRINGS_EN;
 // ✅ uk     - Ukrainian
 // ✅ vi     - Vietnamese
 // ✅ zh     - Chinese (Simplified)
-// ❌ zh-TW  - Chinese (Traditional)
+// ✅ zh-TW  - Chinese (Traditional)
 const LANGUAGE_MAP: Record<string, TranslationStrings> = {
     ar: STRINGS_AR,
     de: STRINGS_DE,
@@ -98,7 +99,9 @@ const LANGUAGE_MAP: Record<string, TranslationStrings> = {
     vi: STRINGS_VI,
     zh: STRINGS_ZH_CN,
     'zh-CN': STRINGS_ZH_CN,
-    zh_cn: STRINGS_ZH_CN
+    zh_cn: STRINGS_ZH_CN,
+    'zh-TW': STRINGS_ZH_TW,
+    zh_tw: STRINGS_ZH_TW
 };
 
 /**

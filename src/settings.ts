@@ -493,7 +493,9 @@ export class NotebookNavigatorSettingTab extends PluginSettingTab {
             buttonComponent.setButtonText(tab.label);
             buttonComponent.removeCta();
             buttonComponent.buttonEl.addClass('nn-settings-tab-button');
+            buttonComponent.buttonEl.addClass('clickable-icon');
             buttonComponent.buttonEl.setAttribute('role', 'tab');
+            buttonComponent.buttonEl.setAttribute('aria-selected', 'false');
             buttonComponent.onClick(() => {
                 this.activateTab(tab.id, tabs, contentWrapper);
             });
@@ -577,21 +579,24 @@ export class NotebookNavigatorSettingTab extends PluginSettingTab {
             this.tabContentMap.set(id, tabContainer);
         }
 
-        // Update active state for all tab contents
-        this.tabContentMap.forEach((element, tabId) => {
-            element.toggleClass('is-active', tabId === id);
-        });
-        // Update active state for all tab buttons
-        this.tabButtons.forEach((buttonComponent, tabId) => {
-            const isActive = tabId === id;
-            buttonComponent.buttonEl.toggleClass('is-active', isActive);
-            buttonComponent.buttonEl.setAttribute('aria-selected', isActive ? 'true' : 'false');
-            if (isActive) {
-                buttonComponent.setCta();
-            } else {
-                buttonComponent.removeCta();
+        const previousTabId = this.lastActiveTabId;
+        if (previousTabId && previousTabId !== id) {
+            this.tabContentMap.get(previousTabId)?.toggleClass('is-active', false);
+            const previousButton = this.tabButtons.get(previousTabId);
+            if (previousButton) {
+                previousButton.buttonEl.toggleClass('is-active', false);
+                previousButton.buttonEl.setAttribute('aria-selected', 'false');
+                previousButton.removeCta();
             }
-        });
+        }
+
+        this.tabContentMap.get(id)?.toggleClass('is-active', true);
+        const activeButton = this.tabButtons.get(id);
+        if (activeButton) {
+            activeButton.buttonEl.toggleClass('is-active', true);
+            activeButton.buttonEl.setAttribute('aria-selected', 'true');
+            activeButton.setCta();
+        }
         this.lastActiveTabId = id;
         contentWrapper.scrollTop = 0;
 
@@ -607,7 +612,6 @@ export class NotebookNavigatorSettingTab extends PluginSettingTab {
         }
 
         if (shouldFocus) {
-            const activeButton = this.tabButtons.get(id);
             activeButton?.buttonEl.focus();
         }
     }
