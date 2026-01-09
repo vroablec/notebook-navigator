@@ -192,8 +192,8 @@ body {
     --nn-theme-navitem-count-font-weight: 400;
     --nn-theme-navitem-custom-color-file-name-font-weight: 600;
     --nn-theme-navitem-custom-color-name-font-weight: 600;
-    --nn-theme-navitem-folder-note-name-font-weight: 600;
-    --nn-theme-navitem-folder-note-name-decoration: underline;
+    --nn-theme-navitem-folder-note-name-font-weight: 400;
+    --nn-theme-navitem-folder-note-name-decoration: none;
 
     /* -- Pane Divider -- */
     --nn-theme-divider-border-color: var(--background-modifier-border);
