@@ -58,7 +58,7 @@ const MOBILE_MEASUREMENTS: ListPaneMeasurements = Object.freeze({
     titleLineHeight: 21,
     singleTextLineHeight: 20,
     multilineTextLineHeight: 19,
-    tagRowHeight: 32, // 26px row + 6px gap
+    tagRowHeight: 26, // 22px row + 4px gap
     featureImageHeight: 42,
     firstHeader: 43, // 35px + 8px mobile increment
     subsequentHeader: 58, // 50px + 8px mobile increment
