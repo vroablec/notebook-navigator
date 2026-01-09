@@ -355,6 +355,7 @@ export const FileItem = React.memo(function FileItem({
     const openInNewTabIconRef = useRef<HTMLDivElement>(null);
     const fileIconRef = useRef<HTMLSpanElement>(null);
     const featureImageObjectUrlRef = useRef<string | null>(null);
+    const featureImageImgRef = useRef<HTMLImageElement | null>(null);
     const lastFeatureImageRegenRef = useRef<{ key: string; at: number } | null>(null);
     // Unique ID for linking screen reader description to the file item
     const hiddenDescriptionId = useId();
@@ -887,6 +888,29 @@ export const FileItem = React.memo(function FileItem({
         } as React.CSSProperties;
     }, [featureImageAspectRatio, featureImageUrl, settings.forceSquareFeatureImage]);
 
+    const handleFeatureImageLoad = useCallback(() => {
+        if (!featureImageUrl || settings.forceSquareFeatureImage) {
+            return;
+        }
+
+        const image = featureImageImgRef.current;
+        if (!image) {
+            return;
+        }
+
+        const width = image.naturalWidth || image.width || 0;
+        const height = image.naturalHeight || image.height || 0;
+
+        if (width <= 0 || height <= 0) {
+            setFeatureImageAspectRatio(null);
+            return;
+        }
+
+        const ratio = width / height;
+        const clampedRatio = Math.min(ratio, FEATURE_IMAGE_MAX_ASPECT_RATIO);
+        setFeatureImageAspectRatio(clampedRatio);
+    }, [featureImageUrl, settings.forceSquareFeatureImage]);
+
     // Memoize className to avoid string concatenation on every render
     const className = useMemo(() => {
         const classes = ['nn-file'];
@@ -1055,38 +1079,18 @@ export const FileItem = React.memo(function FileItem({
         }
 
         setFeatureImageAspectRatio(null);
-
-        let isActive = true;
-        const image = new Image();
-
-        const applyAspectRatio = (width: number, height: number) => {
-            if (!isActive) {
-                return;
+        // If the already-rendered image is cached and completes synchronously,
+        // compute the aspect ratio immediately without forcing a second decode.
+        const image = featureImageImgRef.current;
+        if (image && image.complete) {
+            const width = image.naturalWidth || image.width || 0;
+            const height = image.naturalHeight || image.height || 0;
+            if (width > 0 && height > 0) {
+                const ratio = width / height;
+                const clampedRatio = Math.min(ratio, FEATURE_IMAGE_MAX_ASPECT_RATIO);
+                setFeatureImageAspectRatio(clampedRatio);
             }
-            if (width <= 0 || height <= 0) {
-                setFeatureImageAspectRatio(null);
-                return;
-            }
-            const ratio = width / height;
-            const clampedRatio = Math.min(ratio, FEATURE_IMAGE_MAX_ASPECT_RATIO);
-            setFeatureImageAspectRatio(clampedRatio);
-        };
-
-        image.onload = () => applyAspectRatio(image.naturalWidth, image.naturalHeight);
-        image.onerror = () => {
-            if (isActive) {
-                setFeatureImageAspectRatio(null);
-            }
-        };
-        image.src = featureImageUrl;
-
-        if (image.complete && image.naturalWidth > 0 && image.naturalHeight > 0) {
-            applyAspectRatio(image.naturalWidth, image.naturalHeight);
         }
-
-        return () => {
-            isActive = false;
-        };
     }, [featureImageUrl, settings.forceSquareFeatureImage]);
 
     // Add Obsidian tooltip (desktop only)
@@ -1529,8 +1533,10 @@ export const FileItem = React.memo(function FileItem({
                                             src={featureImageUrl}
                                             alt={strings.common.featureImageAlt}
                                             className="nn-feature-image-img"
+                                            ref={featureImageImgRef}
                                             draggable={false}
                                             onDragStart={e => e.preventDefault()}
+                                            onLoad={handleFeatureImageLoad}
                                             // Hide the image container when image fails to load
                                             onError={() => {
                                                 setIsFeatureImageHidden(true);
