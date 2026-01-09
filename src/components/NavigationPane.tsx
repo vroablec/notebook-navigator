@@ -76,6 +76,7 @@ import { useServices, useCommandQueue, useFileSystemOps, useMetadataService, use
 import { useSettingsState, useSettingsUpdate, useActiveProfile } from '../context/SettingsContext';
 import { useUXPreferences } from '../context/UXPreferencesContext';
 import { showNotice } from '../utils/noticeUtils';
+import { resolveUXIconForMenu } from '../utils/uxIcons';
 import { useFileCache } from '../context/StorageContext';
 import { useUIState, useUIDispatch } from '../context/UIStateContext';
 import { useNavigationPaneKeyboard } from '../hooks/useNavigationPaneKeyboard';
@@ -1610,7 +1611,7 @@ export const NavigationPane = React.memo(
                 if (target.type === 'missing') {
                     menu.addItem(item => {
                         item.setTitle(strings.shortcuts.remove)
-                            .setIcon('lucide-star-off')
+                            .setIcon(resolveUXIconForMenu(settings.interfaceIcons, 'nav-shortcuts', 'lucide-star-off'))
                             .onClick(() => {
                                 runAsyncAction(() => removeShortcut(target.key));
                             });
@@ -1622,7 +1623,7 @@ export const NavigationPane = React.memo(
                 if (target.type === 'search') {
                     menu.addItem(item => {
                         item.setTitle(strings.shortcuts.remove)
-                            .setIcon('lucide-star-off')
+                            .setIcon(resolveUXIconForMenu(settings.interfaceIcons, 'nav-shortcuts', 'lucide-star-off'))
                             .onClick(() => {
                                 runAsyncAction(() => removeShortcut(target.key));
                             });
@@ -1667,7 +1668,7 @@ export const NavigationPane = React.memo(
                         menu.addSeparator();
                         menu.addItem(item => {
                             item.setTitle(strings.shortcuts.remove)
-                                .setIcon('lucide-star-off')
+                                .setIcon(resolveUXIconForMenu(settings.interfaceIcons, 'nav-shortcuts', 'lucide-star-off'))
                                 .onClick(() => {
                                     runAsyncAction(() => removeShortcut(target.key));
                                 });

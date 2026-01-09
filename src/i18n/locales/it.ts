@@ -246,6 +246,7 @@ export const STRINGS_IT = {
         },
         interfaceIcons: {
             title: "Icone dell'interfaccia",
+            fileItemsSection: 'Elementi file',
             items: {
                 'nav-shortcuts': 'Scorciatoie',
                 'nav-recent-files': 'File recenti',
@@ -268,7 +269,9 @@ export const STRINGS_IT = {
                 'nav-folder-open': 'Cartella aperta',
                 'nav-folder-closed': 'Cartella chiusa',
                 'nav-tag': 'Tag',
-                'list-pinned': 'Elementi fissati'
+                'list-pinned': 'Elementi fissati',
+                'file-word-count': 'Conteggio parole',
+                'file-custom-property': 'Proprietà personalizzata'
             }
         },
         colorPicker: {

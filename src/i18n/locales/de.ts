@@ -246,6 +246,7 @@ export const STRINGS_DE = {
         },
         interfaceIcons: {
             title: 'Oberflächensymbole',
+            fileItemsSection: 'Datei-Elemente',
             items: {
                 'nav-shortcuts': 'Verknüpfungen',
                 'nav-recent-files': 'Zuletzt verwendete Dateien',
@@ -268,7 +269,9 @@ export const STRINGS_DE = {
                 'nav-folder-open': 'Ordner geöffnet',
                 'nav-folder-closed': 'Ordner geschlossen',
                 'nav-tag': 'Tag',
-                'list-pinned': 'Angeheftete Elemente'
+                'list-pinned': 'Angeheftete Elemente',
+                'file-word-count': 'Wortanzahl',
+                'file-custom-property': 'Benutzerdefinierte Eigenschaft'
             }
         },
         colorPicker: {

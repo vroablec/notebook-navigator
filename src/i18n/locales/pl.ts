@@ -247,6 +247,7 @@ export const STRINGS_PL = {
         },
         interfaceIcons: {
             title: 'Ikony interfejsu',
+            fileItemsSection: 'Elementy pliku',
             items: {
                 'nav-shortcuts': 'Skróty',
                 'nav-recent-files': 'Ostatnie pliki',
@@ -269,7 +270,9 @@ export const STRINGS_PL = {
                 'nav-folder-open': 'Folder otwarty',
                 'nav-folder-closed': 'Folder zamknięty',
                 'nav-tag': 'Tag',
-                'list-pinned': 'Przypięte elementy'
+                'list-pinned': 'Przypięte elementy',
+                'file-word-count': 'Liczba słów',
+                'file-custom-property': 'Właściwość niestandardowa'
             }
         },
         colorPicker: {

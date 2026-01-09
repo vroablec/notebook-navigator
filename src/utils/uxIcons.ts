@@ -41,9 +41,11 @@ export type UXIconId =
     | 'list-sort-descending'
     | 'list-appearance'
     | 'list-new-note'
-    | 'list-pinned';
+    | 'list-pinned'
+    | 'file-word-count'
+    | 'file-custom-property';
 
-export type UXIconCategory = 'navigationPane' | 'listPane';
+export type UXIconCategory = 'navigationPane' | 'listPane' | 'fileItems';
 
 export interface UXIconDefinition {
     id: UXIconId;
@@ -73,7 +75,9 @@ export const UX_ICON_DEFINITIONS: UXIconDefinition[] = [
     { id: 'list-sort-descending', category: 'listPane', defaultIconId: 'sort-desc' },
     { id: 'list-appearance', category: 'listPane', defaultIconId: 'palette' },
     { id: 'list-new-note', category: 'listPane', defaultIconId: 'pen-box' },
-    { id: 'list-pinned', category: 'listPane', defaultIconId: 'pin' }
+    { id: 'list-pinned', category: 'listPane', defaultIconId: 'pin' },
+    { id: 'file-word-count', category: 'fileItems', defaultIconId: 'case-sensitive' },
+    { id: 'file-custom-property', category: 'fileItems', defaultIconId: 'align-left' }
 ];
 
 const UX_ICON_ID_SET: ReadonlySet<string> = new Set(UX_ICON_DEFINITIONS.map(definition => definition.id));
@@ -123,6 +127,41 @@ export function resolveUXIcon(uxIconMap: Record<string, string> | undefined, ico
     }
 
     return UX_ICON_DEFAULT_CANONICAL[iconId];
+}
+
+function tryResolveLucideMenuIconId(iconId: string): string | null {
+    const trimmed = iconId.trim();
+    if (!trimmed) {
+        return null;
+    }
+
+    const colonIndex = trimmed.indexOf(':');
+    if (colonIndex !== -1) {
+        const provider = trimmed.substring(0, colonIndex);
+        if (provider !== 'lucide') {
+            return null;
+        }
+
+        const identifier = trimmed.substring(colonIndex + 1).trim();
+        if (!identifier) {
+            return null;
+        }
+
+        const slug = identifier.startsWith('lucide-') ? identifier.substring('lucide-'.length) : identifier;
+        return slug ? `lucide-${slug}` : null;
+    }
+
+    const slug = trimmed.startsWith('lucide-') ? trimmed.substring('lucide-'.length) : trimmed;
+    return slug ? `lucide-${slug}` : null;
+}
+
+export function resolveUXIconForMenu(
+    uxIconMap: Record<string, string> | undefined,
+    iconId: UXIconId,
+    fallbackLucideMenuIconId: string
+): string {
+    const resolved = resolveUXIcon(uxIconMap, iconId);
+    return tryResolveLucideMenuIconId(resolved) ?? fallbackLucideMenuIconId;
 }
 
 export function normalizeUXIconMapRecord(uxIconMap: Record<string, string> | undefined): Record<string, string> {

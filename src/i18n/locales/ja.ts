@@ -246,6 +246,7 @@ export const STRINGS_JA = {
         },
         interfaceIcons: {
             title: 'インターフェースアイコン',
+            fileItemsSection: 'ファイル項目',
             items: {
                 'nav-shortcuts': 'ショートカット',
                 'nav-recent-files': '最近のファイル',
@@ -268,7 +269,9 @@ export const STRINGS_JA = {
                 'nav-folder-open': 'フォルダ（開）',
                 'nav-folder-closed': 'フォルダ（閉）',
                 'nav-tag': 'タグ',
-                'list-pinned': 'ピン留め項目'
+                'list-pinned': 'ピン留め項目',
+                'file-word-count': '単語数',
+                'file-custom-property': 'カスタムプロパティ'
             }
         },
         colorPicker: {

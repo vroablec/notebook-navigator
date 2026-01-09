@@ -246,6 +246,7 @@ export const STRINGS_VI = {
         },
         interfaceIcons: {
             title: 'Biểu tượng giao diện',
+            fileItemsSection: 'Mục tệp',
             items: {
                 'nav-shortcuts': 'Lối tắt',
                 'nav-recent-files': 'Tệp gần đây',
@@ -268,7 +269,9 @@ export const STRINGS_VI = {
                 'nav-folder-open': 'Thư mục mở',
                 'nav-folder-closed': 'Thư mục đóng',
                 'nav-tag': 'Thẻ',
-                'list-pinned': 'Mục đã ghim'
+                'list-pinned': 'Mục đã ghim',
+                'file-word-count': 'Số từ',
+                'file-custom-property': 'Thuộc tính tùy chỉnh'
             }
         },
         colorPicker: {

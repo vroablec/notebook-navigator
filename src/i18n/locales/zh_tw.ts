@@ -246,6 +246,7 @@ export const STRINGS_ZH_TW = {
         },
         interfaceIcons: {
             title: '介面圖示',
+            fileItemsSection: '檔案項目',
             items: {
                 'nav-shortcuts': '捷徑',
                 'nav-recent-files': '最近檔案',
@@ -268,7 +269,9 @@ export const STRINGS_ZH_TW = {
                 'nav-folder-open': '資料夾開啟',
                 'nav-folder-closed': '資料夾關閉',
                 'nav-tag': '標籤',
-                'list-pinned': '釘選項目'
+                'list-pinned': '釘選項目',
+                'file-word-count': '字數統計',
+                'file-custom-property': '自訂屬性'
             }
         },
         colorPicker: {

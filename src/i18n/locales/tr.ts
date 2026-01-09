@@ -246,6 +246,7 @@ export const STRINGS_TR = {
         },
         interfaceIcons: {
             title: 'Arayüz simgeleri',
+            fileItemsSection: 'Dosya öğeleri',
             items: {
                 'nav-shortcuts': 'Kısayollar',
                 'nav-recent-files': 'Son dosyalar',
@@ -268,7 +269,9 @@ export const STRINGS_TR = {
                 'nav-folder-open': 'Klasör açık',
                 'nav-folder-closed': 'Klasör kapalı',
                 'nav-tag': 'Etiket',
-                'list-pinned': 'Sabitlenmiş öğeler'
+                'list-pinned': 'Sabitlenmiş öğeler',
+                'file-word-count': 'Kelime sayısı',
+                'file-custom-property': 'Özel özellik'
             }
         },
         colorPicker: {

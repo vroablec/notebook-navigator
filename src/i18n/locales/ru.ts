@@ -246,6 +246,7 @@ export const STRINGS_RU = {
         },
         interfaceIcons: {
             title: 'Иконки интерфейса',
+            fileItemsSection: 'Элементы файла',
             items: {
                 'nav-shortcuts': 'Ярлыки',
                 'nav-recent-files': 'Недавние файлы',
@@ -268,7 +269,9 @@ export const STRINGS_RU = {
                 'nav-folder-open': 'Папка открыта',
                 'nav-folder-closed': 'Папка закрыта',
                 'nav-tag': 'Тег',
-                'list-pinned': 'Закреплённые элементы'
+                'list-pinned': 'Закреплённые элементы',
+                'file-word-count': 'Количество слов',
+                'file-custom-property': 'Пользовательское свойство'
             }
         },
         colorPicker: {

@@ -246,6 +246,7 @@ export const STRINGS_AR = {
         },
         interfaceIcons: {
             title: 'أيقونات الواجهة',
+            fileItemsSection: 'عناصر الملفات',
             items: {
                 'nav-shortcuts': 'الاختصارات',
                 'nav-recent-files': 'الملفات الأخيرة',
@@ -268,7 +269,9 @@ export const STRINGS_AR = {
                 'nav-folder-open': 'مجلد مفتوح',
                 'nav-folder-closed': 'مجلد مغلق',
                 'nav-tag': 'وسم',
-                'list-pinned': 'العناصر المثبتة'
+                'list-pinned': 'العناصر المثبتة',
+                'file-word-count': 'عدد الكلمات',
+                'file-custom-property': 'خاصية مخصصة'
             }
         },
         colorPicker: {

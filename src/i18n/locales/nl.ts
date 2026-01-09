@@ -247,6 +247,7 @@ export const STRINGS_NL = {
         },
         interfaceIcons: {
             title: 'Interface-iconen',
+            fileItemsSection: 'Bestandsitems',
             items: {
                 'nav-shortcuts': 'Snelkoppelingen',
                 'nav-recent-files': 'Recente bestanden',
@@ -269,7 +270,9 @@ export const STRINGS_NL = {
                 'nav-folder-open': 'Map open',
                 'nav-folder-closed': 'Map gesloten',
                 'nav-tag': 'Tag',
-                'list-pinned': 'Vastgezette items'
+                'list-pinned': 'Vastgezette items',
+                'file-word-count': 'Aantal woorden',
+                'file-custom-property': 'Aangepaste eigenschap'
             }
         },
         colorPicker: {

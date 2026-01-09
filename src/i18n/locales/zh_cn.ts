@@ -246,6 +246,7 @@ export const STRINGS_ZH_CN = {
         },
         interfaceIcons: {
             title: '界面图标',
+            fileItemsSection: '文件项目',
             items: {
                 'nav-shortcuts': '快捷方式',
                 'nav-recent-files': '最近文件',
@@ -268,7 +269,9 @@ export const STRINGS_ZH_CN = {
                 'nav-folder-open': '文件夹打开',
                 'nav-folder-closed': '文件夹关闭',
                 'nav-tag': '标签',
-                'list-pinned': '固定项目'
+                'list-pinned': '固定项目',
+                'file-word-count': '字数统计',
+                'file-custom-property': '自定义属性'
             }
         },
         colorPicker: {

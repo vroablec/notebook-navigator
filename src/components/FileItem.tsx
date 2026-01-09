@@ -75,8 +75,9 @@ import { createHiddenTagVisibility } from '../utils/tagPrefixMatcher';
 import { areStringArraysEqual, mergeRanges, NumericRange } from '../utils/arrayUtils';
 import { openAddTagToFilesModal } from '../utils/tagModalHelpers';
 import { getTagSearchModifierOperator } from '../utils/tagUtils';
+import { resolveUXIcon } from '../utils/uxIcons';
 import type { InclusionOperator } from '../utils/filterSearch';
-import { ObsidianIcon } from './ObsidianIcon';
+import { ServiceIcon } from './ServiceIcon';
 
 const FEATURE_IMAGE_MAX_ASPECT_RATIO = 16 / 9;
 const FEATURE_IMAGE_REGEN_THROTTLE_MS = 10000;
@@ -629,6 +630,14 @@ export const FileItem = React.memo(function FileItem({
         settings.showTags
     ]);
 
+    const fileTagPillIconId = useMemo(() => resolveUXIcon(settings.interfaceIcons, 'nav-tag'), [settings.interfaceIcons]);
+    const customPropertyPillIconId = useMemo(() => {
+        return resolveUXIcon(
+            settings.interfaceIcons,
+            settings.customPropertyType === 'wordCount' ? 'file-word-count' : 'file-custom-property'
+        );
+    }, [settings.customPropertyType, settings.interfaceIcons]);
+
     const getTagDisplayName = useCallback(
         (tag: string): string => {
             if (settings.showFileTagAncestors) {
@@ -693,11 +702,11 @@ export const FileItem = React.memo(function FileItem({
 
         return (
             <div className="nn-file-pill-row nn-file-pill-row-tags">
-                <ObsidianIcon name="lucide-tags" className="nn-file-pill-row-icon nn-file-pill-row-icon-tags" aria-hidden={true} />
+                <ServiceIcon iconId={fileTagPillIconId} className="nn-file-pill-row-icon nn-file-pill-row-icon-tags" aria-hidden={true} />
                 {tagContainer}
             </div>
         );
-    }, [categorizedTags, getTagDisplayName, handleTagClick, shouldShowFileTags, shouldShowPillRowIcons, tagColorData]);
+    }, [categorizedTags, fileTagPillIconId, getTagDisplayName, handleTagClick, shouldShowFileTags, shouldShowPillRowIcons, tagColorData]);
 
     const renderCustomProperty = useCallback(() => {
         if (!shouldShowCustomProperty) {
@@ -714,15 +723,17 @@ export const FileItem = React.memo(function FileItem({
             return customPropertyContent;
         }
 
-        const iconName = settings.customPropertyType === 'wordCount' ? 'lucide-case-sensitive' : 'lucide-align-left';
-
         return (
             <div className="nn-file-pill-row nn-file-pill-row-custom-property">
-                <ObsidianIcon name={iconName} className="nn-file-pill-row-icon nn-file-pill-row-icon-custom-property" aria-hidden={true} />
+                <ServiceIcon
+                    iconId={customPropertyPillIconId}
+                    className="nn-file-pill-row-icon nn-file-pill-row-icon-custom-property"
+                    aria-hidden={true}
+                />
                 {customPropertyContent}
             </div>
         );
-    }, [customPropertyLabel, settings.customPropertyType, shouldShowCustomProperty, shouldShowPillRowIcons]);
+    }, [customPropertyLabel, customPropertyPillIconId, shouldShowCustomProperty, shouldShowPillRowIcons]);
 
     // Format display date based on current sort
     const displayDate = useMemo(() => {

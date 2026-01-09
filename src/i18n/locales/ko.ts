@@ -245,6 +245,7 @@ export const STRINGS_KO = {
         },
         interfaceIcons: {
             title: '인터페이스 아이콘',
+            fileItemsSection: '파일 항목',
             items: {
                 'nav-shortcuts': '바로가기',
                 'nav-recent-files': '최근 파일',
@@ -267,7 +268,9 @@ export const STRINGS_KO = {
                 'nav-folder-open': '열린 폴더',
                 'nav-folder-closed': '닫힌 폴더',
                 'nav-tag': '태그',
-                'list-pinned': '고정 항목'
+                'list-pinned': '고정 항목',
+                'file-word-count': '단어 수',
+                'file-custom-property': '사용자 지정 속성'
             }
         },
         colorPicker: {

@@ -246,6 +246,7 @@ export const STRINGS_FA = {
         },
         interfaceIcons: {
             title: 'آیکون‌های رابط کاربری',
+            fileItemsSection: 'آیتم‌های فایل',
             items: {
                 'nav-shortcuts': 'میانبرها',
                 'nav-recent-files': 'فایل‌های اخیر',
@@ -268,7 +269,9 @@ export const STRINGS_FA = {
                 'nav-folder-open': 'پوشه باز',
                 'nav-folder-closed': 'پوشه بسته',
                 'nav-tag': 'برچسب',
-                'list-pinned': 'آیتم‌های سنجاق شده'
+                'list-pinned': 'آیتم‌های سنجاق شده',
+                'file-word-count': 'تعداد کلمات',
+                'file-custom-property': 'ویژگی سفارشی'
             }
         },
         colorPicker: {

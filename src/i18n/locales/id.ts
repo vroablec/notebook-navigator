@@ -246,6 +246,7 @@ export const STRINGS_ID = {
         },
         interfaceIcons: {
             title: 'Ikon antarmuka',
+            fileItemsSection: 'Item file',
             items: {
                 'nav-shortcuts': 'Pintasan',
                 'nav-recent-files': 'File terbaru',
@@ -268,7 +269,9 @@ export const STRINGS_ID = {
                 'nav-folder-open': 'Folder terbuka',
                 'nav-folder-closed': 'Folder tertutup',
                 'nav-tag': 'Tag',
-                'list-pinned': 'Item tersemat'
+                'list-pinned': 'Item tersemat',
+                'file-word-count': 'Jumlah kata',
+                'file-custom-property': 'Properti kustom'
             }
         },
         colorPicker: {

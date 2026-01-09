@@ -37,6 +37,7 @@ import { openFileInContext } from '../openFileInContext';
 import { showNotice } from '../noticeUtils';
 import { confirmRemoveAllTagsFromFiles, openAddTagToFilesModal, removeTagFromFilesWithPrompt } from '../tagModalHelpers';
 import { addStyleMenu } from './styleMenuBuilder';
+import { resolveUXIconForMenu } from '../uxIcons';
 
 /**
  * Builds the context menu for a file
@@ -262,13 +263,23 @@ export function buildFileMenu(params: FileMenuBuilderParams): void {
 
             menu.addItem((item: MenuItem) => {
                 if (existingShortcutKey) {
-                    setAsyncOnClick(item.setTitle(strings.shortcuts.remove).setIcon('lucide-star-off'), async () => {
-                        await removeShortcut(existingShortcutKey);
-                    });
+                    setAsyncOnClick(
+                        item
+                            .setTitle(strings.shortcuts.remove)
+                            .setIcon(resolveUXIconForMenu(settings.interfaceIcons, 'nav-shortcuts', 'lucide-star-off')),
+                        async () => {
+                            await removeShortcut(existingShortcutKey);
+                        }
+                    );
                 } else {
-                    setAsyncOnClick(item.setTitle(strings.shortcuts.add).setIcon('lucide-star'), async () => {
-                        await addNoteShortcut(file.path);
-                    });
+                    setAsyncOnClick(
+                        item
+                            .setTitle(strings.shortcuts.add)
+                            .setIcon(resolveUXIconForMenu(settings.interfaceIcons, 'nav-shortcuts', 'lucide-star')),
+                        async () => {
+                            await addNoteShortcut(file.path);
+                        }
+                    );
                 }
             });
         }
@@ -282,7 +293,7 @@ export function buildFileMenu(params: FileMenuBuilderParams): void {
     // Pin/Unpin for multiple files
     if (shouldShowMultiOptions) {
         if (services.shortcuts) {
-            addMultipleFilesShortcutOption(menu, cachedSelectedFiles, selectionState, app, services.shortcuts);
+            addMultipleFilesShortcutOption(menu, cachedSelectedFiles, selectionState, app, settings, services.shortcuts);
         }
 
         const pinContext: NavigatorContext = selectionState.selectionType === ItemType.TAG ? 'tag' : 'folder';
@@ -598,6 +609,7 @@ function addMultipleFilesShortcutOption(
     selectedFiles: TFile[],
     selectionState: SelectionState,
     app: App,
+    settings: NotebookNavigatorSettings,
     shortcuts: ShortcutsContextValue
 ): void {
     if (selectedFiles.length === 0) {
@@ -609,22 +621,25 @@ function addMultipleFilesShortcutOption(
     const label = labelTemplate.replace('{count}', selectedFiles.length.toString());
 
     menu.addItem((item: MenuItem) => {
-        setAsyncOnClick(item.setTitle(label).setIcon('lucide-star'), async () => {
-            // Re-resolve files from selection state to get current paths
-            const currentFiles = Array.from(selectionState.selectedFiles)
-                .map(path => app.vault.getFileByPath(path))
-                .filter((f): f is TFile => !!f);
-            if (currentFiles.length === 0) {
-                return;
+        setAsyncOnClick(
+            item.setTitle(label).setIcon(resolveUXIconForMenu(settings.interfaceIcons, 'nav-shortcuts', 'lucide-star')),
+            async () => {
+                // Re-resolve files from selection state to get current paths
+                const currentFiles = Array.from(selectionState.selectedFiles)
+                    .map(path => app.vault.getFileByPath(path))
+                    .filter((f): f is TFile => !!f);
+                if (currentFiles.length === 0) {
+                    return;
+                }
+
+                const entries = currentFiles.map(selectedFile => ({
+                    type: ShortcutType.NOTE,
+                    path: selectedFile.path
+                }));
+
+                await shortcuts.addShortcutsBatch(entries);
             }
-
-            const entries = currentFiles.map(selectedFile => ({
-                type: ShortcutType.NOTE,
-                path: selectedFile.path
-            }));
-
-            await shortcuts.addShortcutsBatch(entries);
-        });
+        );
     });
 }
 

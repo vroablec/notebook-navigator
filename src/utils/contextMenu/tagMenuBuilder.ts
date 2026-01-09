@@ -26,6 +26,7 @@ import { resetHiddenToggleIfNoSources } from '../exclusionUtils';
 import { setAsyncOnClick } from './menuAsyncHelpers';
 import { addShortcutRenameMenuItem } from './shortcutRenameMenuItem';
 import { addStyleMenu } from './styleMenuBuilder';
+import { resolveUXIconForMenu } from '../uxIcons';
 import { getVirtualTagCollection, isVirtualTagCollectionId } from '../virtualTagCollections';
 import { getActiveHiddenTags, getActiveVaultProfile } from '../vaultProfiles';
 import { resolveDisplayTagPath } from '../../services/tagOperations/TagOperationUtils';
@@ -77,13 +78,23 @@ export function buildTagMenu(params: TagMenuBuilderParams): void {
 
         menu.addItem((item: MenuItem) => {
             if (existingShortcutKey) {
-                setAsyncOnClick(item.setTitle(strings.shortcuts.remove).setIcon('lucide-star-off'), async () => {
-                    await removeShortcut(existingShortcutKey);
-                });
+                setAsyncOnClick(
+                    item
+                        .setTitle(strings.shortcuts.remove)
+                        .setIcon(resolveUXIconForMenu(settings.interfaceIcons, 'nav-shortcuts', 'lucide-star-off')),
+                    async () => {
+                        await removeShortcut(existingShortcutKey);
+                    }
+                );
             } else {
-                setAsyncOnClick(item.setTitle(strings.shortcuts.add).setIcon('lucide-star'), async () => {
-                    await addTagShortcut(tagPath);
-                });
+                setAsyncOnClick(
+                    item
+                        .setTitle(strings.shortcuts.add)
+                        .setIcon(resolveUXIconForMenu(settings.interfaceIcons, 'nav-shortcuts', 'lucide-star')),
+                    async () => {
+                        await addTagShortcut(tagPath);
+                    }
+                );
             }
         });
     }

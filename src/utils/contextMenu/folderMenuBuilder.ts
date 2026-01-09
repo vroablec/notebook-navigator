@@ -28,6 +28,7 @@ import { resetHiddenToggleIfNoSources } from '../../utils/exclusionUtils';
 import { runAsyncAction } from '../async';
 import { setAsyncOnClick } from './menuAsyncHelpers';
 import { addShortcutRenameMenuItem } from './shortcutRenameMenuItem';
+import { resolveUXIconForMenu } from '../uxIcons';
 import { getActiveVaultProfile, getHiddenFolderPatternMatch, normalizeHiddenFolderPath } from '../../utils/vaultProfiles';
 import { EXCALIDRAW_PLUGIN_ID, TLDRAW_PLUGIN_ID } from '../../constants/pluginIds';
 import { addStyleMenu } from './styleMenuBuilder';
@@ -321,13 +322,23 @@ export function buildFolderMenu(params: FolderMenuBuilderParams): void {
 
         menu.addItem((item: MenuItem) => {
             if (existingShortcutKey) {
-                setAsyncOnClick(item.setTitle(strings.shortcuts.remove).setIcon('lucide-star-off'), async () => {
-                    await removeShortcut(existingShortcutKey);
-                });
+                setAsyncOnClick(
+                    item
+                        .setTitle(strings.shortcuts.remove)
+                        .setIcon(resolveUXIconForMenu(settings.interfaceIcons, 'nav-shortcuts', 'lucide-star-off')),
+                    async () => {
+                        await removeShortcut(existingShortcutKey);
+                    }
+                );
             } else {
-                setAsyncOnClick(item.setTitle(strings.shortcuts.add).setIcon('lucide-star'), async () => {
-                    await addFolderShortcut(folder.path);
-                });
+                setAsyncOnClick(
+                    item
+                        .setTitle(strings.shortcuts.add)
+                        .setIcon(resolveUXIconForMenu(settings.interfaceIcons, 'nav-shortcuts', 'lucide-star')),
+                    async () => {
+                        await addFolderShortcut(folder.path);
+                    }
+                );
             }
         });
     }
