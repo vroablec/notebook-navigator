@@ -126,10 +126,11 @@ Priority order: folder note styles override custom color styles, which override 
 | `--nn-theme-file-parent-color`                    | `var(--text-faint)`                           | Text color for parent folder path (when showing subfolders)     |
 | `--nn-theme-file-tag-color`                       | `var(--text-muted)`                           | Text color for tag pills without custom colors                  |
 | `--nn-theme-file-tag-custom-color-text-color`     | `var(--nn-theme-navitem-name-color)`          | Text color for tags with custom backgrounds but no custom color |
-| `--nn-theme-file-tag-bg`                          | `transparent`                                 | Background color for tag pills without custom backgrounds       |
+| `--nn-theme-file-tag-bg`                          | `var(--nn-theme-list-bg)`                     | Background color for tag pills without custom backgrounds       |
 | `--nn-theme-file-custom-property-color`           | `var(--text-muted)`                           | Text color for custom property pill                             |
-| `--nn-theme-file-custom-property-bg`              | `transparent`                                 | Background color for custom property pill                       |
+| `--nn-theme-file-custom-property-bg`              | `var(--nn-theme-list-bg)`                     | Background color for custom property pill                       |
 | `--nn-theme-file-tag-border-radius`               | `10px`                                        | Corner radius for tag pills (0-10px)                            |
+| `--nn-theme-file-custom-property-border-radius`   | `10px`                                        | Corner radius for custom property pills (0-10px)                |
 | `--nn-theme-file-border-radius`                   | `8px`                                         | Corner radius for file items (0-16px)                           |
 | `--nn-theme-file-selected-bg`                     | `var(--text-selection)`                       | Selected file background color                                  |
 | `--nn-theme-file-selected-name-color`             | `var(--nn-theme-file-name-color)`             | Text color for file names when selected                         |
@@ -146,9 +147,9 @@ Priority order: folder note styles override custom color styles, which override 
 | `--nn-theme-file-selected-inactive-date-color`    | `var(--nn-theme-file-selected-date-color)`    | File date color when selected and pane is inactive              |
 | `--nn-theme-file-selected-inactive-parent-color`  | `var(--nn-theme-file-selected-parent-color)`  | Parent folder color when selected and pane is inactive          |
 | `--nn-theme-file-selected-inactive-tag-color`     | `var(--nn-theme-file-selected-tag-color)`     | Tag text color when selected and pane is inactive               |
-| `--nn-theme-file-selected-inactive-tag-bg`        | `var(--nn-theme-file-selected-tag-bg)`        | Tag background color when selected and pane is inactive         |
+| `--nn-theme-file-selected-inactive-tag-bg`        | `var(--nn-theme-file-tag-bg)`                 | Tag background color when selected and pane is inactive         |
 | `--nn-theme-file-selected-inactive-custom-property-color` | `var(--nn-theme-file-selected-custom-property-color)` | Custom property text color when selected and pane is inactive   |
-| `--nn-theme-file-selected-inactive-custom-property-bg`    | `var(--nn-theme-file-selected-custom-property-bg)`    | Custom property background color when selected and pane is inactive |
+| `--nn-theme-file-selected-inactive-custom-property-bg`    | `var(--nn-theme-file-custom-property-bg)`     | Custom property background color when selected and pane is inactive |
 
 Tag pills with only a custom text color use the list pane background, and custom background pills use the navigation pane background. Both follow the background mode setting.
 
@@ -304,6 +305,7 @@ body {
   --nn-theme-file-custom-property-color: #cc7832; /* Muted orange - custom property text */
   --nn-theme-file-custom-property-bg: #383a3e; /* Dark gray - custom property pill background */
   --nn-theme-file-tag-border-radius: 3px; /* Subtle rounded tag pills */
+  --nn-theme-file-custom-property-border-radius: 3px; /* Match tag pills */
   --nn-theme-file-tag-custom-color-text-color: #ffffff; /* White - text for custom colored tags */
   --nn-theme-file-selected-bg: #4a78c8; /* Blue accent - selected file background */
   --nn-theme-file-selected-name-color: #ffffff; /* White - selected file names */

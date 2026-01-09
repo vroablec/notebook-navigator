@@ -90,6 +90,7 @@
 .nn-file-custom-property {
     background-color: var(--nn-theme-file-custom-property-bg);
     color: var(--nn-theme-file-custom-property-color);
+    border-radius: min(10px, var(--nn-theme-file-custom-property-border-radius));
 }
 
 .nn-file-tag[data-has-background='true'] {

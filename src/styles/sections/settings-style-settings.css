@@ -606,6 +606,17 @@ settings:
         step: 1
     -
     -
+        id: nn-theme-file-custom-property-border-radius
+        title: Custom property pill border radius
+        description: Corner radius for custom property pills.
+        type: variable-number-slider
+        default: 10
+        format: px
+        min: 0
+        max: 10
+        step: 1
+    -
+    -
         id: nn-theme-file-border-radius
         title: File item border radius
         description: Corner radius for file items.
