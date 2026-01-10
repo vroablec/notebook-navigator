@@ -74,6 +74,7 @@ export function useCacheRebuildNotice(params: { app: App; stoppedRef: RefObject<
             const trackTags = enabledTypes.includes('tags');
             const trackFeatureImage = enabledTypes.includes('featureImage');
             const trackMetadata = enabledTypes.includes('metadata');
+            const trackWordCount = enabledTypes.includes('wordCount');
             const trackCustomProperty = enabledTypes.includes('customProperty');
 
             let progressBarEl: HTMLProgressElement | null = null;
@@ -161,9 +162,17 @@ export function useCacheRebuildNotice(params: { app: App; stoppedRef: RefObject<
                     const needsFeatureImage =
                         trackFeatureImage && (data.featureImageKey === null || data.featureImageStatus === 'unprocessed');
                     const needsMetadata = trackMetadata && isMarkdown && data.metadata === null;
+                    const needsWordCount = trackWordCount && isMarkdown && data.wordCount === null;
                     const needsCustomProperty = trackCustomProperty && isMarkdown && data.customProperty === null;
 
-                    if (!needsPreview && !needsTags && !needsFeatureImage && !needsMetadata && !needsCustomProperty) {
+                    if (
+                        !needsPreview &&
+                        !needsTags &&
+                        !needsFeatureImage &&
+                        !needsMetadata &&
+                        !needsWordCount &&
+                        !needsCustomProperty
+                    ) {
                         return;
                     }
 
@@ -185,7 +194,12 @@ export function useCacheRebuildNotice(params: { app: App; stoppedRef: RefObject<
                     const hasMetadataCache = Boolean(app.metadataCache.getFileCache(file));
                     const isMetadataReady =
                         hasMetadataCache &&
-                        (needsPreview || needsCustomProperty || (needsFeatureImage && isMarkdown) || needsTags || needsMetadata);
+                        (needsPreview ||
+                            needsWordCount ||
+                            needsCustomProperty ||
+                            (needsFeatureImage && isMarkdown) ||
+                            needsTags ||
+                            needsMetadata);
 
                     if (isMetadataReady) {
                         // Track only work that can be queued immediately. Before metadata is ready, providers that

@@ -29,11 +29,12 @@ import { isPlainObjectRecordValue } from '../utils/recordUtils';
 import { isMarkdownPath } from '../utils/fileTypeUtils';
 import type { ContentProviderType } from '../interfaces/IContentProvider';
 import { getProviderProcessedMtimeField } from './providerMtime';
+import { LIMITS } from '../constants/limits';
 
 const STORE_NAME = 'keyvaluepairs';
 const PREVIEW_STORE_NAME = 'filePreviews';
 const DB_SCHEMA_VERSION = 3; // IndexedDB structure version
-const DB_CONTENT_VERSION = 3; // Data format version
+const DB_CONTENT_VERSION = 4; // Data format version
 
 export type FeatureImageStatus = 'unprocessed' | 'none' | 'has';
 export type PreviewStatus = 'unprocessed' | 'none' | 'has';
@@ -84,6 +85,7 @@ export function createDefaultFileData(params: { mtime: number; path: string }): 
         metadataMtime: 0,
         fileThumbnailsMtime: 0,
         tags: isMarkdown ? null : [],
+        wordCount: isMarkdown ? null : 0,
         customProperty: null,
         previewStatus: getDefaultPreviewStatusForPath(params.path),
         featureImage: null,
@@ -131,6 +133,7 @@ export interface FileData {
      */
     fileThumbnailsMtime: number;
     tags: string[] | null; // null = not extracted yet (e.g. when tags disabled)
+    wordCount: number | null; // null = not generated yet
     customProperty: CustomPropertyItem[] | null; // null = not generated yet
     /**
      * Preview text processing state.
@@ -187,6 +190,7 @@ export interface FileContentChange {
         featureImageStatus?: FeatureImageStatus;
         metadata?: FileData['metadata'] | null;
         tags?: string[] | null;
+        wordCount?: number | null;
         customProperty?: FileData['customProperty'];
     };
     changeType?: 'metadata' | 'content' | 'both';
@@ -199,8 +203,8 @@ interface IndexedDBStorageOptions {
 }
 
 // Default limits for preview text caching and load batching.
-const DEFAULT_PREVIEW_TEXT_CACHE_MAX_ENTRIES = 10000;
-const DEFAULT_PREVIEW_LOAD_MAX_BATCH = 50;
+const DEFAULT_PREVIEW_TEXT_CACHE_MAX_ENTRIES = LIMITS.storage.previewTextCacheMaxEntriesDefault;
+const DEFAULT_PREVIEW_LOAD_MAX_BATCH = LIMITS.storage.previewLoadMaxBatchDefault;
 
 /**
  * IndexedDBStorage - Browser's IndexedDB wrapper for persistent file storage
@@ -296,6 +300,10 @@ export class IndexedDBStorage {
         data.metadataMtime = typeof data.metadataMtime === 'number' ? data.metadataMtime : data.mtime;
         data.fileThumbnailsMtime = typeof data.fileThumbnailsMtime === 'number' ? data.fileThumbnailsMtime : data.mtime;
         data.tags = Array.isArray(data.tags) ? data.tags : null;
+        data.wordCount =
+            typeof data.wordCount === 'number' && Number.isFinite(data.wordCount) && data.wordCount >= 0
+                ? Math.trunc(data.wordCount)
+                : null;
         data.customProperty = isCustomPropertyData(data.customProperty) ? data.customProperty : null;
         data.previewStatus = previewStatus;
         // Feature image blobs are stored separately from the main record.
@@ -1355,7 +1363,7 @@ export class IndexedDBStorage {
      * @param type - Type of content to check for
      * @returns Set of file paths needing content
      */
-    getFilesNeedingContent(type: 'tags' | 'preview' | 'featureImage' | 'metadata' | 'customProperty'): Set<string> {
+    getFilesNeedingContent(type: 'tags' | 'preview' | 'featureImage' | 'metadata' | 'wordCount' | 'customProperty'): Set<string> {
         if (!this.cache.isReady()) {
             return new Set();
         }
@@ -1367,6 +1375,7 @@ export class IndexedDBStorage {
                 // Feature images need processing when they are unprocessed or missing a key marker.
                 (type === 'featureImage' && (data.featureImageKey === null || data.featureImageStatus === 'unprocessed')) ||
                 (type === 'metadata' && isMarkdownPath(path) && data.metadata === null) ||
+                (type === 'wordCount' && isMarkdownPath(path) && data.wordCount === null) ||
                 (type === 'customProperty' && isMarkdownPath(path) && data.customProperty === null)
             ) {
                 result.add(path);
@@ -1375,7 +1384,7 @@ export class IndexedDBStorage {
         return result;
     }
 
-    getFilesNeedingAnyContent(types: ('tags' | 'preview' | 'featureImage' | 'metadata' | 'customProperty')[]): Set<string> {
+    getFilesNeedingAnyContent(types: ('tags' | 'preview' | 'featureImage' | 'metadata' | 'wordCount' | 'customProperty')[]): Set<string> {
         if (!this.cache.isReady() || types.length === 0) {
             return new Set();
         }
@@ -1384,6 +1393,7 @@ export class IndexedDBStorage {
         const needsPreview = types.includes('preview');
         const needsFeatureImage = types.includes('featureImage');
         const needsMetadata = types.includes('metadata');
+        const needsWordCount = types.includes('wordCount');
         const needsCustomProperty = types.includes('customProperty');
 
         const result = new Set<string>();
@@ -1394,6 +1404,7 @@ export class IndexedDBStorage {
                 (needsPreview && isMarkdown && data.previewStatus === 'unprocessed') ||
                 (needsFeatureImage && (data.featureImageKey === null || data.featureImageStatus === 'unprocessed')) ||
                 (needsMetadata && isMarkdown && data.metadata === null) ||
+                (needsWordCount && isMarkdown && data.wordCount === null) ||
                 (needsCustomProperty && isMarkdown && data.customProperty === null)
             ) {
                 result.add(path);
@@ -1891,7 +1902,9 @@ export class IndexedDBStorage {
      *
      * @param type - Type of content to clear or 'all'
      */
-    async batchClearAllFileContent(type: 'preview' | 'featureImage' | 'metadata' | 'tags' | 'customProperty' | 'all'): Promise<void> {
+    async batchClearAllFileContent(
+        type: 'preview' | 'featureImage' | 'metadata' | 'tags' | 'customProperty' | 'all'
+    ): Promise<void> {
         await this.init();
         if (!this.db) throw new Error('Database not initialized');
 
@@ -2410,6 +2423,7 @@ export class IndexedDBStorage {
         updates: {
             path: string;
             tags?: string[] | null;
+            wordCount?: number | null;
             preview?: string;
             featureImage?: Blob | null;
             featureImageKey?: string | null;
@@ -2434,6 +2448,7 @@ export class IndexedDBStorage {
         contentUpdates: {
             path: string;
             tags?: string[] | null;
+            wordCount?: number | null;
             preview?: string;
             featureImage?: Blob | null;
             featureImageKey?: string | null;
@@ -2557,6 +2572,11 @@ export class IndexedDBStorage {
                         if (guardedUpdate.tags !== undefined) {
                             newData.tags = guardedUpdate.tags;
                             changes.tags = guardedUpdate.tags;
+                            hasContentChanges = true;
+                        }
+                        if (guardedUpdate.wordCount !== undefined) {
+                            newData.wordCount = guardedUpdate.wordCount;
+                            changes.wordCount = guardedUpdate.wordCount;
                             hasContentChanges = true;
                         }
                         if (guardedUpdate.customProperty !== undefined) {
@@ -2684,6 +2704,7 @@ export class IndexedDBStorage {
                                 changes.preview !== undefined ||
                                 changes.featureImageKey !== undefined ||
                                 changes.featureImageStatus !== undefined ||
+                                changes.wordCount !== undefined ||
                                 changes.customProperty !== undefined;
                             const hasMetadataUpdates = changes.metadata !== undefined || changes.tags !== undefined;
                             const updateType =

@@ -18,6 +18,7 @@
 
 import { App, TFile } from 'obsidian';
 import type { WorkspaceLeaf } from 'obsidian';
+import { LIMITS } from '../../../constants/limits';
 import { isRecord } from '../../../utils/typeGuards';
 import { createOnceLogger, createRenderLimiter } from '../thumbnail/thumbnailRuntimeUtils';
 
@@ -52,10 +53,10 @@ interface ExcalidrawAutomateGlobal {
 }
 
 // Excalidraw renders must be serialized to avoid conflicts with its global state
-const MAX_PARALLEL_EXCALIDRAW_RENDERS = 1;
-const DEFAULT_EXCALIDRAW_EXPORT_SCALE = 0.25;
-const MIN_EXCALIDRAW_EXPORT_SCALE = 0.05;
-const MAX_EXCALIDRAW_EXPORT_DIMENSION_PX = 1024;
+const MAX_PARALLEL_EXCALIDRAW_RENDERS = LIMITS.thumbnails.excalidraw.maxParallelRenders;
+const DEFAULT_EXCALIDRAW_EXPORT_SCALE = LIMITS.thumbnails.excalidraw.exportScale.default;
+const MIN_EXCALIDRAW_EXPORT_SCALE = LIMITS.thumbnails.excalidraw.exportScale.min;
+const MAX_EXCALIDRAW_EXPORT_DIMENSION_PX = LIMITS.thumbnails.excalidraw.maxExportDimensionPx;
 const renderLimiter = createRenderLimiter(MAX_PARALLEL_EXCALIDRAW_RENDERS);
 const logOnce = createOnceLogger();
 

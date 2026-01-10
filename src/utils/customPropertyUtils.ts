@@ -22,17 +22,8 @@ import { getCachedCommaSeparatedList } from './commaSeparatedListUtils';
 
 export type WikiLinkTarget = { target: string; displayText: string };
 
-export function isCustomPropertyEnabled(settings: NotebookNavigatorSettings): boolean {
-    if (settings.customPropertyType === 'wordCount') {
-        return true;
-    }
-
-    if (settings.customPropertyType === 'frontmatter') {
-        // Requires at least one configured frontmatter key.
-        return getCachedCommaSeparatedList(settings.customPropertyFields).length > 0;
-    }
-
-    return false;
+export function hasCustomPropertyFrontmatterFields(settings: NotebookNavigatorSettings): boolean {
+    return getCachedCommaSeparatedList(settings.customPropertyFields).length > 0;
 }
 
 export function parseStrictWikiLink(value: string): WikiLinkTarget | null {

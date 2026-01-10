@@ -25,6 +25,7 @@ import { getProviderProcessedMtimeField } from '../../storage/providerMtime';
 import { TIMEOUTS } from '../../types/obsidian-extended';
 import { runAsyncAction } from '../../utils/async';
 import { ContentReadCache } from './ContentReadCache';
+import { LIMITS } from '../../constants/limits';
 
 interface ContentJob {
     file: TFile;
@@ -34,6 +35,7 @@ interface ContentJob {
 export type ContentProviderUpdate = {
     path: string;
     tags?: string[] | null;
+    wordCount?: number | null;
     preview?: string;
     featureImage?: Blob | null;
     featureImageKey?: string | null;
@@ -51,13 +53,13 @@ export type ContentProviderProcessResult = {
  * Provides common functionality for queue management and batch processing
  */
 export abstract class BaseContentProvider implements IContentProvider {
-    protected readonly QUEUE_BATCH_SIZE: number = 100;
-    protected readonly PARALLEL_LIMIT: number = 10;
+    protected readonly QUEUE_BATCH_SIZE: number = LIMITS.contentProvider.queueBatchSize;
+    protected readonly PARALLEL_LIMIT: number = LIMITS.contentProvider.parallelLimit;
 
     private static readonly RETRY_UNSCHEDULED_AT = Number.MAX_SAFE_INTEGER;
-    private static readonly RETRY_INITIAL_DELAY_MS = 1000;
-    private static readonly RETRY_MAX_DELAY_MS = 30000;
-    private static readonly RETRY_MAX_ATTEMPTS = 5;
+    private static readonly RETRY_INITIAL_DELAY_MS = LIMITS.contentProvider.retry.initialDelayMs;
+    private static readonly RETRY_MAX_DELAY_MS = LIMITS.contentProvider.retry.maxDelayMs;
+    private static readonly RETRY_MAX_ATTEMPTS = LIMITS.contentProvider.retry.maxAttempts;
 
     // Work queue of file paths; resolved to `TFile` at processing time.
     protected queue: string[] = [];
@@ -363,15 +365,7 @@ export abstract class BaseContentProvider implements IContentProvider {
             });
 
             // Process files in parallel batches
-            const updates: {
-                path: string;
-                tags?: string[] | null;
-                preview?: string;
-                featureImage?: Blob | null;
-                featureImageKey?: string | null;
-                metadata?: FileData['metadata'];
-                customProperty?: FileData['customProperty'];
-            }[] = [];
+            const updates: ContentProviderUpdate[] = [];
             const processedMtimeUpdates: { path: string; mtime: number; expectedPreviousMtime: number }[] = [];
 
             for (let i = 0; i < activeJobs.length; i += this.PARALLEL_LIMIT) {

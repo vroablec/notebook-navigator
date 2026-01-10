@@ -17,6 +17,7 @@
  */
 
 import { App, loadPdfJs, TFile } from 'obsidian';
+import { LIMITS } from '../../../constants/limits';
 import { isRecord } from '../../../utils/typeGuards';
 import { createOnceLogger, createRenderLimiter } from '../thumbnail/thumbnailRuntimeUtils';
 
@@ -59,11 +60,11 @@ type PdfPage = {
 };
 
 // Time before the shared worker is destroyed after the last render completes
-const DEFAULT_WORKER_IDLE_TIMEOUT_MS = 60000;
+const DEFAULT_WORKER_IDLE_TIMEOUT_MS = LIMITS.thumbnails.pdf.workerIdleTimeoutMs;
 // Maximum concurrent PDF page renders to limit memory usage
-const MAX_PARALLEL_PDF_RENDERS = 2;
+const MAX_PARALLEL_PDF_RENDERS = LIMITS.thumbnails.pdf.maxParallelRenders;
 // Skip thumbnails for very large PDFs to avoid memory spikes (especially when falling back to readBinary).
-const MAX_PDF_THUMBNAIL_BYTES = 25 * 1024 * 1024;
+const MAX_PDF_THUMBNAIL_BYTES = LIMITS.thumbnails.pdf.maxThumbnailBytes;
 
 // Shared pdf.js worker instance reused across renders
 let sharedWorker: PdfWorker | null = null;

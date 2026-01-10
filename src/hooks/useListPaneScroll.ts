@@ -354,6 +354,7 @@ export function useListPaneScroll({
                 showCustomPropertyInCompactMode: settings.showCustomPropertyInCompactMode,
                 isCompactMode,
                 file,
+                wordCount: fileRecord?.wordCount,
                 customProperty: fileRecord?.customProperty
             });
 

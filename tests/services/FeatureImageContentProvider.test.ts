@@ -500,6 +500,7 @@ describe('FeatureImageContentProvider scanning', () => {
             metadataMtime: noteFile.stat.mtime,
             fileThumbnailsMtime: noteFile.stat.mtime,
             tags: null,
+            wordCount: null,
             customProperty: null,
             previewStatus: 'unprocessed',
             featureImage: null,
@@ -508,9 +509,9 @@ describe('FeatureImageContentProvider scanning', () => {
             metadata: null
         };
 
-        // No update is emitted when the key matches.
+        // No feature image update is emitted when the key matches, but word count is still stored.
         const result = await provider.runProcessFileWithData(noteFile, fileData, settings);
-        expect(result).toBeNull();
+        expect(result).toEqual({ path: noteFile.path, wordCount: 0 });
     });
 
     it('acknowledges mtime mismatch when featureImageKey matches and a thumbnail exists', async () => {
@@ -531,6 +532,7 @@ describe('FeatureImageContentProvider scanning', () => {
             metadataMtime: 100,
             fileThumbnailsMtime: 100,
             tags: null,
+            wordCount: null,
             customProperty: null,
             previewStatus: 'unprocessed',
             featureImage: null,
@@ -541,7 +543,7 @@ describe('FeatureImageContentProvider scanning', () => {
 
         const result = await provider.runProcessFileWithData(noteFile, fileData, settings);
 
-        expect(result).toBeNull();
+        expect(result).toEqual({ path: noteFile.path, wordCount: 0 });
     });
 
     it('retries external downloads when the file changed but the featureImageKey did not', async () => {
@@ -562,6 +564,7 @@ describe('FeatureImageContentProvider scanning', () => {
             metadataMtime: 100,
             fileThumbnailsMtime: 100,
             tags: null,
+            wordCount: null,
             customProperty: null,
             previewStatus: 'unprocessed',
             featureImage: null,
@@ -596,6 +599,7 @@ describe('FeatureImageContentProvider scanning', () => {
             metadataMtime: 100,
             fileThumbnailsMtime: 100,
             tags: null,
+            wordCount: null,
             customProperty: null,
             previewStatus: 'unprocessed',
             featureImage: null,
@@ -760,6 +764,7 @@ describe('FeatureImageContentProvider scanning', () => {
                 metadataMtime: excalidrawFile.stat.mtime,
                 fileThumbnailsMtime: excalidrawFile.stat.mtime,
                 tags: null,
+                wordCount: 0,
                 customProperty: null,
                 previewStatus: 'unprocessed',
                 featureImage: null,

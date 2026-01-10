@@ -329,6 +329,7 @@ export const FileItem = React.memo(function FileItem({
         const featureImageKey = record?.featureImageKey ?? null;
         const featureImageStatus: FeatureImageStatus = record?.featureImageStatus ?? 'unprocessed';
         const customProperty = cloneCustomPropertyItems(record?.customProperty ?? null);
+        const wordCount = record?.wordCount ?? null;
 
         let imageUrl: string | null = null;
         if (appearanceSettings.showImage && isImageFile(file)) {
@@ -339,7 +340,7 @@ export const FileItem = React.memo(function FileItem({
             }
         }
 
-        return { preview, tags: tagList, imageUrl, featureImageKey, featureImageStatus, customProperty };
+        return { preview, tags: tagList, imageUrl, featureImageKey, featureImageStatus, customProperty, wordCount };
     }, [appearanceSettings.showImage, appearanceSettings.showPreview, app, file, getDB]);
 
     // === State ===
@@ -356,6 +357,7 @@ export const FileItem = React.memo(function FileItem({
     const [featureImageStatus, setFeatureImageStatus] = useState<FeatureImageStatus>(initialData.featureImageStatus);
     const [featureImageUrl, setFeatureImageUrl] = useState<string | null>(initialData.imageUrl);
     const [customProperty, setCustomProperty] = useState<CustomPropertyItem[] | null>(initialData.customProperty);
+    const [wordCount, setWordCount] = useState<number | null>(initialData.wordCount);
     const [featureImageAspectRatio, setFeatureImageAspectRatio] = useState<number | null>(null);
     const [isFeatureImageHidden, setIsFeatureImageHidden] = useState(false);
     const [metadataVersion, setMetadataVersion] = useState(0);
@@ -611,6 +613,15 @@ export const FileItem = React.memo(function FileItem({
     }, [categorizedTags, isCompactMode, settings.showFileTags, settings.showFileTagsInCompactMode, settings.showTags]);
 
     const customPropertyPills = useMemo<CustomPropertyPill[]>(() => {
+        if (settings.customPropertyType === 'wordCount') {
+            // Don't show `0`: it can mean "no words", a huge file (content read skipped), or an Excalidraw document.
+            if (typeof wordCount !== 'number' || !Number.isFinite(wordCount) || wordCount <= 0) {
+                return [];
+            }
+            const rawValue = Math.trunc(wordCount).toString();
+            return [{ value: rawValue, label: Math.trunc(wordCount).toLocaleString(), wikiLink: null }];
+        }
+
         if (!customProperty || customProperty.length === 0) {
             return [];
         }
@@ -623,20 +634,13 @@ export const FileItem = React.memo(function FileItem({
                 continue;
             }
 
-            if (settings.customPropertyType === 'wordCount') {
-                const num = parseInt(rawValue, 10);
-                const label = Number.isNaN(num) ? rawValue : num.toLocaleString();
-                pills.push({ value: rawValue, label, wikiLink: null });
-                continue;
-            }
-
             const wikiLink = parseStrictWikiLink(rawValue);
             const label = wikiLink ? wikiLink.displayText : rawValue;
             pills.push({ value: rawValue, label, wikiLink, color: entry.color });
         }
 
         return pills;
-    }, [customProperty, settings.customPropertyType]);
+    }, [customProperty, settings.customPropertyType, wordCount]);
 
     const customPropertyColorData = useMemo(() => {
         void settings.tagColors;
@@ -701,9 +705,10 @@ export const FileItem = React.memo(function FileItem({
             showCustomPropertyInCompactMode: settings.showCustomPropertyInCompactMode,
             isCompactMode,
             file,
+            wordCount,
             customProperty
         });
-    }, [customProperty, file, isCompactMode, settings.customPropertyType, settings.showCustomPropertyInCompactMode]);
+    }, [customProperty, file, isCompactMode, settings.customPropertyType, settings.showCustomPropertyInCompactMode, wordCount]);
 
     const shouldShowPillRowIcons = useMemo(() => {
         const tagPillsEnabled = settings.showTags && settings.showFileTags && (!isCompactMode || settings.showFileTagsInCompactMode);
@@ -1059,7 +1064,8 @@ export const FileItem = React.memo(function FileItem({
             tags: initialTags,
             featureImageKey: initialFeatureImageKey,
             featureImageStatus: initialFeatureImageStatus,
-            customProperty: initialCustomProperty
+            customProperty: initialCustomProperty,
+            wordCount: initialWordCount
         } = loadFileData();
 
         // Only update state if values actually changed to prevent unnecessary re-renders
@@ -1068,6 +1074,7 @@ export const FileItem = React.memo(function FileItem({
         setFeatureImageKey(prev => (prev === initialFeatureImageKey ? prev : initialFeatureImageKey));
         setFeatureImageStatus(prev => (prev === initialFeatureImageStatus ? prev : initialFeatureImageStatus));
         setCustomProperty(prev => (areCustomPropertyItemsEqual(prev, initialCustomProperty) ? prev : initialCustomProperty));
+        setWordCount(prev => (prev === initialWordCount ? prev : initialWordCount));
 
         const db = getDB();
         const unsubscribe = db.onFileContentChange(file.path, (changes: FileContentChange['changes']) => {
@@ -1088,6 +1095,10 @@ export const FileItem = React.memo(function FileItem({
             if (changes.tags !== undefined) {
                 const nextTags = [...(changes.tags ?? [])];
                 setTags(prev => (areStringArraysEqual(prev, nextTags) ? prev : nextTags));
+            }
+            if (changes.wordCount !== undefined) {
+                const nextWordCount = changes.wordCount ?? null;
+                setWordCount(prev => (prev === nextWordCount ? prev : nextWordCount));
             }
             // Update custom property when it changes
             if (changes.customProperty !== undefined) {

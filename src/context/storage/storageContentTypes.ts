@@ -19,7 +19,7 @@
 import type { TFile } from 'obsidian';
 import { NotebookNavigatorSettings } from '../../settings';
 import type { ContentProviderType, FileContentType } from '../../interfaces/IContentProvider';
-import { isCustomPropertyEnabled } from '../../utils/customPropertyUtils';
+import { hasCustomPropertyFrontmatterFields } from '../../utils/customPropertyUtils';
 import { isMarkdownPath } from '../../utils/fileTypeUtils';
 import { getActiveHiddenFiles } from '../../utils/vaultProfiles';
 
@@ -28,11 +28,9 @@ import { getActiveHiddenFiles } from '../../utils/vaultProfiles';
  */
 export function getMetadataDependentTypes(settings: NotebookNavigatorSettings): ContentProviderType[] {
     const types: ContentProviderType[] = [];
-    const customPropertyEnabled = isCustomPropertyEnabled(settings);
 
-    if (settings.showFilePreview || settings.showFeatureImage || customPropertyEnabled) {
-        types.push('markdownPipeline');
-    }
+    // Always include markdownPipeline so word count + custom properties can be persisted for future per-folder overrides.
+    types.push('markdownPipeline');
     if (settings.showTags) {
         types.push('tags');
     }
@@ -51,6 +49,8 @@ export function getMetadataDependentTypes(settings: NotebookNavigatorSettings): 
 export function getCacheRebuildProgressTypes(settings: NotebookNavigatorSettings): FileContentType[] {
     const types = new Set<FileContentType>();
 
+    types.add('wordCount');
+
     if (settings.showFilePreview) {
         types.add('preview');
     }
@@ -58,8 +58,7 @@ export function getCacheRebuildProgressTypes(settings: NotebookNavigatorSettings
         types.add('featureImage');
     }
 
-    const customPropertyEnabled = isCustomPropertyEnabled(settings);
-    if (customPropertyEnabled) {
+    if (hasCustomPropertyFrontmatterFields(settings)) {
         types.add('customProperty');
     }
 
@@ -107,11 +106,10 @@ export function resolveMetadataDependentTypes(
     requested?: ContentProviderType[]
 ): ContentProviderType[] {
     const baseTypes = requested ?? getMetadataDependentTypes(settings);
-    const customPropertyEnabled = isCustomPropertyEnabled(settings);
 
     return baseTypes.filter(type => {
         if (type === 'markdownPipeline') {
-            return settings.showFilePreview || settings.showFeatureImage || customPropertyEnabled;
+            return true;
         }
         if (type === 'tags') {
             return settings.showTags;

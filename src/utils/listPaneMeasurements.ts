@@ -112,12 +112,14 @@ export function shouldShowCustomPropertyRow({
     showCustomPropertyInCompactMode,
     isCompactMode,
     file,
+    wordCount,
     customProperty
 }: {
     customPropertyType: CustomPropertyType;
     showCustomPropertyInCompactMode: boolean;
     isCompactMode: boolean;
     file: TFile | null;
+    wordCount: FileData['wordCount'] | undefined;
     customProperty: FileData['customProperty'] | undefined;
 }): boolean {
     if (customPropertyType === 'none') {
@@ -130,6 +132,11 @@ export function shouldShowCustomPropertyRow({
 
     if (isCompactMode && !showCustomPropertyInCompactMode) {
         return false;
+    }
+
+    if (customPropertyType === 'wordCount') {
+        // Don't show `0`: it can mean "no words", a huge file (content read skipped), or an Excalidraw document.
+        return typeof wordCount === 'number' && Number.isFinite(wordCount) && wordCount > 0;
     }
 
     // Custom property values are stored as an array; an empty array means there are no pills to render.

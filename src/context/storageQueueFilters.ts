@@ -21,7 +21,7 @@ import type { ContentProviderType } from '../interfaces/IContentProvider';
 import type { NotebookNavigatorSettings } from '../settings/types';
 import { getDBInstance } from '../storage/fileOperations';
 import { isPdfFile } from '../utils/fileTypeUtils';
-import { isCustomPropertyEnabled } from '../utils/customPropertyUtils';
+import { hasCustomPropertyFrontmatterFields } from '../utils/customPropertyUtils';
 import { getActiveHiddenFiles } from '../utils/vaultProfiles';
 import { getLocalFeatureImageKey } from '../services/content/FeatureImageContentProvider';
 
@@ -52,7 +52,7 @@ export function filterFilesRequiringMetadataSources(
     const hiddenFiles = getActiveHiddenFiles(settings);
     const requiresHiddenState = hiddenFiles.length > 0;
     const conservativeMetadata = options?.conservativeMetadata ?? false;
-    const customPropertyEnabled = isCustomPropertyEnabled(settings);
+    const customPropertyEnabled = hasCustomPropertyFrontmatterFields(settings);
     const needsMarkdownPipeline = types.includes('markdownPipeline');
     const needsTags = types.includes('tags');
     const needsMetadata = types.includes('metadata');
@@ -74,8 +74,15 @@ export function filterFilesRequiringMetadataSources(
             const needsFeatureImage =
                 settings.showFeatureImage && (record.featureImageKey === null || record.featureImageStatus === 'unprocessed');
             const needsCustomProperty = customPropertyEnabled && record.customProperty === null;
+            const needsWordCount = record.wordCount === null;
             const needsRefresh = record.markdownPipelineMtime !== file.stat.mtime;
-            if (needsRefresh || needsPreview || needsFeatureImage || needsCustomProperty) {
+            if (
+                needsRefresh ||
+                needsPreview ||
+                needsFeatureImage ||
+                needsCustomProperty ||
+                needsWordCount
+            ) {
                 return true;
             }
         }

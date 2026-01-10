@@ -28,7 +28,6 @@ import { calculateFileDiff } from '../../storage/diffCalculator';
 import { type FileData as DBFileData } from '../../storage/IndexedDBStorage';
 import { getDBInstance, markFilesForRegeneration, recordFileChanges, removeFilesFromCache } from '../../storage/fileOperations';
 import { runAsyncAction } from '../../utils/async';
-import { isCustomPropertyEnabled } from '../../utils/customPropertyUtils';
 import { isMarkdownPath, isPdfFile } from '../../utils/fileTypeUtils';
 import { filterFilesRequiringMetadataSources, filterPdfFilesRequiringThumbnails } from '../storageQueueFilters';
 import { getCacheRebuildProgressTypes, getContentWorkTotal, getMetadataDependentTypes } from './storageContentTypes';
@@ -143,9 +142,7 @@ export function useStorageVaultSync(params: {
                     }
 
                     const metadataDependentTypes = getMetadataDependentTypes(settings);
-                    const customPropertyEnabled = isCustomPropertyEnabled(settings);
-                    const contentEnabled =
-                        settings.showFilePreview || settings.showFeatureImage || customPropertyEnabled || metadataDependentTypes.length > 0;
+                    const contentEnabled = metadataDependentTypes.length > 0;
 
                     if (contentRegistryRef.current && contentEnabled) {
                         const markdownFiles: TFile[] = [];
