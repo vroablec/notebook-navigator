@@ -245,6 +245,8 @@ export const NavigationPane = React.memo(
         // The calendar overlay height depends on how many week rows it renders; we expose that number as a CSS var so the
         // navigation scroller can be padded and the bottom chrome can be positioned correctly (desktop + mobile/iOS).
         const [calendarWeekCount, setCalendarWeekCount] = useState<number>(() => settings.calendarWeeksToShow);
+        const calendarOverlayRef = useRef<HTMLDivElement>(null);
+        const [calendarOverlayHeight, setCalendarOverlayHeight] = useState<number>(0);
         useEffect(() => {
             if (settings.calendarWeeksToShow !== 6) {
                 setCalendarWeekCount(settings.calendarWeeksToShow);
@@ -956,6 +958,8 @@ export const NavigationPane = React.memo(
             }
 
             const updateOverlayHeight = () => {
+                // Measured height of the sticky navigation "chrome" stack (header/banner/pinned). Passed to the virtualizer
+                // as scrollMargin/scrollPaddingStart so scrollToIndex aligns items below the chrome instead of under it.
                 const height = Math.round(overlayElement.getBoundingClientRect().height);
                 setNavigationOverlayHeight(prev => (prev === height ? prev : height));
             };
@@ -979,6 +983,45 @@ export const NavigationPane = React.memo(
                 resizeObserver.disconnect();
             };
         }, [isAndroid, isMobile, shouldRenderNavigationBanner, shouldRenderPinnedShortcuts]);
+
+        useLayoutEffect(() => {
+            if (!showCalendar) {
+                setCalendarOverlayHeight(0);
+                return;
+            }
+
+            const overlayElement = calendarOverlayRef.current;
+            if (!overlayElement) {
+                setCalendarOverlayHeight(0);
+                return;
+            }
+
+            const updateOverlayHeight = () => {
+                // Measured height of the bottom calendar overlay. Passed to the virtualizer as scrollPaddingEnd so reveals
+                // keep the selected row above the calendar.
+                const height = Math.round(overlayElement.getBoundingClientRect().height);
+                setCalendarOverlayHeight(prev => (prev === height ? prev : height));
+            };
+
+            updateOverlayHeight();
+
+            if (typeof ResizeObserver === 'undefined') {
+                const handleResize = () => updateOverlayHeight();
+                window.addEventListener('resize', handleResize);
+                return () => {
+                    window.removeEventListener('resize', handleResize);
+                };
+            }
+
+            const resizeObserver = new ResizeObserver(() => {
+                updateOverlayHeight();
+            });
+            resizeObserver.observe(overlayElement);
+
+            return () => {
+                resizeObserver.disconnect();
+            };
+        }, [calendarWeekCount, showCalendar]);
 
         // We only reserve gutter space when a banner exists because Windows scrollbars
         // change container width by ~7px when they appear. That width change used to
@@ -1057,7 +1100,8 @@ export const NavigationPane = React.memo(
             pathToIndex,
             isVisible,
             activeShortcutKey,
-            scrollMargin: navigationOverlayHeight
+            scrollMargin: navigationOverlayHeight,
+            scrollPaddingEnd: calendarOverlayHeight
         });
 
         /** Converts a potentially transparent background color into a solid color by compositing with the pane surface. */
@@ -2832,7 +2876,7 @@ export const NavigationPane = React.memo(
                     )}
                 </div>
                 {showCalendar ? (
-                    <div className="nn-navigation-calendar-overlay">
+                    <div className="nn-navigation-calendar-overlay" ref={calendarOverlayRef}>
                         <NavigationPaneCalendar onWeekCountChange={setCalendarWeekCount} />
                     </div>
                 ) : null}
