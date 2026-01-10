@@ -65,7 +65,7 @@ import { useSettingsState, useActiveProfile } from './SettingsContext';
 import { useUXPreferences } from './UXPreferencesContext';
 import type { NotebookNavigatorAPI } from '../api/NotebookNavigatorAPI';
 import { getCacheRebuildProgressTypes } from './storage/storageContentTypes';
-import { clearCacheRebuildNoticeState, getCacheRebuildNoticeState } from './storage/cacheRebuildNoticeStorage';
+import { clearCacheRebuildNoticeState, getCacheRebuildNoticeState, setCacheRebuildNoticeState } from './storage/cacheRebuildNoticeStorage';
 
 /**
  * Context value providing both file data (tag tree) and the file cache
@@ -221,12 +221,23 @@ export function StorageProvider({ app, api, children }: StorageProviderProps) {
         }
 
         const enabledTypes = getCacheRebuildProgressTypes(latestSettingsRef.current);
-        if (state.total <= 0 || enabledTypes.length === 0) {
+        if (enabledTypes.length === 0) {
             clearCacheRebuildNoticeState();
             return;
         }
 
-        startCacheRebuildNotice(state.total, enabledTypes);
+        const pending = getDBInstance().getFilesNeedingAnyContent(enabledTypes).size;
+        if (pending <= 0) {
+            clearCacheRebuildNoticeState();
+            return;
+        }
+
+        const total = Math.max(state.total, pending);
+        if (total !== state.total) {
+            setCacheRebuildNoticeState({ ...state, total });
+        }
+
+        startCacheRebuildNotice(total, enabledTypes);
     }, [isStorageReady, startCacheRebuildNotice]);
 
     const getFileDisplayName = useCallback(

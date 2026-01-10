@@ -78,9 +78,11 @@ export function useCacheRebuildNotice(params: { app: App; stoppedRef: RefObject<
 
             let progressBarEl: HTMLProgressElement | null = null;
             let lastProgressValue: number | null = null;
+            let lastProgressMax: number | null = null;
+            let maxTotal = Math.max(0, total);
 
             const clampProgress = (value: number): number => {
-                return Math.min(total, Math.max(0, value));
+                return Math.min(maxTotal, Math.max(0, value));
             };
 
             const updateProgress = (value: number): void => {
@@ -90,18 +92,20 @@ export function useCacheRebuildNotice(params: { app: App; stoppedRef: RefObject<
                     return;
                 }
 
-                if (lastProgressValue === nextValue) {
+                if (lastProgressValue === nextValue && lastProgressMax === maxTotal) {
                     return;
                 }
 
                 lastProgressValue = nextValue;
+                lastProgressMax = maxTotal;
 
-                progressBarEl.max = total;
+                progressBarEl.max = maxTotal;
                 progressBarEl.value = nextValue;
             };
 
             const createCacheRebuildNotice = (): void => {
                 lastProgressValue = null;
+                lastProgressMax = null;
 
                 const fragment = document.createDocumentFragment();
                 const wrapper = fragment.createDiv({ cls: 'nn-cache-rebuild-notice' });
@@ -154,7 +158,8 @@ export function useCacheRebuildNotice(params: { app: App; stoppedRef: RefObject<
                     const isMarkdown = isMarkdownPath(path);
                     const needsPreview = trackPreview && isMarkdown && data.previewStatus === 'unprocessed';
                     const needsTags = trackTags && isMarkdown && data.tags === null;
-                    const needsFeatureImage = trackFeatureImage && data.featureImageStatus === 'unprocessed';
+                    const needsFeatureImage =
+                        trackFeatureImage && (data.featureImageKey === null || data.featureImageStatus === 'unprocessed');
                     const needsMetadata = trackMetadata && isMarkdown && data.metadata === null;
                     const needsCustomProperty = trackCustomProperty && isMarkdown && data.customProperty === null;
 
@@ -189,6 +194,10 @@ export function useCacheRebuildNotice(params: { app: App; stoppedRef: RefObject<
                     }
                 });
 
+                if (rawRemainingCount > maxTotal) {
+                    maxTotal = rawRemainingCount;
+                }
+
                 if (readyRemainingCount > 0) {
                     hasSeenPending = true;
                     emptyTicks = 0;
@@ -215,10 +224,10 @@ export function useCacheRebuildNotice(params: { app: App; stoppedRef: RefObject<
                     return;
                 }
 
-                const done = Math.max(0, total - readyRemainingCount);
+                const done = Math.max(0, maxTotal - rawRemainingCount);
                 updateProgress(done);
 
-                if (readyRemainingCount === 0) {
+                if (rawRemainingCount === 0) {
                     // Notify completion so callers can clear any persisted rebuild markers.
                     onRebuildComplete?.();
                     clearCacheRebuildNotice();

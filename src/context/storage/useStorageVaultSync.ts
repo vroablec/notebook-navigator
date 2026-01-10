@@ -31,7 +31,7 @@ import { runAsyncAction } from '../../utils/async';
 import { isCustomPropertyEnabled } from '../../utils/customPropertyUtils';
 import { isMarkdownPath, isPdfFile } from '../../utils/fileTypeUtils';
 import { filterFilesRequiringMetadataSources, filterPdfFilesRequiringThumbnails } from '../storageQueueFilters';
-import { getCacheRebuildProgressTypes, getMetadataDependentTypes } from './storageContentTypes';
+import { getCacheRebuildProgressTypes, getContentWorkTotal, getMetadataDependentTypes } from './storageContentTypes';
 
 /**
  * Syncs vault changes into the IndexedDB cache and triggers derived-content generation.
@@ -262,7 +262,7 @@ export function useStorageVaultSync(params: {
             if (db.consumePendingRebuildNotice()) {
                 const liveSettings = latestSettingsRef.current;
                 const enabledTypes = getCacheRebuildProgressTypes(liveSettings);
-                const total = getIndexableFiles().length;
+                const total = getContentWorkTotal(getIndexableFiles(), enabledTypes);
                 startCacheRebuildNotice(total, enabledTypes);
             }
             runAsyncAction(() => buildFileCache(true));

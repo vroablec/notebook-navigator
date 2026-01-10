@@ -26,7 +26,7 @@ import { getDBInstance } from '../../storage/fileOperations';
 import type { TagTreeNode } from '../../types/storage';
 import { clearNoteCountCache } from '../../utils/tagTree';
 import type { StorageFileData } from './storageFileData';
-import { getCacheRebuildProgressTypes } from './storageContentTypes';
+import { getCacheRebuildProgressTypes, getContentWorkTotal } from './storageContentTypes';
 import { clearCacheRebuildNoticeState, setCacheRebuildNoticeState } from './cacheRebuildNoticeStorage';
 
 interface TagTreeServiceLike {
@@ -154,10 +154,10 @@ export function useStorageCacheRebuild(params: {
         try {
             const liveSettings = latestSettingsRef.current;
             const enabledTypes = getCacheRebuildProgressTypes(liveSettings);
-            const total = getIndexableFiles().length;
+            const total = getContentWorkTotal(getIndexableFiles(), enabledTypes);
             if (total > 0 && enabledTypes.length > 0) {
                 // Persist a rebuild marker so the progress notice can be restored if Obsidian restarts mid-rebuild.
-                setCacheRebuildNoticeState({ total });
+                setCacheRebuildNoticeState({ total, source: 'rebuild', types: enabledTypes });
             }
             startCacheRebuildNotice(total, enabledTypes);
 

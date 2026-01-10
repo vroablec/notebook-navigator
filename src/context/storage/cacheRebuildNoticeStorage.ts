@@ -18,23 +18,49 @@
 
 import { STORAGE_KEYS } from '../../types';
 import { localStorage } from '../../utils/localStorage';
+import { isRecord } from '../../utils/typeGuards';
+import type { FileContentType } from '../../interfaces/IContentProvider';
 
 // Persists minimal rebuild-notice state so a cache rebuild progress notice can be restored after an Obsidian restart.
+export type CacheRebuildNoticeSource = 'rebuild' | 'settings';
+
 export interface CacheRebuildNoticeState {
-    // Number of indexable files at rebuild start (used as the progress bar max).
+    // Number of files requiring processing when the notice started (used as the progress bar max).
     total: number;
+    source?: CacheRebuildNoticeSource;
+    types?: FileContentType[];
+}
+
+function isFileContentType(value: unknown): value is FileContentType {
+    return value === 'preview' || value === 'tags' || value === 'featureImage' || value === 'metadata' || value === 'customProperty';
 }
 
 // Validates the vault-scoped localStorage payload before using it to drive UI.
 function isCacheRebuildNoticeState(value: unknown): value is CacheRebuildNoticeState {
-    if (value === null || typeof value !== 'object') {
+    if (!isRecord(value)) {
         return false;
     }
 
-    const record = value as Record<string, unknown>;
-    if (typeof record.total !== 'number' || !Number.isFinite(record.total) || record.total < 0) {
+    const totalValue = value.total;
+    if (typeof totalValue !== 'number' || !Number.isFinite(totalValue) || totalValue < 0) {
         return false;
     }
+
+    const sourceValue = value.source;
+    if (sourceValue !== undefined && sourceValue !== 'rebuild' && sourceValue !== 'settings') {
+        return false;
+    }
+
+    const typesValue = value.types;
+    if (typesValue !== undefined) {
+        if (!Array.isArray(typesValue)) {
+            return false;
+        }
+        if (typesValue.some(type => !isFileContentType(type))) {
+            return false;
+        }
+    }
+
     return true;
 }
 

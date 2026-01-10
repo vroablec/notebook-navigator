@@ -27,7 +27,8 @@ import { type FileData as DBFileData } from '../../storage/IndexedDBStorage';
 import { getDBInstance, recordFileChanges, removeFilesFromCache } from '../../storage/fileOperations';
 import { runAsyncAction } from '../../utils/async';
 import { getActiveHiddenFileNamePatterns, getActiveHiddenFiles, getActiveHiddenFolders } from '../../utils/vaultProfiles';
-import { getMetadataDependentTypes, haveStringArraysChanged } from './storageContentTypes';
+import { clearCacheRebuildNoticeState, getCacheRebuildNoticeState, setCacheRebuildNoticeState } from './cacheRebuildNoticeStorage';
+import { getCacheRebuildProgressTypes, getMetadataDependentTypes, haveStringArraysChanged } from './storageContentTypes';
 
 /**
  * Reacts to settings/profile changes that affect storage and derived content.
@@ -106,24 +107,36 @@ export function useStorageSettingsSync(params: {
                 return;
             }
 
+            const clearSettingsNotice = (): void => {
+                const state = getCacheRebuildNoticeState();
+                if (state?.source !== 'settings') {
+                    return;
+                }
+                clearCacheRebuildNotice();
+                clearCacheRebuildNoticeState();
+            };
+
             // Provider-level settings may change which files need content and which providers should run.
-            await registry.handleSettingsChange(oldSettings, newSettings);
+            const affectedProviders = await registry.handleSettingsChange(oldSettings, newSettings);
+            const enabledFeatureImages = oldSettings.showFeatureImage !== newSettings.showFeatureImage && newSettings.showFeatureImage;
+            const shouldShowIndexNotice = (affectedProviders.length > 0 || enabledFeatureImages) && !stoppedRef.current;
 
-            const featureImageSettingsChanged =
-                oldSettings.showFeatureImage !== newSettings.showFeatureImage ||
-                // `featureImageProperties` is a settings object/array. Use a shallow serialization comparison to
-                // detect changes without introducing a deep-equality utility into this module.
-                JSON.stringify(oldSettings.featureImageProperties) !== JSON.stringify(newSettings.featureImageProperties) ||
-                oldSettings.downloadExternalFeatureImages !== newSettings.downloadExternalFeatureImages;
-
-            if (featureImageSettingsChanged) {
-                if (newSettings.showFeatureImage && !stoppedRef.current) {
-                    const db = getDBInstance();
-                    const total = db.getFilesNeedingContent('featureImage').size;
-                    // This notice is scoped to feature images only, so `total` is the number of pending items.
-                    startCacheRebuildNotice(total, ['featureImage']);
+            if (shouldShowIndexNotice) {
+                const enabledTypes = getCacheRebuildProgressTypes(newSettings);
+                if (enabledTypes.length > 0) {
+                    const state = getCacheRebuildNoticeState();
+                    if (state?.source !== 'rebuild') {
+                        const db = getDBInstance();
+                        const total = db.getFilesNeedingAnyContent(enabledTypes).size;
+                        if (total > 0) {
+                            setCacheRebuildNoticeState({ total, source: 'settings', types: enabledTypes });
+                            startCacheRebuildNotice(total, enabledTypes);
+                        } else {
+                            clearSettingsNotice();
+                        }
+                    }
                 } else {
-                    clearCacheRebuildNotice();
+                    clearSettingsNotice();
                 }
             }
 

@@ -16,9 +16,11 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import type { TFile } from 'obsidian';
 import { NotebookNavigatorSettings } from '../../settings';
 import type { ContentProviderType, FileContentType } from '../../interfaces/IContentProvider';
 import { isCustomPropertyEnabled } from '../../utils/customPropertyUtils';
+import { isMarkdownPath } from '../../utils/fileTypeUtils';
 import { getActiveHiddenFiles } from '../../utils/vaultProfiles';
 
 /**
@@ -68,6 +70,33 @@ export function getCacheRebuildProgressTypes(settings: NotebookNavigatorSettings
     }
 
     return Array.from(types);
+}
+
+/**
+ * Returns the number of files that will require processing for the provided content types.
+ */
+export function getContentWorkTotal(files: TFile[], types: FileContentType[]): number {
+    if (files.length === 0 || types.length === 0) {
+        return 0;
+    }
+
+    const needsFeatureImage = types.includes('featureImage');
+    if (needsFeatureImage) {
+        return files.length;
+    }
+
+    const needsMarkdownContent = types.some(type => type !== 'featureImage');
+    if (!needsMarkdownContent) {
+        return 0;
+    }
+
+    let total = 0;
+    for (const file of files) {
+        if (isMarkdownPath(file.path)) {
+            total += 1;
+        }
+    }
+    return total;
 }
 
 /**
