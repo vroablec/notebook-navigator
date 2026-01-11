@@ -45,7 +45,7 @@
  */
 
 import React, { useCallback, useRef, useEffect, useImperativeHandle, forwardRef, useState, useMemo, useLayoutEffect } from 'react';
-import { TFile, Platform, requireApiVersion } from 'obsidian';
+import { TFile, Platform } from 'obsidian';
 import { Virtualizer } from '@tanstack/react-virtual';
 import { useSelectionState, useSelectionDispatch, resolvePrimarySelectedFile } from '../context/SelectionContext';
 import { useServices } from '../context/ServicesContext';
@@ -316,7 +316,6 @@ export const ListPane = React.memo(
 
         // Android uses toolbar at top, iOS at bottom
         const isAndroid = Platform.isAndroidApp;
-        const showBottomFade = Platform.isIosApp && requireApiVersion('1.11.0');
 
         useLayoutEffect(() => {
             const overlayElement = listOverlayRef.current;
@@ -1194,7 +1193,6 @@ export const ListPane = React.memo(
                             )
                         )}
                     </div>
-                    {showBottomFade && <div className="nn-pane-bottom-fade" aria-hidden="true" />}
                     {/* iOS - toolbar at bottom */}
                     {isMobile && !isAndroid && (
                         <div className="nn-pane-bottom-toolbar">
