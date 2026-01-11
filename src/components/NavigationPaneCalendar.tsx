@@ -206,40 +206,42 @@ export function NavigationPaneCalendar({ onWeekCountChange }: NavigationPaneCale
             return [];
         }
 
-        const cursor = cursorDate.clone().startOf('day');
-        const monthStart = cursor.clone().startOf('month');
-        const gridStart = startOfWeek(monthStart, weekStartsOn);
-
         const weeksToShow = clamp(settings.calendarWeeksToShow, 1, 6);
-        let startIndex: number;
-        let endIndexExclusive: number;
+        const cursor = cursorDate.clone().startOf('day');
+        const cursorWeekStart = startOfWeek(cursor.clone(), weekStartsOn);
+        const targetMonth = cursor.month();
+        const targetYear = cursor.year();
 
-        // `6` means "full month": render as many week rows as needed to cover the month grid (capped at 6).
+        let windowStart: MomentInstance;
+        let weekCount: number;
+
         if (weeksToShow === 6) {
+            // `6` means "full month": render as many week rows as needed to cover the month grid (capped at 6).
+            const monthStart = cursor.clone().startOf('month');
+            const gridStart = startOfWeek(monthStart, weekStartsOn);
             const monthEnd = monthStart.clone().endOf('month');
             const gridEndWeekStart = startOfWeek(monthEnd, weekStartsOn);
             const totalWeeks = clamp(gridEndWeekStart.diff(gridStart, 'weeks') + 1, 1, 6);
-            startIndex = 0;
-            endIndexExclusive = totalWeeks;
+
+            windowStart = gridStart;
+            weekCount = totalWeeks;
         } else {
-            // For 1..5 weeks: keep the current week in view, and center it when possible.
-            const cursorWeekStart = startOfWeek(cursor.clone(), weekStartsOn);
-            const cursorWeekIndex = clamp(cursorWeekStart.diff(gridStart, 'weeks'), 0, 5);
-            const maxStart = 6 - weeksToShow;
-            startIndex = clamp(cursorWeekIndex - Math.floor((weeksToShow - 1) / 2), 0, maxStart);
-            endIndexExclusive = startIndex + weeksToShow;
+            // For 1..5 weeks: show a sliding N-week window around the cursor week (page navigation never skips weeks).
+            const offset = Math.floor((weeksToShow - 1) / 2);
+            windowStart = cursorWeekStart.clone().subtract(offset, 'week');
+            weekCount = weeksToShow;
         }
 
         const visibleWeeks: CalendarWeek[] = [];
-        for (let weekOffset = startIndex; weekOffset < endIndexExclusive; weekOffset++) {
-            const weekStart = gridStart.clone().add(weekOffset, 'week');
+        for (let weekOffset = 0; weekOffset < weekCount; weekOffset++) {
+            const weekStart = windowStart.clone().add(weekOffset, 'week');
             const weekNumber = getWeek(weekStart.toDate(), weekConfig);
             const weekYear = getWeekYear(weekStart.toDate(), weekConfig);
 
             const days: CalendarDay[] = [];
             for (let dayOffset = 0; dayOffset < 7; dayOffset++) {
                 const date = weekStart.clone().add(dayOffset, 'day');
-                const inMonth = date.month() === monthStart.month() && date.year() === monthStart.year();
+                const inMonth = date.month() === targetMonth && date.year() === targetYear;
                 const file = dailyNoteSettings ? getDailyNoteFile(app, date, dailyNoteSettings) : null;
                 days.push({ date, iso: formatIsoDate(date), inMonth, file });
             }
