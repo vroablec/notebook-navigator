@@ -380,14 +380,18 @@ export function NavigationPaneCalendar({ onWeekCountChange }: NavigationPaneCale
         return cursorDate.clone().locale(displayLocale).format('MMMM YYYY');
     }, [cursorDate, displayLocale, momentApi]);
 
-    const handleNavigateMonth = useCallback(
+    const handleNavigate = useCallback(
         (delta: number) => {
             if (!momentApi) {
                 return;
             }
-            setCursorDate(prev => (prev ?? momentApi().startOf('day')).clone().add(delta, 'month'));
+            const weeksToShow = clamp(settings.calendarWeeksToShow, 1, 6);
+            const unit = weeksToShow === 6 ? 'month' : 'week';
+            const step = weeksToShow === 6 ? delta : delta * weeksToShow;
+
+            setCursorDate(prev => (prev ?? momentApi().startOf('day')).clone().add(step, unit));
         },
-        [momentApi]
+        [momentApi, settings.calendarWeeksToShow]
     );
 
     const handleToday = useCallback(() => {
@@ -465,7 +469,7 @@ export function NavigationPaneCalendar({ onWeekCountChange }: NavigationPaneCale
                         type="button"
                         className="nn-navigation-calendar-nav-button"
                         aria-label={strings.navigationCalendar.previousMonthAria}
-                        onClick={() => handleNavigateMonth(-1)}
+                        onClick={() => handleNavigate(-1)}
                     >
                         <ServiceIcon iconId="lucide-chevron-left" aria-hidden={true} />
                     </button>
@@ -476,7 +480,7 @@ export function NavigationPaneCalendar({ onWeekCountChange }: NavigationPaneCale
                         type="button"
                         className="nn-navigation-calendar-nav-button"
                         aria-label={strings.navigationCalendar.nextMonthAria}
-                        onClick={() => handleNavigateMonth(1)}
+                        onClick={() => handleNavigate(1)}
                     >
                         <ServiceIcon iconId="lucide-chevron-right" aria-hidden={true} />
                     </button>
