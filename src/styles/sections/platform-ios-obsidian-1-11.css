@@ -105,6 +105,8 @@
     --nn-ios-toolbar-glass-shadow: 0 0 0 2px var(--nn-ios-toolbar-glass-outline), 0 16px 32px rgba(0, 0, 0, 0.09);
     --nn-ios-toolbar-glass-filter: blur(3px) saturate(160%);
     --nn-theme-mobile-toolbar-button-active-bg: transparent;
+    --nn-ios-pane-bottom-fade-height: 64px;
+    --nn-ios-pane-bottom-fade-opacity: 0.8;
 }
 
 .theme-dark .notebook-navigator-obsidian-1-11-plus-ios {
@@ -163,4 +165,22 @@
 
 .notebook-navigator-obsidian-1-11-plus-ios .nn-mobile-toolbar-button svg {
     stroke-width: 2;
+}
+
+.notebook-navigator-obsidian-1-11-plus-ios .nn-navigation-pane-content,
+.notebook-navigator-obsidian-1-11-plus-ios .nn-list-pane-content {
+    position: relative;
+    z-index: 1;
+}
+
+.notebook-navigator-obsidian-1-11-plus-ios .nn-pane-bottom-fade {
+    position: sticky;
+    bottom: var(--nn-pane-bottom-calendar-space, 0px);
+    z-index: 2;
+    height: var(--nn-ios-pane-bottom-fade-height);
+    margin-top: calc(-1 * var(--nn-ios-pane-bottom-fade-height));
+    margin-left: calc(-1 * var(--nn-scroller-padding));
+    margin-right: calc(-1 * var(--nn-scroller-padding));
+    pointer-events: none;
+    background: linear-gradient(to bottom, rgb(255 255 255 / 0), rgb(255 255 255 / var(--nn-ios-pane-bottom-fade-opacity)));
 }

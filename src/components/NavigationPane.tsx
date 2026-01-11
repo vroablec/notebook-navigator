@@ -65,7 +65,7 @@ import React, {
     useReducer,
     useLayoutEffect
 } from 'react';
-import { TFolder, TFile, Menu, Platform } from 'obsidian';
+import { TFolder, TFile, Menu, Platform, requireApiVersion } from 'obsidian';
 import { Virtualizer } from '@tanstack/react-virtual';
 import { DndContext, PointerSensor, closestCenter, type DragEndEvent, type DragStartEvent, useSensor, useSensors } from '@dnd-kit/core';
 import { SortableContext, arrayMove, useSortable, verticalListSortingStrategy } from '@dnd-kit/sortable';
@@ -290,6 +290,7 @@ export const NavigationPane = React.memo(
         const { fileData, getFileDisplayName } = useFileCache();
         // Detect Android platform for toolbar placement
         const isAndroid = Platform.isAndroidApp;
+        const showBottomFade = Platform.isIosApp && requireApiVersion('1.11.0');
         const vaultTitlePreference = settings.vaultTitle ?? 'navigation';
         const hasMultipleVaultProfiles = (settings.vaultProfiles ?? []).length > 1;
         const shouldShowVaultTitleInHeader = !isMobile && hasMultipleVaultProfiles && vaultTitlePreference === 'header';
@@ -2879,6 +2880,7 @@ export const NavigationPane = React.memo(
                             )}
                         </div>
                     </div>
+                    {showBottomFade && <div className="nn-pane-bottom-fade" aria-hidden="true" />}
                     {/* iOS - toolbar at bottom */}
                     {isMobile && !isAndroid && (
                         <div className="nn-pane-bottom-toolbar">
