@@ -191,7 +191,8 @@ export function NavigationPaneCalendar({ onWeekCountChange }: NavigationPaneCale
         if (!Array.isArray(labels) || labels.length !== 7) {
             return [];
         }
-        return [...labels.slice(firstDay), ...labels.slice(0, firstDay)];
+        const ordered = [...labels.slice(firstDay), ...labels.slice(0, firstDay)];
+        return ordered.map(label => Array.from(label.trim())[0] ?? '');
     }, [displayLocale, momentApi, weekStartsOn]);
 
     const dailyNoteSettings = useMemo(() => {
@@ -497,59 +498,61 @@ export function NavigationPaneCalendar({ onWeekCountChange }: NavigationPaneCale
                 </div>
             </div>
 
-            <div className="nn-navigation-calendar-weekdays" data-weeknumbers={showWeekNumbers ? 'true' : undefined}>
-                {showWeekNumbers ? <div className="nn-navigation-calendar-weeknumber-spacer" /> : null}
-                {weekdays.map(day => (
-                    <div key={day} className="nn-navigation-calendar-weekday">
-                        {day}
-                    </div>
-                ))}
-            </div>
+            <div className="nn-navigation-calendar-grid" data-weeknumbers={showWeekNumbers ? 'true' : undefined}>
+                <div className="nn-navigation-calendar-weekdays" data-weeknumbers={showWeekNumbers ? 'true' : undefined}>
+                    {showWeekNumbers ? <div className="nn-navigation-calendar-weeknumber-spacer" /> : null}
+                    {weekdays.map(day => (
+                        <div key={day} className="nn-navigation-calendar-weekday">
+                            {day}
+                        </div>
+                    ))}
+                </div>
 
-            <div className="nn-navigation-calendar-weeks" data-weeknumbers={showWeekNumbers ? 'true' : undefined}>
-                {weeks.map(week => (
-                    <div key={week.key} className="nn-navigation-calendar-week">
-                        {showWeekNumbers ? (
-                            <div className="nn-navigation-calendar-weeknumber" aria-hidden="true">
-                                {week.weekNumber}
-                            </div>
-                        ) : null}
-                        {week.days.map(day => {
-                            const dayNumber = day.date.date();
-                            const hasDailyNote = Boolean(day.file);
-                            const featureImageUrl = featureImageUrls[day.iso] ?? null;
-                            const isToday = todayIso === day.iso;
+                <div className="nn-navigation-calendar-weeks" data-weeknumbers={showWeekNumbers ? 'true' : undefined}>
+                    {weeks.map(week => (
+                        <div key={week.key} className="nn-navigation-calendar-week">
+                            {showWeekNumbers ? (
+                                <div className="nn-navigation-calendar-weeknumber" aria-hidden="true">
+                                    {week.weekNumber}
+                                </div>
+                            ) : null}
+                            {week.days.map(day => {
+                                const dayNumber = day.date.date();
+                                const hasDailyNote = Boolean(day.file);
+                                const featureImageUrl = featureImageUrls[day.iso] ?? null;
+                                const isToday = todayIso === day.iso;
 
-                            const className = [
-                                'nn-navigation-calendar-day',
-                                day.inMonth ? 'is-in-month' : 'is-outside-month',
-                                isToday ? 'is-today' : '',
-                                hasDailyNote ? 'has-daily-note' : '',
-                                featureImageUrl ? 'has-feature-image' : ''
-                            ]
-                                .filter(Boolean)
-                                .join(' ');
+                                const className = [
+                                    'nn-navigation-calendar-day',
+                                    day.inMonth ? 'is-in-month' : 'is-outside-month',
+                                    isToday ? 'is-today' : '',
+                                    hasDailyNote ? 'has-daily-note' : '',
+                                    featureImageUrl ? 'has-feature-image' : ''
+                                ]
+                                    .filter(Boolean)
+                                    .join(' ');
 
-                            const style: React.CSSProperties | undefined = featureImageUrl
-                                ? { backgroundImage: `url(${featureImageUrl})` }
-                                : undefined;
+                                const style: React.CSSProperties | undefined = featureImageUrl
+                                    ? { backgroundImage: `url(${featureImageUrl})` }
+                                    : undefined;
 
-                            return (
-                                <button
-                                    key={day.iso}
-                                    type="button"
-                                    className={className}
-                                    style={style}
-                                    // Readable label for screen readers (e.g. "January 10, 2026") regardless of the visible day number.
-                                    aria-label={day.date.clone().locale(displayLocale).format('LL')}
-                                    onClick={() => openOrCreateDailyNote(day.date, day.file)}
-                                >
-                                    <span className="nn-navigation-calendar-day-number">{dayNumber}</span>
-                                </button>
-                            );
-                        })}
-                    </div>
-                ))}
+                                return (
+                                    <button
+                                        key={day.iso}
+                                        type="button"
+                                        className={className}
+                                        style={style}
+                                        // Readable label for screen readers (e.g. "January 10, 2026") regardless of the visible day number.
+                                        aria-label={day.date.clone().locale(displayLocale).format('LL')}
+                                        onClick={() => openOrCreateDailyNote(day.date, day.file)}
+                                    >
+                                        <span className="nn-navigation-calendar-day-number">{dayNumber}</span>
+                                    </button>
+                                );
+                            })}
+                        </div>
+                    ))}
+                </div>
             </div>
         </div>
     );
