@@ -2879,7 +2879,6 @@ export const NavigationPane = React.memo(
                             )}
                         </div>
                     </div>
-                    <div className="nn-pane-bottom-fade" aria-hidden={true} />
                     {/* iOS - toolbar at bottom */}
                     {isMobile && !isAndroid && (
                         <div className="nn-pane-bottom-toolbar">

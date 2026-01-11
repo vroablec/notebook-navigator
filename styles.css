@@ -5919,62 +5919,10 @@ body.nn-resizing {
     box-sizing: border-box;
 }
 
-/* iOS (Obsidian 1.11+) bottom fade gradient - overlays list content behind the toolbar */
-.notebook-navigator-obsidian-1-11-plus-ios .nn-navigation-pane,
-.notebook-navigator-obsidian-1-11-plus-ios .nn-list-pane {
-    position: relative;
-}
-
-/* Allow the iOS glass toolbar shadow to render into the split container padding */
+/* iOS (Obsidian 1.11+): allow the glass toolbar shadow to render into the split container padding */
 .notebook-navigator-obsidian-1-11-plus-ios .nn-navigation-pane,
 .notebook-navigator-obsidian-1-11-plus-ios .nn-list-pane {
     overflow: visible;
-}
-
-.notebook-navigator-obsidian-1-11-plus-ios .nn-navigation-pane-scroller,
-.notebook-navigator-obsidian-1-11-plus-ios .nn-list-pane-scroller {
-    display: flex;
-    flex-direction: column;
-}
-
-.notebook-navigator-obsidian-1-11-plus-ios .nn-navigation-pane {
-    --nn-bottom-fade-bg: var(--nn-theme-nav-bg);
-}
-
-.notebook-navigator-obsidian-1-11-plus-ios .nn-list-pane {
-    --nn-bottom-fade-bg: var(--nn-theme-list-bg);
-}
-
-.notebook-navigator-obsidian-1-11-plus-ios .nn-pane-bottom-fade {
-    position: sticky;
-    bottom: 0;
-    z-index: 4;
-    height: 0;
-    pointer-events: none;
-    margin-top: auto;
-    margin-left: calc(-1 * var(--nn-scroller-padding));
-    margin-right: calc(-1 * var(--nn-scroller-padding));
-}
-
-.notebook-navigator-obsidian-1-11-plus-ios .nn-pane-bottom-fade::before {
-    content: '';
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    height: calc(88px + var(--nn-mobile-safe-area-bottom, 0px));
-    background: linear-gradient(
-        to top,
-        color-mix(in srgb, var(--nn-bottom-fade-bg) 85%, transparent) 0%,
-        color-mix(in srgb, var(--nn-bottom-fade-bg) 55%, transparent) 38%,
-        color-mix(in srgb, var(--nn-bottom-fade-bg) 25%, transparent) 68%,
-        color-mix(in srgb, var(--nn-bottom-fade-bg) 10%, transparent) 86%,
-        transparent 100%
-    );
-}
-
-.notebook-navigator-obsidian-1-11-plus-ios .nn-navigation-pane[data-calendar='true'] .nn-pane-bottom-fade {
-    bottom: var(--nn-nav-calendar-height);
 }
 
 /* Ensure the iOS glass toolbar shadow does not render on top of the calendar overlay. */
