@@ -2891,12 +2891,12 @@ export const NavigationPane = React.memo(
                             />
                         </div>
                     )}
+                    {showCalendar ? (
+                        <div className="nn-navigation-calendar-overlay" ref={calendarOverlayRef}>
+                            <NavigationPaneCalendar onWeekCountChange={setCalendarWeekCount} />
+                        </div>
+                    ) : null}
                 </div>
-                {showCalendar ? (
-                    <div className="nn-navigation-calendar-overlay" ref={calendarOverlayRef}>
-                        <NavigationPaneCalendar onWeekCountChange={setCalendarWeekCount} />
-                    </div>
-                ) : null}
             </div>
         );
 
