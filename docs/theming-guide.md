@@ -56,7 +56,7 @@ The theming variables use the `--nn-theme-` prefix and should be defined at the 
 | `--nn-theme-nav-calendar-day-in-month-color`    | `var(--text-normal)`            | Text color for days within the current month            |
 | `--nn-theme-nav-calendar-day-outside-month-color` | `var(--text-muted)`           | Text color for days outside the current month           |
 | `--nn-theme-nav-calendar-day-today-color`       | `var(--nn-theme-nav-calendar-day-has-note-color)` | Text color for today's date                             |
-| `--nn-theme-nav-calendar-day-today-bg`          | `var(--nn-theme-nav-calendar-day-has-note-bg)` | Background color for the today highlight circle          |
+| `--nn-theme-nav-calendar-day-today-bg`          | `var(--color-red)`            | Background color for the today highlight circle          |
 | `--nn-theme-nav-calendar-day-has-note-color`    | `white`                         | Text color for dates with a daily note                  |
 | `--nn-theme-nav-calendar-day-has-note-bg`       | `var(--text-selection)`         | Background color for dates with a daily note            |
 | `--nn-theme-nav-calendar-day-has-feature-image-color` | `white`                  | Text color for dates with feature images                |

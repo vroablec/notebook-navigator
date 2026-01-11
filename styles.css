@@ -195,7 +195,7 @@ body {
     --nn-theme-nav-calendar-day-in-month-color: var(--text-normal);
     --nn-theme-nav-calendar-day-outside-month-color: var(--text-muted);
     --nn-theme-nav-calendar-day-today-color: var(--nn-theme-nav-calendar-day-has-note-color);
-    --nn-theme-nav-calendar-day-today-bg: var(--nn-theme-nav-calendar-day-has-note-bg);
+    --nn-theme-nav-calendar-day-today-bg: var(--color-red);
     --nn-theme-nav-calendar-day-has-note-color: white;
     --nn-theme-nav-calendar-day-has-note-bg: var(--text-selection);
     --nn-theme-nav-calendar-day-has-feature-image-color: white;
