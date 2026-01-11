@@ -188,6 +188,18 @@ body {
     --nn-theme-nav-separator-opacity: 0.3;
     --nn-theme-pinned-shortcut-shadow-color: rgba(0, 0, 0, 0.03);
 
+    /* -- Navigation Calendar -- */
+    --nn-theme-nav-calendar-hover-bg: var(--background-modifier-hover);
+    --nn-theme-nav-calendar-header-color: var(--text-normal);
+    --nn-theme-nav-calendar-week-label-color: var(--text-muted);
+    --nn-theme-nav-calendar-day-in-month-color: var(--text-normal);
+    --nn-theme-nav-calendar-day-outside-month-color: var(--text-muted);
+    --nn-theme-nav-calendar-day-today-color: var(--nn-theme-nav-calendar-day-has-note-color);
+    --nn-theme-nav-calendar-day-today-bg: var(--nn-theme-nav-calendar-day-has-note-bg);
+    --nn-theme-nav-calendar-day-has-note-color: white;
+    --nn-theme-nav-calendar-day-has-note-bg: var(--text-selection);
+    --nn-theme-nav-calendar-day-has-feature-image-color: white;
+
     /* -- Folder & Tag Items -- */
     --nn-theme-navitem-chevron-color: var(--text-muted);
     --nn-theme-navitem-icon-color: var(--text-muted);
@@ -2430,7 +2442,7 @@ body {
 .nn-navigation-calendar-month {
     font-size: 12px;
     font-weight: 600;
-    color: var(--text-normal);
+    color: var(--nn-theme-nav-calendar-header-color);
 }
 
 .nn-navigation-calendar-nav {
@@ -2450,10 +2462,11 @@ body {
     border: none !important;
     border-radius: 6px;
     background: transparent !important;
-    color: var(--text-normal);
+    color: var(--nn-theme-nav-calendar-header-color);
     cursor: pointer;
     padding: 0;
     box-shadow: none !important;
+    outline: none;
     line-height: 0;
     transition:
         background-color 120ms ease,
@@ -2461,17 +2474,12 @@ body {
         box-shadow 120ms ease;
 }
 
-.nn-navigation-calendar-nav-button:focus-visible {
-    outline: 2px solid var(--interactive-accent);
-    outline-offset: 2px;
-}
-
 .nn-navigation-calendar-today {
     -webkit-appearance: none;
     appearance: none;
     border: none !important;
     background: transparent !important;
-    color: var(--text-normal);
+    color: var(--nn-theme-nav-calendar-header-color);
     font: inherit;
     font-size: 12px;
     height: 28px;
@@ -2479,6 +2487,7 @@ body {
     border-radius: 6px;
     cursor: pointer;
     box-shadow: none !important;
+    outline: none;
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -2487,11 +2496,6 @@ body {
         background-color 120ms ease,
         filter 120ms ease,
         box-shadow 120ms ease;
-}
-
-.nn-navigation-calendar-today:focus-visible {
-    outline: 2px solid var(--interactive-accent);
-    outline-offset: 2px;
 }
 
 /* Calendar month navigation icon sizing (ServiceIcon renders an SVG). */
@@ -2506,7 +2510,7 @@ body {
     align-items: center;
     column-gap: 1px;
     grid-template-columns: repeat(7, 1fr);
-    color: var(--text-muted);
+    color: var(--nn-theme-nav-calendar-week-label-color);
     font-size: 11px;
     line-height: 1;
 }
@@ -2541,7 +2545,7 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    color: var(--text-muted);
+    color: var(--nn-theme-nav-calendar-week-label-color);
     font-size: 10px;
     line-height: 1;
 }
@@ -2549,6 +2553,7 @@ body {
 .nn-navigation-calendar-day {
     -webkit-appearance: none;
     appearance: none;
+    position: relative;
     height: var(--nn-nav-calendar-week-row-height);
     border: none !important;
     border-radius: 6px;
@@ -2557,63 +2562,91 @@ body {
     align-items: center;
     justify-content: center;
     background-color: transparent !important;
-    color: var(--text-normal);
+    color: var(--nn-theme-nav-calendar-day-in-month-color);
     cursor: pointer;
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
     box-shadow: none !important;
+    outline: none;
     transition:
         background-color 120ms ease,
         filter 120ms ease,
         box-shadow 120ms ease;
 }
 
-.nn-navigation-calendar-day:focus-visible {
-    outline: 2px solid var(--interactive-accent);
-    outline-offset: 2px;
-}
-
 /* Hover effects only apply on hover-capable devices (prevents "stuck hover" on touch). */
 @media (hover: hover) and (pointer: fine) {
     .nn-navigation-calendar-nav-button:hover {
-        background-color: var(--background-modifier-hover) !important;
+        background-color: var(--nn-theme-nav-calendar-hover-bg) !important;
     }
 
     .nn-navigation-calendar-today:hover {
-        background-color: var(--background-modifier-hover) !important;
+        background-color: var(--nn-theme-nav-calendar-hover-bg) !important;
     }
 
     .nn-navigation-calendar-day:hover {
         filter: brightness(1.05);
-        box-shadow: inset 0 0 0 1px var(--background-modifier-border);
     }
 
     .nn-navigation-calendar-day:hover:not(.has-feature-image):not(.has-daily-note) {
-        background-color: var(--background-modifier-hover) !important;
+        background-color: var(--nn-theme-nav-calendar-hover-bg) !important;
     }
 }
 
 .nn-navigation-calendar-day.is-outside-month:not(.has-daily-note):not(.has-feature-image) {
-    opacity: 0.6;
+    color: var(--nn-theme-nav-calendar-day-outside-month-color);
+}
+
+.nn-navigation-calendar-day.is-today {
+    color: var(--nn-theme-nav-calendar-day-today-color);
+}
+
+.nn-navigation-calendar-day.is-today .nn-navigation-calendar-day-number {
+    font-weight: 600;
+}
+
+.nn-navigation-calendar-day.is-today:not(.has-daily-note):not(.has-feature-image)::before {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: min(calc(100% - 4px), calc(var(--nn-nav-calendar-week-row-height) - 4px));
+    height: min(calc(100% - 4px), calc(var(--nn-nav-calendar-week-row-height) - 4px));
+    border-radius: 999px;
+    background-color: var(--nn-theme-nav-calendar-day-today-bg);
+    z-index: 0;
 }
 
 .nn-navigation-calendar-day.has-daily-note {
-    background-color: var(--text-selection) !important;
-    color: white;
+    background-color: var(--nn-theme-nav-calendar-day-has-note-bg) !important;
+    color: var(--nn-theme-nav-calendar-day-has-note-color);
+}
+
+.nn-navigation-calendar-day.has-daily-note .nn-navigation-calendar-day-number {
+    font-weight: 600;
+}
+
+.nn-navigation-calendar-day.has-daily-note.is-today {
+    color: var(--nn-theme-nav-calendar-day-today-color);
 }
 
 .nn-navigation-calendar-day.has-feature-image {
-    color: white;
+    color: var(--nn-theme-nav-calendar-day-has-feature-image-color);
 }
 
 .nn-navigation-calendar-day.has-feature-image .nn-navigation-calendar-day-number {
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.55);
+    text-shadow:
+        0 1px 2px rgba(0, 0, 0, 0.75),
+        0 2px 8px rgba(0, 0, 0, 0.45);
 }
 
 .nn-navigation-calendar-day-number {
     font-size: 12px;
     line-height: 1;
+    position: relative;
+    z-index: 1;
 }
 /* Source: src/styles/sections/list-files.css */
 
@@ -6479,6 +6512,104 @@ settings:
         id: nn-theme-nav-separator-color
         title: Navigation separator color
         description: Line color for separators rendered inside navigation spacers.
+        type: variable-themed-color
+        format: hex
+        default-light: '#'
+        default-dark: '#'
+    -
+    -
+        id: nn-nav-calendar-heading
+        title: Calendar overlay
+        description: Customize the navigation pane calendar overlay.
+        type: heading
+        level: 2
+        collapsed: true
+    -
+    -
+        id: nn-theme-nav-calendar-header-color
+        title: Header text color
+        description: Text color for month/year and header buttons.
+        type: variable-themed-color
+        format: hex
+        default-light: '#'
+        default-dark: '#'
+    -
+    -
+        id: nn-theme-nav-calendar-week-label-color
+        title: Week label text color
+        description: Text color for weekday labels and week numbers.
+        type: variable-themed-color
+        format: hex
+        default-light: '#'
+        default-dark: '#'
+    -
+    -
+        id: nn-theme-nav-calendar-day-in-month-color
+        title: Day text color (current month)
+        description: Text color for days within the current month.
+        type: variable-themed-color
+        format: hex
+        default-light: '#'
+        default-dark: '#'
+    -
+    -
+        id: nn-theme-nav-calendar-day-outside-month-color
+        title: Day text color (outside month)
+        description: Text color for days outside the current month.
+        type: variable-themed-color
+        format: hex
+        default-light: '#'
+        default-dark: '#'
+    -
+    -
+        id: nn-theme-nav-calendar-day-today-color
+        title: Day text color (today)
+        description: Text color for today's date.
+        type: variable-themed-color
+        format: hex
+        default-light: '#'
+        default-dark: '#'
+    -
+    -
+        id: nn-theme-nav-calendar-day-today-bg
+        title: Today highlight background
+        description: Background color for the today highlight circle.
+        type: variable-themed-color
+        format: hex
+        default-light: '#'
+        default-dark: '#'
+    -
+    -
+        id: nn-theme-nav-calendar-day-has-note-color
+        title: Daily note text color
+        description: Text color for dates with a daily note.
+        type: variable-themed-color
+        format: hex
+        default-light: '#'
+        default-dark: '#'
+    -
+    -
+        id: nn-theme-nav-calendar-day-has-feature-image-color
+        title: Feature image text color
+        description: Text color for dates with feature images.
+        type: variable-themed-color
+        format: hex
+        default-light: '#'
+        default-dark: '#'
+    -
+    -
+        id: nn-theme-nav-calendar-day-has-note-bg
+        title: Daily note background
+        description: Background color for dates with a daily note.
+        type: variable-themed-color
+        format: hex
+        default-light: '#'
+        default-dark: '#'
+    -
+    -
+        id: nn-theme-nav-calendar-hover-bg
+        title: Hover background
+        description: Background color when hovering calendar buttons and days.
         type: variable-themed-color
         format: hex
         default-light: '#'

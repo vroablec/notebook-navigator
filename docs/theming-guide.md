@@ -1,6 +1,6 @@
 # Notebook Navigator Theming Guide
 
-Updated: January 9, 2026
+Updated: January 11, 2026
 
 ## Table of Contents
 
@@ -45,6 +45,21 @@ The theming variables use the `--nn-theme-` prefix and should be defined at the 
 | `--nn-theme-nav-separator-background` | `linear-gradient(90deg, transparent 0%, var(--nn-theme-nav-separator-color) 15%, var(--nn-theme-nav-separator-color) 85%, transparent 100%)` | Fill for navigation separators; override to supply your own gradient or solid color |
 | `--nn-theme-nav-separator-height`     | `1px`                                                                                                                                        | Thickness for navigation separators                                                 |
 | `--nn-theme-nav-separator-opacity`    | `0.3`                                                                                                                                        | Opacity for navigation separators                                                   |
+
+#### Navigation calendar
+
+| Variable                                        | Default                         | Description                                             |
+| ----------------------------------------------- | ------------------------------- | ------------------------------------------------------- |
+| `--nn-theme-nav-calendar-hover-bg`              | `var(--background-modifier-hover)` | Hover background for calendar buttons and days          |
+| `--nn-theme-nav-calendar-header-color`          | `var(--text-normal)`            | Text color for month/year and header buttons            |
+| `--nn-theme-nav-calendar-week-label-color`      | `var(--text-muted)`             | Text color for weekday labels and week numbers          |
+| `--nn-theme-nav-calendar-day-in-month-color`    | `var(--text-normal)`            | Text color for days within the current month            |
+| `--nn-theme-nav-calendar-day-outside-month-color` | `var(--text-muted)`           | Text color for days outside the current month           |
+| `--nn-theme-nav-calendar-day-today-color`       | `var(--nn-theme-nav-calendar-day-has-note-color)` | Text color for today's date                             |
+| `--nn-theme-nav-calendar-day-today-bg`          | `var(--nn-theme-nav-calendar-day-has-note-bg)` | Background color for the today highlight circle          |
+| `--nn-theme-nav-calendar-day-has-note-color`    | `white`                         | Text color for dates with a daily note                  |
+| `--nn-theme-nav-calendar-day-has-note-bg`       | `var(--text-selection)`         | Background color for dates with a daily note            |
+| `--nn-theme-nav-calendar-day-has-feature-image-color` | `white`                  | Text color for dates with feature images                |
 
 #### Pinned shortcuts
 

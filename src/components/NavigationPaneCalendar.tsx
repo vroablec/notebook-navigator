@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React, { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useId, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { Notice, TFile } from 'obsidian';
 import { getWeek, getWeekYear } from 'date-fns';
 import { getCurrentLanguage, strings } from '../i18n';
@@ -104,9 +104,11 @@ export function NavigationPaneCalendar({ onWeekCountChange }: NavigationPaneCale
     const settings = useSettingsState();
     const { getDB } = useFileCache();
     const openFile = useFileOpener();
+    const calendarLabelId = useId();
 
     const momentApi = getMomentApi();
     const [cursorDate, setCursorDate] = useState<MomentInstance | null>(() => (momentApi ? momentApi().startOf('day') : null));
+    const todayIso = useMemo(() => (momentApi ? formatIsoDate(momentApi().startOf('day')) : null), [momentApi]);
 
     const [vaultVersion, setVaultVersion] = useState(0);
     const [contentVersion, setContentVersion] = useState(0);
@@ -461,7 +463,10 @@ export function NavigationPaneCalendar({ onWeekCountChange }: NavigationPaneCale
     const showWeekNumbers = settings.calendarShowWeekNumber;
 
     return (
-        <div className="nn-navigation-calendar" aria-label={strings.navigationCalendar.ariaLabel}>
+        <div className="nn-navigation-calendar" role="group" aria-labelledby={calendarLabelId}>
+            <span id={calendarLabelId} className="nn-visually-hidden">
+                {strings.navigationCalendar.ariaLabel}
+            </span>
             <div className="nn-navigation-calendar-header">
                 <div className="nn-navigation-calendar-month">{headerLabel}</div>
                 <div className="nn-navigation-calendar-nav">
@@ -473,7 +478,12 @@ export function NavigationPaneCalendar({ onWeekCountChange }: NavigationPaneCale
                     >
                         <ServiceIcon iconId="lucide-chevron-left" aria-hidden={true} />
                     </button>
-                    <button type="button" className="nn-navigation-calendar-today" onClick={handleToday}>
+                    <button
+                        type="button"
+                        className="nn-navigation-calendar-today"
+                        aria-label={strings.dateGroups.today}
+                        onClick={handleToday}
+                    >
                         {strings.dateGroups.today}
                     </button>
                     <button
@@ -508,10 +518,12 @@ export function NavigationPaneCalendar({ onWeekCountChange }: NavigationPaneCale
                             const dayNumber = day.date.date();
                             const hasDailyNote = Boolean(day.file);
                             const featureImageUrl = featureImageUrls[day.iso] ?? null;
+                            const isToday = todayIso === day.iso;
 
                             const className = [
                                 'nn-navigation-calendar-day',
                                 day.inMonth ? 'is-in-month' : 'is-outside-month',
+                                isToday ? 'is-today' : '',
                                 hasDailyNote ? 'has-daily-note' : '',
                                 featureImageUrl ? 'has-feature-image' : ''
                             ]
