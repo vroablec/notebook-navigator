@@ -63,6 +63,7 @@ export function NavigationPaneHeader({
     // Detects if any hidden folders, tags, or files are configured to determine if toggle should be shown
     const hasHiddenItems = hasHiddenItemSources(settings);
     const navigationVisibility = settings.toolbarVisibility.navigation;
+    const showToggleDualPaneButton = navigationVisibility.toggleDualPane;
     const showExpandCollapseButton = navigationVisibility.expandCollapse;
     const showCalendarButton = navigationVisibility.calendar;
     const showHiddenItemsButton = navigationVisibility.hiddenItems && hasHiddenItems;
@@ -124,22 +125,24 @@ export function NavigationPaneHeader({
         <div className="nn-pane-header">
             <div className="nn-header-actions nn-header-actions--space-between">
                 <div className="nn-header-actions nn-header-actions-profile">
-                    <button
-                        className="nn-icon-button"
-                        aria-label={uiState.dualPane ? strings.paneHeader.showSinglePane : strings.paneHeader.showDualPane}
-                        onClick={() => {
-                            plugin.setDualPanePreference(!plugin.useDualPane());
-                        }}
-                        tabIndex={-1}
-                        type="button"
-                    >
-                        <ServiceIcon
-                            iconId={resolveUXIcon(
-                                settings.interfaceIcons,
-                                uiState.dualPane ? 'nav-show-single-pane' : 'nav-show-dual-pane'
-                            )}
-                        />
-                    </button>
+                    {showToggleDualPaneButton ? (
+                        <button
+                            className="nn-icon-button"
+                            aria-label={uiState.dualPane ? strings.paneHeader.showSinglePane : strings.paneHeader.showDualPane}
+                            onClick={() => {
+                                plugin.setDualPanePreference(!plugin.useDualPane());
+                            }}
+                            tabIndex={-1}
+                            type="button"
+                        >
+                            <ServiceIcon
+                                iconId={resolveUXIcon(
+                                    settings.interfaceIcons,
+                                    uiState.dualPane ? 'nav-show-single-pane' : 'nav-show-dual-pane'
+                                )}
+                            />
+                        </button>
+                    ) : null}
                     {profileTrigger}
                 </div>
                 <div className="nn-header-actions">

@@ -56,8 +56,8 @@ export interface UXIconDefinition {
 }
 
 export const UX_ICON_DEFINITIONS: UXIconDefinition[] = [
-    { id: 'nav-show-single-pane', category: 'navigationPane', defaultIconId: 'panel-left' },
-    { id: 'nav-show-dual-pane', category: 'navigationPane', defaultIconId: 'panel-left-dashed' },
+    { id: 'nav-show-single-pane', category: 'navigationPane', defaultIconId: 'panel-left-close' },
+    { id: 'nav-show-dual-pane', category: 'navigationPane', defaultIconId: 'panel-left' },
     { id: 'nav-profile-chevron', category: 'navigationPane', defaultIconId: 'chevron-down' },
     { id: 'nav-shortcuts', category: 'navigationPane', defaultIconId: 'star' },
     { id: 'nav-expand-all', category: 'navigationPane', defaultIconId: 'chevrons-up-down' },

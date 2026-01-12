@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { ButtonComponent, DropdownComponent, Platform, Setting, SliderComponent, setIcon } from 'obsidian';
+import { ButtonComponent, DropdownComponent, Platform, Setting, SliderComponent } from 'obsidian';
 import { getWelcomeVideoBaseUrl, SUPPORT_BUY_ME_A_COFFEE_URL, SUPPORT_SPONSOR_URL } from '../../constants/urls';
 import { HomepageModal } from '../../modals/HomepageModal';
 import { strings } from '../../i18n';
@@ -44,12 +44,14 @@ import {
     percentToScale
 } from '../../utils/uiScale';
 import { runAsyncAction } from '../../utils/async';
+import { getIconService } from '../../services/icons';
 import {
     DEFAULT_VAULT_PROFILE_ID,
     ensureVaultProfiles,
     createValidatedVaultProfileFromTemplate,
     validateVaultProfileNameOrNotify
 } from '../../utils/vaultProfiles';
+import { resolveUXIcon, type UXIconId } from '../../utils/uxIcons';
 import { normalizeTagPath } from '../../utils/tagUtils';
 import { formatCommaSeparatedList, parseCommaSeparatedList } from '../../utils/commaSeparatedListUtils';
 import type NotebookNavigatorPlugin from '../../main';
@@ -849,24 +851,25 @@ export function renderGeneralTab(context: SettingsTabContext): void {
 
 interface ToolbarButtonConfig<T extends string> {
     id: T;
-    icon: string;
+    uxIconId: UXIconId;
     label: string;
 }
 
 const NAVIGATION_TOOLBAR_BUTTONS: ToolbarButtonConfig<NavigationToolbarButtonId>[] = [
-    { id: 'expandCollapse', icon: 'lucide-chevrons-up-down', label: strings.paneHeader.expandAllFolders },
-    { id: 'calendar', icon: 'lucide-calendar-days', label: strings.paneHeader.showCalendar },
-    { id: 'hiddenItems', icon: 'lucide-eye', label: strings.paneHeader.showExcludedItems },
-    { id: 'rootReorder', icon: 'lucide-list-tree', label: strings.paneHeader.reorderRootFolders },
-    { id: 'newFolder', icon: 'lucide-folder-plus', label: strings.paneHeader.newFolder }
+    { id: 'toggleDualPane', uxIconId: 'nav-show-dual-pane', label: strings.paneHeader.showDualPane },
+    { id: 'expandCollapse', uxIconId: 'nav-expand-all', label: strings.paneHeader.expandAllFolders },
+    { id: 'calendar', uxIconId: 'nav-calendar', label: strings.paneHeader.showCalendar },
+    { id: 'hiddenItems', uxIconId: 'nav-hidden-items', label: strings.paneHeader.showExcludedItems },
+    { id: 'rootReorder', uxIconId: 'nav-root-reorder', label: strings.paneHeader.reorderRootFolders },
+    { id: 'newFolder', uxIconId: 'nav-new-folder', label: strings.paneHeader.newFolder }
 ];
 
 const LIST_TOOLBAR_BUTTONS: ToolbarButtonConfig<ListToolbarButtonId>[] = [
-    { id: 'search', icon: 'lucide-search', label: strings.paneHeader.search },
-    { id: 'descendants', icon: 'lucide-layers', label: strings.paneHeader.toggleDescendantNotes },
-    { id: 'sort', icon: 'lucide-arrow-down-up', label: strings.paneHeader.changeSortOrder },
-    { id: 'appearance', icon: 'lucide-palette', label: strings.paneHeader.changeAppearance },
-    { id: 'newNote', icon: 'lucide-pen-box', label: strings.paneHeader.newNote }
+    { id: 'search', uxIconId: 'list-search', label: strings.paneHeader.search },
+    { id: 'descendants', uxIconId: 'list-descendants', label: strings.paneHeader.toggleDescendantNotes },
+    { id: 'sort', uxIconId: 'list-sort-ascending', label: strings.paneHeader.changeSortOrder },
+    { id: 'appearance', uxIconId: 'list-appearance', label: strings.paneHeader.changeAppearance },
+    { id: 'newNote', uxIconId: 'list-new-note', label: strings.paneHeader.newNote }
 ];
 
 function renderToolbarVisibilitySetting(
@@ -884,6 +887,7 @@ function renderToolbarVisibilitySetting(
         containerEl: sectionsEl,
         label: strings.settings.items.toolbarButtons.navigationLabel,
         buttons: NAVIGATION_TOOLBAR_BUTTONS,
+        interfaceIcons: plugin.settings.interfaceIcons,
         state: plugin.settings.toolbarVisibility.navigation,
         onToggle: () => {
             runAsyncAction(() => plugin.persistToolbarVisibility());
@@ -894,6 +898,7 @@ function renderToolbarVisibilitySetting(
         containerEl: sectionsEl,
         label: strings.settings.items.toolbarButtons.listLabel,
         buttons: LIST_TOOLBAR_BUTTONS,
+        interfaceIcons: plugin.settings.interfaceIcons,
         state: plugin.settings.toolbarVisibility.list,
         onToggle: () => {
             runAsyncAction(() => plugin.persistToolbarVisibility());
@@ -905,11 +910,19 @@ interface ToolbarButtonGroupProps<T extends string> {
     containerEl: HTMLElement;
     label: string;
     buttons: ToolbarButtonConfig<T>[];
+    interfaceIcons: Record<string, string> | undefined;
     state: Record<T, boolean>;
     onToggle: () => void;
 }
 
-function createToolbarButtonGroup<T extends string>({ containerEl, label, buttons, state, onToggle }: ToolbarButtonGroupProps<T>): void {
+function createToolbarButtonGroup<T extends string>({
+    containerEl,
+    label,
+    buttons,
+    interfaceIcons,
+    state,
+    onToggle
+}: ToolbarButtonGroupProps<T>): void {
     const groupEl = containerEl.createDiv({ cls: 'nn-toolbar-visibility-group' });
     groupEl.createDiv({ cls: 'nn-toolbar-visibility-group-label', text: label });
     const gridEl = groupEl.createDiv({ cls: ['nn-toolbar-visibility-grid', 'nn-toolbar-visibility-grid-scroll'] });
@@ -924,7 +937,8 @@ function createToolbarButtonGroup<T extends string>({ containerEl, label, button
         buttonEl.setAttr('title', button.label);
 
         const iconEl = buttonEl.createSpan({ cls: 'nn-toolbar-visibility-icon' });
-        setIcon(iconEl, button.icon);
+        const resolvedIconId = resolveUXIcon(interfaceIcons, button.uxIconId);
+        getIconService().renderIcon(iconEl, resolvedIconId);
 
         const applyState = () => {
             const isEnabled = Boolean(state[button.id]);

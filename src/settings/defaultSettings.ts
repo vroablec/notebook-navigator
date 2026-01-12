@@ -98,6 +98,7 @@ export const DEFAULT_SETTINGS: NotebookNavigatorSettings = {
     colorIconOnly: false,
     toolbarVisibility: {
         navigation: {
+            toggleDualPane: true,
             expandCollapse: true,
             calendar: true,
             hiddenItems: true,

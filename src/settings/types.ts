@@ -79,7 +79,7 @@ export function isCustomPropertyType(value: string): value is CustomPropertyType
 }
 
 /** Buttons available in the navigation toolbar */
-export type NavigationToolbarButtonId = 'expandCollapse' | 'calendar' | 'hiddenItems' | 'rootReorder' | 'newFolder';
+export type NavigationToolbarButtonId = 'toggleDualPane' | 'expandCollapse' | 'calendar' | 'hiddenItems' | 'rootReorder' | 'newFolder';
 
 /** Buttons available in the list toolbar */
 export type ListToolbarButtonId = 'search' | 'descendants' | 'sort' | 'appearance' | 'newNote';
