@@ -741,12 +741,12 @@ export const STRINGS_ZH_CN = {
                 desc: '为固定笔记和无预览文本的笔记使用紧凑高度。'
             },
             compactItemHeight: {
-                name: '精简项目高度',
+                name: '精简项目高度（不同步）',
                 desc: '设置桌面和移动端的紧凑列表项高度。',
                 resetTooltip: '恢复默认值 (28px)'
             },
             compactItemHeightScaleText: {
-                name: '随精简高度缩放文本',
+                name: '随精简高度缩放文本（不同步）',
                 desc: '当减小紧凑列表项高度时同步缩放文本。'
             },
             showParentFolder: {
@@ -803,7 +803,7 @@ export const STRINGS_ZH_CN = {
                 }
             },
             toolbarButtons: {
-                name: '工具栏按钮',
+                name: '工具栏按钮（不同步）',
                 desc: '选择在工具栏中显示哪些按钮。隐藏的按钮仍可通过命令和菜单访问。',
                 navigationLabel: '导航工具栏',
                 listLabel: '列表工具栏'
@@ -817,7 +817,7 @@ export const STRINGS_ZH_CN = {
                 desc: '在右侧边栏中点击或更改笔记时不更改活动笔记。'
             },
             paneTransitionDuration: {
-                name: '单窗格动画',
+                name: '单窗格动画（不同步）',
                 desc: '在单窗格模式下切换窗格时的过渡持续时间（毫秒）。',
                 resetTooltip: '重置为默认值'
             },
@@ -877,7 +877,7 @@ export const STRINGS_ZH_CN = {
                 desc: '固定快捷方式时包含最近笔记。'
             },
             showCalendar: {
-                name: '显示日历',
+                name: '显示日历（不同步）',
                 desc: '在导航窗格中显示每日笔记日历。'
             },
             calendarLocale: {
@@ -888,7 +888,7 @@ export const STRINGS_ZH_CN = {
                 }
             },
             calendarWeeksToShow: {
-                name: '显示周数',
+                name: '显示周数（不同步）',
                 desc: '选择日历中显示的周数。',
                 options: {
                     fullMonth: '完整月份',
@@ -901,7 +901,7 @@ export const STRINGS_ZH_CN = {
                 desc: '在今天日期上显示红色圆圈和加粗文本。'
             },
             calendarShowWeekNumber: {
-                name: '显示周号',
+                name: '显示周号（不同步）',
                 desc: '在每行开头显示周号。'
             },
             calendarConfirmBeforeCreate: {
@@ -1167,15 +1167,15 @@ export const STRINGS_ZH_CN = {
                 desc: '折叠时，保持当前选中的文件夹或标签及其父级展开。'
             },
             navIndent: {
-                name: '树形缩进',
+                name: '树形缩进（不同步）',
                 desc: '调整嵌套文件夹和标签的缩进宽度。'
             },
             navItemHeight: {
-                name: '行高',
+                name: '行高（不同步）',
                 desc: '调整导航窗格中文件夹和标签的高度。'
             },
             navItemHeightScaleText: {
-                name: '随行高调整文字大小',
+                name: '随行高调整文字大小（不同步）',
                 desc: '降低行高时减小导航文字大小。'
             },
             navRootSpacing: {

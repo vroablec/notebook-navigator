@@ -499,9 +499,7 @@ export function renderGeneralTab(context: SettingsTabContext): void {
     }
 
     const paneTransitionSetting = behaviorGroup.addSetting(setting => {
-        setting
-            .setName(`${strings.settings.items.paneTransitionDuration.name} (not synced)`)
-            .setDesc(strings.settings.items.paneTransitionDuration.desc);
+        setting.setName(strings.settings.items.paneTransitionDuration.name).setDesc(strings.settings.items.paneTransitionDuration.desc);
     });
 
     const paneTransitionValueEl = paneTransitionSetting.controlEl.createDiv({ cls: 'nn-slider-value' });
@@ -876,7 +874,7 @@ function renderToolbarVisibilitySetting(
     plugin: NotebookNavigatorPlugin
 ): void {
     const setting = addSetting(setting => {
-        setting.setName(`${strings.settings.items.toolbarButtons.name} (not synced)`).setDesc(strings.settings.items.toolbarButtons.desc);
+        setting.setName(strings.settings.items.toolbarButtons.name).setDesc(strings.settings.items.toolbarButtons.desc);
     });
 
     setting.controlEl.addClass('nn-toolbar-visibility-control');

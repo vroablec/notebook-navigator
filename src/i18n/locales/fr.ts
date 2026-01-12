@@ -745,12 +745,12 @@ export const STRINGS_FR = {
                 desc: "Utiliser une hauteur compacte pour les notes épinglées et les notes sans texte d'aperçu."
             },
             compactItemHeight: {
-                name: 'Hauteur des éléments compacts',
+                name: 'Hauteur des éléments compacts (non synchronisé)',
                 desc: 'Définit la hauteur des éléments compacts sur ordinateur et mobile.',
                 resetTooltip: 'Restaurer la valeur par défaut (28px)'
             },
             compactItemHeightScaleText: {
-                name: 'Adapter le texte à la hauteur compacte',
+                name: 'Adapter le texte à la hauteur compacte (non synchronisé)',
                 desc: 'Adapte le texte des éléments compacts lorsque la hauteur est réduite.'
             },
             showParentFolder: {
@@ -807,7 +807,7 @@ export const STRINGS_FR = {
                 }
             },
             toolbarButtons: {
-                name: "Boutons de la barre d'outils",
+                name: "Boutons de la barre d'outils (non synchronisé)",
                 desc: "Choisissez quels boutons apparaissent dans la barre d'outils. Les boutons masqués restent accessibles via les commandes et les menus.",
                 navigationLabel: 'Barre de navigation',
                 listLabel: 'Barre de liste'
@@ -821,7 +821,7 @@ export const STRINGS_FR = {
                 desc: "Ne pas changer la note active lors d'un clic ou du changement de notes dans le panneau de droite."
             },
             paneTransitionDuration: {
-                name: 'Animation panneau unique',
+                name: 'Animation panneau unique (non synchronisé)',
                 desc: 'Durée de transition lors du changement de panneau en mode panneau unique (millisecondes).',
                 resetTooltip: 'Réinitialiser par défaut'
             },
@@ -881,7 +881,7 @@ export const STRINGS_FR = {
                 desc: "Inclure les notes récentes lors de l'épinglage des raccourcis."
             },
             showCalendar: {
-                name: 'Afficher le calendrier',
+                name: 'Afficher le calendrier (non synchronisé)',
                 desc: 'Afficher un calendrier en bas du panneau de navigation.'
             },
             calendarLocale: {
@@ -892,7 +892,7 @@ export const STRINGS_FR = {
                 }
             },
             calendarWeeksToShow: {
-                name: 'Semaines à afficher',
+                name: 'Semaines à afficher (non synchronisé)',
                 desc: 'Nombre de semaines du calendrier à afficher.',
                 options: {
                     fullMonth: 'Mois complet',
@@ -905,7 +905,7 @@ export const STRINGS_FR = {
                 desc: "Afficher un cercle rouge et du texte en gras sur la date d'aujourd'hui."
             },
             calendarShowWeekNumber: {
-                name: 'Afficher le numéro de semaine',
+                name: 'Afficher le numéro de semaine (non synchronisé)',
                 desc: 'Ajouter une colonne avec le numéro de semaine.'
             },
             calendarConfirmBeforeCreate: {
@@ -1172,15 +1172,15 @@ export const STRINGS_FR = {
                 desc: "Lors du repliement, garde le dossier ou l'étiquette actuellement sélectionné et ses parents dépliés."
             },
             navIndent: {
-                name: "Indentation de l'arbre",
+                name: "Indentation de l'arbre (non synchronisé)",
                 desc: "Ajuster la largeur d'indentation pour les dossiers et étiquettes imbriqués."
             },
             navItemHeight: {
-                name: 'Hauteur de ligne',
+                name: 'Hauteur de ligne (non synchronisé)',
                 desc: 'Ajuster la hauteur des dossiers et étiquettes dans le panneau de navigation.'
             },
             navItemHeightScaleText: {
-                name: 'Adapter le texte à la hauteur de ligne',
+                name: 'Adapter le texte à la hauteur de ligne (non synchronisé)',
                 desc: 'Réduit le texte de navigation lorsque la hauteur de ligne est diminuée.'
             },
             navRootSpacing: {

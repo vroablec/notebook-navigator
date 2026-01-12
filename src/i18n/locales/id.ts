@@ -743,12 +743,12 @@ export const STRINGS_ID = {
                 desc: 'Gunakan tinggi ringkas untuk catatan yang disematkan dan catatan tanpa teks pratinjau.'
             },
             compactItemHeight: {
-                name: 'Tinggi item kompak',
+                name: 'Tinggi item kompak (tidak disinkronkan)',
                 desc: 'Atur tinggi item daftar kompak di desktop dan mobile.',
                 resetTooltip: 'Kembalikan ke default (28px)'
             },
             compactItemHeightScaleText: {
-                name: 'Skalakan teks dengan tinggi item kompak',
+                name: 'Skalakan teks dengan tinggi item kompak (tidak disinkronkan)',
                 desc: 'Skalakan teks daftar kompak saat tinggi item dikurangi.'
             },
             showParentFolder: {
@@ -805,7 +805,7 @@ export const STRINGS_ID = {
                 }
             },
             toolbarButtons: {
-                name: 'Tombol toolbar',
+                name: 'Tombol toolbar (tidak disinkronkan)',
                 desc: 'Pilih tombol mana yang muncul di toolbar. Tombol tersembunyi tetap dapat diakses melalui perintah dan menu.',
                 navigationLabel: 'Toolbar navigasi',
                 listLabel: 'Toolbar daftar'
@@ -819,7 +819,7 @@ export const STRINGS_ID = {
                 desc: 'Jangan ubah catatan aktif saat mengklik atau mengubah catatan di sidebar kanan.'
             },
             paneTransitionDuration: {
-                name: 'Animasi panel tunggal',
+                name: 'Animasi panel tunggal (tidak disinkronkan)',
                 desc: 'Durasi transisi saat beralih panel dalam mode panel tunggal (milidetik).',
                 resetTooltip: 'Atur ulang ke default'
             },
@@ -879,7 +879,7 @@ export const STRINGS_ID = {
                 desc: 'Sertakan catatan terbaru saat pintasan disematkan.'
             },
             showCalendar: {
-                name: 'Tampilkan kalender',
+                name: 'Tampilkan kalender (tidak disinkronkan)',
                 desc: 'Tampilkan kalender di bagian bawah panel navigasi.'
             },
             calendarLocale: {
@@ -890,7 +890,7 @@ export const STRINGS_ID = {
                 }
             },
             calendarWeeksToShow: {
-                name: 'Minggu yang ditampilkan',
+                name: 'Minggu yang ditampilkan (tidak disinkronkan)',
                 desc: 'Jumlah minggu kalender yang ditampilkan.',
                 options: {
                     fullMonth: 'Bulan penuh',
@@ -903,7 +903,7 @@ export const STRINGS_ID = {
                 desc: 'Tampilkan lingkaran merah dan teks tebal pada tanggal hari ini.'
             },
             calendarShowWeekNumber: {
-                name: 'Tampilkan nomor minggu',
+                name: 'Tampilkan nomor minggu (tidak disinkronkan)',
                 desc: 'Tambahkan kolom dengan nomor minggu.'
             },
             calendarConfirmBeforeCreate: {
@@ -1169,15 +1169,15 @@ export const STRINGS_ID = {
                 desc: 'Saat menciutkan, pertahankan folder atau tag yang dipilih saat ini dan induknya tetap terbuka.'
             },
             navIndent: {
-                name: 'Indentasi pohon',
+                name: 'Indentasi pohon (tidak disinkronkan)',
                 desc: 'Sesuaikan lebar indentasi untuk folder dan tag bersarang.'
             },
             navItemHeight: {
-                name: 'Tinggi item',
+                name: 'Tinggi item (tidak disinkronkan)',
                 desc: 'Sesuaikan tinggi folder dan tag di panel navigasi.'
             },
             navItemHeightScaleText: {
-                name: 'Skalakan teks dengan tinggi item',
+                name: 'Skalakan teks dengan tinggi item (tidak disinkronkan)',
                 desc: 'Kurangi ukuran teks navigasi saat tinggi item dikurangi.'
             },
             navRootSpacing: {

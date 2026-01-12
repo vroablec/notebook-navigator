@@ -741,12 +741,12 @@ export const STRINGS_ZH_TW = {
                 desc: '為釘選筆記和無預覽文字的筆記使用精簡高度。'
             },
             compactItemHeight: {
-                name: '精簡項目高度',
+                name: '精簡項目高度（不同步）',
                 desc: '設定桌面和行動裝置的精簡列表項目高度。',
                 resetTooltip: '恢復預設值 (28px)'
             },
             compactItemHeightScaleText: {
-                name: '隨精簡高度縮放文字',
+                name: '隨精簡高度縮放文字（不同步）',
                 desc: '當減小精簡列表項目高度時同步縮放文字。'
             },
             showParentFolder: {
@@ -803,7 +803,7 @@ export const STRINGS_ZH_TW = {
                 }
             },
             toolbarButtons: {
-                name: '工具列按鈕',
+                name: '工具列按鈕（不同步）',
                 desc: '選擇在工具列中顯示哪些按鈕。隱藏的按鈕仍可透過命令和選單存取。',
                 navigationLabel: '導覽工具列',
                 listLabel: '列表工具列'
@@ -817,7 +817,7 @@ export const STRINGS_ZH_TW = {
                 desc: '在右側邊欄中點按或變更筆記時不變更使用中的筆記。'
             },
             paneTransitionDuration: {
-                name: '單窗格動畫',
+                name: '單窗格動畫（不同步）',
                 desc: '在單窗格模式下切換窗格時的過渡持續時間（毫秒）。',
                 resetTooltip: '重設為預設值'
             },
@@ -877,7 +877,7 @@ export const STRINGS_ZH_TW = {
                 desc: '釘選捷徑時包含最近筆記。'
             },
             showCalendar: {
-                name: '顯示日曆',
+                name: '顯示日曆（不同步）',
                 desc: '在導覽窗格中顯示每日筆記日曆。'
             },
             calendarLocale: {
@@ -888,7 +888,7 @@ export const STRINGS_ZH_TW = {
                 }
             },
             calendarWeeksToShow: {
-                name: '顯示週數',
+                name: '顯示週數（不同步）',
                 desc: '選擇日曆中顯示的週數。',
                 options: {
                     fullMonth: '完整月份',
@@ -901,7 +901,7 @@ export const STRINGS_ZH_TW = {
                 desc: '在今天日期上顯示紅色圓圈和粗體文字。'
             },
             calendarShowWeekNumber: {
-                name: '顯示週號',
+                name: '顯示週號（不同步）',
                 desc: '在每行開頭顯示週號。'
             },
             calendarConfirmBeforeCreate: {
@@ -1166,15 +1166,15 @@ export const STRINGS_ZH_TW = {
                 desc: '摺疊時，保持目前選取的資料夾或標籤及其父級展開。'
             },
             navIndent: {
-                name: '樹狀縮排',
+                name: '樹狀縮排（不同步）',
                 desc: '調整巢狀資料夾和標籤的縮排寬度。'
             },
             navItemHeight: {
-                name: '行高',
+                name: '行高（不同步）',
                 desc: '調整導覽窗格中資料夾和標籤的高度。'
             },
             navItemHeightScaleText: {
-                name: '隨行高調整文字大小',
+                name: '隨行高調整文字大小（不同步）',
                 desc: '降低行高時減小導覽文字大小。'
             },
             navRootSpacing: {

@@ -743,12 +743,12 @@ export const STRINGS_KO = {
                 desc: '고정된 노트와 미리보기 텍스트가 없는 노트에 컴팩트한 높이를 사용합니다.'
             },
             compactItemHeight: {
-                name: '슬림 항목 높이',
+                name: '슬림 항목 높이 (동기화되지 않음)',
                 desc: '데스크톱과 모바일에서 슬림 목록 항목 높이를 설정합니다.',
                 resetTooltip: '기본값으로 복원 (28px)'
             },
             compactItemHeightScaleText: {
-                name: '슬림 항목 높이에 맞춰 텍스트 크기 조정',
+                name: '슬림 항목 높이에 맞춰 텍스트 크기 조정 (동기화되지 않음)',
                 desc: '항목 높이를 줄이면 슬림 목록 텍스트 크기를 조정합니다.'
             },
             showParentFolder: {
@@ -805,7 +805,7 @@ export const STRINGS_KO = {
                 }
             },
             toolbarButtons: {
-                name: '도구 모음 버튼',
+                name: '도구 모음 버튼 (동기화되지 않음)',
                 desc: '도구 모음에 표시할 버튼을 선택하세요. 숨겨진 버튼은 명령과 메뉴를 통해 계속 사용할 수 있습니다.',
                 navigationLabel: '탐색 도구 모음',
                 listLabel: '목록 도구 모음'
@@ -819,7 +819,7 @@ export const STRINGS_KO = {
                 desc: '오른쪽 사이드바에서 클릭하거나 노트를 변경할 때 활성 노트를 변경하지 않습니다.'
             },
             paneTransitionDuration: {
-                name: '단일 창 애니메이션',
+                name: '단일 창 애니메이션 (동기화되지 않음)',
                 desc: '단일 창 모드에서 창 전환 시 트랜지션 시간 (밀리초).',
                 resetTooltip: '기본값으로 재설정'
             },
@@ -879,7 +879,7 @@ export const STRINGS_KO = {
                 desc: '바로가기를 고정할 때 최근 노트를 포함합니다.'
             },
             showCalendar: {
-                name: '달력 표시',
+                name: '달력 표시 (동기화되지 않음)',
                 desc: '탐색 창 하단에 달력을 표시합니다.'
             },
             calendarLocale: {
@@ -890,7 +890,7 @@ export const STRINGS_KO = {
                 }
             },
             calendarWeeksToShow: {
-                name: '표시할 주',
+                name: '표시할 주 (동기화되지 않음)',
                 desc: '표시할 달력 주 수입니다.',
                 options: {
                     fullMonth: '전체 월',
@@ -903,7 +903,7 @@ export const STRINGS_KO = {
                 desc: '오늘 날짜에 빨간 원과 굵은 텍스트를 표시합니다.'
             },
             calendarShowWeekNumber: {
-                name: '주 번호 표시',
+                name: '주 번호 표시 (동기화되지 않음)',
                 desc: '주 번호 열을 추가합니다.'
             },
             calendarConfirmBeforeCreate: {
@@ -1168,15 +1168,15 @@ export const STRINGS_KO = {
                 desc: '접을 때 현재 선택한 폴더나 태그와 상위 항목을 펼친 상태로 유지합니다.'
             },
             navIndent: {
-                name: '트리 들여쓰기',
+                name: '트리 들여쓰기 (동기화되지 않음)',
                 desc: '중첩된 폴더와 태그의 들여쓰기 너비를 조정합니다.'
             },
             navItemHeight: {
-                name: '항목 높이',
+                name: '항목 높이 (동기화되지 않음)',
                 desc: '탐색 창에서 폴더와 태그의 높이를 조정합니다.'
             },
             navItemHeightScaleText: {
-                name: '항목 높이에 따라 글자 크기 조정',
+                name: '항목 높이에 따라 글자 크기 조정 (동기화되지 않음)',
                 desc: '항목 높이를 줄이면 탐색 글자 크기를 작게 합니다.'
             },
             navRootSpacing: {

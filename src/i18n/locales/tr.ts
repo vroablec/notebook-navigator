@@ -743,12 +743,12 @@ export const STRINGS_TR = {
                 desc: 'Sabitlenmiş notlar ve önizleme metni olmayan notlar için kompakt yükseklik kullan.'
             },
             compactItemHeight: {
-                name: 'Kompakt öğe yüksekliği',
+                name: 'Kompakt öğe yüksekliği (senkronize edilmez)',
                 desc: 'Masaüstü ve mobilde kompakt liste öğelerinin yüksekliğini ayarlayın.',
                 resetTooltip: 'Varsayılana sıfırla (28px)'
             },
             compactItemHeightScaleText: {
-                name: 'Metni kompakt öğe yüksekliğiyle ölçekle',
+                name: 'Metni kompakt öğe yüksekliğiyle ölçekle (senkronize edilmez)',
                 desc: 'Öğe yüksekliği azaltıldığında kompakt liste metnini ölçekle.'
             },
             showParentFolder: {
@@ -805,7 +805,7 @@ export const STRINGS_TR = {
                 }
             },
             toolbarButtons: {
-                name: 'Araç çubuğu düğmeleri',
+                name: 'Araç çubuğu düğmeleri (senkronize edilmez)',
                 desc: 'Araç çubuğunda hangi düğmelerin görüneceğini seçin. Gizli düğmelere komutlar ve menüler aracılığıyla erişilebilir.',
                 navigationLabel: 'Gezinme araç çubuğu',
                 listLabel: 'Liste araç çubuğu'
@@ -819,7 +819,7 @@ export const STRINGS_TR = {
                 desc: 'Sağ kenar çubuğunda notlara tıklarken veya değiştirirken aktif notu değiştirme.'
             },
             paneTransitionDuration: {
-                name: 'Tek panel animasyonu',
+                name: 'Tek panel animasyonu (senkronize edilmez)',
                 desc: 'Tek panel modunda paneller arasında geçiş süresi (milisaniye).',
                 resetTooltip: 'Varsayılana sıfırla'
             },
@@ -879,7 +879,7 @@ export const STRINGS_TR = {
                 desc: 'Kısayollar sabitlendiğinde son notları dahil et.'
             },
             showCalendar: {
-                name: 'Takvimi göster',
+                name: 'Takvimi göster (senkronize edilmez)',
                 desc: 'Gezinme panelinin altında bir takvim göster.'
             },
             calendarLocale: {
@@ -890,7 +890,7 @@ export const STRINGS_TR = {
                 }
             },
             calendarWeeksToShow: {
-                name: 'Gösterilecek haftalar',
+                name: 'Gösterilecek haftalar (senkronize edilmez)',
                 desc: 'Görüntülenecek takvim haftası sayısı.',
                 options: {
                     fullMonth: 'Tam ay',
@@ -903,7 +903,7 @@ export const STRINGS_TR = {
                 desc: 'Bugünün tarihinde kırmızı bir daire ve kalın metin göster.'
             },
             calendarShowWeekNumber: {
-                name: 'Hafta numarasını göster',
+                name: 'Hafta numarasını göster (senkronize edilmez)',
                 desc: 'Hafta numarasıyla bir sütun ekle.'
             },
             calendarConfirmBeforeCreate: {
@@ -1168,15 +1168,15 @@ export const STRINGS_TR = {
                 desc: 'Daraltırken seçili klasör veya etiketi ve üst öğelerini genişletilmiş tut.'
             },
             navIndent: {
-                name: 'Ağaç girintisi',
+                name: 'Ağaç girintisi (senkronize edilmez)',
                 desc: 'İç içe klasörler ve etiketler için girinti genişliğini ayarlayın.'
             },
             navItemHeight: {
-                name: 'Öğe yüksekliği',
+                name: 'Öğe yüksekliği (senkronize edilmez)',
                 desc: 'Gezinme bölmesindeki klasör ve etiketlerin yüksekliğini ayarlayın.'
             },
             navItemHeightScaleText: {
-                name: 'Metni öğe yüksekliğiyle ölçekle',
+                name: 'Metni öğe yüksekliğiyle ölçekle (senkronize edilmez)',
                 desc: 'Öğe yüksekliği azaltıldığında gezinme metni boyutunu küçült.'
             },
             navRootSpacing: {

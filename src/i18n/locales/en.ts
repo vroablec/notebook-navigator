@@ -743,12 +743,12 @@ export const STRINGS_EN = {
                 desc: 'Use compact height for pinned notes and notes without preview text.'
             },
             compactItemHeight: {
-                name: 'Compact item height',
+                name: 'Compact item height (not synced)',
                 desc: 'Set the height of compact list items on desktop and mobile.',
                 resetTooltip: 'Restore to default (28px)'
             },
             compactItemHeightScaleText: {
-                name: 'Scale text with compact item height',
+                name: 'Scale text with compact item height (not synced)',
                 desc: 'Scale compact list text when the item height is reduced.'
             },
             showParentFolder: {
@@ -805,7 +805,7 @@ export const STRINGS_EN = {
                 }
             },
             toolbarButtons: {
-                name: 'Toolbar buttons',
+                name: 'Toolbar buttons (not synced)',
                 desc: 'Choose which buttons appear in the toolbar. Hidden buttons remain accessible via commands and menus.',
                 navigationLabel: 'Navigation toolbar',
                 listLabel: 'List toolbar'
@@ -819,7 +819,7 @@ export const STRINGS_EN = {
                 desc: 'Do not change active note when clicking or changing notes in the right sidebar.'
             },
             paneTransitionDuration: {
-                name: 'Single pane animation',
+                name: 'Single pane animation (not synced)',
                 desc: 'Transition duration when switching panes in single-pane mode (milliseconds).',
                 resetTooltip: 'Reset to default'
             },
@@ -879,7 +879,7 @@ export const STRINGS_EN = {
                 desc: 'Include recent notes when shortcuts are pinned.'
             },
             showCalendar: {
-                name: 'Show calendar',
+                name: 'Show calendar (not synced)',
                 desc: 'Show a calendar at the bottom of the navigation pane.'
             },
             calendarLocale: {
@@ -890,7 +890,7 @@ export const STRINGS_EN = {
                 }
             },
             calendarWeeksToShow: {
-                name: 'Weeks to show',
+                name: 'Weeks to show (not synced)',
                 desc: 'Number of calendar weeks to display.',
                 options: {
                     fullMonth: 'Full month',
@@ -903,7 +903,7 @@ export const STRINGS_EN = {
                 desc: "Show a red circle and bold text on today's date."
             },
             calendarShowWeekNumber: {
-                name: 'Show week number',
+                name: 'Show week number (not synced)',
                 desc: 'Add a column with the week number.'
             },
             calendarConfirmBeforeCreate: {
@@ -1166,15 +1166,15 @@ export const STRINGS_EN = {
                 desc: 'When collapsing, keep the currently selected folder or tag and its parents expanded.'
             },
             navIndent: {
-                name: 'Tree indentation',
+                name: 'Tree indentation (not synced)',
                 desc: 'Adjust the indentation width for nested folders and tags.'
             },
             navItemHeight: {
-                name: 'Item height',
+                name: 'Item height (not synced)',
                 desc: 'Adjust the height of folders and tags in the navigation pane.'
             },
             navItemHeightScaleText: {
-                name: 'Scale text with item height',
+                name: 'Scale text with item height (not synced)',
                 desc: 'Reduce navigation text size when item height is decreased.'
             },
             navRootSpacing: {

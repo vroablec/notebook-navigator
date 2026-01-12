@@ -745,12 +745,12 @@ export const STRINGS_NL = {
                 desc: 'Compacte hoogte gebruiken voor vastgepinde notities en notities zonder voorbeeldtekst.'
             },
             compactItemHeight: {
-                name: 'Compacte itemhoogte',
+                name: 'Compacte itemhoogte (niet gesynchroniseerd)',
                 desc: 'Stel de hoogte van compacte lijstitems in op desktop en mobiel.',
                 resetTooltip: 'Herstellen naar standaard (28px)'
             },
             compactItemHeightScaleText: {
-                name: 'Tekst schalen met compacte itemhoogte',
+                name: 'Tekst schalen met compacte itemhoogte (niet gesynchroniseerd)',
                 desc: 'Compacte lijsttekst schalen wanneer de itemhoogte wordt verminderd.'
             },
             showParentFolder: {
@@ -807,7 +807,7 @@ export const STRINGS_NL = {
                 }
             },
             toolbarButtons: {
-                name: 'Werkbalkknoppen',
+                name: 'Werkbalkknoppen (niet gesynchroniseerd)',
                 desc: "Kies welke knoppen in de werkbalk worden weergegeven. Verborgen knoppen blijven toegankelijk via opdrachten en menu's.",
                 navigationLabel: 'Navigatiewerkbalk',
                 listLabel: 'Lijstwerkbalk'
@@ -821,7 +821,7 @@ export const STRINGS_NL = {
                 desc: 'Actieve notitie niet wijzigen bij klikken of wijzigen van notities in de rechter zijbalk.'
             },
             paneTransitionDuration: {
-                name: 'Enkelvoudig paneel animatie',
+                name: 'Enkelvoudig paneel animatie (niet gesynchroniseerd)',
                 desc: 'Transitieduur bij het wisselen tussen panelen in enkelvoudig-paneel-modus (milliseconden).',
                 resetTooltip: 'Herstellen naar standaard'
             },
@@ -881,7 +881,7 @@ export const STRINGS_NL = {
                 desc: 'Recente notities opnemen wanneer snelkoppelingen zijn vastgepind.'
             },
             showCalendar: {
-                name: 'Kalender tonen',
+                name: 'Kalender tonen (niet gesynchroniseerd)',
                 desc: 'Toon een kalender onderaan het navigatiepaneel.'
             },
             calendarLocale: {
@@ -892,7 +892,7 @@ export const STRINGS_NL = {
                 }
             },
             calendarWeeksToShow: {
-                name: 'Weken om te tonen',
+                name: 'Weken om te tonen (niet gesynchroniseerd)',
                 desc: 'Aantal kalenderweken om weer te geven.',
                 options: {
                     fullMonth: 'Volledige maand',
@@ -905,7 +905,7 @@ export const STRINGS_NL = {
                 desc: 'Toon een rode cirkel en vetgedrukte tekst op de datum van vandaag.'
             },
             calendarShowWeekNumber: {
-                name: 'Weeknummer tonen',
+                name: 'Weeknummer tonen (niet gesynchroniseerd)',
                 desc: 'Voeg een kolom toe met het weeknummer.'
             },
             calendarConfirmBeforeCreate: {
@@ -1171,15 +1171,15 @@ export const STRINGS_NL = {
                 desc: 'Bij het inklappen de momenteel geselecteerde map of tag en de bovenliggende items uitgeklapt houden.'
             },
             navIndent: {
-                name: 'Structuurinspringing',
+                name: 'Structuurinspringing (niet gesynchroniseerd)',
                 desc: 'De inspringbreedte aanpassen voor geneste mappen en tags.'
             },
             navItemHeight: {
-                name: 'Itemhoogte',
+                name: 'Itemhoogte (niet gesynchroniseerd)',
                 desc: 'De hoogte van mappen en tags in het navigatiepaneel aanpassen.'
             },
             navItemHeightScaleText: {
-                name: 'Tekst schalen met itemhoogte',
+                name: 'Tekst schalen met itemhoogte (niet gesynchroniseerd)',
                 desc: 'Navigatietekstgrootte verminderen wanneer itemhoogte wordt verminderd.'
             },
             navRootSpacing: {

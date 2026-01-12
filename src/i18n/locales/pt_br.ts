@@ -740,12 +740,12 @@ export const STRINGS_PT_BR = {
                 desc: 'Usar altura compacta para notas fixadas e notas sem texto de visualização.'
             },
             compactItemHeight: {
-                name: 'Altura do item compacto',
+                name: 'Altura do item compacto (não sincronizado)',
                 desc: 'Defina a altura dos itens de lista compactos no desktop e celular.',
                 resetTooltip: 'Restaurar para padrão (28px)'
             },
             compactItemHeightScaleText: {
-                name: 'Dimensionar texto com altura do item compacto',
+                name: 'Dimensionar texto com altura do item compacto (não sincronizado)',
                 desc: 'Dimensionar texto da lista compacta quando a altura do item é reduzida.'
             },
             showParentFolder: {
@@ -802,7 +802,7 @@ export const STRINGS_PT_BR = {
                 }
             },
             toolbarButtons: {
-                name: 'Botões da barra de ferramentas',
+                name: 'Botões da barra de ferramentas (não sincronizado)',
                 desc: 'Escolha quais botões aparecem na barra de ferramentas. Botões ocultos permanecem acessíveis via comandos e menus.',
                 navigationLabel: 'Barra de navegação',
                 listLabel: 'Barra de lista'
@@ -816,7 +816,7 @@ export const STRINGS_PT_BR = {
                 desc: 'Não alterar a nota ativa ao clicar ou alterar notas na barra lateral direita.'
             },
             paneTransitionDuration: {
-                name: 'Animação de painel único',
+                name: 'Animação de painel único (não sincronizado)',
                 desc: 'Duração da transição ao alternar entre painéis no modo de painel único (milissegundos).',
                 resetTooltip: 'Restaurar padrão'
             },
@@ -876,7 +876,7 @@ export const STRINGS_PT_BR = {
                 desc: 'Incluir notas recentes quando os atalhos estiverem fixados.'
             },
             showCalendar: {
-                name: 'Mostrar calendário',
+                name: 'Mostrar calendário (não sincronizado)',
                 desc: 'Mostrar um calendário na parte inferior do painel de navegação.'
             },
             calendarLocale: {
@@ -887,7 +887,7 @@ export const STRINGS_PT_BR = {
                 }
             },
             calendarWeeksToShow: {
-                name: 'Semanas a exibir',
+                name: 'Semanas a exibir (não sincronizado)',
                 desc: 'Número de semanas do calendário a exibir.',
                 options: {
                     fullMonth: 'Mês completo',
@@ -900,7 +900,7 @@ export const STRINGS_PT_BR = {
                 desc: 'Mostrar um círculo vermelho e texto em negrito na data de hoje.'
             },
             calendarShowWeekNumber: {
-                name: 'Mostrar número da semana',
+                name: 'Mostrar número da semana (não sincronizado)',
                 desc: 'Adicionar uma coluna com o número da semana.'
             },
             calendarConfirmBeforeCreate: {
@@ -1166,15 +1166,15 @@ export const STRINGS_PT_BR = {
                 desc: 'Ao recolher, manter a pasta ou tag atualmente selecionada e seus pais expandidos.'
             },
             navIndent: {
-                name: 'Indentação da árvore',
+                name: 'Indentação da árvore (não sincronizado)',
                 desc: 'Ajustar a largura da indentação para pastas e tags aninhadas.'
             },
             navItemHeight: {
-                name: 'Altura do item',
+                name: 'Altura do item (não sincronizado)',
                 desc: 'Ajustar a altura de pastas e tags no painel de navegação.'
             },
             navItemHeightScaleText: {
-                name: 'Dimensionar texto com altura do item',
+                name: 'Dimensionar texto com altura do item (não sincronizado)',
                 desc: 'Reduzir o tamanho do texto de navegação quando a altura do item é diminuída.'
             },
             navRootSpacing: {

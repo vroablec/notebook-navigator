@@ -745,12 +745,12 @@ export const STRINGS_DE = {
                 desc: 'Kompakte Höhe für angeheftete Notizen und Notizen ohne Vorschautext verwenden.'
             },
             compactItemHeight: {
-                name: 'Höhe schlanker Elemente',
+                name: 'Höhe schlanker Elemente (nicht synchronisiert)',
                 desc: 'Legt die Höhe schlanker Listenelemente auf Desktop und Mobilgeräten fest.',
                 resetTooltip: 'Auf Standard zurücksetzen (28px)'
             },
             compactItemHeightScaleText: {
-                name: 'Text an schlanke Elementhöhe anpassen',
+                name: 'Text an schlanke Elementhöhe anpassen (nicht synchronisiert)',
                 desc: 'Skaliert den Text schlanker Listenelemente bei reduzierter Höhe.'
             },
             showParentFolder: {
@@ -807,7 +807,7 @@ export const STRINGS_DE = {
                 }
             },
             toolbarButtons: {
-                name: 'Symbolleisten-Schaltflächen',
+                name: 'Symbolleisten-Schaltflächen (nicht synchronisiert)',
                 desc: 'Wählen Sie aus, welche Schaltflächen in der Symbolleiste angezeigt werden. Ausgeblendete Schaltflächen bleiben über Befehle und Menüs zugänglich.',
                 navigationLabel: 'Navigationssymbolleiste',
                 listLabel: 'Listensymbolleiste'
@@ -821,7 +821,7 @@ export const STRINGS_DE = {
                 desc: 'Aktive Notiz nicht ändern, wenn in der rechten Seitenleiste auf Notizen geklickt oder diese gewechselt werden.'
             },
             paneTransitionDuration: {
-                name: 'Einzelbereich-Animation',
+                name: 'Einzelbereich-Animation (nicht synchronisiert)',
                 desc: 'Übergangsdauer beim Wechseln zwischen Bereichen im Einzelbereich-Modus (Millisekunden).',
                 resetTooltip: 'Auf Standard zurücksetzen'
             },
@@ -881,7 +881,7 @@ export const STRINGS_DE = {
                 desc: 'Neueste Notizen beim Anheften von Lesezeichen einbeziehen.'
             },
             showCalendar: {
-                name: 'Kalender anzeigen',
+                name: 'Kalender anzeigen (nicht synchronisiert)',
                 desc: 'Zeigt einen Kalender am unteren Rand des Navigationsbereichs an.'
             },
             calendarLocale: {
@@ -892,7 +892,7 @@ export const STRINGS_DE = {
                 }
             },
             calendarWeeksToShow: {
-                name: 'Angezeigte Wochen',
+                name: 'Angezeigte Wochen (nicht synchronisiert)',
                 desc: 'Anzahl der anzuzeigenden Kalenderwochen.',
                 options: {
                     fullMonth: 'Ganzer Monat',
@@ -905,7 +905,7 @@ export const STRINGS_DE = {
                 desc: 'Einen roten Kreis und fetten Text für das heutige Datum anzeigen.'
             },
             calendarShowWeekNumber: {
-                name: 'Wochennummer anzeigen',
+                name: 'Wochennummer anzeigen (nicht synchronisiert)',
                 desc: 'Spalte mit der Wochennummer hinzufügen.'
             },
             calendarConfirmBeforeCreate: {
@@ -1170,15 +1170,15 @@ export const STRINGS_DE = {
                 desc: 'Beim Einklappen bleiben der aktuell ausgewählte Ordner oder Tag und seine übergeordneten Elemente erweitert.'
             },
             navIndent: {
-                name: 'Baum-Einrückung',
+                name: 'Baum-Einrückung (nicht synchronisiert)',
                 desc: 'Passen Sie die Einrückungsbreite für verschachtelte Ordner und Tags an.'
             },
             navItemHeight: {
-                name: 'Zeilenhöhe',
+                name: 'Zeilenhöhe (nicht synchronisiert)',
                 desc: 'Passen Sie die Höhe von Ordnern und Tags im Navigationsbereich an.'
             },
             navItemHeightScaleText: {
-                name: 'Text mit Zeilenhöhe skalieren',
+                name: 'Text mit Zeilenhöhe skalieren (nicht synchronisiert)',
                 desc: 'Verkleinert die Navigationsschrift, wenn die Zeilenhöhe reduziert wird.'
             },
             navRootSpacing: {

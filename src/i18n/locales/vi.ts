@@ -743,12 +743,12 @@ export const STRINGS_VI = {
                 desc: 'Sử dụng chiều cao gọn cho ghi chú đã ghim và ghi chú không có văn bản xem trước.'
             },
             compactItemHeight: {
-                name: 'Chiều cao mục gọn',
+                name: 'Chiều cao mục gọn (không đồng bộ)',
                 desc: 'Đặt chiều cao mục danh sách gọn trên máy tính và di động.',
                 resetTooltip: 'Đặt lại mặc định (28px)'
             },
             compactItemHeightScaleText: {
-                name: 'Co chữ theo chiều cao mục gọn',
+                name: 'Co chữ theo chiều cao mục gọn (không đồng bộ)',
                 desc: 'Co chữ danh sách gọn khi giảm chiều cao mục.'
             },
             showParentFolder: {
@@ -805,7 +805,7 @@ export const STRINGS_VI = {
                 }
             },
             toolbarButtons: {
-                name: 'Nút thanh công cụ',
+                name: 'Nút thanh công cụ (không đồng bộ)',
                 desc: 'Chọn nút xuất hiện trên thanh công cụ. Nút ẩn vẫn truy cập được qua lệnh và menu.',
                 navigationLabel: 'Thanh công cụ điều hướng',
                 listLabel: 'Thanh công cụ danh sách'
@@ -819,7 +819,7 @@ export const STRINGS_VI = {
                 desc: 'Không đổi ghi chú đang hoạt động khi nhấn hoặc đổi ghi chú ở thanh bên phải.'
             },
             paneTransitionDuration: {
-                name: 'Hoạt ảnh ngăn đơn',
+                name: 'Hoạt ảnh ngăn đơn (không đồng bộ)',
                 desc: 'Thời lượng chuyển đổi khi chuyển giữa các ngăn trong chế độ ngăn đơn (mili giây).',
                 resetTooltip: 'Đặt lại mặc định'
             },
@@ -879,7 +879,7 @@ export const STRINGS_VI = {
                 desc: 'Bao gồm ghi chú gần đây khi lối tắt được ghim.'
             },
             showCalendar: {
-                name: 'Hiển thị lịch',
+                name: 'Hiển thị lịch (không đồng bộ)',
                 desc: 'Hiển thị lịch ở dưới cùng của bảng điều hướng.'
             },
             calendarLocale: {
@@ -890,7 +890,7 @@ export const STRINGS_VI = {
                 }
             },
             calendarWeeksToShow: {
-                name: 'Số tuần hiển thị',
+                name: 'Số tuần hiển thị (không đồng bộ)',
                 desc: 'Số tuần lịch để hiển thị.',
                 options: {
                     fullMonth: 'Cả tháng',
@@ -903,7 +903,7 @@ export const STRINGS_VI = {
                 desc: 'Hiển thị vòng tròn đỏ và chữ in đậm cho ngày hôm nay.'
             },
             calendarShowWeekNumber: {
-                name: 'Hiển thị số tuần',
+                name: 'Hiển thị số tuần (không đồng bộ)',
                 desc: 'Thêm cột với số tuần.'
             },
             calendarConfirmBeforeCreate: {
@@ -1168,15 +1168,15 @@ export const STRINGS_VI = {
                 desc: 'Khi thu gọn, giữ thư mục hoặc thẻ đang chọn và cha của nó mở rộng.'
             },
             navIndent: {
-                name: 'Thụt lề cây',
+                name: 'Thụt lề cây (không đồng bộ)',
                 desc: 'Điều chỉnh độ rộng thụt lề cho thư mục và thẻ lồng nhau.'
             },
             navItemHeight: {
-                name: 'Chiều cao mục',
+                name: 'Chiều cao mục (không đồng bộ)',
                 desc: 'Điều chỉnh chiều cao của thư mục và thẻ trong ngăn điều hướng.'
             },
             navItemHeightScaleText: {
-                name: 'Co chữ theo chiều cao mục',
+                name: 'Co chữ theo chiều cao mục (không đồng bộ)',
                 desc: 'Giảm cỡ chữ điều hướng khi giảm chiều cao mục.'
             },
             navRootSpacing: {

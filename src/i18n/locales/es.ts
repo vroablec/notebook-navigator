@@ -744,12 +744,12 @@ export const STRINGS_ES = {
                 desc: 'Usar altura compacta para notas ancladas y notas sin texto de vista previa.'
             },
             compactItemHeight: {
-                name: 'Altura de elementos compactos',
+                name: 'Altura de elementos compactos (no sincronizado)',
                 desc: 'Define la altura de los elementos compactos en escritorio y móvil.',
                 resetTooltip: 'Restablecer al valor predeterminado (28px)'
             },
             compactItemHeightScaleText: {
-                name: 'Escalar texto con altura compacta',
+                name: 'Escalar texto con altura compacta (no sincronizado)',
                 desc: 'Escala el texto de los elementos compactos cuando se reduce la altura.'
             },
             showParentFolder: {
@@ -806,7 +806,7 @@ export const STRINGS_ES = {
                 }
             },
             toolbarButtons: {
-                name: 'Botones de la barra de herramientas',
+                name: 'Botones de la barra de herramientas (no sincronizado)',
                 desc: 'Elige qué botones aparecen en la barra de herramientas. Los botones ocultos siguen siendo accesibles mediante comandos y menús.',
                 navigationLabel: 'Barra de navegación',
                 listLabel: 'Barra de lista'
@@ -820,7 +820,7 @@ export const STRINGS_ES = {
                 desc: 'No cambiar la nota activa al hacer clic o cambiar notas en la barra lateral derecha.'
             },
             paneTransitionDuration: {
-                name: 'Animación de panel único',
+                name: 'Animación de panel único (no sincronizado)',
                 desc: 'Duración de la transición al cambiar entre paneles en modo panel único (milisegundos).',
                 resetTooltip: 'Restablecer a predeterminado'
             },
@@ -880,7 +880,7 @@ export const STRINGS_ES = {
                 desc: 'Incluir notas recientes cuando se fijan los accesos directos.'
             },
             showCalendar: {
-                name: 'Mostrar calendario',
+                name: 'Mostrar calendario (no sincronizado)',
                 desc: 'Mostrar un calendario en la parte inferior del panel de navegación.'
             },
             calendarLocale: {
@@ -891,7 +891,7 @@ export const STRINGS_ES = {
                 }
             },
             calendarWeeksToShow: {
-                name: 'Semanas a mostrar',
+                name: 'Semanas a mostrar (no sincronizado)',
                 desc: 'Número de semanas del calendario a mostrar.',
                 options: {
                     fullMonth: 'Mes completo',
@@ -904,7 +904,7 @@ export const STRINGS_ES = {
                 desc: 'Mostrar un círculo rojo y texto en negrita en la fecha de hoy.'
             },
             calendarShowWeekNumber: {
-                name: 'Mostrar número de semana',
+                name: 'Mostrar número de semana (no sincronizado)',
                 desc: 'Agregar una columna con el número de semana.'
             },
             calendarConfirmBeforeCreate: {
@@ -1170,15 +1170,15 @@ export const STRINGS_ES = {
                 desc: 'Al contraer, mantiene la carpeta o etiqueta seleccionada actualmente y sus elementos principales expandidos.'
             },
             navIndent: {
-                name: 'Sangría del árbol',
+                name: 'Sangría del árbol (no sincronizado)',
                 desc: 'Ajustar el ancho de sangría para carpetas y etiquetas anidadas.'
             },
             navItemHeight: {
-                name: 'Altura de línea',
+                name: 'Altura de línea (no sincronizado)',
                 desc: 'Ajustar la altura de las carpetas y etiquetas en el panel de navegación.'
             },
             navItemHeightScaleText: {
-                name: 'Escalar texto con la altura de línea',
+                name: 'Escalar texto con la altura de línea (no sincronizado)',
                 desc: 'Reduce el texto de navegación cuando la altura de línea se disminuye.'
             },
             navRootSpacing: {

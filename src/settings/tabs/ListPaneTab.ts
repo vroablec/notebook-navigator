@@ -273,7 +273,7 @@ export function renderListPaneTab(context: SettingsTabContext): void {
     let compactItemHeightSlider: SliderComponent;
     const compactItemHeightSetting = displayGroup.addSetting(setting => {
         setting
-            .setName(`${strings.settings.items.compactItemHeight.name} (not synced)`)
+            .setName(strings.settings.items.compactItemHeight.name)
             .setDesc(strings.settings.items.compactItemHeight.desc)
             .addSlider(slider => {
                 compactItemHeightSlider = slider
@@ -306,7 +306,7 @@ export function renderListPaneTab(context: SettingsTabContext): void {
 
     // Toggle to scale text proportionally with compact item height
     new Setting(compactItemHeightSettingsEl)
-        .setName(`${strings.settings.items.compactItemHeightScaleText.name} (not synced)`)
+        .setName(strings.settings.items.compactItemHeightScaleText.name)
         .setDesc(strings.settings.items.compactItemHeightScaleText.desc)
         .addToggle(toggle =>
             toggle.setValue(plugin.settings.compactItemHeightScaleText).onChange(value => {

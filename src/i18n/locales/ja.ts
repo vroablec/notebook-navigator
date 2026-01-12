@@ -744,12 +744,12 @@ export const STRINGS_JA = {
                 desc: 'ピン留めされたノートとプレビューテキストのないノートにコンパクトな高さを使用。'
             },
             compactItemHeight: {
-                name: 'スリム表示の項目高さ',
+                name: 'スリム表示の項目高さ（同期されません）',
                 desc: 'デスクトップとモバイルのスリム表示項目の高さを設定します。',
                 resetTooltip: 'デフォルトに戻す (28px)'
             },
             compactItemHeightScaleText: {
-                name: 'スリム表示の文字サイズを高さに合わせる',
+                name: 'スリム表示の文字サイズを高さに合わせる（同期されません）',
                 desc: '項目の高さを下げたときにスリム表示の文字サイズを調整します。'
             },
             showParentFolder: {
@@ -806,7 +806,7 @@ export const STRINGS_JA = {
                 }
             },
             toolbarButtons: {
-                name: 'ツールバーボタン',
+                name: 'ツールバーボタン（同期されません）',
                 desc: 'ツールバーに表示するボタンを選択します。非表示のボタンはコマンドとメニューから引き続き利用できます。',
                 navigationLabel: 'ナビゲーションツールバー',
                 listLabel: 'リストツールバー'
@@ -820,7 +820,7 @@ export const STRINGS_JA = {
                 desc: '右サイドバーでのクリックやノートの変更時にアクティブノートを変更しません。'
             },
             paneTransitionDuration: {
-                name: 'シングルペインアニメーション',
+                name: 'シングルペインアニメーション（同期されません）',
                 desc: 'シングルペインモードでペイン切り替え時のトランジション時間（ミリ秒）。',
                 resetTooltip: 'デフォルトにリセット'
             },
@@ -880,7 +880,7 @@ export const STRINGS_JA = {
                 desc: 'ショートカットを固定するときに最近のノートを含める。'
             },
             showCalendar: {
-                name: 'カレンダーを表示',
+                name: 'カレンダーを表示（同期されません）',
                 desc: 'ナビゲーションペインの下部にカレンダーを表示します。'
             },
             calendarLocale: {
@@ -891,7 +891,7 @@ export const STRINGS_JA = {
                 }
             },
             calendarWeeksToShow: {
-                name: '表示週数',
+                name: '表示週数（同期されません）',
                 desc: '表示するカレンダーの週数。',
                 options: {
                     fullMonth: '月全体',
@@ -904,7 +904,7 @@ export const STRINGS_JA = {
                 desc: '今日の日付に赤い円と太字のテキストを表示します。'
             },
             calendarShowWeekNumber: {
-                name: '週番号を表示',
+                name: '週番号を表示（同期されません）',
                 desc: '週番号の列を追加します。'
             },
             calendarConfirmBeforeCreate: {
@@ -1171,15 +1171,15 @@ export const STRINGS_JA = {
                 desc: '折りたたむ時、現在選択されているフォルダまたはタグとその親を展開したままにします。'
             },
             navIndent: {
-                name: 'ツリーインデント',
+                name: 'ツリーインデント（同期されません）',
                 desc: 'ネストされたフォルダとタグのインデント幅を調整します。'
             },
             navItemHeight: {
-                name: '行高',
+                name: '行高（同期されません）',
                 desc: 'ナビゲーションペイン内のフォルダとタグの高さを調整します。'
             },
             navItemHeightScaleText: {
-                name: '行高に合わせて文字サイズを調整',
+                name: '行高に合わせて文字サイズを調整（同期されません）',
                 desc: '行高を下げたときにナビゲーションの文字サイズを小さくします。'
             },
             navRootSpacing: {

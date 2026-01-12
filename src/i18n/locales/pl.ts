@@ -745,12 +745,12 @@ export const STRINGS_PL = {
                 desc: 'Użyj kompaktowej wysokości dla przypiętych notatek i notatek bez tekstu podglądu.'
             },
             compactItemHeight: {
-                name: 'Wysokość elementów w trybie kompaktowym',
+                name: 'Wysokość elementów w trybie kompaktowym (nie synchronizowany)',
                 desc: 'Ustawia wysokość elementów listy w trybie kompaktowym na komputerze i urządzeniach mobilnych.',
                 resetTooltip: 'Przywróć wartość domyślną (28px)'
             },
             compactItemHeightScaleText: {
-                name: 'Skalowanie tekstu z wysokością trybu kompaktowego',
+                name: 'Skalowanie tekstu z wysokością trybu kompaktowego (nie synchronizowany)',
                 desc: 'Skaluje tekst elementów listy w trybie kompaktowym po zmniejszeniu wysokości.'
             },
             showParentFolder: {
@@ -807,7 +807,7 @@ export const STRINGS_PL = {
                 }
             },
             toolbarButtons: {
-                name: 'Przyciski paska narzędzi',
+                name: 'Przyciski paska narzędzi (nie synchronizowany)',
                 desc: 'Wybierz, które przyciski mają być wyświetlane na pasku narzędzi. Ukryte przyciski pozostają dostępne przez polecenia i menu.',
                 navigationLabel: 'Pasek nawigacji',
                 listLabel: 'Pasek listy'
@@ -821,7 +821,7 @@ export const STRINGS_PL = {
                 desc: 'Nie zmieniaj aktywnej notatki przy klikaniu lub zmienianiu notatek w prawym pasku bocznym.'
             },
             paneTransitionDuration: {
-                name: 'Animacja pojedynczego panelu',
+                name: 'Animacja pojedynczego panelu (nie synchronizowany)',
                 desc: 'Czas trwania przejścia podczas przełączania paneli w trybie pojedynczego panelu (milisekundy).',
                 resetTooltip: 'Przywróć domyślne'
             },
@@ -881,7 +881,7 @@ export const STRINGS_PL = {
                 desc: 'Dołącz ostatnie notatki podczas przypinania skrótów.'
             },
             showCalendar: {
-                name: 'Pokaż kalendarz',
+                name: 'Pokaż kalendarz (nie synchronizowany)',
                 desc: 'Wyświetl kalendarz na dole panelu nawigacji.'
             },
             calendarLocale: {
@@ -892,7 +892,7 @@ export const STRINGS_PL = {
                 }
             },
             calendarWeeksToShow: {
-                name: 'Tygodnie do wyświetlenia',
+                name: 'Tygodnie do wyświetlenia (nie synchronizowany)',
                 desc: 'Liczba tygodni kalendarza do wyświetlenia.',
                 options: {
                     fullMonth: 'Pełny miesiąc',
@@ -905,7 +905,7 @@ export const STRINGS_PL = {
                 desc: 'Pokaż czerwone kółko i pogrubiony tekst na dzisiejszej dacie.'
             },
             calendarShowWeekNumber: {
-                name: 'Pokaż numer tygodnia',
+                name: 'Pokaż numer tygodnia (nie synchronizowany)',
                 desc: 'Dodaj kolumnę z numerem tygodnia.'
             },
             calendarConfirmBeforeCreate: {
@@ -1171,15 +1171,15 @@ export const STRINGS_PL = {
                 desc: 'Podczas zwijania, zachowaj obecnie wybrany folder lub tag i jego rodziców rozwinięte.'
             },
             navIndent: {
-                name: 'Wcięcie drzewa',
+                name: 'Wcięcie drzewa (nie synchronizowany)',
                 desc: 'Dostosuj szerokość wcięcia dla zagnieżdżonych folderów i tagów.'
             },
             navItemHeight: {
-                name: 'Wysokość elementu',
+                name: 'Wysokość elementu (nie synchronizowany)',
                 desc: 'Dostosuj wysokość folderów i tagów w panelu nawigacji.'
             },
             navItemHeightScaleText: {
-                name: 'Skaluj tekst z wysokością elementu',
+                name: 'Skaluj tekst z wysokością elementu (nie synchronizowany)',
                 desc: 'Zmniejsza tekst nawigacji, gdy wysokość elementu jest obniżona.'
             },
             navRootSpacing: {

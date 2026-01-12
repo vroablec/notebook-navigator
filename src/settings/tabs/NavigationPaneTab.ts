@@ -170,7 +170,7 @@ export function renderNavigationPaneTab(context: SettingsTabContext): void {
 
     calendarGroup.addSetting(setting => {
         setting
-            .setName(`${strings.settings.items.showCalendar.name} (not synced)`)
+            .setName(strings.settings.items.showCalendar.name)
             .setDesc(strings.settings.items.showCalendar.desc)
             .addToggle(toggle =>
                 toggle.setValue(plugin.getUXPreferences().showCalendar).onChange(value => {
@@ -208,9 +208,7 @@ export function renderNavigationPaneTab(context: SettingsTabContext): void {
 
     calendarGroup
         .addSetting(setting => {
-            setting
-                .setName(`${strings.settings.items.calendarWeeksToShow.name} (not synced)`)
-                .setDesc(strings.settings.items.calendarWeeksToShow.desc);
+            setting.setName(strings.settings.items.calendarWeeksToShow.name).setDesc(strings.settings.items.calendarWeeksToShow.desc);
         })
         .addDropdown((dropdown: DropdownComponent) => {
             dropdown.addOption('1', strings.settings.items.calendarWeeksToShow.options.oneWeek);
@@ -242,9 +240,7 @@ export function renderNavigationPaneTab(context: SettingsTabContext): void {
 
     calendarGroup
         .addSetting(setting => {
-            setting
-                .setName(`${strings.settings.items.calendarShowWeekNumber.name} (not synced)`)
-                .setDesc(strings.settings.items.calendarShowWeekNumber.desc);
+            setting.setName(strings.settings.items.calendarShowWeekNumber.name).setDesc(strings.settings.items.calendarShowWeekNumber.desc);
         })
         .addToggle(toggle =>
             toggle.setValue(plugin.settings.calendarShowWeekNumber).onChange(value => {
@@ -349,7 +345,7 @@ export function renderNavigationPaneTab(context: SettingsTabContext): void {
     let indentationSlider: SliderComponent;
     appearanceGroup.addSetting(setting => {
         setting
-            .setName(`${strings.settings.items.navIndent.name} (not synced)`)
+            .setName(strings.settings.items.navIndent.name)
             .setDesc(strings.settings.items.navIndent.desc)
             .addSlider(slider => {
                 indentationSlider = slider
@@ -380,7 +376,7 @@ export function renderNavigationPaneTab(context: SettingsTabContext): void {
     let lineHeightSlider: SliderComponent;
     const navItemHeightSetting = appearanceGroup.addSetting(setting => {
         setting
-            .setName(`${strings.settings.items.navItemHeight.name} (not synced)`)
+            .setName(strings.settings.items.navItemHeight.name)
             .setDesc(strings.settings.items.navItemHeight.desc)
             .addSlider(slider => {
                 lineHeightSlider = slider
@@ -411,7 +407,7 @@ export function renderNavigationPaneTab(context: SettingsTabContext): void {
     const navItemHeightSettingsEl = createSubSettingsContainer(navItemHeightSetting);
 
     new Setting(navItemHeightSettingsEl)
-        .setName(`${strings.settings.items.navItemHeightScaleText.name} (not synced)`)
+        .setName(strings.settings.items.navItemHeightScaleText.name)
         .setDesc(strings.settings.items.navItemHeightScaleText.desc)
         .addToggle(toggle =>
             toggle.setValue(plugin.settings.navItemHeightScaleText).onChange(value => {
