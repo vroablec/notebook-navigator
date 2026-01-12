@@ -33,7 +33,7 @@ The theming variables use the `--nn-theme-` prefix and should be defined at the 
 
 | Variable                            | Default | Description                                                              |
 | ----------------------------------- | ------- | ------------------------------------------------------------------------ |
-| `--nn-theme-pane-overlay-opacity`   | `85`    | Opacity (0-100) for the pane overlay stacks rendered above scrolling rows |
+| `--nn-theme-pane-overlay-opacity`   | `87`    | Opacity (0-100) for the pane overlay stacks rendered above scrolling rows |
 | `--nn-theme-pane-overlay-filter`    | `blur(3px) saturate(160%)` | Backdrop filter for the pane overlay stacks (used for `backdrop-filter`) |
 
 ### Navigation pane
@@ -233,7 +233,7 @@ body {
      PANE OVERLAY STACKS
      ======================================== */
 
-  --nn-theme-pane-overlay-opacity: 85; /* Opacity for pane overlay stacks */
+  --nn-theme-pane-overlay-opacity: 87; /* Opacity for pane overlay stacks */
   --nn-theme-pane-overlay-filter: blur(3px) saturate(160%); /* Backdrop filter for pane overlay stacks */
 
   /* ========================================
