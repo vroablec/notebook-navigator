@@ -342,6 +342,39 @@ export function renderNavigationPaneTab(context: SettingsTabContext): void {
             })
         );
 
+    let rootSpacingSlider: SliderComponent;
+    appearanceGroup.addSetting(setting => {
+        setting
+            .setName(strings.settings.items.navRootSpacing.name)
+            .setDesc(strings.settings.items.navRootSpacing.desc)
+            .addSlider(slider => {
+                rootSpacingSlider = slider
+                    .setLimits(0, 6, 1)
+                    .setValue(plugin.settings.rootLevelSpacing)
+                    .setInstant(false)
+                    .setDynamicTooltip()
+                    .onChange(async value => {
+                        plugin.settings.rootLevelSpacing = value;
+                        await plugin.saveSettingsAndUpdate();
+                    });
+                return slider;
+            })
+            .addExtraButton(button =>
+                button
+                    .setIcon('lucide-rotate-ccw')
+                    .setTooltip('Restore to default (0px)')
+                    .onClick(() => {
+                        // Reset root spacing to default without blocking the UI
+                        runAsyncAction(async () => {
+                            const defaultValue = DEFAULT_SETTINGS.rootLevelSpacing;
+                            rootSpacingSlider.setValue(defaultValue);
+                            plugin.settings.rootLevelSpacing = defaultValue;
+                            await plugin.saveSettingsAndUpdate();
+                        });
+                    })
+            );
+    });
+
     let indentationSlider: SliderComponent;
     appearanceGroup.addSetting(setting => {
         setting
@@ -414,37 +447,4 @@ export function renderNavigationPaneTab(context: SettingsTabContext): void {
                 plugin.setNavItemHeightScaleText(value);
             })
         );
-
-    let rootSpacingSlider: SliderComponent;
-    appearanceGroup.addSetting(setting => {
-        setting
-            .setName(strings.settings.items.navRootSpacing.name)
-            .setDesc(strings.settings.items.navRootSpacing.desc)
-            .addSlider(slider => {
-                rootSpacingSlider = slider
-                    .setLimits(0, 6, 1)
-                    .setValue(plugin.settings.rootLevelSpacing)
-                    .setInstant(false)
-                    .setDynamicTooltip()
-                    .onChange(async value => {
-                        plugin.settings.rootLevelSpacing = value;
-                        await plugin.saveSettingsAndUpdate();
-                    });
-                return slider;
-            })
-            .addExtraButton(button =>
-                button
-                    .setIcon('lucide-rotate-ccw')
-                    .setTooltip('Restore to default (0px)')
-                    .onClick(() => {
-                        // Reset root spacing to default without blocking the UI
-                        runAsyncAction(async () => {
-                            const defaultValue = DEFAULT_SETTINGS.rootLevelSpacing;
-                            rootSpacingSlider.setValue(defaultValue);
-                            plugin.settings.rootLevelSpacing = defaultValue;
-                            await plugin.saveSettingsAndUpdate();
-                        });
-                    })
-            );
-    });
 }

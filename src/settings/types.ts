@@ -163,10 +163,10 @@ export interface NotebookNavigatorSettings {
     toolbarVisibility: ToolbarVisibilitySettings;
     showNoteCount: boolean;
     separateNoteCounts: boolean;
+    rootLevelSpacing: number;
     navIndent: number;
     navItemHeight: number;
     navItemHeightScaleText: boolean;
-    rootLevelSpacing: number;
 
     // Folders & tags tab
     autoSelectFirstFileOnFocusChange: boolean;

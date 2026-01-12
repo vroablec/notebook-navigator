@@ -115,10 +115,10 @@ export const DEFAULT_SETTINGS: NotebookNavigatorSettings = {
     },
     showNoteCount: true,
     separateNoteCounts: true,
+    rootLevelSpacing: 0,
     navIndent: NAVPANE_MEASUREMENTS.defaultIndent,
     navItemHeight: NAVPANE_MEASUREMENTS.defaultItemHeight,
     navItemHeightScaleText: true,
-    rootLevelSpacing: 0,
 
     // Folders & tags tab
     autoSelectFirstFileOnFocusChange: false,
