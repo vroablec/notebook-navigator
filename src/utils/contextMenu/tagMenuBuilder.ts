@@ -51,13 +51,15 @@ export function buildTagMenu(params: TagMenuBuilderParams): void {
     const isVirtualTag = tagPath === UNTAGGED_TAG_ID || tagPath === TAGGED_TAG_ID;
 
     // Change icon
-    menu.addItem((item: MenuItem) => {
-        setAsyncOnClick(item.setTitle(strings.contextMenu.tag.changeIcon).setIcon('lucide-image'), async () => {
-            const { IconPickerModal } = await import('../../modals/IconPickerModal');
-            const modal = new IconPickerModal(app, metadataService, tagPath, ItemType.TAG);
-            modal.open();
+    if (settings.showTagIcons) {
+        menu.addItem((item: MenuItem) => {
+            setAsyncOnClick(item.setTitle(strings.contextMenu.tag.changeIcon).setIcon('lucide-image'), async () => {
+                const { IconPickerModal } = await import('../../modals/IconPickerModal');
+                const modal = new IconPickerModal(app, metadataService, tagPath, ItemType.TAG);
+                modal.open();
+            });
         });
-    });
+    }
 
     // Change color
     menu.addItem((item: MenuItem) => {
@@ -97,7 +99,7 @@ export function buildTagMenu(params: TagMenuBuilderParams): void {
             color: tagColor,
             background: tagBackgroundColor
         },
-        hasIcon: true,
+        hasIcon: settings.showTagIcons,
         hasColor: true,
         hasBackground: true,
         applyStyle: async clipboard => {

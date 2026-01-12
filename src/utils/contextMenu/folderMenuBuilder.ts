@@ -273,7 +273,7 @@ export function buildFolderMenu(params: FolderMenuBuilderParams): void {
             color: folderColor,
             background: folderBackgroundColor
         },
-        hasIcon: true,
+        hasIcon: settings.showFolderIcons,
         hasColor: true,
         hasBackground: true,
         applyStyle: async clipboard => {

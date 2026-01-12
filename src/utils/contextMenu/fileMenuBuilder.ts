@@ -96,25 +96,27 @@ export function buildFileMenu(params: FileMenuBuilderParams): void {
 
     const targetFilesForStyle = shouldShowMultiOptions ? cachedSelectedFiles : [file];
 
-    menu.addItem((item: MenuItem) => {
-        setAsyncOnClick(item.setTitle(strings.contextMenu.file.changeIcon).setIcon('lucide-image'), async () => {
-            const { IconPickerModal } = await import('../../modals/IconPickerModal');
-            const modal = new IconPickerModal(app, metadataService, file.path, ItemType.FILE);
-            modal.onChooseIcon = async iconId => {
-                if (iconId === undefined) {
+    if (settings.showFileIcons) {
+        menu.addItem((item: MenuItem) => {
+            setAsyncOnClick(item.setTitle(strings.contextMenu.file.changeIcon).setIcon('lucide-image'), async () => {
+                const { IconPickerModal } = await import('../../modals/IconPickerModal');
+                const modal = new IconPickerModal(app, metadataService, file.path, ItemType.FILE);
+                modal.onChooseIcon = async iconId => {
+                    if (iconId === undefined) {
+                        return { handled: true };
+                    }
+                    const actions = targetFilesForStyle.map(selectedFile =>
+                        iconId === null
+                            ? metadataService.removeFileIcon(selectedFile.path)
+                            : metadataService.setFileIcon(selectedFile.path, iconId)
+                    );
+                    await Promise.all(actions);
                     return { handled: true };
-                }
-                const actions = targetFilesForStyle.map(selectedFile =>
-                    iconId === null
-                        ? metadataService.removeFileIcon(selectedFile.path)
-                        : metadataService.setFileIcon(selectedFile.path, iconId)
-                );
-                await Promise.all(actions);
-                return { handled: true };
-            };
-            modal.open();
+                };
+                modal.open();
+            });
         });
-    });
+    }
 
     menu.addItem((item: MenuItem) => {
         setAsyncOnClick(item.setTitle(strings.contextMenu.file.changeColor).setIcon('lucide-palette'), async () => {
@@ -148,7 +150,7 @@ export function buildFileMenu(params: FileMenuBuilderParams): void {
             icon: fileIcon,
             color: fileColor
         },
-        hasIcon: true,
+        hasIcon: settings.showFileIcons,
         hasColor: true,
         applyStyle: async clipboard => {
             const { icon, color } = clipboard;
