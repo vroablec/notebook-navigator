@@ -81,8 +81,8 @@ interface UseNavigationPaneScrollParams {
     /**
      * Bottom inset reserved by overlays that sit on top of the scroll content.
      *
-     * The navigation pane can render a bottom calendar overlay; scrolling and scrollToIndex should
-     * keep the target row above that overlay.
+     * The navigation pane can render bottom overlays (calendar, mobile floating toolbar). Scrolling and scrollToIndex
+     * should keep the target row above these overlays.
      */
     scrollPaddingEnd: number;
 }
@@ -334,7 +334,7 @@ export function useNavigationPaneScroll({
     const scrollToIndexSafely = useCallback(
         (index: number, align: Align) => {
             // Use TanStack Virtual for the primary scroll, then run a small post-adjustment step to ensure the selected
-            // row is not covered by the sticky header/pinned stack or by a bottom overlay (calendar).
+            // row is not covered by the sticky header/pinned stack or by a bottom overlay (calendar, mobile toolbar).
             rowVirtualizer.scrollToIndex(index, { align });
 
             let attempts = 0;

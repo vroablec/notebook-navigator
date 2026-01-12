@@ -247,6 +247,10 @@ export const NavigationPane = React.memo(
         const [calendarWeekCount, setCalendarWeekCount] = useState<number>(() => settings.calendarWeeksToShow);
         const calendarOverlayRef = useRef<HTMLDivElement>(null);
         const [calendarOverlayHeight, setCalendarOverlayHeight] = useState<number>(0);
+        // The iOS bottom toolbar is a sticky overlay inside the scroll container. Measure its rendered height so
+        // TanStack Virtual can treat it as a bottom inset when auto-revealing folders/tags.
+        const bottomToolbarRef = useRef<HTMLDivElement>(null);
+        const [bottomToolbarHeight, setBottomToolbarHeight] = useState<number>(0);
         useEffect(() => {
             if (settings.calendarWeeksToShow !== 6) {
                 setCalendarWeekCount(settings.calendarWeeksToShow);
@@ -1023,6 +1027,44 @@ export const NavigationPane = React.memo(
             };
         }, [calendarWeekCount, showCalendar]);
 
+        useLayoutEffect(() => {
+            // The bottom toolbar can be dynamically sized (safe-area inset, platform-specific spacer, icon size).
+            // Keep bottomToolbarHeight in sync with the DOM so scrollToIndex aligns rows above the toolbar instead of under it.
+            const overlayElement = bottomToolbarRef.current;
+            if (!overlayElement) {
+                setBottomToolbarHeight(0);
+                return;
+            }
+
+            const updateOverlayHeight = () => {
+                // Measured height of the bottom mobile toolbar. Passed to the virtualizer as scrollPaddingEnd so reveals
+                // keep the selected row above the floating toolbar (including any platform-specific bottom gap).
+                // Rounded to avoid subpixel oscillation triggering reflows.
+                const height = Math.round(overlayElement.getBoundingClientRect().height);
+                setBottomToolbarHeight(prev => (prev === height ? prev : height));
+            };
+
+            updateOverlayHeight();
+
+            if (typeof ResizeObserver === 'undefined') {
+                // Fallback for older WebViews that do not expose ResizeObserver.
+                const handleResize = () => updateOverlayHeight();
+                window.addEventListener('resize', handleResize);
+                return () => {
+                    window.removeEventListener('resize', handleResize);
+                };
+            }
+
+            const resizeObserver = new ResizeObserver(() => {
+                updateOverlayHeight();
+            });
+            resizeObserver.observe(overlayElement);
+
+            return () => {
+                resizeObserver.disconnect();
+            };
+        }, [isAndroid, isMobile]);
+
         // We only reserve gutter space when a banner exists because Windows scrollbars
         // change container width by ~7px when they appear. That width change used to
         // feed back into the virtualizer via ResizeObserver and trigger infinite reflows.
@@ -1101,7 +1143,8 @@ export const NavigationPane = React.memo(
             isVisible,
             activeShortcutKey,
             scrollMargin: navigationOverlayHeight,
-            scrollPaddingEnd: calendarOverlayHeight
+            // Reserve space for bottom overlays so scrollToIndex({ align: 'auto' }) reveals rows above the calendar and iOS toolbar.
+            scrollPaddingEnd: calendarOverlayHeight + bottomToolbarHeight
         });
 
         /** Converts a potentially transparent background color into a solid color by compositing with the pane surface. */
@@ -2881,7 +2924,7 @@ export const NavigationPane = React.memo(
                     </div>
                     {/* iOS - toolbar at bottom */}
                     {isMobile && !isAndroid && (
-                        <div className="nn-pane-bottom-toolbar">
+                        <div className="nn-pane-bottom-toolbar" ref={bottomToolbarRef}>
                             <NavigationToolbar
                                 onTreeUpdateComplete={handleTreeUpdateComplete}
                                 onToggleRootFolderReorder={handleToggleRootReorder}
