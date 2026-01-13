@@ -85,6 +85,7 @@ const RELEASE_NOTES: ReleaseNote[] = [
             'Six new style and theme settings for custom property tag pills - text, background, selected x 2, selected inactive x 2.',
             'New setting: ==Notes > Parent folder > Show parent folder icon==. Enable to show parent folder icons in the list pane. New default is disabled.',
             'New setting: ==Notes > Feature image > Exclude notes with properties==. You can now exclude notes with certain frontmatter properties from showing feature images.',
+            'New setting: ==General > Filtering > Hide files with tags (vault profile)==. You can now hide files with certain tags in the list pane. This makes it super easy to hide certain files by just dragging them to a tag.',
             'Two new menu commands: Navigate to folder and Navigate to tag. Access them from the root folder or root tag folder context menu.'
         ],
         improved: [
