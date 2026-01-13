@@ -934,7 +934,7 @@ export const STRINGS_ES = {
                 }
             },
             excludedNotes: {
-                name: 'Ocultar notas (perfil de bóveda)',
+                name: 'Ocultar notas con propiedades (perfil de bóveda)',
                 desc: 'Lista de propiedades del frontmatter separadas por comas. Las notas que contengan cualquiera de estas propiedades se ocultarán (ej.: draft, private, archived).',
                 placeholder: 'draft, private'
             },
@@ -1230,7 +1230,7 @@ export const STRINGS_ES = {
                 placeholder: 'archivo*, *borrador, proyectos/*/antiguo'
             },
             hiddenFileTags: {
-                name: 'Hide files with tags (vault profile)',
+                name: 'Ocultar notas con etiquetas (perfil de bóveda)',
                 desc: 'Comma-separated list of tag patterns. Notes containing matching tags are hidden. Name patterns: tag* (starting with), *tag (ending with). Path patterns: archive (tag and descendants), archive/* (descendants only), projects/*/drafts (mid-segment wildcard).',
                 placeholder: 'archive*, *draft, projects/*/old'
             },

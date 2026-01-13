@@ -954,7 +954,7 @@ export const STRINGS_ID = {
                 }
             },
             excludedNotes: {
-                name: 'Sembunyikan catatan (profil vault)',
+                name: 'Sembunyikan catatan dengan properti (profil vault)',
                 desc: 'Daftar properti frontmatter yang dipisahkan koma. Catatan yang berisi properti ini akan disembunyikan (misal, draf, pribadi, arsip).',
                 placeholder: 'draf, pribadi'
             },
@@ -1229,7 +1229,7 @@ export const STRINGS_ID = {
                 placeholder: 'arsip*, *draf, proyek/*/lama'
             },
             hiddenFileTags: {
-                name: 'Hide files with tags (vault profile)',
+                name: 'Sembunyikan catatan dengan tag (profil vault)',
                 desc: 'Comma-separated list of tag patterns. Notes containing matching tags are hidden. Name patterns: tag* (starting with), *tag (ending with). Path patterns: archive (tag and descendants), archive/* (descendants only), projects/*/drafts (mid-segment wildcard).',
                 placeholder: 'archive*, *draft, projects/*/old'
             },

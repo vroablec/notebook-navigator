@@ -955,7 +955,7 @@ export const STRINGS_RU = {
                 }
             },
             excludedNotes: {
-                name: 'Скрыть заметки (профиль хранилища)',
+                name: 'Скрыть заметки со свойствами (профиль хранилища)',
                 desc: 'Список свойств frontmatter через запятую. Заметки, содержащие любое из этих свойств, будут скрыты (например, draft, private, archived).',
                 placeholder: 'draft, private'
             },
@@ -1230,7 +1230,7 @@ export const STRINGS_RU = {
                 placeholder: 'архив*, *черновик, проекты/*/старые'
             },
             hiddenFileTags: {
-                name: 'Hide files with tags (vault profile)',
+                name: 'Скрыть заметки с тегами (профиль хранилища)',
                 desc: 'Comma-separated list of tag patterns. Notes containing matching tags are hidden. Name patterns: tag* (starting with), *tag (ending with). Path patterns: archive (tag and descendants), archive/* (descendants only), projects/*/drafts (mid-segment wildcard).',
                 placeholder: 'archive*, *draft, projects/*/old'
             },

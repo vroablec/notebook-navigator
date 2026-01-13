@@ -954,7 +954,7 @@ export const STRINGS_UK = {
                 }
             },
             excludedNotes: {
-                name: 'Приховати нотатки (профіль сховища)',
+                name: 'Приховати нотатки з властивостями (профіль сховища)',
                 desc: 'Список властивостей frontmatter, розділених комами. Нотатки, що містять будь-яку з цих властивостей, будуть приховані (наприклад, чернетка, приватний, архів).',
                 placeholder: 'чернетка, приватний'
             },
@@ -1229,7 +1229,7 @@ export const STRINGS_UK = {
                 placeholder: 'архів*, *чернетка, проекти/*/старі'
             },
             hiddenFileTags: {
-                name: 'Hide files with tags (vault profile)',
+                name: 'Приховати нотатки з тегами (профіль сховища)',
                 desc: 'Comma-separated list of tag patterns. Notes containing matching tags are hidden. Name patterns: tag* (starting with), *tag (ending with). Path patterns: archive (tag and descendants), archive/* (descendants only), projects/*/drafts (mid-segment wildcard).',
                 placeholder: 'archive*, *draft, projects/*/old'
             },

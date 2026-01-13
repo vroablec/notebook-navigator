@@ -931,7 +931,7 @@ export const STRINGS_ZH_CN = {
                 }
             },
             excludedNotes: {
-                name: '隐藏笔记 (库配置)',
+                name: '隐藏带属性的笔记 (库配置)',
                 desc: '逗号分隔的前置元数据属性列表。包含任何这些属性的笔记将被隐藏（例如：draft, private, archived）。',
                 placeholder: 'draft, private'
             },
@@ -1227,7 +1227,7 @@ export const STRINGS_ZH_CN = {
                 placeholder: 'archive*, *draft, projects/*/old'
             },
             hiddenFileTags: {
-                name: 'Hide files with tags (vault profile)',
+                name: '隐藏带标签的笔记 (库配置)',
                 desc: 'Comma-separated list of tag patterns. Notes containing matching tags are hidden. Name patterns: tag* (starting with), *tag (ending with). Path patterns: archive (tag and descendants), archive/* (descendants only), projects/*/drafts (mid-segment wildcard).',
                 placeholder: 'archive*, *draft, projects/*/old'
             },

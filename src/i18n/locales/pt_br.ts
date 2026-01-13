@@ -951,7 +951,7 @@ export const STRINGS_PT_BR = {
                 }
             },
             excludedNotes: {
-                name: 'Ocultar notas (perfil do cofre)',
+                name: 'Ocultar notas com propriedades (perfil do cofre)',
                 desc: 'Lista separada por vírgulas de propriedades do frontmatter. Notas contendo qualquer uma dessas propriedades serão ocultadas (por exemplo, rascunho, privado, arquivado).',
                 placeholder: 'rascunho, privado'
             },
@@ -1226,7 +1226,7 @@ export const STRINGS_PT_BR = {
                 placeholder: 'arquivo*, *rascunho, projetos/*/antigo'
             },
             hiddenFileTags: {
-                name: 'Hide files with tags (vault profile)',
+                name: 'Ocultar notas com tags (perfil do cofre)',
                 desc: 'Comma-separated list of tag patterns. Notes containing matching tags are hidden. Name patterns: tag* (starting with), *tag (ending with). Path patterns: archive (tag and descendants), archive/* (descendants only), projects/*/drafts (mid-segment wildcard).',
                 placeholder: 'archive*, *draft, projects/*/old'
             },

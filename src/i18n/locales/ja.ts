@@ -934,7 +934,7 @@ export const STRINGS_JA = {
                 }
             },
             excludedNotes: {
-                name: 'ノートを非表示 (ボルトプロファイル)',
+                name: 'プロパティ付きノートを非表示 (ボルトプロファイル)',
                 desc: 'カンマ区切りのフロントマター属性のリスト。これらの属性を含むノートは非表示になります（例：draft, private, archived）。',
                 placeholder: 'draft, private'
             },
@@ -1231,7 +1231,7 @@ export const STRINGS_JA = {
                 placeholder: 'archive*, *draft, projects/*/old'
             },
             hiddenFileTags: {
-                name: 'Hide files with tags (vault profile)',
+                name: 'タグ付きノートを非表示 (ボルトプロファイル)',
                 desc: 'Comma-separated list of tag patterns. Notes containing matching tags are hidden. Name patterns: tag* (starting with), *tag (ending with). Path patterns: archive (tag and descendants), archive/* (descendants only), projects/*/drafts (mid-segment wildcard).',
                 placeholder: 'archive*, *draft, projects/*/old'
             },

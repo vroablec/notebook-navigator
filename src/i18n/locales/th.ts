@@ -954,7 +954,7 @@ export const STRINGS_TH = {
                 }
             },
             excludedNotes: {
-                name: 'ซ่อนโน้ต (โปรไฟล์ห้องนิรภัย)',
+                name: 'ซ่อนโน้ตที่มีคุณสมบัติ (โปรไฟล์ห้องนิรภัย)',
                 desc: 'รายการคุณสมบัติ frontmatter คั่นด้วยเครื่องหมายจุลภาค โน้ตที่มีคุณสมบัติเหล่านี้จะถูกซ่อน (เช่น ฉบับร่าง, ส่วนตัว, เก็บถาวร)',
                 placeholder: 'ฉบับร่าง, ส่วนตัว'
             },
@@ -1228,7 +1228,7 @@ export const STRINGS_TH = {
                 placeholder: 'archive*, *draft, projects/*/old'
             },
             hiddenFileTags: {
-                name: 'Hide files with tags (vault profile)',
+                name: 'ซ่อนโน้ตที่มีแท็ก (โปรไฟล์ห้องนิรภัย)',
                 desc: 'Comma-separated list of tag patterns. Notes containing matching tags are hidden. Name patterns: tag* (starting with), *tag (ending with). Path patterns: archive (tag and descendants), archive/* (descendants only), projects/*/drafts (mid-segment wildcard).',
                 placeholder: 'archive*, *draft, projects/*/old'
             },

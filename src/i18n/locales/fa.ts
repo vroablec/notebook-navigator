@@ -954,7 +954,7 @@ export const STRINGS_FA = {
                 }
             },
             excludedNotes: {
-                name: 'مخفی کردن یادداشت‌ها (پروفایل خزانه)',
+                name: 'مخفی کردن یادداشت‌ها با ویژگی‌ها (پروفایل خزانه)',
                 desc: 'لیست ویژگی‌های فرانت‌متر جدا شده با کاما. یادداشت‌های حاوی هر یک از این ویژگی‌ها مخفی می‌شوند (مثل پیش‌نویس، خصوصی، بایگانی).',
                 placeholder: 'پیش‌نویس، خصوصی'
             },
@@ -1228,7 +1228,7 @@ export const STRINGS_FA = {
                 placeholder: 'archive*, *draft, projects/*/old'
             },
             hiddenFileTags: {
-                name: 'Hide files with tags (vault profile)',
+                name: 'مخفی کردن یادداشت‌ها با برچسب‌ها (پروفایل خزانه)',
                 desc: 'Comma-separated list of tag patterns. Notes containing matching tags are hidden. Name patterns: tag* (starting with), *tag (ending with). Path patterns: archive (tag and descendants), archive/* (descendants only), projects/*/drafts (mid-segment wildcard).',
                 placeholder: 'archive*, *draft, projects/*/old'
             },

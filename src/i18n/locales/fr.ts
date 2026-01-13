@@ -935,7 +935,7 @@ export const STRINGS_FR = {
                 }
             },
             excludedNotes: {
-                name: 'Masquer les notes (profil du coffre)',
+                name: 'Masquer les notes avec propriétés (profil du coffre)',
                 desc: "Liste de propriétés de métadonnées séparées par des virgules. Les notes contenant l'une de ces propriétés seront masquées (ex. : draft, private, archived).",
                 placeholder: 'draft, private'
             },
@@ -1232,7 +1232,7 @@ export const STRINGS_FR = {
                 placeholder: 'archive*, *brouillon, projets/*/ancien'
             },
             hiddenFileTags: {
-                name: 'Hide files with tags (vault profile)',
+                name: 'Masquer les notes avec tags (profil du coffre)',
                 desc: 'Comma-separated list of tag patterns. Notes containing matching tags are hidden. Name patterns: tag* (starting with), *tag (ending with). Path patterns: archive (tag and descendants), archive/* (descendants only), projects/*/drafts (mid-segment wildcard).',
                 placeholder: 'archive*, *draft, projects/*/old'
             },

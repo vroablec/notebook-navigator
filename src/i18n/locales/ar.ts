@@ -954,7 +954,7 @@ export const STRINGS_AR = {
                 }
             },
             excludedNotes: {
-                name: 'إخفاء الملاحظات (ملف الخزنة)',
+                name: 'إخفاء الملاحظات ذات الخصائص (ملف الخزنة)',
                 desc: 'قائمة مفصولة بفاصلة من خصائص البيانات الأمامية. الملاحظات التي تحتوي على أي من هذه الخصائص ستكون مخفية (مثل draft، private، archived).',
                 placeholder: 'draft, private'
             },
@@ -1228,7 +1228,7 @@ export const STRINGS_AR = {
                 placeholder: 'archive*, *draft, projects/*/old'
             },
             hiddenFileTags: {
-                name: 'Hide files with tags (vault profile)',
+                name: 'إخفاء الملاحظات ذات الوسوم (ملف الخزنة)',
                 desc: 'Comma-separated list of tag patterns. Notes containing matching tags are hidden. Name patterns: tag* (starting with), *tag (ending with). Path patterns: archive (tag and descendants), archive/* (descendants only), projects/*/drafts (mid-segment wildcard).',
                 placeholder: 'archive*, *draft, projects/*/old'
             },

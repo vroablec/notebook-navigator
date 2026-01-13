@@ -956,7 +956,7 @@ export const STRINGS_PL = {
                 }
             },
             excludedNotes: {
-                name: 'Ukryj notatki (profil sejfu)',
+                name: 'Ukryj notatki z właściwościami (profil sejfu)',
                 desc: 'Lista właściwości frontmatter oddzielonych przecinkami. Notatki zawierające którekolwiek z tych właściwości będą ukryte (np. draft, private, archived).',
                 placeholder: 'draft, private'
             },
@@ -1231,7 +1231,7 @@ export const STRINGS_PL = {
                 placeholder: 'archiwum*, *szkic, projekty/*/stare'
             },
             hiddenFileTags: {
-                name: 'Hide files with tags (vault profile)',
+                name: 'Ukryj notatki z tagami (profil sejfu)',
                 desc: 'Comma-separated list of tag patterns. Notes containing matching tags are hidden. Name patterns: tag* (starting with), *tag (ending with). Path patterns: archive (tag and descendants), archive/* (descendants only), projects/*/drafts (mid-segment wildcard).',
                 placeholder: 'archive*, *draft, projects/*/old'
             },

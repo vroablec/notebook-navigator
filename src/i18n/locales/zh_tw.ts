@@ -931,7 +931,7 @@ export const STRINGS_ZH_TW = {
                 }
             },
             excludedNotes: {
-                name: '隱藏筆記（保險庫設定檔）',
+                name: '隱藏帶有屬性的筆記（保險庫設定檔）',
                 desc: '逗號分隔的前置中繼資料屬性列表。包含任何這些屬性的筆記將被隱藏（例如：draft, private, archived）。',
                 placeholder: 'draft, private'
             },
@@ -1226,7 +1226,7 @@ export const STRINGS_ZH_TW = {
                 placeholder: 'archive*, *draft, projects/*/old'
             },
             hiddenFileTags: {
-                name: 'Hide files with tags (vault profile)',
+                name: '隱藏帶有標籤的筆記（保險庫設定檔）',
                 desc: 'Comma-separated list of tag patterns. Notes containing matching tags are hidden. Name patterns: tag* (starting with), *tag (ending with). Path patterns: archive (tag and descendants), archive/* (descendants only), projects/*/drafts (mid-segment wildcard).',
                 placeholder: 'archive*, *draft, projects/*/old'
             },

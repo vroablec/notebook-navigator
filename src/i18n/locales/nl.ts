@@ -956,7 +956,7 @@ export const STRINGS_NL = {
                 }
             },
             excludedNotes: {
-                name: 'Notities verbergen (kluisprofiel)',
+                name: 'Notities met eigenschappen verbergen (kluisprofiel)',
                 desc: 'Kommagescheiden lijst van frontmatter-eigenschappen. Notities met een van deze eigenschappen worden verborgen (bijv. draft, private, archived).',
                 placeholder: 'draft, private'
             },
@@ -1231,7 +1231,7 @@ export const STRINGS_NL = {
                 placeholder: 'archief*, *concept, projecten/*/oud'
             },
             hiddenFileTags: {
-                name: 'Hide files with tags (vault profile)',
+                name: 'Notities met tags verbergen (kluisprofiel)',
                 desc: 'Comma-separated list of tag patterns. Notes containing matching tags are hidden. Name patterns: tag* (starting with), *tag (ending with). Path patterns: archive (tag and descendants), archive/* (descendants only), projects/*/drafts (mid-segment wildcard).',
                 placeholder: 'archive*, *draft, projects/*/old'
             },

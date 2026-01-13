@@ -954,7 +954,7 @@ export const STRINGS_TR = {
                 }
             },
             excludedNotes: {
-                name: 'Notları gizle (kasa profili)',
+                name: 'Özellikli notları gizle (kasa profili)',
                 desc: 'Virgülle ayrılmış frontmatter özellikleri listesi. Bu özelliklerden herhangi birini içeren notlar gizlenecektir (örn. taslak, özel, arşiv).',
                 placeholder: 'taslak, özel'
             },
@@ -1228,7 +1228,7 @@ export const STRINGS_TR = {
                 placeholder: 'arşiv*, *taslak, projeler/*/eski'
             },
             hiddenFileTags: {
-                name: 'Hide files with tags (vault profile)',
+                name: 'Etiketli notları gizle (kasa profili)',
                 desc: 'Comma-separated list of tag patterns. Notes containing matching tags are hidden. Name patterns: tag* (starting with), *tag (ending with). Path patterns: archive (tag and descendants), archive/* (descendants only), projects/*/drafts (mid-segment wildcard).',
                 placeholder: 'archive*, *draft, projects/*/old'
             },

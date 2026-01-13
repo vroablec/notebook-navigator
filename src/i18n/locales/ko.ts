@@ -954,7 +954,7 @@ export const STRINGS_KO = {
                 }
             },
             excludedNotes: {
-                name: '노트 숨기기 (볼트 프로필)',
+                name: '속성이 있는 노트 숨기기 (볼트 프로필)',
                 desc: '쉼표로 구분된 frontmatter 속성 목록입니다. 이러한 속성 중 하나라도 포함된 노트는 숨겨집니다 (예: draft, private, archived).',
                 placeholder: 'draft, private'
             },
@@ -1228,7 +1228,7 @@ export const STRINGS_KO = {
                 placeholder: 'archive*, *draft, projects/*/old'
             },
             hiddenFileTags: {
-                name: 'Hide files with tags (vault profile)',
+                name: '태그가 있는 노트 숨기기 (볼트 프로필)',
                 desc: 'Comma-separated list of tag patterns. Notes containing matching tags are hidden. Name patterns: tag* (starting with), *tag (ending with). Path patterns: archive (tag and descendants), archive/* (descendants only), projects/*/drafts (mid-segment wildcard).',
                 placeholder: 'archive*, *draft, projects/*/old'
             },
