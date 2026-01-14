@@ -35,6 +35,15 @@ import {
     resolveToolbarVisibility
 } from './settings/migrations/localPreferences';
 import {
+    applyExistingUserDefaults,
+    applyLegacyShortcutsMigration,
+    applyLegacyVisibilityMigration,
+    extractLegacyShortcuts,
+    extractLegacyVisibilitySettings,
+    migrateFolderNotePropertiesSetting,
+    migrateLegacySyncedSettings
+} from './settings/migrations/syncedSettings';
+import {
     LocalStorageKeys,
     MAX_PANE_TRANSITION_DURATION_MS,
     MIN_PANE_TRANSITION_DURATION_MS,
@@ -77,18 +86,16 @@ import { isBooleanRecordValue, isPlainObjectRecordValue, isStringRecordValue, sa
 import { isRecord } from './utils/typeGuards';
 import { runAsyncAction } from './utils/async';
 import { resetHiddenToggleIfNoSources } from './utils/exclusionUtils';
-import { ensureVaultProfiles, DEFAULT_VAULT_PROFILE_ID, cloneShortcuts, clearHiddenFolderMatcherCache } from './utils/vaultProfiles';
+import { ensureVaultProfiles, DEFAULT_VAULT_PROFILE_ID, clearHiddenFolderMatcherCache } from './utils/vaultProfiles';
 import { clearHiddenFileNameMatcherCache } from './utils/fileFilters';
 import WorkspaceCoordinator from './services/workspace/WorkspaceCoordinator';
 import HomepageController from './services/workspace/HomepageController';
 import registerNavigatorCommands from './services/commands/registerNavigatorCommands';
 import registerWorkspaceEvents from './services/workspace/registerWorkspaceEvents';
 import type { RevealFileOptions } from './hooks/useNavigatorReveal';
-import { ShortcutType, type ShortcutEntry } from './types/shortcuts';
 import type { FolderAppearance } from './hooks/useListPaneAppearance';
 import {
     type CalendarWeeksToShow,
-    isCustomPropertyType,
     isSortOption,
     isTagSortOrder,
     type SortOption,
@@ -117,14 +124,6 @@ const UX_PREFERENCE_KEYS: (keyof UXPreferences)[] = [
     'pinShortcuts',
     'showCalendar'
 ];
-
-interface LegacyVisibilityMigration {
-    hiddenFolders: string[];
-    hiddenFileProperties: string[];
-    hiddenTags: string[];
-    navigationBanner: string | null;
-    shouldApplyToProfiles: boolean;
-}
 
 /**
  * Main plugin class for Notebook Navigator
@@ -209,164 +208,12 @@ export default class NotebookNavigatorPlugin extends Plugin implements ISettings
         const toolbarVisibility = resolveToolbarVisibility({ storedData, keys: this.keys, defaultSettings: DEFAULT_SETTINGS });
         this.settings.toolbarVisibility = toolbarVisibility.value;
 
-        // Remove deprecated fields from settings object
-        const mutableSettings = this.settings as unknown as Record<string, unknown>;
-        delete mutableSettings.recentNotes;
-        delete mutableSettings.recentIcons;
-        delete mutableSettings.searchActive;
-        delete mutableSettings.includeDescendantNotes;
-        delete mutableSettings.showHiddenItems;
-        delete mutableSettings.hiddenTags;
-        delete mutableSettings.fileVisibility;
-        delete mutableSettings.preventInvalidCharacters;
-        delete mutableSettings.mobileBackground;
-
-        const storedNoteGrouping = storedData ? storedData['noteGrouping'] : undefined;
-
-        // Migrates legacy showIcons boolean to separate icon settings for sections, folders, tags, and pinned items
-        const legacyShowIcons = mutableSettings.showIcons;
-        if (typeof legacyShowIcons === 'boolean') {
-            if (typeof storedData?.['showSectionIcons'] === 'undefined') {
-                this.settings.showSectionIcons = legacyShowIcons;
-            }
-            if (typeof storedData?.['showFolderIcons'] === 'undefined') {
-                this.settings.showFolderIcons = legacyShowIcons;
-            }
-            if (typeof storedData?.['showTagIcons'] === 'undefined') {
-                this.settings.showTagIcons = legacyShowIcons;
-            }
-            if (typeof storedData?.['showPinnedIcon'] === 'undefined') {
-                this.settings.showPinnedIcon = legacyShowIcons;
-            }
-        }
-        delete mutableSettings.showIcons;
-
-        // Migrate legacy parent folder visibility flag
-        const legacyShowParentFolderNames = mutableSettings['showParentFolderNames'];
-        if (typeof legacyShowParentFolderNames === 'boolean' && typeof storedData?.['showParentFolder'] === 'undefined') {
-            this.settings.showParentFolder = legacyShowParentFolderNames;
-        }
-        delete mutableSettings['showParentFolderNames'];
-
-        // Migrate legacy parent folder color toggle
-        const legacyShowParentFolderColors = mutableSettings['showParentFolderColors'];
-        if (typeof legacyShowParentFolderColors === 'boolean' && typeof storedData?.['showParentFolderColor'] === 'undefined') {
-            this.settings.showParentFolderColor = legacyShowParentFolderColors;
-        }
-        delete mutableSettings['showParentFolderColors'];
-
-        // Migrate legacy groupByDate boolean to noteGrouping dropdown
-        const legacyGroupByDate = mutableSettings.groupByDate;
-        if (typeof legacyGroupByDate === 'boolean' && typeof storedNoteGrouping === 'undefined') {
-            this.settings.noteGrouping = legacyGroupByDate ? 'date' : 'none';
-        }
-        delete mutableSettings.groupByDate;
-
-        // Validate noteGrouping value and reset to default if invalid
-        if (this.settings.noteGrouping !== 'none' && this.settings.noteGrouping !== 'date' && this.settings.noteGrouping !== 'folder') {
-            this.settings.noteGrouping = DEFAULT_SETTINGS.noteGrouping;
-        }
-
-        // Validate shortcutBadgeDisplay value and reset to default if invalid
-        if (
-            this.settings.shortcutBadgeDisplay !== 'index' &&
-            this.settings.shortcutBadgeDisplay !== 'count' &&
-            this.settings.shortcutBadgeDisplay !== 'none'
-        ) {
-            this.settings.shortcutBadgeDisplay = DEFAULT_SETTINGS.shortcutBadgeDisplay;
-        }
-
-        if (!isCustomPropertyType(this.settings.customPropertyType)) {
-            this.settings.customPropertyType = DEFAULT_SETTINGS.customPropertyType;
-        }
-
-        if (typeof this.settings.customPropertyFields !== 'string') {
-            this.settings.customPropertyFields = DEFAULT_SETTINGS.customPropertyFields;
-        }
-
-        if (typeof this.settings.customPropertyColorFields !== 'string') {
-            this.settings.customPropertyColorFields = DEFAULT_SETTINGS.customPropertyColorFields;
-        }
-
-        if (typeof this.settings.showCustomPropertyInCompactMode !== 'boolean') {
-            this.settings.showCustomPropertyInCompactMode = DEFAULT_SETTINGS.showCustomPropertyInCompactMode;
-        }
-
-        type LegacyAppearance = FolderAppearance & {
-            showDate?: boolean;
-            showPreview?: boolean;
-            showImage?: boolean;
-        };
-
-        const migrateLegacyAppearanceMode = (appearance: LegacyAppearance | undefined): FolderAppearance | undefined => {
-            if (!appearance) {
-                return appearance;
-            }
-
-            const isLegacyCompact =
-                appearance.mode === undefined &&
-                appearance.showDate === false &&
-                appearance.showPreview === false &&
-                appearance.showImage === false;
-
-            if (isLegacyCompact) {
-                const migrated: FolderAppearance = { ...appearance, mode: 'compact' };
-                delete (migrated as LegacyAppearance).showDate;
-                delete (migrated as LegacyAppearance).showPreview;
-                delete (migrated as LegacyAppearance).showImage;
-                return migrated;
-            }
-
-            return appearance;
-        };
-
-        const migrateLegacyAppearances = (collection: Record<string, FolderAppearance> | undefined) => {
-            if (!collection) {
-                return;
-            }
-
-            Object.entries(collection).forEach(([key, appearance]) => {
-                const migratedAppearance = migrateLegacyAppearanceMode(appearance);
-                if (migratedAppearance) {
-                    collection[key] = migratedAppearance;
-                }
-            });
-        };
-
-        migrateLegacyAppearances(this.settings.folderAppearances);
-        migrateLegacyAppearances(this.settings.tagAppearances);
-
-        const legacyColorFileTags = mutableSettings['applyTagColorsToFileTags'];
-        if (typeof legacyColorFileTags === 'boolean') {
-            this.settings.colorFileTags = legacyColorFileTags;
-        }
-        delete mutableSettings['applyTagColorsToFileTags'];
-
-        const legacySlimItemHeight = mutableSettings['slimItemHeight'];
-        if (typeof legacySlimItemHeight === 'number' && Number.isFinite(legacySlimItemHeight)) {
-            const storedLocalCompactItemHeight = localStorage.get<unknown>(this.keys.compactItemHeightKey);
-            if (typeof storedData?.['compactItemHeight'] === 'undefined' && storedLocalCompactItemHeight === null) {
-                localStorage.set(this.keys.compactItemHeightKey, legacySlimItemHeight);
-            }
-        }
-        delete mutableSettings['slimItemHeight'];
-
-        const legacySlimItemHeightScaleText = mutableSettings['slimItemHeightScaleText'];
-        if (typeof legacySlimItemHeightScaleText === 'boolean') {
-            const storedLocalCompactItemHeightScaleText = localStorage.get<unknown>(this.keys.compactItemHeightScaleTextKey);
-            if (typeof storedData?.['compactItemHeightScaleText'] === 'undefined' && storedLocalCompactItemHeightScaleText === null) {
-                localStorage.set(this.keys.compactItemHeightScaleTextKey, legacySlimItemHeightScaleText);
-            }
-        }
-        delete mutableSettings['slimItemHeightScaleText'];
-
-        const legacyShowFileTagsInSlimMode = mutableSettings['showFileTagsInSlimMode'];
-        if (typeof legacyShowFileTagsInSlimMode === 'boolean') {
-            if (typeof storedData?.['showFileTagsInCompactMode'] === 'undefined') {
-                this.settings.showFileTagsInCompactMode = legacyShowFileTagsInSlimMode;
-            }
-        }
-        delete mutableSettings['showFileTagsInSlimMode'];
+        migrateLegacySyncedSettings({
+            settings: this.settings,
+            storedData,
+            keys: this.keys,
+            defaultSettings: DEFAULT_SETTINGS
+        });
 
         this.sanitizeSettingsRecords();
 
@@ -445,32 +292,8 @@ export default class NotebookNavigatorPlugin extends Plugin implements ISettings
         });
         this.shouldPersistDesktopScale = migratedScales.shouldPersistDesktopScale;
         this.shouldPersistMobileScale = migratedScales.shouldPersistMobileScale;
-
-        const normalizeFolderNoteBlock = (input: string): string =>
-            input
-                .replace(/\r\n/g, '\n')
-                .replace(/^---\s*\n?/, '')
-                .replace(/\n?---\s*$/, '')
-                .trim();
-
-        const folderNotePropertiesSetting = this.settings.folderNoteProperties;
-        if (Array.isArray(folderNotePropertiesSetting)) {
-            const migratedProperties = folderNotePropertiesSetting
-                .map(entry => (typeof entry === 'string' ? entry.trim() : ''))
-                .filter(entry => entry.length > 0)
-                .map(entry => `${entry}: true`)
-                .join('\n');
-            this.settings.folderNoteProperties = normalizeFolderNoteBlock(migratedProperties);
-        } else if (typeof folderNotePropertiesSetting === 'string') {
-            this.settings.folderNoteProperties = normalizeFolderNoteBlock(folderNotePropertiesSetting);
-        } else {
-            this.settings.folderNoteProperties = DEFAULT_SETTINGS.folderNoteProperties;
-        }
-
-        // Initialize update check setting with default value for existing users
-        if (typeof this.settings.checkForUpdatesOnStart !== 'boolean') {
-            this.settings.checkForUpdatesOnStart = true;
-        }
+        migrateFolderNotePropertiesSetting({ settings: this.settings, defaultSettings: DEFAULT_SETTINGS });
+        applyExistingUserDefaults({ settings: this.settings });
 
         // Load saved orientation preference for this device
         const storedOrientation = localStorage.get<unknown>(this.keys.dualPaneOrientationKey);
@@ -478,13 +301,13 @@ export default class NotebookNavigatorPlugin extends Plugin implements ISettings
         this.dualPaneOrientationPreference = parsedOrientation ?? 'horizontal';
 
         // Extract legacy exclusion settings and migrate to vault profile system
-        const legacyVisibility = this.extractLegacyVisibilitySettings(storedData);
-        const legacyShortcuts = this.extractLegacyShortcuts(storedData);
+        const legacyVisibility = extractLegacyVisibilitySettings({ settings: this.settings, storedData });
+        const legacyShortcuts = extractLegacyShortcuts({ storedData });
 
         // Initialize vault profiles and apply legacy settings to the active profile
         ensureVaultProfiles(this.settings);
-        this.applyLegacyVisibilityMigration(legacyVisibility);
-        this.applyLegacyShortcutsMigration(legacyShortcuts);
+        applyLegacyVisibilityMigration({ settings: this.settings, migration: legacyVisibility });
+        applyLegacyShortcutsMigration({ settings: this.settings, legacyShortcuts });
         this.normalizeIconSettings(this.settings);
         this.normalizeFileIconMapSettings(this.settings);
         this.normalizeInterfaceIconsSettings(this.settings);
@@ -1549,65 +1372,6 @@ export default class NotebookNavigatorPlugin extends Plugin implements ISettings
         });
     }
 
-    // Extracts legacy shortcuts from old settings format for migration to vault profiles
-    private extractLegacyShortcuts(storedData: Record<string, unknown> | null): ShortcutEntry[] | null {
-        if (!storedData) {
-            return null;
-        }
-
-        const raw = storedData['shortcuts'];
-        if (!Array.isArray(raw)) {
-            return null;
-        }
-
-        const entries: ShortcutEntry[] = [];
-        raw.forEach(value => {
-            if (!value || typeof value !== 'object') {
-                return;
-            }
-            const typed = value as ShortcutEntry;
-            const shortcutType = (typed as { type?: unknown }).type;
-            // Validates that shortcut type is one of the recognized types
-            if (
-                shortcutType !== ShortcutType.FOLDER &&
-                shortcutType !== ShortcutType.NOTE &&
-                shortcutType !== ShortcutType.TAG &&
-                shortcutType !== ShortcutType.SEARCH
-            ) {
-                return;
-            }
-            entries.push({ ...typed });
-        });
-
-        if (entries.length === 0) {
-            return [];
-        }
-
-        return entries;
-    }
-
-    // Migrates legacy shortcuts to vault profile system
-    private applyLegacyShortcutsMigration(legacyShortcuts: ShortcutEntry[] | null): void {
-        // Removes legacy shortcuts property from settings object
-        const settingsRecord = this.settings as unknown as Record<string, unknown>;
-        if (Object.prototype.hasOwnProperty.call(settingsRecord, 'shortcuts')) {
-            delete settingsRecord['shortcuts'];
-        }
-
-        if (!legacyShortcuts || legacyShortcuts.length === 0) {
-            return;
-        }
-
-        // Copies legacy shortcuts to all vault profiles that don't have shortcuts yet
-        const template = cloneShortcuts(legacyShortcuts);
-        this.settings.vaultProfiles.forEach(profile => {
-            if (Array.isArray(profile.shortcuts) && profile.shortcuts.length > 0) {
-                return;
-            }
-            profile.shortcuts = cloneShortcuts(template);
-        });
-    }
-
     // Rebuilds all settings records with null prototypes to prevent prototype pollution attacks
     private sanitizeSettingsRecords(): void {
         // Type-specific sanitizers that validate values match expected types
@@ -1714,89 +1478,6 @@ export default class NotebookNavigatorPlugin extends Plugin implements ISettings
         }
 
         settings.interfaceIcons = sanitizeRecord(normalizeUXIconMapRecord(source), isStringRecordValue);
-    }
-
-    // Extracts legacy exclusion settings from old format and prepares them for migration to vault profiles
-    private extractLegacyVisibilitySettings(storedData: Record<string, unknown> | null): LegacyVisibilityMigration {
-        // Converts unknown value to a deduplicated list of non-empty strings
-        const toUniqueStringList = (value: unknown): string[] => {
-            if (!Array.isArray(value)) {
-                return [];
-            }
-            const sanitized = value.map(entry => (typeof entry === 'string' ? entry.trim() : '')).filter(entry => entry.length > 0);
-            return Array.from(new Set(sanitized));
-        };
-
-        const mutableSettings = this.settings as unknown as Record<string, unknown>;
-        const legacyHiddenFolders = toUniqueStringList(mutableSettings['excludedFolders']);
-        const legacyHiddenFileProperties = toUniqueStringList(mutableSettings['excludedFiles']);
-        delete mutableSettings['excludedFolders'];
-        delete mutableSettings['excludedFiles'];
-
-        const storedHiddenTags = toUniqueStringList(storedData?.['hiddenTags']);
-        // Legacy hidden tags are captured for migration but not applied to top-level settings
-
-        const rawNavigationBanner = mutableSettings['navigationBanner'];
-        const legacyNavigationBanner = typeof rawNavigationBanner === 'string' ? rawNavigationBanner : null;
-        const storedNavigationBannerPath = storedData?.['navigationBannerPath'];
-        const legacyBannerPath = typeof storedNavigationBannerPath === 'string' ? storedNavigationBannerPath : null;
-        const navigationBanner =
-            legacyNavigationBanner && legacyNavigationBanner.length > 0
-                ? legacyNavigationBanner
-                : legacyBannerPath && legacyBannerPath.length > 0
-                  ? legacyBannerPath
-                  : null;
-
-        delete mutableSettings['navigationBanner'];
-        delete mutableSettings['navigationBannerPath'];
-
-        return {
-            hiddenFolders: legacyHiddenFolders,
-            hiddenFileProperties: legacyHiddenFileProperties,
-            hiddenTags: storedHiddenTags,
-            navigationBanner,
-            shouldApplyToProfiles: !Array.isArray(storedData?.['vaultProfiles'])
-        };
-    }
-
-    // Applies legacy hidden folder, file, and tag settings to the active vault profile
-    private applyLegacyVisibilityMigration(migration: LegacyVisibilityMigration): void {
-        const hasNavigationBanner = typeof migration.navigationBanner === 'string' && migration.navigationBanner.length > 0;
-
-        if (
-            !migration.shouldApplyToProfiles ||
-            (!hasNavigationBanner &&
-                migration.hiddenFolders.length === 0 &&
-                migration.hiddenFileProperties.length === 0 &&
-                migration.hiddenTags.length === 0)
-        ) {
-            return;
-        }
-
-        const targetProfile =
-            this.settings.vaultProfiles.find(profile => profile.id === this.settings.vaultProfile) ??
-            this.settings.vaultProfiles.find(profile => profile.id === DEFAULT_VAULT_PROFILE_ID) ??
-            this.settings.vaultProfiles[0];
-
-        if (!targetProfile) {
-            return;
-        }
-
-        if (migration.hiddenFolders.length > 0) {
-            targetProfile.hiddenFolders = [...migration.hiddenFolders];
-        }
-
-        if (migration.hiddenFileProperties.length > 0) {
-            targetProfile.hiddenFileProperties = [...migration.hiddenFileProperties];
-        }
-
-        if (migration.hiddenTags.length > 0) {
-            targetProfile.hiddenTags = [...migration.hiddenTags];
-        }
-
-        if (hasNavigationBanner) {
-            targetProfile.navigationBanner = migration.navigationBanner;
-        }
     }
 
     /**
