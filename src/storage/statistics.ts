@@ -68,6 +68,96 @@ function estimateFileDataSizeBytes(fileData: FileData): number {
     return jsonSizeBytes;
 }
 
+export interface MetadataParsingStatistics {
+    itemsWithMetadataName: number;
+    itemsWithMetadataCreated: number;
+    itemsWithMetadataModified: number;
+    itemsWithMetadataIcon: number;
+    itemsWithMetadataColor: number;
+    itemsWithFailedCreatedParse: number;
+    itemsWithFailedModifiedParse: number;
+    failedCreatedFiles: string[];
+    failedModifiedFiles: string[];
+}
+
+/**
+ * Calculate metadata parsing statistics from the database.
+ * Streams only the main file store and skips preview/blob stores.
+ *
+ * @returns Metadata parsing statistics or null on error
+ */
+export async function calculateMetadataParsingStatistics(
+    settings: NotebookNavigatorSettings,
+    showHiddenItems: boolean
+): Promise<MetadataParsingStatistics | null> {
+    try {
+        const db = getDBInstance();
+
+        const hiddenFolders = getActiveHiddenFolders(settings);
+        const excludedFolderPatterns = showHiddenItems ? [] : hiddenFolders;
+
+        const stats: MetadataParsingStatistics = {
+            itemsWithMetadataName: 0,
+            itemsWithMetadataCreated: 0,
+            itemsWithMetadataModified: 0,
+            itemsWithMetadataIcon: 0,
+            itemsWithMetadataColor: 0,
+            itemsWithFailedCreatedParse: 0,
+            itemsWithFailedModifiedParse: 0,
+            failedCreatedFiles: [],
+            failedModifiedFiles: []
+        };
+
+        db.forEachFile((path, fileData) => {
+            if (excludedFolderPatterns.length > 0 && isPathInExcludedFolder(path, excludedFolderPatterns)) {
+                return;
+            }
+
+            const metadata = fileData.metadata;
+            if (!metadata) {
+                return;
+            }
+
+            if (metadata.name) {
+                stats.itemsWithMetadataName++;
+            }
+
+            const hasValidIcon = typeof metadata.icon === 'string' && metadata.icon.trim().length > 0;
+            if (hasValidIcon) {
+                stats.itemsWithMetadataIcon++;
+            }
+
+            const hasValidColor = typeof metadata.color === 'string' && metadata.color.trim().length > 0;
+            if (hasValidColor) {
+                stats.itemsWithMetadataColor++;
+            }
+
+            if (metadata.created !== undefined && metadata.created !== METADATA_SENTINEL.FIELD_NOT_CONFIGURED) {
+                if (metadata.created === METADATA_SENTINEL.PARSE_FAILED) {
+                    stats.itemsWithFailedCreatedParse++;
+                    stats.failedCreatedFiles.push(path);
+                } else {
+                    stats.itemsWithMetadataCreated++;
+                }
+            }
+
+            if (metadata.modified !== undefined && metadata.modified !== METADATA_SENTINEL.FIELD_NOT_CONFIGURED) {
+                if (metadata.modified === METADATA_SENTINEL.PARSE_FAILED) {
+                    stats.itemsWithFailedModifiedParse++;
+                    stats.failedModifiedFiles.push(path);
+                } else {
+                    stats.itemsWithMetadataModified++;
+                }
+            }
+        });
+
+        return stats;
+    } catch (error) {
+        console.error('Failed to calculate metadata parsing statistics:', error);
+        return null;
+    }
+}
+
 /**
  * Calculate statistics from the database.
  * Streams through all files to count items and estimate storage size.
