@@ -98,13 +98,16 @@ const RELEASE_NOTES: ReleaseNote[] = [
             '==Behavior change==: In single-pane mode, clicking on a file in shortcuts, recent notes, in calendar or changing notes in the editor (with auto reveal enabled) will no longer switch over to list pane automatically. The old behavior was implemented before we had shortcuts and recent notes, and it was time to change it.',
             '==Behavior change==: Hiding icons for shortcuts, recent notes, folders and tags now keeps the **top section icon** to keep the sections visually distinct.',
             '==Moved several UX settings to local storage== so they are not synced between devices. These are: pane transition duration, toolbar button visibility, navigation indentation, navigation item height, scale navigation text with item height, compact list item height, scale compact list text with item height.',
-            'Folder notes no longer default to showing text in bold and underline, instead their icon is now a file icon. This can be changed in Style settings.',
+            'Folder notes no longer default to showing text in bold and underline, instead their icon is now a file icon and they show underline on hover. This can be changed in Style settings.',
+            'Right-clicking the name of a folder with folder note now shows the file menu for the folder note. To access the folder - right click outside the name.',
+            'Excluded files, folders and properties in General > Filtering are now case-insensitive.',
             'Removed the two style setting variables **nn-navigation-pane-transparent** and **nn-list-pane-transparent** since they did not look good with the new overlay transparency. I will investigate best way forward for those who want full window transparency.',
             'Hide files by name, Hide folders by name, Hide note with properties are now case-insensitive.'
         ],
         fixed: [
             'The rebuild cache process dialog now properly reappears after restarting Obsidian.',
             'Fixed several issues in many of the language translations, such as missing placeholders and incorrect translations due to wrong context.',
+            'Fixed Excalidraw feature image generation to better handle large complex images with Latex symbols.',
             'Fixed an issue where the Notes > Frontmatter error was not appearing until switching tabs.'
         ]
     },
