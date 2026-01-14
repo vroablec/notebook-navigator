@@ -615,7 +615,7 @@ export const STRINGS_UK = {
                 previewText: 'Текст попереднього перегляду',
                 featureImage: 'Зображення запису',
                 tags: 'Теги',
-                customProperty: 'Користувацька властивість',
+                customProperty: 'Користувацька властивість (метадані або кількість слів)',
                 date: 'Дата',
                 parentFolder: 'Батьківська папка'
             }

@@ -615,7 +615,7 @@ export const STRINGS_VI = {
                 previewText: 'Văn bản xem trước',
                 featureImage: 'Hình ảnh nổi bật',
                 tags: 'Thẻ',
-                customProperty: 'Thuộc tính tùy chỉnh',
+                customProperty: 'Thuộc tính tùy chỉnh (frontmatter hoặc số từ)',
                 date: 'Ngày',
                 parentFolder: 'Thư mục cha'
             }

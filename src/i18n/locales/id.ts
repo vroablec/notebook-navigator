@@ -615,7 +615,7 @@ export const STRINGS_ID = {
                 previewText: 'Teks pratinjau',
                 featureImage: 'Gambar fitur',
                 tags: 'Tag',
-                customProperty: 'Properti kustom',
+                customProperty: 'Properti kustom (frontmatter atau jumlah kata)',
                 date: 'Tanggal',
                 parentFolder: 'Folder induk'
             }

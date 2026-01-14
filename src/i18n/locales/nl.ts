@@ -617,7 +617,7 @@ export const STRINGS_NL = {
                 previewText: 'Voorbeeldtekst',
                 featureImage: 'Uitgelichte afbeelding',
                 tags: 'Tags',
-                customProperty: 'Aangepaste eigenschap',
+                customProperty: 'Aangepaste eigenschap (frontmatter of woordtelling)',
                 date: 'Datum',
                 parentFolder: 'Bovenliggende map'
             }

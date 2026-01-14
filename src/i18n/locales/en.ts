@@ -615,7 +615,7 @@ export const STRINGS_EN = {
                 previewText: 'Preview text',
                 featureImage: 'Feature image',
                 tags: 'Tags',
-                customProperty: 'Custom property',
+                customProperty: 'Custom property (frontmatter or word count)',
                 date: 'Date',
                 parentFolder: 'Parent folder'
             }

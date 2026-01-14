@@ -616,7 +616,7 @@ export const STRINGS_JA = {
                 previewText: 'プレビューテキスト',
                 featureImage: 'アイキャッチ画像',
                 tags: 'タグ',
-                customProperty: 'カスタムプロパティ',
+                customProperty: 'カスタムプロパティ（フロントマターまたは文字数）',
                 date: '日付',
                 parentFolder: '親フォルダ'
             }

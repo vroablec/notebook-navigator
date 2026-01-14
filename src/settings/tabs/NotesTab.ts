@@ -716,14 +716,7 @@ export function renderNotesTab(context: SettingsTabContext): void {
     });
     customPropertyColorFieldsSetting.controlEl.addClass('nn-setting-wide-input');
 
-    updateCustomPropertyFieldsVisibility = () => {
-        const isFrontmatter = plugin.settings.customPropertyType === 'frontmatter';
-        setElementVisible(customPropertyFieldsSetting.settingEl, isFrontmatter);
-        setElementVisible(customPropertyColorFieldsSetting.settingEl, isFrontmatter);
-    };
-    updateCustomPropertyFieldsVisibility();
-
-    customPropertyGroup.addSetting(setting => {
+    const showCustomPropertyInCompactModeSetting = customPropertyGroup.addSetting(setting => {
         setting
             .setName(strings.settings.items.showCustomPropertyInCompactMode.name)
             .setDesc(strings.settings.items.showCustomPropertyInCompactMode.desc)
@@ -734,6 +727,15 @@ export function renderNotesTab(context: SettingsTabContext): void {
                 })
             );
     });
+
+    updateCustomPropertyFieldsVisibility = () => {
+        const isFrontmatter = plugin.settings.customPropertyType === 'frontmatter';
+        const hasCustomProperty = plugin.settings.customPropertyType !== 'none';
+        setElementVisible(customPropertyFieldsSetting.settingEl, isFrontmatter);
+        setElementVisible(customPropertyColorFieldsSetting.settingEl, isFrontmatter);
+        setElementVisible(showCustomPropertyInCompactModeSetting.settingEl, hasCustomProperty);
+    };
+    updateCustomPropertyFieldsVisibility();
 
     const showFileDateSetting = dateGroup.addSetting(setting => {
         setting.setName(strings.settings.items.showFileDate.name).setDesc(strings.settings.items.showFileDate.desc);

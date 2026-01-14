@@ -615,7 +615,7 @@ export const STRINGS_TH = {
                 previewText: 'ข้อความตัวอย่าง',
                 featureImage: 'รูปภาพเด่น',
                 tags: 'แท็ก',
-                customProperty: 'คุณสมบัติกำหนดเอง',
+                customProperty: 'คุณสมบัติกำหนดเอง (ฟรอนต์แมตเตอร์หรือจำนวนคำ)',
                 date: 'วันที่',
                 parentFolder: 'โฟลเดอร์หลัก'
             }

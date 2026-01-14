@@ -616,7 +616,7 @@ export const STRINGS_FR = {
                 previewText: "Texte d'aperçu",
                 featureImage: 'Image vedette',
                 tags: 'Étiquettes',
-                customProperty: 'Propriété personnalisée',
+                customProperty: 'Propriété personnalisée (frontmatter ou nombre de mots)',
                 date: 'Date',
                 parentFolder: 'Dossier parent'
             }

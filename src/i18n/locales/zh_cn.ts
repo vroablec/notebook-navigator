@@ -614,7 +614,7 @@ export const STRINGS_ZH_CN = {
                 previewText: '预览文本',
                 featureImage: '特色图片',
                 tags: '标签',
-                customProperty: '自定义属性',
+                customProperty: '自定义属性（frontmatter 或字数）',
                 date: '日期',
                 parentFolder: '父文件夹'
             }

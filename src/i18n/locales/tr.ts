@@ -615,7 +615,7 @@ export const STRINGS_TR = {
                 previewText: 'Önizleme metni',
                 featureImage: 'Öne çıkan görsel',
                 tags: 'Etiketler',
-                customProperty: 'Özel özellik',
+                customProperty: 'Özel özellik (frontmatter veya kelime sayısı)',
                 date: 'Tarih',
                 parentFolder: 'Üst klasör'
             }

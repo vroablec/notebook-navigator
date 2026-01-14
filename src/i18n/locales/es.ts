@@ -616,7 +616,7 @@ export const STRINGS_ES = {
                 previewText: 'Texto de vista previa',
                 featureImage: 'Imagen destacada',
                 tags: 'Etiquetas',
-                customProperty: 'Propiedad personalizada',
+                customProperty: 'Propiedad personalizada (frontmatter o recuento de palabras)',
                 date: 'Fecha',
                 parentFolder: 'Carpeta superior'
             }

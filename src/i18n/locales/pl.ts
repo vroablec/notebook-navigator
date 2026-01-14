@@ -617,7 +617,7 @@ export const STRINGS_PL = {
                 previewText: 'Tekst podglądu',
                 featureImage: 'Obraz wyróżniający',
                 tags: 'Tagi',
-                customProperty: 'Właściwość niestandardowa',
+                customProperty: 'Właściwość niestandardowa (frontmatter lub liczba słów)',
                 date: 'Data',
                 parentFolder: 'Folder nadrzędny'
             }

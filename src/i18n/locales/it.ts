@@ -615,7 +615,7 @@ export const STRINGS_IT = {
                 previewText: 'Testo anteprima',
                 featureImage: 'Immagine in evidenza',
                 tags: 'Tag',
-                customProperty: 'Proprietà personalizzata',
+                customProperty: 'Proprietà personalizzata (frontmatter o conteggio parole)',
                 date: 'Data',
                 parentFolder: 'Cartella superiore'
             }

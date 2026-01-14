@@ -616,7 +616,7 @@ export const STRINGS_DE = {
                 previewText: 'Vorschautext',
                 featureImage: 'Hauptbild',
                 tags: 'Tags',
-                customProperty: 'Benutzerdefinierte Eigenschaft',
+                customProperty: 'Benutzerdefinierte Eigenschaft (Frontmatter oder Wortzahl)',
                 date: 'Datum',
                 parentFolder: 'Übergeordneter Ordner'
             }

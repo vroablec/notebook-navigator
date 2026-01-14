@@ -612,7 +612,7 @@ export const STRINGS_PT_BR = {
                 previewText: 'Texto de pré-visualização',
                 featureImage: 'Imagem de destaque',
                 tags: 'Tags',
-                customProperty: 'Propriedade personalizada',
+                customProperty: 'Propriedade personalizada (frontmatter ou contagem de palavras)',
                 date: 'Data',
                 parentFolder: 'Pasta superior'
             }

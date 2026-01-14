@@ -615,7 +615,7 @@ export const STRINGS_KO = {
                 previewText: '미리보기 텍스트',
                 featureImage: '대표 이미지',
                 tags: '태그',
-                customProperty: '사용자 정의 속성',
+                customProperty: '사용자 정의 속성 (프론트매터 또는 단어 수)',
                 date: '날짜',
                 parentFolder: '상위 폴더'
             }

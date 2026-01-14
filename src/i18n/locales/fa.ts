@@ -615,7 +615,7 @@ export const STRINGS_FA = {
                 previewText: 'متن پیش‌نمایش',
                 featureImage: 'تصویر ویژه',
                 tags: 'برچسب‌ها',
-                customProperty: 'ویژگی سفارشی',
+                customProperty: 'ویژگی سفارشی (فرانت‌متر یا تعداد کلمات)',
                 date: 'تاریخ',
                 parentFolder: 'پوشه والد'
             }

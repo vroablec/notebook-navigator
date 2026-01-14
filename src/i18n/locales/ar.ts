@@ -615,7 +615,7 @@ export const STRINGS_AR = {
                 previewText: 'نص المعاينة',
                 featureImage: 'الصورة المميزة',
                 tags: 'الوسوم',
-                customProperty: 'خاصية مخصصة',
+                customProperty: 'خاصية مخصصة (البيانات الوصفية أو عدد الكلمات)',
                 date: 'التاريخ',
                 parentFolder: 'المجلد الأصلي'
             }

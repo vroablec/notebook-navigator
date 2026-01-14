@@ -614,7 +614,7 @@ export const STRINGS_ZH_TW = {
                 previewText: '預覽文字',
                 featureImage: '特色圖片',
                 tags: '標籤',
-                customProperty: '自訂屬性',
+                customProperty: '自訂屬性（frontmatter 或字數）',
                 date: '日期',
                 parentFolder: '父資料夾'
             }

@@ -615,7 +615,7 @@ export const STRINGS_RU = {
                 previewText: 'Текст превью',
                 featureImage: 'Изображение записи',
                 tags: 'Теги',
-                customProperty: 'Пользовательское свойство',
+                customProperty: 'Пользовательское свойство (метаданные или количество слов)',
                 date: 'Дата',
                 parentFolder: 'Родительская папка'
             }
