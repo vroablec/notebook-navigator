@@ -238,6 +238,7 @@ export const STRINGS_ZH_CN = {
         standardPreset: '标准',
         compactPreset: '紧凑',
         defaultSuffix: '(默认)',
+        defaultLabel: '默认',
         titleRows: '标题行数',
         previewRows: '预览行数',
         groupBy: '分组依据',

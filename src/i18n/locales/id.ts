@@ -238,6 +238,7 @@ export const STRINGS_ID = {
         standardPreset: 'Standar',
         compactPreset: 'Kompak',
         defaultSuffix: '(default)',
+        defaultLabel: 'Bawaan',
         titleRows: 'Baris judul',
         previewRows: 'Baris pratinjau',
         groupBy: 'Kelompokkan berdasarkan',

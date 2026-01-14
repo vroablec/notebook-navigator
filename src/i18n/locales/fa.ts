@@ -238,6 +238,7 @@ export const STRINGS_FA = {
         standardPreset: 'استاندارد',
         compactPreset: 'فشرده',
         defaultSuffix: '(پیش‌فرض)',
+        defaultLabel: 'پیش‌فرض',
         titleRows: 'ردیف‌های عنوان',
         previewRows: 'ردیف‌های پیش‌نمایش',
         groupBy: 'گروه‌بندی بر اساس',

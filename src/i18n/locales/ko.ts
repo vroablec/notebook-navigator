@@ -237,6 +237,7 @@ export const STRINGS_KO = {
         standardPreset: '표준',
         compactPreset: '컴팩트',
         defaultSuffix: '(기본값)',
+        defaultLabel: '기본',
         titleRows: '제목 행',
         previewRows: '미리보기 행',
         groupBy: '그룹화 기준',

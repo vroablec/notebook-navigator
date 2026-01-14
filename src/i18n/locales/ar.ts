@@ -238,6 +238,7 @@ export const STRINGS_AR = {
         standardPreset: 'قياسي',
         compactPreset: 'مضغوط',
         defaultSuffix: '(افتراضي)',
+        defaultLabel: 'افتراضي',
         titleRows: 'صفوف العنوان',
         previewRows: 'صفوف المعاينة',
         groupBy: 'تجميع حسب',

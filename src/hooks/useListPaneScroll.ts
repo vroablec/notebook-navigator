@@ -53,6 +53,7 @@ import { ListPaneItemType, OVERSCAN } from '../types';
 import { Align, ListScrollIntent, getListAlign, rankListPending } from '../types/scroll';
 import type { ListPaneItem } from '../types/virtualization';
 import type { NotebookNavigatorSettings } from '../settings';
+import type { CustomPropertyType } from '../settings/types';
 import type { SelectionState } from '../context/SelectionContext';
 import { calculateCompactListMetrics } from '../utils/listPaneMetrics';
 import { getListPaneMeasurements, shouldShowCustomPropertyRow, shouldShowFeatureImageArea } from '../utils/listPaneMeasurements';
@@ -77,6 +78,7 @@ interface UseListPaneScrollParams {
     folderSettings: {
         titleRows: number;
         previewRows: number;
+        customPropertyType: CustomPropertyType;
         showDate: boolean;
         showPreview: boolean;
         showImage: boolean;
@@ -350,7 +352,7 @@ export function useListPaneScroll({
             }
 
             const shouldShowCustomProperty = shouldShowCustomPropertyRow({
-                customPropertyType: settings.customPropertyType,
+                customPropertyType: folderSettings.customPropertyType,
                 showCustomPropertyInCompactMode: settings.showCustomPropertyInCompactMode,
                 isCompactMode,
                 file,
@@ -713,7 +715,6 @@ export function useListPaneScroll({
         settings.showFeatureImage,
         settings.fileNameRows,
         settings.previewRows,
-        settings.customPropertyType,
         settings.showCustomPropertyInCompactMode,
         settings.showParentFolder,
         settings.showTags,

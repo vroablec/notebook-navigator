@@ -238,6 +238,7 @@ export const STRINGS_RU = {
         standardPreset: 'Стандартный',
         compactPreset: 'Компактный',
         defaultSuffix: '(по умолчанию)',
+        defaultLabel: 'По умолчанию',
         titleRows: 'Строки заголовка',
         previewRows: 'Строки превью',
         groupBy: 'Группировать по',

@@ -238,6 +238,7 @@ export const STRINGS_DE = {
         standardPreset: 'Standard',
         compactPreset: 'Kompakt',
         defaultSuffix: '(Standard)',
+        defaultLabel: 'Standard',
         titleRows: 'Titelzeilen',
         previewRows: 'Vorschauzeilen',
         groupBy: 'Gruppieren nach',

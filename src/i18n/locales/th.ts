@@ -238,6 +238,7 @@ export const STRINGS_TH = {
         standardPreset: 'มาตรฐาน',
         compactPreset: 'กะทัดรัด',
         defaultSuffix: '(ค่าเริ่มต้น)',
+        defaultLabel: 'ค่าเริ่มต้น',
         titleRows: 'แถวชื่อเรื่อง',
         previewRows: 'แถวตัวอย่าง',
         groupBy: 'จัดกลุ่มตาม',

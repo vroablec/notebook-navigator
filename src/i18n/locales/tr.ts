@@ -238,6 +238,7 @@ export const STRINGS_TR = {
         standardPreset: 'Standart',
         compactPreset: 'Kompakt',
         defaultSuffix: '(varsayılan)',
+        defaultLabel: 'Varsayılan',
         titleRows: 'Başlık satırları',
         previewRows: 'Önizleme satırları',
         groupBy: 'Grupla',

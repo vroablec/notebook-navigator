@@ -238,6 +238,7 @@ export const STRINGS_ZH_TW = {
         standardPreset: '標準',
         compactPreset: '精簡',
         defaultSuffix: '(預設)',
+        defaultLabel: '預設',
         titleRows: '標題行數',
         previewRows: '預覽行數',
         groupBy: '分組依據',

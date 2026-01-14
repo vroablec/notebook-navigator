@@ -614,7 +614,10 @@ export const FileItem = React.memo(function FileItem({
     }, [categorizedTags, isCompactMode, settings.showFileTags, settings.showFileTagsInCompactMode, settings.showTags]);
 
     const customPropertyPills = useMemo<CustomPropertyPill[]>(() => {
-        if (settings.customPropertyType === 'wordCount') {
+        if (appearanceSettings.customPropertyType === 'none') {
+            return [];
+        }
+        if (appearanceSettings.customPropertyType === 'wordCount') {
             // Don't show `0`: it can mean "no words", a huge file (content read skipped), or an Excalidraw document.
             if (typeof wordCount !== 'number' || !Number.isFinite(wordCount) || wordCount <= 0) {
                 return [];
@@ -641,7 +644,7 @@ export const FileItem = React.memo(function FileItem({
         }
 
         return pills;
-    }, [customProperty, settings.customPropertyType, wordCount]);
+    }, [appearanceSettings.customPropertyType, customProperty, wordCount]);
 
     const customPropertyColorData = useMemo(() => {
         void settings.tagColors;
@@ -702,24 +705,24 @@ export const FileItem = React.memo(function FileItem({
 
     const shouldShowCustomProperty = useMemo(() => {
         return shouldShowCustomPropertyRow({
-            customPropertyType: settings.customPropertyType,
+            customPropertyType: appearanceSettings.customPropertyType,
             showCustomPropertyInCompactMode: settings.showCustomPropertyInCompactMode,
             isCompactMode,
             file,
             wordCount,
             customProperty
         });
-    }, [customProperty, file, isCompactMode, settings.customPropertyType, settings.showCustomPropertyInCompactMode, wordCount]);
+    }, [appearanceSettings.customPropertyType, customProperty, file, isCompactMode, settings.showCustomPropertyInCompactMode, wordCount]);
 
     const shouldShowPillRowIcons = useMemo(() => {
         const tagPillsEnabled = settings.showTags && settings.showFileTags && (!isCompactMode || settings.showFileTagsInCompactMode);
         const customPropertyPillsEnabled =
-            settings.customPropertyType !== 'none' && (!isCompactMode || settings.showCustomPropertyInCompactMode);
+            appearanceSettings.customPropertyType !== 'none' && (!isCompactMode || settings.showCustomPropertyInCompactMode);
 
         return tagPillsEnabled && customPropertyPillsEnabled;
     }, [
+        appearanceSettings.customPropertyType,
         isCompactMode,
-        settings.customPropertyType,
         settings.showCustomPropertyInCompactMode,
         settings.showFileTags,
         settings.showFileTagsInCompactMode,
@@ -730,9 +733,9 @@ export const FileItem = React.memo(function FileItem({
     const customPropertyPillIconId = useMemo(() => {
         return resolveUXIcon(
             settings.interfaceIcons,
-            settings.customPropertyType === 'wordCount' ? 'file-word-count' : 'file-custom-property'
+            appearanceSettings.customPropertyType === 'wordCount' ? 'file-word-count' : 'file-custom-property'
         );
-    }, [settings.customPropertyType, settings.interfaceIcons]);
+    }, [appearanceSettings.customPropertyType, settings.interfaceIcons]);
 
     const getTagDisplayName = useCallback(
         (tag: string): string => {

@@ -238,6 +238,7 @@ export const STRINGS_JA = {
         standardPreset: '標準',
         compactPreset: 'コンパクト',
         defaultSuffix: '(デフォルト)',
+        defaultLabel: 'デフォルト',
         titleRows: 'タイトル行数',
         previewRows: 'プレビュー行数',
         groupBy: 'グループ分け',

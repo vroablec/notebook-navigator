@@ -211,7 +211,10 @@ export function useListActions() {
 
         const hasModeOverride = (appearance.mode === 'compact' || appearance.mode === 'standard') && appearance.mode !== defaultMode;
         const otherOverrides =
-            appearance.titleRows !== undefined || appearance.previewRows !== undefined || appearance.groupBy !== undefined;
+            appearance.titleRows !== undefined ||
+            appearance.previewRows !== undefined ||
+            appearance.customPropertyType !== undefined ||
+            appearance.groupBy !== undefined;
 
         return hasModeOverride || otherOverrides;
     };

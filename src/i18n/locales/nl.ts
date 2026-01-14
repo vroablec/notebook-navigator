@@ -239,6 +239,7 @@ export const STRINGS_NL = {
         standardPreset: 'Standaard',
         compactPreset: 'Compact',
         defaultSuffix: '(standaard)',
+        defaultLabel: 'Standaard',
         titleRows: 'Titelrijen',
         previewRows: 'Voorbeeldrijen',
         groupBy: 'Groeperen op',

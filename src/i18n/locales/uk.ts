@@ -238,6 +238,7 @@ export const STRINGS_UK = {
         standardPreset: 'Стандартний',
         compactPreset: 'Компактний',
         defaultSuffix: '(за замовчуванням)',
+        defaultLabel: 'За замовчуванням',
         titleRows: 'Рядки заголовка',
         previewRows: 'Рядки попереднього перегляду',
         groupBy: 'Групувати за',

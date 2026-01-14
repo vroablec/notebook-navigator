@@ -238,6 +238,7 @@ export const STRINGS_FR = {
         standardPreset: 'Standard',
         compactPreset: 'Compact',
         defaultSuffix: '(par défaut)',
+        defaultLabel: 'Par défaut',
         titleRows: 'Lignes de titre',
         previewRows: "Lignes d'aperçu",
         groupBy: 'Grouper par',

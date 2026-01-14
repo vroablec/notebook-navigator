@@ -237,6 +237,7 @@ export const STRINGS_PL = {
         standardPreset: 'Standard',
         compactPreset: 'Kompaktowy',
         defaultSuffix: '(domyślne)',
+        defaultLabel: 'Domyślne',
         titleRows: 'Wiersze tytułu',
         previewRows: 'Wiersze podglądu',
         groupBy: 'Grupuj według',

@@ -238,6 +238,7 @@ export const STRINGS_VI = {
         standardPreset: 'Chuẩn',
         compactPreset: 'Gọn',
         defaultSuffix: '(mặc định)',
+        defaultLabel: 'Mặc định',
         titleRows: 'Dòng tiêu đề',
         previewRows: 'Dòng xem trước',
         groupBy: 'Nhóm theo',

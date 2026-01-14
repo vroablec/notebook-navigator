@@ -81,7 +81,7 @@ const RELEASE_NOTES: ReleaseNote[] = [
         new: [
             '==We have a calendar!== Its enabled by default, just disable it with the toolbar button. Click calendar to create or open daily notes for a day. Daily notes with feature images will show them in the calendar!',
             'Lots of new ==calendar settings==! You find them in Navigation pane > Calendar. Change locale, number of weeks or enable week numbers.',
-            'New settings: ==Notes > Custom property==. You can now show properties or word count in file list! You can show multiple properties, and you can even color each property individually using other properties!',
+            'New settings: ==Notes > Custom property==. You can now show properties or word count in file list! You can show multiple properties, and you can even color each property individually using other properties! You can also override what property to display (none, word count, or specific property) per folder or tag.',
             'Six new style and theme settings for custom property tag pills - text, background, selected x 2, selected inactive x 2.',
             'New setting: ==Notes > Parent folder > Show parent folder icon==. Enable to show parent folder icons in the list pane. New default is disabled.',
             'New setting: ==Notes > Feature image > Exclude notes with properties==. You can now exclude notes with certain frontmatter properties from showing feature images.',
