@@ -83,6 +83,7 @@ const RELEASE_NOTES: ReleaseNote[] = [
             'Lots of new ==calendar settings==! You find them in Navigation pane > Calendar. Change locale, number of weeks or enable week numbers.',
             'New settings: ==Notes > Custom property==. You can now show properties or word count in file list! You can show multiple properties, and you can even color each property individually using other properties! You can also override what property to display (none, word count, or specific property) per folder or tag.',
             'Six new style and theme settings for custom property tag pills - text, background, selected x 2, selected inactive x 2.',
+            '==Three new theme variables==: --nn-theme-foreground, --nn-theme-foreground-muted and --nn-theme-foreground-faded so you easily can adjust the look and feel of all text and images.',
             'New setting: ==Notes > Parent folder > Show parent folder icon==. Enable to show parent folder icons in the list pane. New default is disabled.',
             'New setting: ==Notes > Feature image > Exclude notes with properties==. You can now exclude notes with certain frontmatter properties from showing feature images.',
             'New setting: ==General > Filtering > Hide files with tags (vault profile)==. You can now hide files with certain tags in the list pane. This makes it super easy to hide certain files by just dragging them to a tag.',
