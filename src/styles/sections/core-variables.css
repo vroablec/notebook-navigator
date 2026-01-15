@@ -226,14 +226,14 @@ body {
 
     /* -- File Items -- */
     --nn-theme-file-name-color: var(--text-normal);
-    --nn-theme-file-preview-color: var(--text-muted);
+    --nn-theme-file-preview-color: color-mix(in srgb, var(--text-normal) 75%, transparent);
     --nn-theme-file-feature-border-radius: 4px;
-    --nn-theme-file-date-color: var(--text-faint);
-    --nn-theme-file-parent-color: var(--text-faint);
-    --nn-theme-file-tag-color: var(--text-muted);
+    --nn-theme-file-date-color: color-mix(in srgb, var(--text-normal) 50%, transparent);
+    --nn-theme-file-parent-color: color-mix(in srgb, var(--text-normal) 50%, transparent);
+    --nn-theme-file-tag-color: color-mix(in srgb, var(--text-normal) 50%, transparent);
     --nn-theme-file-tag-custom-color-text-color: var(--nn-theme-navitem-name-color);
     --nn-theme-file-tag-bg: transparent;
-    --nn-theme-file-custom-property-color: var(--text-muted);
+    --nn-theme-file-custom-property-color: color-mix(in srgb, var(--text-normal) 50%, transparent);
     --nn-theme-file-custom-property-bg: transparent;
     --nn-theme-file-tag-border-radius: 10px;
     --nn-theme-file-custom-property-border-radius: 10px;
@@ -241,11 +241,11 @@ body {
     --nn-theme-file-selected-bg: var(--text-selection);
     --nn-theme-file-selected-name-color: var(--nn-theme-file-name-color);
     --nn-theme-file-selected-preview-color: var(--nn-theme-file-preview-color);
-    --nn-theme-file-selected-date-color: var(--text-muted);
-    --nn-theme-file-selected-parent-color: var(--text-muted);
-    --nn-theme-file-selected-tag-color: var(--nn-theme-file-tag-color);
+    --nn-theme-file-selected-date-color: color-mix(in srgb, var(--text-normal) 75%, transparent);
+    --nn-theme-file-selected-parent-color: color-mix(in srgb, var(--text-normal) 75%, transparent);
+    --nn-theme-file-selected-tag-color: color-mix(in srgb, var(--text-normal) 75%, transparent);
     --nn-theme-file-selected-tag-bg: var(--nn-theme-file-tag-bg);
-    --nn-theme-file-selected-custom-property-color: var(--nn-theme-file-custom-property-color);
+    --nn-theme-file-selected-custom-property-color: color-mix(in srgb, var(--text-normal) 75%, transparent);
     --nn-theme-file-selected-custom-property-bg: var(--nn-theme-file-custom-property-bg);
     --nn-theme-file-selected-inactive-bg: var(--background-modifier-hover);
     --nn-theme-file-selected-inactive-name-color: var(--nn-theme-file-selected-name-color);
