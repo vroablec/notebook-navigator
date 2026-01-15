@@ -3316,13 +3316,11 @@ body {
 .nn-file.nn-selected .nn-file-tag:not(.nn-file-custom-property):not([data-has-color='true']):not([data-has-background='true']) {
     background-color: var(--nn-selected-file-tag-bg);
     color: var(--nn-selected-file-tag-color);
-    border-color: transparent;
 }
 
 .nn-file.nn-selected .nn-file-tag.nn-file-custom-property:not([data-has-color='true']):not([data-has-background='true']) {
     background-color: var(--nn-selected-file-custom-property-bg);
     color: var(--nn-selected-file-custom-property-color);
-    border-color: transparent;
 }
 
 /* Selected file text colors */
