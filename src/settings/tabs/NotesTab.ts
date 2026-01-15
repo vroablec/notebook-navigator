@@ -716,7 +716,7 @@ export function renderNotesTab(context: SettingsTabContext): void {
     });
     customPropertyColorFieldsSetting.controlEl.addClass('nn-setting-wide-input');
 
-    const showCustomPropertyInCompactModeSetting = customPropertyGroup.addSetting(setting => {
+    customPropertyGroup.addSetting(setting => {
         setting
             .setName(strings.settings.items.showCustomPropertyInCompactMode.name)
             .setDesc(strings.settings.items.showCustomPropertyInCompactMode.desc)
