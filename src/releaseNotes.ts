@@ -90,7 +90,7 @@ const RELEASE_NOTES: ReleaseNote[] = [
             'Two new menu commands: Navigate to folder and Navigate to tag. Access them from the root folder or root tag folder context menu.'
         ],
         improved: [
-            'Lots of UI polish to this release. Things look cleaner and should be easier on the eyes. If you want it to look like before just go to Style settings.',
+            'Lots of UI polish to this release. Things look cleaner and should be easier on the eyes, especially in dark mode. Remember that you can modify all colors using the Style settings plugin.',
             'Internal: Improved cache rebuild performance by slowing down tag tree updates during the process.',
             'Internal: Major rewrite of the metadata processing chain. It is now a single sequential pipeline per file instead of multiple parallel providers. It reads markdown content at most once per file per run and writes just one merged database update per file. This should make the cache system handle vaults of virtually any size without memory spikes.',
             'You can now also hide the dual-pane button in the top-right corner using Settings > General > Toolbar buttons.'
