@@ -29,9 +29,13 @@ For precise image management, consider also installing [Pixel Perfect Image](htt
 
 Here is the official tutorial for installing and mastering Notebook Navigator:
 
-[![Still Using Default File View in Obsidian? Watch This](https://raw.githubusercontent.com/johansan/notebook-navigator/main/images/youtube-thumbnail.jpg)](https://www.youtube.com/watch?v=BewIlG8wLAM)
+[![Mastering Notebook Navigator](https://raw.githubusercontent.com/johansan/notebook-navigator/main/images/youtube-thumbnail.jpg)](https://www.youtube.com/watch?v=BewIlG8wLAM)
 
-The tutorial has subtitles in 21 languages, same as Notebook Navigator.
+And here is a video walkthrough of all the new features in Notebook Navigator 2.1:
+
+[![What's new in Notebook Navigator 2.1 for Obsidian](https://raw.githubusercontent.com/johansan/notebook-navigator/main/images/youtube-2.1.jpg)](https://www.youtube.com/watch?v=1Kxrq832kfM)
+
+Both videos has subtitles in 21 languages, same as Notebook Navigator.
 
 <br>
 
