@@ -243,7 +243,8 @@ export function determineTagToReveal(
     file: TFile,
     currentTag: string | null,
     settings: NotebookNavigatorSettings,
-    storage: IndexedDBStorage
+    storage: IndexedDBStorage,
+    includeDescendantNotes: boolean
 ): string | null {
     // Check if file has no tags
     const fileTags = getNormalizedTagsForFile(file, storage);
@@ -252,8 +253,18 @@ export function determineTagToReveal(
         return settings.showUntagged ? UNTAGGED_TAG_ID : null;
     }
 
+    const fileData = storage.getFile(file.path);
+    const originalTags = fileData?.tags;
+
+    const getFirstFileTag = () => {
+        if (originalTags && originalTags.length > 0) {
+            return originalTags[0];
+        }
+        return fileTags[0] ?? null;
+    };
+
     if (currentTag === TAGGED_TAG_ID) {
-        return TAGGED_TAG_ID;
+        return includeDescendantNotes ? TAGGED_TAG_ID : getFirstFileTag();
     }
 
     // Check if we should stay on the current tag
@@ -263,31 +274,25 @@ export function determineTagToReveal(
             return currentTag; // Stay on current tag
         }
 
-        // For auto-reveals (which tag reveals always are), check if current tag is a parent
-        // This is similar to how folder auto-reveals preserve parent folders with includeDescendantNotes
-        const normalizedCurrentTag = normalizeTagPathValue(currentTag);
-        if (normalizedCurrentTag.length > 0) {
-            const currentTagPrefix = `${normalizedCurrentTag}/`;
+        if (includeDescendantNotes) {
+            // For auto-reveals (which tag reveals always are), check if current tag is a parent.
+            // This is similar to how folder auto-reveals preserve parent folders with includeDescendantNotes.
+            const normalizedCurrentTag = normalizeTagPathValue(currentTag);
+            if (normalizedCurrentTag.length > 0) {
+                const currentTagPrefix = `${normalizedCurrentTag}/`;
 
-            // Check if any of the file's tags are children of the current tag
-            for (const fileTag of fileTags) {
-                if (fileTag.startsWith(currentTagPrefix)) {
-                    return currentTag; // Stay on parent tag (shortest path)
+                // Check if any of the file's tags are children of the current tag
+                for (const fileTag of fileTags) {
+                    if (fileTag.startsWith(currentTagPrefix)) {
+                        return currentTag; // Stay on parent tag (shortest path)
+                    }
                 }
             }
         }
     }
 
     // File has different tags - return the first tag of the file
-    // Get the original tags from cache (they preserve case)
-    const fileData = storage.getFile(file.path);
-    const originalTags = fileData?.tags;
-    if (originalTags && originalTags.length > 0) {
-        // Tags in cache are already without # prefix
-        return originalTags[0];
-    }
-
-    return null;
+    return getFirstFileTag();
 }
 
 function isTagVisible(tagPath: string, expandedTags: Set<string>): boolean {

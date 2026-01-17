@@ -88,7 +88,8 @@ const RELEASE_NOTES: ReleaseNote[] = [
         changed: [],
         fixed: [
             'Fixed an issue with UI scale causing the floating toolbar buttons on iOS with Obsidian 1.11 and later to be mispositioned.',
-            'Fixed an issue where changing locale could leave calendar weekday labels misaligned until restart.'
+            'Fixed an issue where changing locale could leave calendar weekday labels misaligned until restart.',
+            'Fixed tag auto-reveal when opening notes from shortcuts/recent notes, matching folder auto-reveal behavior. With ==List pane > Show notes from subfolders / descendants== enabled it selects the closest visible tag ancestor; when Tags is collapsed it selects Tags for tagged notes and Untagged for untagged notes. With it disabled it expands the tag tree and selects the exact tag (or Untagged).'
         ]
     },
     {

@@ -320,6 +320,10 @@ export function getFilesForTag(
             return fileTags.length === 0;
         });
     } else if (tag === TAGGED_TAG_ID) {
+        if (!visibility.includeDescendantNotes) {
+            return [];
+        }
+
         // Include markdown files that have at least one tag, respecting hidden tag visibility
         const markdownFiles = baseFiles.filter(file => file.extension === 'md');
         filteredFiles = markdownFiles.filter(file => {
