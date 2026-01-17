@@ -75,6 +75,21 @@ export interface ReleaseNote {
  */
 const RELEASE_NOTES: ReleaseNote[] = [
     {
+        version: '2.1.2',
+        date: '2026-01-18',
+        showOnUpdate: true,
+        new: [],
+        improved: [],
+        changed: [
+            'PDF feature image generation no longer falls back to reading full PDFs into memory when pdf.js URL loading fails.',
+            'PDF thumbnail decoding now uses the same max pixel cap as other thumbnail fallback decode paths.',
+            'Mobile devices now skip PDF cover thumbnails for PDF files larger than 20 MB.',
+        ],
+        fixed: [
+            'Fixed a crash/reload on mobile devices during cache rebuild when generating PDF cover thumbnails for large PDF files.'
+        ]
+    },
+    {
         version: '2.1.1',
         date: '2026-01-17',
         showOnUpdate: true,

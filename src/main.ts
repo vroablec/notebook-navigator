@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Plugin, TFile, FileView, TFolder, WorkspaceLeaf, Platform, addIcon } from 'obsidian';
+import { Platform, Plugin, TFile, FileView, TFolder, WorkspaceLeaf, addIcon } from 'obsidian';
 import { NotebookNavigatorSettings, DEFAULT_SETTINGS, NotebookNavigatorSettingTab } from './settings';
 import {
     migrateRecentColors,

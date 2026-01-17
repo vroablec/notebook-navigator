@@ -16,10 +16,10 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { App, loadPdfJs, TFile } from 'obsidian';
+import { App, loadPdfJs, Platform, type Stat, TFile } from 'obsidian';
 import { LIMITS } from '../../../constants/limits';
 import { isRecord } from '../../../utils/typeGuards';
-import { createOnceLogger, createRenderLimiter } from '../thumbnail/thumbnailRuntimeUtils';
+import { createRenderLimiter } from '../thumbnail/thumbnailRuntimeUtils';
 
 // Options for rendering a PDF cover page thumbnail
 export interface PdfCoverThumbnailOptions {
@@ -63,8 +63,10 @@ type PdfPage = {
 const DEFAULT_WORKER_IDLE_TIMEOUT_MS = LIMITS.thumbnails.pdf.workerIdleTimeoutMs;
 // Maximum concurrent PDF page renders to limit memory usage
 const MAX_PARALLEL_PDF_RENDERS = LIMITS.thumbnails.pdf.maxParallelRenders;
+const MOBILE_MAX_PARALLEL_PDF_RENDERS = 1;
 // Skip thumbnails for very large PDFs to avoid memory spikes (especially when falling back to readBinary).
 const MAX_PDF_THUMBNAIL_BYTES = LIMITS.thumbnails.pdf.maxThumbnailBytes;
+const MOBILE_MAX_PDF_THUMBNAIL_BYTES = LIMITS.thumbnails.pdf.maxThumbnailBytesMobile;
 
 // Shared pdf.js worker instance reused across renders
 let sharedWorker: PdfWorker | null = null;
@@ -72,8 +74,7 @@ let sharedWorkerVerbosityLevel: number | null = null;
 // Timer ID for destroying the worker after idle timeout
 let workerIdleTimerId: number | null = null;
 
-const renderLimiter = createRenderLimiter(MAX_PARALLEL_PDF_RENDERS);
-const logOnce = createOnceLogger();
+const renderLimiter = createRenderLimiter(Platform.isMobile ? MOBILE_MAX_PARALLEL_PDF_RENDERS : MAX_PARALLEL_PDF_RENDERS);
 
 function clearWorkerIdleTimer(): void {
     if (workerIdleTimerId === null) {
@@ -278,18 +279,40 @@ function canvasToBlob(canvas: HTMLCanvasElement, mimeType: string, quality?: num
     });
 }
 
+// Resolves the PDF size in bytes.
+// On some mobile vault adapters, `TFile.stat.size` can be 0 or missing, so this probes via `adapter.stat()`.
+async function resolvePdfFileSizeBytes(app: App, pdfFile: TFile): Promise<number> {
+    const tfileSize = pdfFile.stat.size;
+    if (typeof tfileSize === 'number' && Number.isFinite(tfileSize) && tfileSize > 0) {
+        return tfileSize;
+    }
+
+    try {
+        const stat: Stat | null = await app.vault.adapter.stat(pdfFile.path);
+        const adapterSize = stat?.size;
+        if (typeof adapterSize === 'number' && Number.isFinite(adapterSize) && adapterSize > 0) {
+            return adapterSize;
+        }
+    } catch {
+        // ignore
+    }
+
+    return 0;
+}
+
 // Renders the first page of a PDF file as a thumbnail image blob
 export async function renderPdfCoverThumbnail(app: App, pdfFile: TFile, options: PdfCoverThumbnailOptions): Promise<Blob | null> {
     if (pdfFile.extension.toLowerCase() !== 'pdf') {
         return null;
     }
 
-    const fileSize = pdfFile.stat.size ?? 0;
-    if (fileSize > MAX_PDF_THUMBNAIL_BYTES) {
-        logOnce(`pdf-cover:skip-size:${pdfFile.path}`, `[PDF cover] Skipping thumbnail render due to file size: ${pdfFile.path}`, {
-            size: fileSize,
-            limit: MAX_PDF_THUMBNAIL_BYTES
-        });
+    const fileSize = await resolvePdfFileSizeBytes(app, pdfFile);
+    if (fileSize <= 0 && Platform.isMobile) {
+        return null;
+    }
+
+    const maxBytes = Platform.isMobile ? MOBILE_MAX_PDF_THUMBNAIL_BYTES : MAX_PDF_THUMBNAIL_BYTES;
+    if (fileSize > maxBytes) {
         return null;
     }
 
@@ -341,6 +364,9 @@ export async function renderPdfCoverThumbnail(app: App, pdfFile: TFile, options:
         const documentParams: Record<string, unknown> = {
             disableAutoFetch: true,
             disableStream: true,
+            maxImageSize: Platform.isMobile
+                ? LIMITS.thumbnails.featureImage.maxFallbackPixels.mobile
+                : LIMITS.thumbnails.featureImage.maxFallbackPixels.desktop,
             ...(typeof errorsVerbosityLevel === 'number' ? { verbosity: errorsVerbosityLevel } : {}),
             ...(worker ? { worker } : {})
         };
@@ -360,20 +386,7 @@ export async function renderPdfCoverThumbnail(app: App, pdfFile: TFile, options:
             }
             doc = loadedDoc;
         } catch {
-            const buffer = await app.vault.adapter.readBinary(pdfFile.path);
-            const task = pdfjs.getDocument({
-                data: buffer,
-                ...documentParams
-            });
-            if (!isPdfDocumentLoadingTask(task)) {
-                return null;
-            }
-
-            const loadedDoc = await task.promise;
-            if (!isPdfDocument(loadedDoc)) {
-                return null;
-            }
-            doc = loadedDoc;
+            return null;
         }
 
         const firstPage = await doc.getPage(1);
@@ -410,8 +423,7 @@ export async function renderPdfCoverThumbnail(app: App, pdfFile: TFile, options:
         }
 
         return await canvasToBlob(canvas, 'image/png');
-    } catch (error: unknown) {
-        logOnce(`pdf-cover:${pdfFile.path}`, `[PDF cover] Failed to render thumbnail: ${pdfFile.path}`, error);
+    } catch {
         return null;
     } finally {
         try {
@@ -427,6 +439,11 @@ export async function renderPdfCoverThumbnail(app: App, pdfFile: TFile, options:
         }
 
         release();
-        touchWorkerIdleTimer();
+
+        if (Platform.isMobile) {
+            destroySharedWorker();
+        } else {
+            touchWorkerIdleTimer();
+        }
     }
 }

@@ -177,6 +177,10 @@ export const LIMITS = {
                 /**
                  * Stricter pixel cap for fallback decode paths that can load full-resolution images into memory.
                  *
+                 * Used by:
+                 * - `FeatureImageContentProvider.createThumbnailBlobFromBuffer()` when bitmap resize fallbacks require full decode.
+                 * - `renderPdfCoverThumbnail()` via the pdf.js `maxImageSize` option (caps decoded image size).
+                 *
                  * Rationale:
                  * - Some decode methods are more memory efficient (e.g. resize during decode). When those aren't available,
                  *   fallback paths can require full-resolution decode + canvas draw, which is much riskier.
@@ -200,6 +204,14 @@ export const LIMITS = {
              * - Very large PDFs can cause big memory spikes (especially if falling back to `readBinary()`).
              */
             maxThumbnailBytes: 25 * 1024 * 1024,
+            /**
+             * Stricter mobile size cap for PDF thumbnails.
+             *
+             * Rationale:
+             * - Mobile WebViews can crash/reload when pdf.js loads or renders large/complex PDFs.
+             * - This keeps the thumbnail pipeline bounded even for PDFs that are modest on disk but expensive to decode.
+             */
+            maxThumbnailBytesMobile: 20 * 1024 * 1024,
             /**
              * Idle timeout for the shared pdf.js worker.
              *
