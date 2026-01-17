@@ -174,6 +174,7 @@ Set custom hotkeys for these commands in Obsidian's Hotkeys settings:
 - `Notebook Navigator: Open homepage` Opens the Notebook Navigator view and loads the homepage file configured in settings
 - `Notebook Navigator: Select vault profile` Opens modal to switch between vault profiles
 - `Notebook Navigator: Reveal file` Reveals current file in navigator. Expands parent folders and scrolls to file. This command is useful if you have the setting `Auto-reveal active note` switched off and want to reveal notes manually
+- `Notebook Navigator: Open all files` Opens all notes in the currently selected folder or tag. When opening 15 or more files, shows a confirmation dialog
 - `Notebook Navigator: Navigate to folder` Search dialog to jump to any folder
 - `Notebook Navigator: Navigate to tag` Search dialog to jump to any tag
 - `Notebook Navigator: Add to shortcuts` Adds the current file, folder, or tag to shortcuts
@@ -229,6 +230,7 @@ Set custom hotkeys for these commands in Obsidian's Hotkeys settings:
 | `notebook-navigator:select-profile-2`       | Notebook Navigator: Select vault profile 2                                                           |
 | `notebook-navigator:select-profile-3`       | Notebook Navigator: Select vault profile 3                                                           |
 | `notebook-navigator:reveal-file`            | Notebook Navigator: Reveal file                                                                      |
+| `notebook-navigator:open-all-files`         | Notebook Navigator: Open all files                                                                   |
 | `notebook-navigator:navigate-to-folder`     | Notebook Navigator: Navigate to folder                                                               |
 | `notebook-navigator:navigate-to-tag`        | Notebook Navigator: Navigate to tag                                                                  |
 | `notebook-navigator:add-shortcut`           | Notebook Navigator: Add to shortcuts                                                                 |
