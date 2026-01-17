@@ -50,7 +50,7 @@ export type SyncModeRegistry = Record<SyncModeSettingId, SyncModeRegistryEntry>;
 interface CreateSyncModeRegistryParams {
     keys: LocalStorageKeys;
     defaultSettings: NotebookNavigatorSettings;
-    isDeviceLocal: (settingId: SyncModeSettingId) => boolean;
+    isLocal: (settingId: SyncModeSettingId) => boolean;
     getSettings: () => NotebookNavigatorSettings;
 
     resolveActiveVaultProfileId: () => string;
@@ -147,7 +147,7 @@ export function createSyncModeRegistry(params: CreateSyncModeRegistryParams): Sy
             cleanupOnLoad: entryParams.cleanupOnLoad,
             deleteFromPersisted: entryParams.deleteFromPersisted,
             resolveOnLoad: ({ storedData }) => {
-                if (params.isDeviceLocal(entryParams.settingId)) {
+                if (params.isLocal(entryParams.settingId)) {
                     const resolved = entryParams.resolveDeviceLocal(storedData);
                     entryParams.setCurrent(resolved.value);
                     return { migrated: resolved.migrated };
@@ -200,9 +200,9 @@ export function createSyncModeRegistry(params: CreateSyncModeRegistryParams): Sy
                 const base: UXPreferences = storedValid
                     ? { ...params.defaultUXPreferences, ...storedUXPreferences }
                     : { ...params.defaultUXPreferences };
-                const isDeviceLocal = params.isDeviceLocal(entryParams.settingId);
+                const isLocal = params.isLocal(entryParams.settingId);
                 const settings = params.getSettings();
-                const nextValue = isDeviceLocal
+                const nextValue = isLocal
                     ? base[entryParams.persistedKey]
                     : params.sanitizeBooleanSetting(settings[entryParams.persistedKey], params.defaultSettings[entryParams.persistedKey]);
                 settings[entryParams.persistedKey] = nextValue;
@@ -229,9 +229,9 @@ export function createSyncModeRegistry(params: CreateSyncModeRegistryParams): Sy
             persistedKeys: ['vaultProfile'],
             loadPhase: 'postProfiles',
             resolveOnLoad: () => {
-                const isDeviceLocal = params.isDeviceLocal('vaultProfile');
+                const isLocal = params.isLocal('vaultProfile');
                 const settings = params.getSettings();
-                settings.vaultProfile = isDeviceLocal
+                settings.vaultProfile = isLocal
                     ? params.resolveActiveVaultProfileId()
                     : params.sanitizeVaultProfileId(settings.vaultProfile);
                 setLocalStorage(params.keys.vaultProfileKey, settings.vaultProfile);
@@ -267,11 +267,11 @@ export function createSyncModeRegistry(params: CreateSyncModeRegistryParams): Sy
             persistedKeys: ['dualPane'],
             loadPhase: 'preProfiles',
             resolveOnLoad: () => {
-                const isDeviceLocal = params.isDeviceLocal('dualPane');
+                const isLocal = params.isLocal('dualPane');
                 const storedDualPane = localStorage.get<unknown>(params.keys.dualPaneKey);
                 const parsedDualPane = params.parseDualPanePreference(storedDualPane);
                 const settings = params.getSettings();
-                const dualPane = isDeviceLocal
+                const dualPane = isLocal
                     ? (parsedDualPane ?? params.defaultSettings.dualPane)
                     : params.sanitizeBooleanSetting(settings.dualPane, params.defaultSettings.dualPane);
                 settings.dualPane = dualPane;
@@ -284,11 +284,11 @@ export function createSyncModeRegistry(params: CreateSyncModeRegistryParams): Sy
             persistedKeys: ['dualPaneOrientation'],
             loadPhase: 'preProfiles',
             resolveOnLoad: () => {
-                const isDeviceLocal = params.isDeviceLocal('dualPaneOrientation');
+                const isLocal = params.isLocal('dualPaneOrientation');
                 const storedDualPaneOrientation = localStorage.get<unknown>(params.keys.dualPaneOrientationKey);
                 const parsedDualPaneOrientation = params.parseDualPaneOrientation(storedDualPaneOrientation);
                 const settings = params.getSettings();
-                const dualPaneOrientation = isDeviceLocal
+                const dualPaneOrientation = isLocal
                     ? (parsedDualPaneOrientation ?? params.defaultSettings.dualPaneOrientation)
                     : params.sanitizeDualPaneOrientationSetting(settings.dualPaneOrientation);
                 settings.dualPaneOrientation = dualPaneOrientation;
@@ -383,9 +383,9 @@ export function createSyncModeRegistry(params: CreateSyncModeRegistryParams): Sy
                 }
             },
             resolveOnLoad: ({ storedData }) => {
-                const isDeviceLocal = params.isDeviceLocal('uiScale');
+                const isLocal = params.isLocal('uiScale');
                 const settings = params.getSettings();
-                if (isDeviceLocal) {
+                if (isLocal) {
                     const migratedScales = migrateUIScales({
                         settings,
                         storedData,

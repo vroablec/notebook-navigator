@@ -633,7 +633,7 @@ export const STRINGS_TH = {
         syncMode: {
             notSynced: '(ไม่ซิงค์)',
             switchToSynced: 'สลับเป็นซิงค์',
-            switchToDeviceLocal: 'สลับเป็นในเครื่อง'
+            switchToLocal: 'สลับเป็นในเครื่อง'
         },
         items: {
             searchProvider: {

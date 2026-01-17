@@ -630,7 +630,7 @@ export const STRINGS_PT_BR = {
         syncMode: {
             notSynced: '(não sincronizado)',
             switchToSynced: 'Alternar para sincronizado',
-            switchToDeviceLocal: 'Alternar para local no dispositivo'
+            switchToLocal: 'Alternar para local'
         },
         items: {
             searchProvider: {

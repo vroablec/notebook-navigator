@@ -633,7 +633,7 @@ export const STRINGS_FA = {
         syncMode: {
             notSynced: '(همگام نشده)',
             switchToSynced: 'تغییر به همگام‌سازی‌شده',
-            switchToDeviceLocal: 'تغییر به محلی در دستگاه'
+            switchToLocal: 'تغییر به محلی'
         },
         items: {
             searchProvider: {

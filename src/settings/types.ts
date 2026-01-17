@@ -24,13 +24,13 @@ import type { KeyboardShortcutConfig } from '../utils/keyboardShortcuts';
 import type { ShortcutEntry } from '../types/shortcuts';
 import type { SearchProvider } from '../types/search';
 
-export type SettingSyncMode = 'deviceLocal' | 'synced';
+export type SettingSyncMode = 'local' | 'synced';
 
 export function isSettingSyncMode(value: unknown): value is SettingSyncMode {
-    return value === 'deviceLocal' || value === 'synced';
+    return value === 'local' || value === 'synced';
 }
 
-/** Identifiers for settings that can be switched between synced and device-local storage. */
+/** Identifiers for settings that can be switched between synced and local storage. */
 export const SYNC_MODE_SETTING_IDS = [
     'vaultProfile',
     'tagSortOrder',
@@ -143,7 +143,7 @@ export interface NotebookNavigatorSettings {
     vaultProfiles: VaultProfile[];
     vaultProfile: string;
     vaultTitle: VaultTitleOption;
-    settingSyncModes: Record<SyncModeSettingId, SettingSyncMode>;
+    syncModes: Record<SyncModeSettingId, SettingSyncMode>;
 
     // General tab - Behavior
     autoRevealActiveFile: boolean;

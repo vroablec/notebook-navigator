@@ -78,7 +78,9 @@ const RELEASE_NOTES: ReleaseNote[] = [
         version: '2.1.2',
         date: '2026-01-18',
         showOnUpdate: true,
-        new: ['Previously some of the settings were local only and not synced between devices. Now all settings are synced between devices by default, and you can noverride this on a per-setting basis. Current local settings will continue to default to local-only, and you can change them to synced by pressing a cloud symbol in settings. Let me know if there is any setting that is currently not enabled for local-only that you would like to override.'],
+        new: [
+            'Previously some of the settings were local only and not synced between devices. Now all settings are synced between devices by default, and you can noverride this on a per-setting basis. Current local settings will continue to default to local-only, and you can change them to synced by pressing a cloud symbol in settings. Let me know if there is any setting that is currently not enabled for local-only that you would like to override.'
+        ],
         improved: [],
         changed: [
             "'Show notes from subfolders' and calendar are now disabled by default since it creates a simpler and easier startup experience for new users.",

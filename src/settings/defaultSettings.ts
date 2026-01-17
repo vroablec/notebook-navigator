@@ -27,9 +27,9 @@ import { SYNC_MODE_SETTING_IDS, type SettingSyncMode } from './types';
 import { sanitizeRecord } from '../utils/recordUtils';
 import { DEFAULT_CALENDAR_CUSTOM_FILE_PATTERN } from '../utils/calendarCustomNotePatterns';
 
-const defaultSettingSyncModes = sanitizeRecord<SettingSyncMode>(undefined);
+const defaultSettingsSync = sanitizeRecord<SettingSyncMode>(undefined);
 SYNC_MODE_SETTING_IDS.forEach(settingId => {
-    defaultSettingSyncModes[settingId] = 'synced';
+    defaultSettingsSync[settingId] = 'synced';
 });
 
 /**
@@ -54,7 +54,7 @@ export const DEFAULT_SETTINGS: NotebookNavigatorSettings = {
     ],
     vaultProfile: 'default',
     vaultTitle: 'navigation',
-    settingSyncModes: defaultSettingSyncModes,
+    syncModes: defaultSettingsSync,
 
     // General tab - Behavior
     autoRevealActiveFile: true,

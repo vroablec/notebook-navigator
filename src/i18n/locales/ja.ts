@@ -634,7 +634,7 @@ export const STRINGS_JA = {
         syncMode: {
             notSynced: '（未同期）',
             switchToSynced: '同期に切り替え',
-            switchToDeviceLocal: 'デバイスローカルに切り替え'
+            switchToLocal: 'ローカルに切り替え'
         },
         items: {
             searchProvider: {

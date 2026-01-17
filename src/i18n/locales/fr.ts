@@ -634,7 +634,7 @@ export const STRINGS_FR = {
         syncMode: {
             notSynced: '(non synchronisé)',
             switchToSynced: 'Passer à synchronisé',
-            switchToDeviceLocal: 'Passer à local sur l’appareil'
+            switchToLocal: 'Passer à local'
         },
         items: {
             searchProvider: {

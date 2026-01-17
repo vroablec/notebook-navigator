@@ -633,7 +633,7 @@ export const STRINGS_IT = {
         syncMode: {
             notSynced: '(non sincronizzato)',
             switchToSynced: 'Passa a sincronizzato',
-            switchToDeviceLocal: 'Passa a locale del dispositivo'
+            switchToLocal: 'Passa a locale'
         },
         items: {
             searchProvider: {

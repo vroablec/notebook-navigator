@@ -633,7 +633,7 @@ export const STRINGS_KO = {
         syncMode: {
             notSynced: '(동기화되지 않음)',
             switchToSynced: '동기화로 전환',
-            switchToDeviceLocal: '기기 로컬로 전환'
+            switchToLocal: '로컬로 전환'
         },
         items: {
             searchProvider: {

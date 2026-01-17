@@ -168,11 +168,11 @@ export default class NotebookNavigatorPlugin extends Plugin implements ISettings
     keys: LocalStorageKeys = STORAGE_KEYS;
 
     public getSyncMode(settingId: SyncModeSettingId): SettingSyncMode {
-        return this.settings.settingSyncModes?.[settingId] === 'deviceLocal' ? 'deviceLocal' : 'synced';
+        return this.settings.syncModes?.[settingId] === 'local' ? 'local' : 'synced';
     }
 
-    public isDeviceLocal(settingId: SyncModeSettingId): boolean {
-        return this.getSyncMode(settingId) === 'deviceLocal';
+    public isLocal(settingId: SyncModeSettingId): boolean {
+        return this.getSyncMode(settingId) === 'local';
     }
 
     public isSynced(settingId: SyncModeSettingId): boolean {
@@ -180,26 +180,26 @@ export default class NotebookNavigatorPlugin extends Plugin implements ISettings
     }
 
     public async setSyncMode(settingId: SyncModeSettingId, mode: SettingSyncMode): Promise<void> {
-        const nextMode: SettingSyncMode = mode === 'deviceLocal' ? 'deviceLocal' : 'synced';
+        const nextMode: SettingSyncMode = mode === 'local' ? 'local' : 'synced';
         const currentMode = this.getSyncMode(settingId);
         if (currentMode === nextMode) {
             return;
         }
 
-        // Ensure switching to device-local starts from the current value.
-        if (nextMode === 'deviceLocal') {
-            this.seedDeviceLocalValue(settingId);
+        // Ensure switching to local starts from the current value.
+        if (nextMode === 'local') {
+            this.seedLocalValue(settingId);
         }
 
-        const next = sanitizeRecord<SettingSyncMode>(this.settings.settingSyncModes, isSettingSyncMode);
+        const next = sanitizeRecord<SettingSyncMode>(this.settings.syncModes, isSettingSyncMode);
         next[settingId] = nextMode;
-        this.settings.settingSyncModes = next;
+        this.settings.syncModes = next;
 
         await this.saveSettingsAndUpdate();
     }
 
     private persistSyncModeSettingUpdate(settingId: SyncModeSettingId): void {
-        if (this.isDeviceLocal(settingId)) {
+        if (this.isLocal(settingId)) {
             this.notifySettingsUpdate();
             return;
         }
@@ -208,7 +208,7 @@ export default class NotebookNavigatorPlugin extends Plugin implements ISettings
     }
 
     private async persistSyncModeSettingUpdateAsync(settingId: SyncModeSettingId): Promise<void> {
-        if (this.isDeviceLocal(settingId)) {
+        if (this.isLocal(settingId)) {
             this.notifySettingsUpdate();
             return;
         }
@@ -255,7 +255,7 @@ export default class NotebookNavigatorPlugin extends Plugin implements ISettings
         this.syncModeRegistry = createSyncModeRegistry({
             keys: this.keys,
             defaultSettings: DEFAULT_SETTINGS,
-            isDeviceLocal: settingId => this.isDeviceLocal(settingId),
+            isLocal: settingId => this.isLocal(settingId),
             getSettings: () => this.settings,
             resolveActiveVaultProfileId: () => this.resolveActiveVaultProfileId(),
             sanitizeVaultProfileId: value => this.sanitizeVaultProfileId(value),
@@ -293,14 +293,14 @@ export default class NotebookNavigatorPlugin extends Plugin implements ISettings
         return this.syncModeRegistry;
     }
 
-    private seedDeviceLocalValue(settingId: SyncModeSettingId): void {
+    private seedLocalValue(settingId: SyncModeSettingId): void {
         this.getSyncModeRegistry()[settingId].mirrorToLocalStorage();
     }
 
-    private normalizeSettingSyncModes(params: { storedData: Record<string, unknown> | null; isFirstLaunch: boolean }): void {
+    private normalizeSyncModes(params: { storedData: Record<string, unknown> | null; isFirstLaunch: boolean }): void {
         const { storedData, isFirstLaunch } = params;
-        const defaultMode: SettingSyncMode = isFirstLaunch ? 'synced' : 'deviceLocal';
-        const storedModes = storedData?.['settingSyncModes'];
+        const defaultMode: SettingSyncMode = isFirstLaunch ? 'synced' : 'local';
+        const storedModes = storedData?.['syncModes'];
         const source = isPlainObjectRecordValue(storedModes) ? storedModes : null;
 
         const resolved = sanitizeRecord<SettingSyncMode>(undefined);
@@ -309,7 +309,7 @@ export default class NotebookNavigatorPlugin extends Plugin implements ISettings
             resolved[settingId] = isSettingSyncMode(value) ? value : defaultMode;
         });
 
-        this.settings.settingSyncModes = resolved;
+        this.settings.syncModes = resolved;
     }
 
     /**
@@ -364,7 +364,7 @@ export default class NotebookNavigatorPlugin extends Plugin implements ISettings
         this.settings = { ...DEFAULT_SETTINGS, ...(storedSettings ?? {}) };
         // Validate and normalize keyboard shortcuts to use standard modifier names
         this.settings.keyboardShortcuts = sanitizeKeyboardShortcuts(this.settings.keyboardShortcuts);
-        this.normalizeSettingSyncModes({ storedData, isFirstLaunch });
+        this.normalizeSyncModes({ storedData, isFirstLaunch });
         const syncModeRegistry = this.getSyncModeRegistry();
 
         migrateLegacySyncedSettings({
@@ -409,14 +409,14 @@ export default class NotebookNavigatorPlugin extends Plugin implements ISettings
 
         const migratedReleaseState = migrateReleaseCheckState({ settings: this.settings, storedData, keys: this.keys });
         const migratedRecentColors = migrateRecentColors({ settings: this.settings, storedData, keys: this.keys });
-        const hadDeviceLocalValuesInSettings = Boolean(
+        const hadLocalValuesInSettings = Boolean(
             storedData &&
                 SYNC_MODE_SETTING_IDS.some(settingId => {
                     const entry = syncModeRegistry[settingId];
                     if (!entry.cleanupOnLoad) {
                         return false;
                     }
-                    if (!this.isDeviceLocal(settingId)) {
+                    if (!this.isLocal(settingId)) {
                         return false;
                     }
                     return entry.hasPersistedValue(storedData);
@@ -440,7 +440,7 @@ export default class NotebookNavigatorPlugin extends Plugin implements ISettings
         syncModeRegistry.vaultProfile.resolveOnLoad({ storedData });
         this.refreshMatcherCachesIfNeeded();
 
-        const needsPersistedCleanup = migratedReleaseState || migratedRecentColors || hadDeviceLocalValuesInSettings || uiScaleMigrated;
+        const needsPersistedCleanup = migratedReleaseState || migratedRecentColors || hadLocalValuesInSettings || uiScaleMigrated;
 
         if (needsPersistedCleanup) {
             await this.saveData(this.getPersistableSettings());
@@ -1598,7 +1598,7 @@ export default class NotebookNavigatorPlugin extends Plugin implements ISettings
             sanitizeRecord(record, isAppearanceValue);
         const sanitizeBooleanMap = (record?: Record<string, boolean>): Record<string, boolean> =>
             sanitizeRecord(record, isBooleanRecordValue);
-        const sanitizeSettingSyncModeMap = (record?: Record<string, SettingSyncMode>): Record<string, SettingSyncMode> =>
+        const sanitizeSettingsSyncMap = (record?: Record<string, SettingSyncMode>): Record<string, SettingSyncMode> =>
             sanitizeRecord(record, isSettingSyncMode);
 
         // Rebuild maps with null prototypes so keys like "constructor" never resolve to Object.prototype
@@ -1613,7 +1613,7 @@ export default class NotebookNavigatorPlugin extends Plugin implements ISettings
         this.settings.tagAppearances = sanitizeAppearanceMap(this.settings.tagAppearances);
         this.settings.navigationSeparators = sanitizeBooleanMap(this.settings.navigationSeparators);
         this.settings.externalIconProviders = sanitizeBooleanMap(this.settings.externalIconProviders);
-        this.settings.settingSyncModes = sanitizeSettingSyncModeMap(this.settings.settingSyncModes);
+        this.settings.syncModes = sanitizeSettingsSyncMap(this.settings.syncModes);
     }
 
     private normalizeIconSettings(settings: NotebookNavigatorSettings): void {
@@ -1765,7 +1765,7 @@ export default class NotebookNavigatorPlugin extends Plugin implements ISettings
         delete rest.latestKnownRelease;
         const syncModeRegistry = this.getSyncModeRegistry();
         SYNC_MODE_SETTING_IDS.forEach(settingId => {
-            if (!this.isDeviceLocal(settingId)) {
+            if (!this.isLocal(settingId)) {
                 return;
             }
             syncModeRegistry[settingId].deleteFromPersisted(rest);
@@ -1825,7 +1825,7 @@ export default class NotebookNavigatorPlugin extends Plugin implements ISettings
     }
 
     /**
-     * Resets all persisted settings and device-local preferences back to defaults.
+     * Resets all persisted settings and local preferences back to defaults.
      * Clears plugin localStorage state (except IndexedDB version markers) and clears persisted settings so defaults apply.
      */
     public async resetAllSettings(): Promise<void> {
@@ -1833,15 +1833,15 @@ export default class NotebookNavigatorPlugin extends Plugin implements ISettings
             throw new Error('Plugin is unloading');
         }
 
-        const preservedSyncModes = sanitizeRecord<SettingSyncMode>(this.settings.settingSyncModes, isSettingSyncMode);
+        const preservedSyncModes = sanitizeRecord<SettingSyncMode>(this.settings.syncModes, isSettingSyncMode);
 
-        // Clear device-local storage first so subsequent loads seed fresh defaults.
+        // Clear local storage first so subsequent loads seed fresh defaults.
         this.clearAllLocalStorage();
 
         // Clear persisted settings; loadSettings will repopulate from DEFAULT_SETTINGS.
         await this.saveData({});
         await this.loadSettings();
-        this.settings.settingSyncModes = preservedSyncModes;
+        this.settings.syncModes = preservedSyncModes;
         await this.saveSettingsAndUpdate();
 
         // Reset per-device preferences not handled by loadSettings.

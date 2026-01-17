@@ -632,7 +632,7 @@ export const STRINGS_ZH_CN = {
         syncMode: {
             notSynced: '（未同步）',
             switchToSynced: '切换为同步',
-            switchToDeviceLocal: '切换为设备本地'
+            switchToLocal: '切换为本地'
         },
         items: {
             searchProvider: {

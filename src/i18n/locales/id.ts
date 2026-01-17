@@ -633,7 +633,7 @@ export const STRINGS_ID = {
         syncMode: {
             notSynced: '(tidak disinkronkan)',
             switchToSynced: 'Beralih ke disinkronkan',
-            switchToDeviceLocal: 'Beralih ke lokal perangkat'
+            switchToLocal: 'Beralih ke lokal'
         },
         items: {
             searchProvider: {

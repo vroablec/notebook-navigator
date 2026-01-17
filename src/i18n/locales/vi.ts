@@ -633,7 +633,7 @@ export const STRINGS_VI = {
         syncMode: {
             notSynced: '(chưa đồng bộ)',
             switchToSynced: 'Chuyển sang đồng bộ',
-            switchToDeviceLocal: 'Chuyển sang cục bộ trên thiết bị'
+            switchToLocal: 'Chuyển sang cục bộ'
         },
         items: {
             searchProvider: {

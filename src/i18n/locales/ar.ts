@@ -633,7 +633,7 @@ export const STRINGS_AR = {
         syncMode: {
             notSynced: '(غير متزامن)',
             switchToSynced: 'التبديل إلى المزامنة',
-            switchToDeviceLocal: 'التبديل إلى محلي على الجهاز'
+            switchToLocal: 'التبديل إلى محلي'
         },
         items: {
             searchProvider: {

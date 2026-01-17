@@ -635,7 +635,7 @@ export const STRINGS_NL = {
         syncMode: {
             notSynced: '(niet gesynchroniseerd)',
             switchToSynced: 'Wisselen naar gesynchroniseerd',
-            switchToDeviceLocal: 'Wisselen naar apparaat-lokaal'
+            switchToLocal: 'Wisselen naar lokaal'
         },
         items: {
             searchProvider: {

@@ -38,15 +38,15 @@ export function addSettingSyncModeToggle(options: SettingSyncModeToggleOptions):
         button.extraSettingsEl.addClass('nn-setting-sync-toggle');
 
         const updateButtonState = () => {
-            const isDeviceLocal = plugin.isDeviceLocal(settingId);
-            button.setIcon(isDeviceLocal ? 'lucide-cloud-off' : 'lucide-cloud');
-            const tooltip = isDeviceLocal ? strings.settings.syncMode.switchToSynced : strings.settings.syncMode.switchToDeviceLocal;
+            const isLocal = plugin.isLocal(settingId);
+            button.setIcon(isLocal ? 'lucide-cloud-off' : 'lucide-cloud');
+            const tooltip = isLocal ? strings.settings.syncMode.switchToSynced : strings.settings.syncMode.switchToLocal;
             button.setTooltip(tooltip);
             button.extraSettingsEl.setAttr('aria-label', tooltip);
 
             if (setting.nameEl) {
                 setting.nameEl.setAttr('data-nn-sync-marker', marker);
-                if (isDeviceLocal) {
+                if (isLocal) {
                     setting.nameEl.addClass('nn-setting-not-synced');
                 } else {
                     setting.nameEl.removeClass('nn-setting-not-synced');
@@ -58,8 +58,8 @@ export function addSettingSyncModeToggle(options: SettingSyncModeToggleOptions):
 
         button.onClick(() => {
             runAsyncAction(async () => {
-                const isDeviceLocal = plugin.isDeviceLocal(settingId);
-                const nextMode: SettingSyncMode = isDeviceLocal ? 'synced' : 'deviceLocal';
+                const isLocal = plugin.isLocal(settingId);
+                const nextMode: SettingSyncMode = isLocal ? 'synced' : 'local';
                 await plugin.setSyncMode(settingId, nextMode);
                 updateButtonState();
                 onToggle?.();

@@ -633,7 +633,7 @@ export const STRINGS_UK = {
         syncMode: {
             notSynced: '(не синхронізовано)',
             switchToSynced: 'Перемкнути на синхронізоване',
-            switchToDeviceLocal: 'Перемкнути на локальне на пристрої'
+            switchToLocal: 'Перемкнути на локальне'
         },
         items: {
             searchProvider: {
