@@ -635,8 +635,8 @@ export const STRINGS_FA = {
         },
         syncMode: {
             notSynced: '(همگام نشده)',
-            switchToSynced: 'فعال‌سازی همگام‌سازی ابری',
-            switchToLocal: 'غیرفعال‌سازی همگام‌سازی ابری'
+            switchToSynced: 'فعال‌سازی همگام‌سازی',
+            switchToLocal: 'غیرفعال‌سازی همگام‌سازی'
         },
         items: {
             searchProvider: {

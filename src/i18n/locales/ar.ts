@@ -635,8 +635,8 @@ export const STRINGS_AR = {
         },
         syncMode: {
             notSynced: '(غير متزامن)',
-            switchToSynced: 'تفعيل المزامنة السحابية',
-            switchToLocal: 'تعطيل المزامنة السحابية'
+            switchToSynced: 'تفعيل المزامنة',
+            switchToLocal: 'تعطيل المزامنة'
         },
         items: {
             searchProvider: {

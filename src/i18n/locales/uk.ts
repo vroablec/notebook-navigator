@@ -635,8 +635,8 @@ export const STRINGS_UK = {
         },
         syncMode: {
             notSynced: '(не синхронізовано)',
-            switchToSynced: 'Увімкнути хмарну синхронізацію',
-            switchToLocal: 'Вимкнути хмарну синхронізацію'
+            switchToSynced: 'Увімкнути синхронізацію',
+            switchToLocal: 'Вимкнути синхронізацію'
         },
         items: {
             searchProvider: {

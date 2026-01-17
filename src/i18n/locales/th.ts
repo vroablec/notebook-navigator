@@ -635,8 +635,8 @@ export const STRINGS_TH = {
         },
         syncMode: {
             notSynced: '(ไม่ซิงค์)',
-            switchToSynced: 'เปิดใช้งานการซิงค์บนคลาวด์',
-            switchToLocal: 'ปิดใช้งานการซิงค์บนคลาวด์'
+            switchToSynced: 'เปิดใช้งานการซิงค์',
+            switchToLocal: 'ปิดใช้งานการซิงค์'
         },
         items: {
             searchProvider: {

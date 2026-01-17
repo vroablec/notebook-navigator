@@ -635,8 +635,8 @@ export const STRINGS_TR = {
         },
         syncMode: {
             notSynced: '(senkronize edilmedi)',
-            switchToSynced: 'Bulut senkronizasyonunu etkinleştir',
-            switchToLocal: 'Bulut senkronizasyonunu devre dışı bırak'
+            switchToSynced: 'Senkronizasyonu etkinleştir',
+            switchToLocal: 'Senkronizasyonu devre dışı bırak'
         },
         items: {
             searchProvider: {

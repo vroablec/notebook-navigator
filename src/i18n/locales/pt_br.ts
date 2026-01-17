@@ -632,8 +632,8 @@ export const STRINGS_PT_BR = {
         },
         syncMode: {
             notSynced: '(não sincronizado)',
-            switchToSynced: 'Ativar sincronização na nuvem',
-            switchToLocal: 'Desativar sincronização na nuvem'
+            switchToSynced: 'Ativar sincronização',
+            switchToLocal: 'Desativar sincronização'
         },
         items: {
             searchProvider: {

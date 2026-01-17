@@ -637,8 +637,8 @@ export const STRINGS_NL = {
         },
         syncMode: {
             notSynced: '(niet gesynchroniseerd)',
-            switchToSynced: 'Cloudsynchronisatie inschakelen',
-            switchToLocal: 'Cloudsynchronisatie uitschakelen'
+            switchToSynced: 'Synchronisatie inschakelen',
+            switchToLocal: 'Synchronisatie uitschakelen'
         },
         items: {
             searchProvider: {

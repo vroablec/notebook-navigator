@@ -635,8 +635,8 @@ export const STRINGS_IT = {
         },
         syncMode: {
             notSynced: '(non sincronizzato)',
-            switchToSynced: 'Attiva sincronizzazione cloud',
-            switchToLocal: 'Disattiva sincronizzazione cloud'
+            switchToSynced: 'Attiva sincronizzazione',
+            switchToLocal: 'Disattiva sincronizzazione'
         },
         items: {
             searchProvider: {
