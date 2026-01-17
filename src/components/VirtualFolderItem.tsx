@@ -137,8 +137,11 @@ export const VirtualFolderComponent = React.memo(function VirtualFolderComponent
         if (!noteCountDisplay) {
             return false;
         }
+        if (virtualFolder.id === 'tags-root' && !includeDescendantNotes) {
+            return false;
+        }
         return noteCountDisplay.shouldDisplay;
-    }, [showFileCount, noteCountDisplay]);
+    }, [includeDescendantNotes, noteCountDisplay, showFileCount, virtualFolder.id]);
 
     // Build CSS class name with selection state
     const className = useMemo(() => {
