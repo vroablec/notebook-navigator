@@ -558,6 +558,7 @@ export const STRINGS_ID = {
         addTag: 'Tambah tag ke file yang dipilih',
         removeTag: 'Hapus tag dari file yang dipilih',
         removeAllTags: 'Hapus semua tag dari file yang dipilih',
+        openAllFiles: 'Buka semua file',
         rebuildCache: 'Bangun ulang cache'
     },
 

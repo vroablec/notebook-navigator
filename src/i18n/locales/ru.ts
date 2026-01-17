@@ -558,6 +558,7 @@ export const STRINGS_RU = {
         addTag: 'Добавить тег к выбранным файлам', // Command palette: Opens a dialog to add a tag to selected files (English: Add tag to selected files)
         removeTag: 'Удалить тег из выбранных файлов', // Command palette: Opens a dialog to remove a tag from selected files (English: Remove tag from selected files)
         removeAllTags: 'Удалить все теги из выбранных файлов', // Command palette: Removes all tags from selected files (English: Remove all tags from selected files)
+        openAllFiles: 'Открыть все файлы', // Command palette: Opens all files in the current folder or tag (English: Open all files)
         rebuildCache: 'Пересобрать кэш' // Command palette: Rebuilds the local Notebook Navigator cache (English: Rebuild cache)
     },
 

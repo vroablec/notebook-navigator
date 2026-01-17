@@ -560,6 +560,7 @@ export const STRINGS_NL = {
         addTag: 'Tag toevoegen aan geselecteerde bestanden',
         removeTag: 'Tag verwijderen van geselecteerde bestanden',
         removeAllTags: 'Alle tags verwijderen van geselecteerde bestanden',
+        openAllFiles: 'Alle bestanden openen',
         rebuildCache: 'Cache opnieuw opbouwen'
     },
 

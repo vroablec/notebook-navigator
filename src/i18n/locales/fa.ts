@@ -558,6 +558,7 @@ export const STRINGS_FA = {
         addTag: 'افزودن برچسب به فایل‌های انتخابی',
         removeTag: 'حذف برچسب از فایل‌های انتخابی',
         removeAllTags: 'حذف همه برچسب‌ها از فایل‌های انتخابی',
+        openAllFiles: 'باز کردن همه فایل‌ها',
         rebuildCache: 'بازسازی کش'
     },
 

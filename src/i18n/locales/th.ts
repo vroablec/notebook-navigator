@@ -558,6 +558,7 @@ export const STRINGS_TH = {
         addTag: 'เพิ่มแท็กในไฟล์ที่เลือก',
         removeTag: 'นำแท็กออกจากไฟล์ที่เลือก',
         removeAllTags: 'นำแท็กทั้งหมดออกจากไฟล์ที่เลือก',
+        openAllFiles: 'เปิดไฟล์ทั้งหมด',
         rebuildCache: 'สร้างแคชใหม่'
     },
 

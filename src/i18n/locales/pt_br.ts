@@ -555,6 +555,7 @@ export const STRINGS_PT_BR = {
         addTag: 'Adicionar tag aos arquivos selecionados',
         removeTag: 'Remover tag dos arquivos selecionados',
         removeAllTags: 'Remover todas as tags dos arquivos selecionados',
+        openAllFiles: 'Abrir todos os arquivos',
         rebuildCache: 'Reconstruir cache'
     },
 

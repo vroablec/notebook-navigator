@@ -558,6 +558,7 @@ export const STRINGS_AR = {
         addTag: 'إضافة وسم للملفات المحددة', // Command palette: Opens a dialog to add a tag to selected files (English: Add tag to selected files)
         removeTag: 'إزالة وسم من الملفات المحددة', // Command palette: Opens a dialog to remove a tag from selected files (English: Remove tag from selected files)
         removeAllTags: 'إزالة جميع الوسوم من الملفات المحددة', // Command palette: Removes all tags from selected files (English: Remove all tags from selected files)
+        openAllFiles: 'فتح جميع الملفات', // Command palette: Opens all files in the current folder or tag (English: Open all files)
         rebuildCache: 'إعادة بناء الذاكرة المؤقتة' // Command palette: Rebuilds the local Notebook Navigator cache (English: Rebuild cache)
     },
 

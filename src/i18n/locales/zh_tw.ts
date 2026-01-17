@@ -557,6 +557,7 @@ export const STRINGS_ZH_TW = {
         addTag: '為選定檔案新增標籤',
         removeTag: '從選定檔案移除標籤',
         removeAllTags: '從選定檔案移除所有標籤',
+        openAllFiles: '開啟所有檔案',
         rebuildCache: '重建快取'
     },
 
