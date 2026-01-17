@@ -77,6 +77,10 @@ export const STRINGS_RU = {
     navigationCalendar: {
         ariaLabel: 'Календарь',
         dailyNotesNotEnabled: 'Плагин ежедневных заметок не включён.',
+        promptDailyNoteTitle: {
+            title: 'Заголовок ежедневной заметки',
+            placeholder: 'Введите заголовок'
+        },
         createDailyNote: {
             title: 'Новая ежедневная заметка',
             message: 'Файл {filename} не существует. Хотите создать его?',
@@ -604,7 +608,8 @@ export const STRINGS_RU = {
             },
             navigation: {
                 appearance: 'Внешний вид',
-                shortcutsAndRecent: 'Ярлыки и недавние элементы'
+                shortcutsAndRecent: 'Ярлыки и недавние элементы',
+                calendarIntegration: 'Интеграция с календарём'
             },
             list: {
                 display: 'Внешний вид',
@@ -912,6 +917,33 @@ export const STRINGS_RU = {
             calendarConfirmBeforeCreate: {
                 name: 'Подтвердить перед созданием',
                 desc: 'Показать диалог подтверждения при создании новой ежедневной заметки.'
+            },
+            calendarIntegrationMode: {
+                name: 'Источник ежедневных заметок',
+                desc: 'Источник для заметок календаря.',
+                options: {
+                    dailyNotes: 'Ежедневные заметки',
+                    notebookNavigator: 'Notebook Navigator'
+                },
+                info: {
+                    dailyNotes: 'Папка и формат даты настраиваются в плагине Daily Notes.'
+                }
+            },
+            calendarCustomRootFolder: {
+                name: 'Корневая папка',
+                desc: 'Базовая папка для заметок календаря.',
+                placeholder: 'Personal/Diary'
+            },
+            calendarCustomFilePattern: {
+                name: 'Шаблон файла',
+                desc: 'Шаблон даты относительно корневой папки. Поддерживаемые токены: YYYY, MM, M, DD, D. Заметки могут включать необязательный суффикс заголовка.',
+                placeholder: 'YYYY/YYYYMMDD',
+                example: 'Текущий синтаксис выглядит так: {path}',
+                parsingError: 'Шаблон должен включать YYYY, MM/M и DD/D. Поддерживаемые токены: YYYY, MM, M, DD, D.'
+            },
+            calendarCustomPromptForTitle: {
+                name: 'Запросить заголовок',
+                desc: 'Запрашивать заголовок при создании заметок. Допускает пустые заголовки.'
             },
             showTooltips: {
                 name: 'Показывать подсказки',

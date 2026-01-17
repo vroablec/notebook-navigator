@@ -77,6 +77,10 @@ export const STRINGS_IT = {
     navigationCalendar: {
         ariaLabel: 'Calendario',
         dailyNotesNotEnabled: 'Il plugin delle note giornaliere non è abilitato.',
+        promptDailyNoteTitle: {
+            title: 'Titolo nota giornaliera',
+            placeholder: 'Inserisci titolo'
+        },
         createDailyNote: {
             title: 'Nuova nota giornaliera',
             message: 'Il file {filename} non esiste. Vuoi crearlo?',
@@ -604,7 +608,8 @@ export const STRINGS_IT = {
             },
             navigation: {
                 appearance: 'Aspetto',
-                shortcutsAndRecent: 'Scorciatoie ed elementi recenti'
+                shortcutsAndRecent: 'Scorciatoie ed elementi recenti',
+                calendarIntegration: 'Integrazione calendario'
             },
             list: {
                 display: 'Aspetto',
@@ -911,6 +916,33 @@ export const STRINGS_IT = {
             calendarConfirmBeforeCreate: {
                 name: 'Conferma prima di creare',
                 desc: 'Mostra una finestra di conferma quando si crea una nuova nota giornaliera.'
+            },
+            calendarIntegrationMode: {
+                name: 'Fonte note giornaliere',
+                desc: 'Fonte per le note del calendario.',
+                options: {
+                    dailyNotes: 'Note giornaliere',
+                    notebookNavigator: 'Notebook Navigator'
+                },
+                info: {
+                    dailyNotes: 'Cartella e formato data sono configurati nel plugin Note giornaliere.'
+                }
+            },
+            calendarCustomRootFolder: {
+                name: 'Cartella radice',
+                desc: 'Cartella base per le note del calendario.',
+                placeholder: 'Personal/Diary'
+            },
+            calendarCustomFilePattern: {
+                name: 'Modello file',
+                desc: 'Pattern data relativo alla cartella radice. Token supportati: YYYY, MM, M, DD, D. Le note possono includere un suffisso titolo opzionale.',
+                placeholder: 'YYYY/YYYYMMDD',
+                example: 'La sintassi attuale appare così: {path}',
+                parsingError: 'Il pattern deve includere YYYY, MM/M e DD/D. Token supportati: YYYY, MM, M, DD, D.'
+            },
+            calendarCustomPromptForTitle: {
+                name: 'Richiedi titolo',
+                desc: 'Richiedi titolo durante la creazione di note. Accetta titoli vuoti.'
             },
             showTooltips: {
                 name: 'Mostra tooltip',

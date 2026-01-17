@@ -76,6 +76,10 @@ export const STRINGS_FR = {
     navigationCalendar: {
         ariaLabel: 'Calendrier',
         dailyNotesNotEnabled: "Le plugin de notes quotidiennes n'est pas activé.",
+        promptDailyNoteTitle: {
+            title: 'Titre de la note quotidienne',
+            placeholder: 'Saisir le titre'
+        },
         createDailyNote: {
             title: 'Nouvelle note quotidienne',
             message: "Le fichier {filename} n'existe pas. Voulez-vous le créer ?",
@@ -605,7 +609,8 @@ export const STRINGS_FR = {
             },
             navigation: {
                 appearance: 'Apparence',
-                shortcutsAndRecent: 'Raccourcis et éléments récents'
+                shortcutsAndRecent: 'Raccourcis et éléments récents',
+                calendarIntegration: 'Intégration du calendrier'
             },
             list: {
                 display: 'Apparence',
@@ -913,6 +918,33 @@ export const STRINGS_FR = {
             calendarConfirmBeforeCreate: {
                 name: 'Confirmer avant de créer',
                 desc: "Afficher une boîte de dialogue de confirmation lors de la création d'une nouvelle note quotidienne."
+            },
+            calendarIntegrationMode: {
+                name: 'Source des notes quotidiennes',
+                desc: 'Source pour les notes du calendrier.',
+                options: {
+                    dailyNotes: 'Notes quotidiennes',
+                    notebookNavigator: 'Notebook Navigator'
+                },
+                info: {
+                    dailyNotes: 'Le dossier et le format de date sont configurés dans le plugin Notes quotidiennes.'
+                }
+            },
+            calendarCustomRootFolder: {
+                name: 'Dossier racine',
+                desc: 'Dossier de base pour les notes du calendrier.',
+                placeholder: 'Personal/Diary'
+            },
+            calendarCustomFilePattern: {
+                name: 'Modèle de fichier',
+                desc: 'Modèle de date relatif au dossier racine. Jetons pris en charge : YYYY, MM, M, DD, D. Les notes peuvent inclure un suffixe de titre optionnel.',
+                placeholder: 'YYYY/YYYYMMDD',
+                example: 'La syntaxe actuelle ressemble à ceci : {path}',
+                parsingError: 'Le modèle doit inclure YYYY, MM/M et DD/D. Jetons pris en charge : YYYY, MM, M, DD, D.'
+            },
+            calendarCustomPromptForTitle: {
+                name: 'Demander le titre',
+                desc: 'Demander le titre lors de la création de notes. Accepte les titres vides.'
             },
             showTooltips: {
                 name: 'Afficher les infobulles',

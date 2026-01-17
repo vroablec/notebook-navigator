@@ -77,6 +77,10 @@ export const STRINGS_EN = {
     navigationCalendar: {
         ariaLabel: 'Calendar',
         dailyNotesNotEnabled: 'Daily notes core plugin is not enabled.',
+        promptDailyNoteTitle: {
+            title: 'Daily note title',
+            placeholder: 'Enter title'
+        },
         createDailyNote: {
             title: 'New daily note',
             message: 'File {filename} does not exist. Would you like to create it?',
@@ -604,7 +608,8 @@ export const STRINGS_EN = {
             },
             navigation: {
                 appearance: 'Appearance',
-                shortcutsAndRecent: 'Shortcuts & recent items'
+                shortcutsAndRecent: 'Shortcuts & recent items',
+                calendarIntegration: 'Calendar integration'
             },
             list: {
                 display: 'Appearance',
@@ -911,6 +916,33 @@ export const STRINGS_EN = {
             calendarConfirmBeforeCreate: {
                 name: 'Confirm before creating new note',
                 desc: 'Show a confirmation dialog when creating a new daily note.'
+            },
+            calendarIntegrationMode: {
+                name: 'Daily note source',
+                desc: 'Source for calendar notes.',
+                options: {
+                    dailyNotes: 'Daily notes',
+                    notebookNavigator: 'Notebook Navigator'
+                },
+                info: {
+                    dailyNotes: 'Folder and date format are configured in the Daily Notes core plugin.'
+                }
+            },
+            calendarCustomRootFolder: {
+                name: 'Root folder',
+                desc: 'Base folder for calendar notes.',
+                placeholder: 'Personal/Diary'
+            },
+            calendarCustomFilePattern: {
+                name: 'File pattern',
+                desc: 'Date pattern relative to root folder. Supported tokens: YYYY, MM, M, DD, D. Notes may include an optional title suffix.',
+                placeholder: 'YYYY/YYYYMMDD',
+                example: 'Current syntax looks like this: {path}',
+                parsingError: 'Pattern must include YYYY, MM/M, and DD/D. Supported tokens: YYYY, MM, M, DD, D.'
+            },
+            calendarCustomPromptForTitle: {
+                name: 'Prompt for title',
+                desc: 'Ask for title when creating notes. Accepts empty titles.'
             },
             showTooltips: {
                 name: 'Show tooltips',

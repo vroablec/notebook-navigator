@@ -43,6 +43,37 @@ interface FoldManager {
     save: (file: TFile, foldInfo: unknown) => void;
 }
 
+type DailyNotesDeltaUnit = 'y' | 'Q' | 'M' | 'm' | 'w' | 'd' | 'h' | 's';
+
+/** Normalizes date/time delta units used in daily note templates to moment-compatible units */
+function normalizeDailyNotesDeltaUnit(value: string): DailyNotesDeltaUnit | null {
+    switch (value) {
+        case 'y':
+        case 'Y':
+            return 'y';
+        case 'q':
+        case 'Q':
+            return 'Q';
+        case 'm':
+            return 'm';
+        case 'M':
+            return 'M';
+        case 'w':
+        case 'W':
+            return 'w';
+        case 'd':
+            return 'd';
+        case 'h':
+        case 'H':
+            return 'h';
+        case 's':
+        case 'S':
+            return 's';
+        default:
+            return null;
+    }
+}
+
 function isFoldManager(value: unknown): value is FoldManager {
     if (typeof value !== 'object' || value === null) {
         return false;
@@ -178,7 +209,7 @@ function renderDailyNoteTemplate(template: string, date: MomentInstance, noteTit
         .replace(/{{\s*time\s*}}/gi, time)
         .replace(/{{\s*title\s*}}/gi, noteTitle)
         .replace(
-            /{{\s*(date|time)\s*(([+-]\d+)([yqmwdhs]))?\s*(:.+?)?}}/gi,
+            /{{\s*(date|time)\s*(([+-]\d+)([yQmwdhs]))?\s*(:.+?)?}}/gi,
             (
                 _match,
                 timeOrDate: string,
@@ -194,8 +225,9 @@ function renderDailyNoteTemplate(template: string, date: MomentInstance, noteTit
                     second: now.get('second')
                 });
 
-                if (deltaRaw && unitRaw) {
-                    currentDate.add(Number.parseInt(deltaRaw, 10), unitRaw);
+                const deltaUnit = unitRaw ? normalizeDailyNotesDeltaUnit(unitRaw) : null;
+                if (deltaRaw && deltaUnit) {
+                    currentDate.add(Number.parseInt(deltaRaw, 10), deltaUnit);
                 }
 
                 if (formatRaw) {

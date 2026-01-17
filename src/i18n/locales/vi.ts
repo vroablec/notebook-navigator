@@ -77,6 +77,10 @@ export const STRINGS_VI = {
     navigationCalendar: {
         ariaLabel: 'Lịch',
         dailyNotesNotEnabled: 'Plugin ghi chú hàng ngày chưa được bật.',
+        promptDailyNoteTitle: {
+            title: 'Tiêu đề ghi chú hàng ngày',
+            placeholder: 'Nhập tiêu đề'
+        },
         createDailyNote: {
             title: 'Ghi chú hàng ngày mới',
             message: 'Tệp {filename} không tồn tại. Bạn có muốn tạo không?',
@@ -604,7 +608,8 @@ export const STRINGS_VI = {
             },
             navigation: {
                 appearance: 'Giao diện',
-                shortcutsAndRecent: 'Phím tắt và mục gần đây'
+                shortcutsAndRecent: 'Phím tắt và mục gần đây',
+                calendarIntegration: 'Tích hợp lịch'
             },
             list: {
                 display: 'Giao diện',
@@ -911,6 +916,33 @@ export const STRINGS_VI = {
             calendarConfirmBeforeCreate: {
                 name: 'Xác nhận trước khi tạo',
                 desc: 'Hiển thị hộp thoại xác nhận khi tạo ghi chú hàng ngày mới.'
+            },
+            calendarIntegrationMode: {
+                name: 'Nguồn ghi chú hàng ngày',
+                desc: 'Nguồn cho ghi chú lịch.',
+                options: {
+                    dailyNotes: 'Ghi chú hàng ngày',
+                    notebookNavigator: 'Notebook Navigator'
+                },
+                info: {
+                    dailyNotes: 'Thư mục và định dạng ngày được cấu hình trong plugin Daily Notes cốt lõi.'
+                }
+            },
+            calendarCustomRootFolder: {
+                name: 'Thư mục gốc',
+                desc: 'Thư mục cơ sở cho ghi chú lịch.',
+                placeholder: 'Personal/Diary'
+            },
+            calendarCustomFilePattern: {
+                name: 'Mẫu tệp',
+                desc: 'Mẫu ngày tương đối với thư mục gốc. Token được hỗ trợ: YYYY, MM, M, DD, D. Ghi chú có thể bao gồm hậu tố tiêu đề tùy chọn.',
+                placeholder: 'YYYY/YYYYMMDD',
+                example: 'Cú pháp hiện tại trông như thế này: {path}',
+                parsingError: 'Mẫu phải bao gồm YYYY, MM/M và DD/D. Token được hỗ trợ: YYYY, MM, M, DD, D.'
+            },
+            calendarCustomPromptForTitle: {
+                name: 'Yêu cầu tiêu đề',
+                desc: 'Yêu cầu tiêu đề khi tạo ghi chú. Chấp nhận tiêu đề trống.'
             },
             showTooltips: {
                 name: 'Hiện chú thích',

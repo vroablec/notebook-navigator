@@ -76,6 +76,10 @@ export const STRINGS_ZH_TW = {
     navigationCalendar: {
         ariaLabel: '導覽日曆',
         dailyNotesNotEnabled: '未啟用每日筆記。請在 Obsidian 設定 → 核心外掛中啟用每日筆記。',
+        promptDailyNoteTitle: {
+            title: '每日筆記標題',
+            placeholder: '輸入標題'
+        },
         createDailyNote: {
             title: '建立每日筆記',
             message: '每日筆記 {filename} 不存在。是否建立？',
@@ -603,7 +607,8 @@ export const STRINGS_ZH_TW = {
             },
             navigation: {
                 appearance: '外觀',
-                shortcutsAndRecent: '捷徑和最近項目'
+                shortcutsAndRecent: '捷徑和最近項目',
+                calendarIntegration: '行事曆整合'
             },
             list: {
                 display: '外觀',
@@ -909,6 +914,33 @@ export const STRINGS_ZH_TW = {
             calendarConfirmBeforeCreate: {
                 name: '建立前確認',
                 desc: '點按沒有筆記的日期時顯示確認對話方塊。'
+            },
+            calendarIntegrationMode: {
+                name: '日記來源',
+                desc: '行事曆筆記的來源。',
+                options: {
+                    dailyNotes: '日記',
+                    notebookNavigator: 'Notebook Navigator'
+                },
+                info: {
+                    dailyNotes: '資料夾和日期格式在日記核心外掛程式中設定。'
+                }
+            },
+            calendarCustomRootFolder: {
+                name: '根資料夾',
+                desc: '行事曆筆記的基礎資料夾。',
+                placeholder: 'Personal/Diary'
+            },
+            calendarCustomFilePattern: {
+                name: '檔案模式',
+                desc: '相對於根資料夾的日期模式。支援的標記：YYYY、MM、M、DD、D。筆記可以包含選用的標題後綴。',
+                placeholder: 'YYYY/YYYYMMDD',
+                example: '目前語法如下：{path}',
+                parsingError: '模式必須包含 YYYY、MM/M 和 DD/D。支援的標記：YYYY、MM、M、DD、D。'
+            },
+            calendarCustomPromptForTitle: {
+                name: '提示輸入標題',
+                desc: '建立筆記時提示輸入標題。允許空標題。'
             },
             showTooltips: {
                 name: '顯示工具提示',

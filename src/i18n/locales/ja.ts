@@ -76,6 +76,10 @@ export const STRINGS_JA = {
     navigationCalendar: {
         ariaLabel: 'カレンダー',
         dailyNotesNotEnabled: 'デイリーノートプラグインが有効になっていません。',
+        promptDailyNoteTitle: {
+            title: 'デイリーノートのタイトル',
+            placeholder: 'タイトルを入力'
+        },
         createDailyNote: {
             title: '新規デイリーノート',
             message: 'ファイル {filename} は存在しません。作成しますか？',
@@ -605,7 +609,8 @@ export const STRINGS_JA = {
             },
             navigation: {
                 appearance: '外観',
-                shortcutsAndRecent: 'ショートカットと最近の項目'
+                shortcutsAndRecent: 'ショートカットと最近の項目',
+                calendarIntegration: 'カレンダー連携'
             },
             list: {
                 display: '外観',
@@ -912,6 +917,33 @@ export const STRINGS_JA = {
             calendarConfirmBeforeCreate: {
                 name: '作成前に確認',
                 desc: '新しいデイリーノートを作成する際に確認ダイアログを表示します。'
+            },
+            calendarIntegrationMode: {
+                name: 'デイリーノートのソース',
+                desc: 'カレンダーノートのソース。',
+                options: {
+                    dailyNotes: 'デイリーノート',
+                    notebookNavigator: 'Notebook Navigator'
+                },
+                info: {
+                    dailyNotes: 'フォルダと日付形式はデイリーノートコアプラグインで設定されています。'
+                }
+            },
+            calendarCustomRootFolder: {
+                name: 'ルートフォルダ',
+                desc: 'カレンダーノートの基本フォルダ。',
+                placeholder: 'Personal/Diary'
+            },
+            calendarCustomFilePattern: {
+                name: 'ファイルパターン',
+                desc: 'ルートフォルダからの相対的な日付パターン。サポートされるトークン: YYYY、MM、M、DD、D。ノートにはオプションのタイトル接尾辞を含めることができます。',
+                placeholder: 'YYYY/YYYYMMDD',
+                example: '現在の構文は次のようになります: {path}',
+                parsingError: 'パターンにはYYYY、MM/M、DD/Dを含める必要があります。サポートされるトークン: YYYY、MM、M、DD、D。'
+            },
+            calendarCustomPromptForTitle: {
+                name: 'タイトルを入力',
+                desc: 'ノート作成時にタイトルを入力。空のタイトルも可。'
             },
             showTooltips: {
                 name: 'ツールチップを表示',

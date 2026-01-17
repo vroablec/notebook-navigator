@@ -17,35 +17,35 @@
  */
 
 export interface MomentLocaleData {
-    firstDayOfWeek: () => number;
-    weekdaysMin: () => string[];
+    firstDayOfWeek(): number;
+    weekdaysMin(): string[];
 }
 
 export interface MomentInstance {
-    clone: () => MomentInstance;
-    format: (format?: string) => string;
-    locale: (locale: string) => MomentInstance;
-    localeData: () => MomentLocaleData;
-    startOf: (unit: string) => MomentInstance;
-    endOf: (unit: string) => MomentInstance;
-    add: (amount: number, unit: string) => MomentInstance;
-    subtract: (amount: number, unit: string) => MomentInstance;
-    diff: (other: MomentInstance, unit: string) => number;
-    week: () => number;
-    month: () => number;
-    year: () => number;
-    date: () => number;
-    isSame: (other: MomentInstance, unit?: string) => boolean;
-    set: (values: Record<string, number>) => MomentInstance;
-    get: (unit: string) => number;
-    toDate: () => Date;
+    clone(): MomentInstance;
+    format(format?: string): string;
+    isValid(): boolean;
+    locale(locale: string): MomentInstance;
+    localeData(): MomentLocaleData;
+    startOf(unit: string): MomentInstance;
+    endOf(unit: string): MomentInstance;
+    add(amount: number, unit: string): MomentInstance;
+    subtract(amount: number, unit: string): MomentInstance;
+    diff(other: MomentInstance, unit: string): number;
+    week(): number;
+    month(): number;
+    year(): number;
+    date(): number;
+    set(values: Record<string, number>): MomentInstance;
+    get(unit: string): number;
+    toDate(): Date;
 }
 
 export interface MomentApi {
-    (input?: unknown, format?: string, strict?: boolean): MomentInstance;
+    (input?: string, format?: string, strict?: boolean): MomentInstance;
     locales: () => string[];
     locale: () => string;
-    fn: Record<string, unknown>;
+    fn: object;
     utc: (...args: unknown[]) => unknown;
 }
 

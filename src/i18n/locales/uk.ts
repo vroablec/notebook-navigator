@@ -77,6 +77,10 @@ export const STRINGS_UK = {
     navigationCalendar: {
         ariaLabel: 'Календар',
         dailyNotesNotEnabled: 'Плагін щоденних нотаток не увімкнено.',
+        promptDailyNoteTitle: {
+            title: 'Заголовок щоденної нотатки',
+            placeholder: 'Введіть заголовок'
+        },
         createDailyNote: {
             title: 'Нова щоденна нотатка',
             message: 'Файл {filename} не існує. Бажаєте створити його?',
@@ -604,7 +608,8 @@ export const STRINGS_UK = {
             },
             navigation: {
                 appearance: 'Вигляд',
-                shortcutsAndRecent: 'Ярлики та нещодавні елементи'
+                shortcutsAndRecent: 'Ярлики та нещодавні елементи',
+                calendarIntegration: 'Інтеграція з календарем'
             },
             list: {
                 display: 'Вигляд',
@@ -911,6 +916,33 @@ export const STRINGS_UK = {
             calendarConfirmBeforeCreate: {
                 name: 'Підтвердити перед створенням',
                 desc: 'Показати діалог підтвердження при створенні нової щоденної нотатки.'
+            },
+            calendarIntegrationMode: {
+                name: 'Джерело щоденних нотаток',
+                desc: 'Джерело для нотаток календаря.',
+                options: {
+                    dailyNotes: 'Щоденні нотатки',
+                    notebookNavigator: 'Notebook Navigator'
+                },
+                info: {
+                    dailyNotes: 'Папка та формат дати налаштовуються в плагіні Daily Notes.'
+                }
+            },
+            calendarCustomRootFolder: {
+                name: 'Коренева папка',
+                desc: 'Базова папка для нотаток календаря.',
+                placeholder: 'Personal/Diary'
+            },
+            calendarCustomFilePattern: {
+                name: 'Шаблон файлу',
+                desc: "Шаблон дати відносно кореневої папки. Підтримувані токени: YYYY, MM, M, DD, D. Нотатки можуть включати необов'язковий суфікс заголовка.",
+                placeholder: 'YYYY/YYYYMMDD',
+                example: 'Поточний синтаксис виглядає так: {path}',
+                parsingError: 'Шаблон повинен включати YYYY, MM/M та DD/D. Підтримувані токени: YYYY, MM, M, DD, D.'
+            },
+            calendarCustomPromptForTitle: {
+                name: 'Запитати заголовок',
+                desc: 'Запитувати заголовок при створенні нотаток. Приймає порожні заголовки.'
             },
             showTooltips: {
                 name: 'Показувати підказки',

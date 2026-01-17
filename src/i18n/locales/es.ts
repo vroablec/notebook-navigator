@@ -76,6 +76,10 @@ export const STRINGS_ES = {
     navigationCalendar: {
         ariaLabel: 'Calendario',
         dailyNotesNotEnabled: 'El complemento principal de notas diarias no está habilitado.',
+        promptDailyNoteTitle: {
+            title: 'Título de nota diaria',
+            placeholder: 'Introducir título'
+        },
         createDailyNote: {
             title: 'Nueva nota diaria',
             message: 'El archivo {filename} no existe. ¿Deseas crearlo?',
@@ -605,7 +609,8 @@ export const STRINGS_ES = {
             },
             navigation: {
                 appearance: 'Apariencia',
-                shortcutsAndRecent: 'Atajos y elementos recientes'
+                shortcutsAndRecent: 'Atajos y elementos recientes',
+                calendarIntegration: 'Integración de calendario'
             },
             list: {
                 display: 'Apariencia',
@@ -912,6 +917,33 @@ export const STRINGS_ES = {
             calendarConfirmBeforeCreate: {
                 name: 'Confirmar antes de crear nueva nota',
                 desc: 'Mostrar un diálogo de confirmación al crear una nueva nota diaria.'
+            },
+            calendarIntegrationMode: {
+                name: 'Fuente de notas diarias',
+                desc: 'Fuente para notas del calendario.',
+                options: {
+                    dailyNotes: 'Notas diarias',
+                    notebookNavigator: 'Notebook Navigator'
+                },
+                info: {
+                    dailyNotes: 'La carpeta y el formato de fecha se configuran en el plugin de notas diarias.'
+                }
+            },
+            calendarCustomRootFolder: {
+                name: 'Carpeta raíz',
+                desc: 'Carpeta base para notas del calendario.',
+                placeholder: 'Personal/Diary'
+            },
+            calendarCustomFilePattern: {
+                name: 'Patrón de archivo',
+                desc: 'Patrón de fecha relativo a la carpeta raíz. Tokens compatibles: YYYY, MM, M, DD, D. Las notas pueden incluir un sufijo de título opcional.',
+                placeholder: 'YYYY/YYYYMMDD',
+                example: 'La sintaxis actual es así: {path}',
+                parsingError: 'El patrón debe incluir YYYY, MM/M y DD/D. Tokens compatibles: YYYY, MM, M, DD, D.'
+            },
+            calendarCustomPromptForTitle: {
+                name: 'Solicitar título',
+                desc: 'Solicitar título al crear notas. Acepta títulos vacíos.'
             },
             showTooltips: {
                 name: 'Mostrar tooltips',

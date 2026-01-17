@@ -76,6 +76,10 @@ export const STRINGS_PL = {
     navigationCalendar: {
         ariaLabel: 'Kalendarz',
         dailyNotesNotEnabled: 'Wtyczka dziennych notatek nie jest włączona.',
+        promptDailyNoteTitle: {
+            title: 'Tytuł dziennej notatki',
+            placeholder: 'Wprowadź tytuł'
+        },
         createDailyNote: {
             title: 'Nowa dzienna notatka',
             message: 'Plik {filename} nie istnieje. Czy chcesz go utworzyć?',
@@ -606,7 +610,8 @@ export const STRINGS_PL = {
             },
             navigation: {
                 appearance: 'Wygląd',
-                shortcutsAndRecent: 'Skróty i ostatnie elementy'
+                shortcutsAndRecent: 'Skróty i ostatnie elementy',
+                calendarIntegration: 'Integracja z kalendarzem'
             },
             list: {
                 display: 'Wygląd',
@@ -913,6 +918,33 @@ export const STRINGS_PL = {
             calendarConfirmBeforeCreate: {
                 name: 'Potwierdź przed utworzeniem',
                 desc: 'Pokaż okno potwierdzenia podczas tworzenia nowej dziennej notatki.'
+            },
+            calendarIntegrationMode: {
+                name: 'Źródło notatek dziennych',
+                desc: 'Źródło notatek kalendarza.',
+                options: {
+                    dailyNotes: 'Notatki dzienne',
+                    notebookNavigator: 'Notebook Navigator'
+                },
+                info: {
+                    dailyNotes: 'Folder i format daty są konfigurowane we wtyczce Daily Notes.'
+                }
+            },
+            calendarCustomRootFolder: {
+                name: 'Folder główny',
+                desc: 'Folder bazowy dla notatek kalendarza.',
+                placeholder: 'Personal/Diary'
+            },
+            calendarCustomFilePattern: {
+                name: 'Wzorzec pliku',
+                desc: 'Wzorzec daty względem folderu głównego. Obsługiwane tokeny: YYYY, MM, M, DD, D. Notatki mogą zawierać opcjonalny sufiks tytułu.',
+                placeholder: 'YYYY/YYYYMMDD',
+                example: 'Aktualna składnia wygląda tak: {path}',
+                parsingError: 'Wzorzec musi zawierać YYYY, MM/M i DD/D. Obsługiwane tokeny: YYYY, MM, M, DD, D.'
+            },
+            calendarCustomPromptForTitle: {
+                name: 'Pytaj o tytuł',
+                desc: 'Pytaj o tytuł podczas tworzenia notatek. Akceptuje puste tytuły.'
             },
             showTooltips: {
                 name: 'Pokaż podpowiedzi',

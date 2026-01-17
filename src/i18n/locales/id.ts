@@ -77,6 +77,10 @@ export const STRINGS_ID = {
     navigationCalendar: {
         ariaLabel: 'Kalender',
         dailyNotesNotEnabled: 'Plugin catatan harian tidak diaktifkan.',
+        promptDailyNoteTitle: {
+            title: 'Judul catatan harian',
+            placeholder: 'Masukkan judul'
+        },
         createDailyNote: {
             title: 'Catatan harian baru',
             message: 'File {filename} tidak ada. Apakah Anda ingin membuatnya?',
@@ -604,7 +608,8 @@ export const STRINGS_ID = {
             },
             navigation: {
                 appearance: 'Tampilan',
-                shortcutsAndRecent: 'Pintasan & item terbaru'
+                shortcutsAndRecent: 'Pintasan & item terbaru',
+                calendarIntegration: 'Integrasi kalender'
             },
             list: {
                 display: 'Tampilan',
@@ -911,6 +916,33 @@ export const STRINGS_ID = {
             calendarConfirmBeforeCreate: {
                 name: 'Konfirmasi sebelum membuat',
                 desc: 'Tampilkan dialog konfirmasi saat membuat catatan harian baru.'
+            },
+            calendarIntegrationMode: {
+                name: 'Sumber catatan harian',
+                desc: 'Sumber untuk catatan kalender.',
+                options: {
+                    dailyNotes: 'Catatan harian',
+                    notebookNavigator: 'Notebook Navigator'
+                },
+                info: {
+                    dailyNotes: 'Folder dan format tanggal dikonfigurasi di plugin inti Daily Notes.'
+                }
+            },
+            calendarCustomRootFolder: {
+                name: 'Folder root',
+                desc: 'Folder dasar untuk catatan kalender.',
+                placeholder: 'Personal/Diary'
+            },
+            calendarCustomFilePattern: {
+                name: 'Pola file',
+                desc: 'Pola tanggal relatif terhadap folder root. Token yang didukung: YYYY, MM, M, DD, D. Catatan dapat menyertakan sufiks judul opsional.',
+                placeholder: 'YYYY/YYYYMMDD',
+                example: 'Sintaks saat ini terlihat seperti ini: {path}',
+                parsingError: 'Pola harus menyertakan YYYY, MM/M, dan DD/D. Token yang didukung: YYYY, MM, M, DD, D.'
+            },
+            calendarCustomPromptForTitle: {
+                name: 'Minta judul',
+                desc: 'Minta judul saat membuat catatan. Menerima judul kosong.'
             },
             showTooltips: {
                 name: 'Tampilkan tooltip',

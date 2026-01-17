@@ -77,6 +77,10 @@ export const STRINGS_AR = {
     navigationCalendar: {
         ariaLabel: 'التقويم',
         dailyNotesNotEnabled: 'إضافة الملاحظات اليومية غير مفعلة.',
+        promptDailyNoteTitle: {
+            title: 'عنوان الملاحظة اليومية',
+            placeholder: 'أدخل العنوان'
+        },
         createDailyNote: {
             title: 'ملاحظة يومية جديدة',
             message: 'الملف {filename} غير موجود. هل تريد إنشاءه؟',
@@ -604,7 +608,8 @@ export const STRINGS_AR = {
             },
             navigation: {
                 appearance: 'المظهر',
-                shortcutsAndRecent: 'الاختصارات والعناصر الأخيرة'
+                shortcutsAndRecent: 'الاختصارات والعناصر الأخيرة',
+                calendarIntegration: 'تكامل التقويم'
             },
             list: {
                 display: 'المظهر',
@@ -911,6 +916,33 @@ export const STRINGS_AR = {
             calendarConfirmBeforeCreate: {
                 name: 'تأكيد قبل الإنشاء',
                 desc: 'عرض مربع حوار تأكيد عند إنشاء ملاحظة يومية جديدة.'
+            },
+            calendarIntegrationMode: {
+                name: 'مصدر الملاحظات اليومية',
+                desc: 'مصدر ملاحظات التقويم.',
+                options: {
+                    dailyNotes: 'الملاحظات اليومية',
+                    notebookNavigator: 'Notebook Navigator'
+                },
+                info: {
+                    dailyNotes: 'يتم تكوين المجلد وتنسيق التاريخ في إضافة الملاحظات اليومية الأساسية.'
+                }
+            },
+            calendarCustomRootFolder: {
+                name: 'المجلد الجذر',
+                desc: 'المجلد الأساسي لملاحظات التقويم.',
+                placeholder: 'Personal/Diary'
+            },
+            calendarCustomFilePattern: {
+                name: 'نمط الملف',
+                desc: 'نمط التاريخ نسبة إلى المجلد الجذر. الرموز المدعومة: YYYY، MM، M، DD، D. يمكن أن تتضمن الملاحظات لاحقة عنوان اختيارية.',
+                placeholder: 'YYYY/YYYYMMDD',
+                example: 'الصيغة الحالية تبدو هكذا: {path}',
+                parsingError: 'يجب أن يتضمن النمط YYYY وMM/M وDD/D. الرموز المدعومة: YYYY، MM، M، DD، D.'
+            },
+            calendarCustomPromptForTitle: {
+                name: 'طلب العنوان',
+                desc: 'طلب العنوان عند إنشاء الملاحظات. يقبل العناوين الفارغة.'
             },
             showTooltips: {
                 name: 'إظهار التلميحات',

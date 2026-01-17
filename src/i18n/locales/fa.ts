@@ -77,6 +77,10 @@ export const STRINGS_FA = {
     navigationCalendar: {
         ariaLabel: 'تقویم',
         dailyNotesNotEnabled: 'افزونه یادداشت روزانه فعال نیست.',
+        promptDailyNoteTitle: {
+            title: 'عنوان یادداشت روزانه',
+            placeholder: 'عنوان را وارد کنید'
+        },
         createDailyNote: {
             title: 'یادداشت روزانه جدید',
             message: 'فایل {filename} وجود ندارد. آیا می‌خواهید آن را ایجاد کنید؟',
@@ -604,7 +608,8 @@ export const STRINGS_FA = {
             },
             navigation: {
                 appearance: 'ظاهر',
-                shortcutsAndRecent: 'میانبرها و موارد اخیر'
+                shortcutsAndRecent: 'میانبرها و موارد اخیر',
+                calendarIntegration: 'یکپارچه‌سازی تقویم'
             },
             list: {
                 display: 'ظاهر',
@@ -911,6 +916,33 @@ export const STRINGS_FA = {
             calendarConfirmBeforeCreate: {
                 name: 'تأیید قبل از ایجاد',
                 desc: 'نمایش پنجره تأیید هنگام ایجاد یادداشت روزانه جدید.'
+            },
+            calendarIntegrationMode: {
+                name: 'منبع یادداشت روزانه',
+                desc: 'منبع یادداشت‌های تقویم.',
+                options: {
+                    dailyNotes: 'یادداشت‌های روزانه',
+                    notebookNavigator: 'Notebook Navigator'
+                },
+                info: {
+                    dailyNotes: 'پوشه و قالب تاریخ در افزونه هسته یادداشت‌های روزانه پیکربندی شده‌اند.'
+                }
+            },
+            calendarCustomRootFolder: {
+                name: 'پوشه ریشه',
+                desc: 'پوشه پایه برای یادداشت‌های تقویم.',
+                placeholder: 'Personal/Diary'
+            },
+            calendarCustomFilePattern: {
+                name: 'الگوی فایل',
+                desc: 'الگوی تاریخ نسبت به پوشه ریشه. توکن‌های پشتیبانی‌شده: YYYY، MM، M، DD، D. یادداشت‌ها می‌توانند شامل پسوند عنوان اختیاری باشند.',
+                placeholder: 'YYYY/YYYYMMDD',
+                example: 'نحوه نگارش فعلی به این شکل است: {path}',
+                parsingError: 'الگو باید شامل YYYY، MM/M و DD/D باشد. توکن‌های پشتیبانی‌شده: YYYY، MM، M، DD، D.'
+            },
+            calendarCustomPromptForTitle: {
+                name: 'درخواست عنوان',
+                desc: 'هنگام ایجاد یادداشت عنوان بخواهید. عناوین خالی پذیرفته می‌شود.'
             },
             showTooltips: {
                 name: 'نمایش راهنماها',

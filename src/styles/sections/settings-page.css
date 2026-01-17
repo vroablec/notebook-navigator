@@ -70,10 +70,24 @@
     display: none;
 }
 
+.nn-setting-warning {
+    color: var(--text-error);
+    font-weight: 600;
+}
+
 /* Container for additional info below settings */
 .nn-setting-info-container {
     margin-top: 8px;
     margin-bottom: 8px;
+}
+
+.nn-setting-info-container.nn-setting-info-centered.setting-item {
+    justify-content: center;
+}
+
+.nn-setting-info-container.nn-setting-info-centered .setting-item-info,
+.nn-setting-info-container.nn-setting-info-centered .setting-item-description {
+    text-align: center;
 }
 
 /* Wider text inputs for settings that benefit from more space */

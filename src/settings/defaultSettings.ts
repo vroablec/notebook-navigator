@@ -24,6 +24,7 @@ import { DEFAULT_UI_SCALE } from '../utils/uiScale';
 import type { FolderAppearance, TagAppearance } from '../hooks/useListPaneAppearance';
 import type { NotebookNavigatorSettings } from './types';
 import { sanitizeRecord } from '../utils/recordUtils';
+import { DEFAULT_CALENDAR_CUSTOM_FILE_PATTERN } from '../utils/calendarCustomNotePatterns';
 
 /**
  * Default settings for the plugin
@@ -94,6 +95,12 @@ export const DEFAULT_SETTINGS: NotebookNavigatorSettings = {
     calendarHighlightToday: true,
     calendarShowWeekNumber: false,
     calendarConfirmBeforeCreate: true,
+
+    // Navigation pane tab - Calendar integration
+    calendarIntegrationMode: 'daily-notes',
+    calendarCustomRootFolder: '',
+    calendarCustomFilePattern: DEFAULT_CALENDAR_CUSTOM_FILE_PATTERN,
+    calendarCustomPromptForTitle: true,
 
     // Navigation pane tab - Appearance
     colorIconOnly: false,

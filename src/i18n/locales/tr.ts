@@ -77,6 +77,10 @@ export const STRINGS_TR = {
     navigationCalendar: {
         ariaLabel: 'Takvim',
         dailyNotesNotEnabled: 'Günlük notlar eklentisi etkin değil.',
+        promptDailyNoteTitle: {
+            title: 'Günlük not başlığı',
+            placeholder: 'Başlık girin'
+        },
         createDailyNote: {
             title: 'Yeni günlük not',
             message: '{filename} dosyası mevcut değil. Oluşturmak ister misiniz?',
@@ -604,7 +608,8 @@ export const STRINGS_TR = {
             },
             navigation: {
                 appearance: 'Görünüm',
-                shortcutsAndRecent: 'Kısayollar ve son öğeler'
+                shortcutsAndRecent: 'Kısayollar ve son öğeler',
+                calendarIntegration: 'Takvim entegrasyonu'
             },
             list: {
                 display: 'Görünüm',
@@ -911,6 +916,33 @@ export const STRINGS_TR = {
             calendarConfirmBeforeCreate: {
                 name: 'Oluşturmadan önce onayla',
                 desc: 'Yeni bir günlük not oluştururken onay iletişim kutusu göster.'
+            },
+            calendarIntegrationMode: {
+                name: 'Günlük not kaynağı',
+                desc: 'Takvim notları için kaynak.',
+                options: {
+                    dailyNotes: 'Günlük notlar',
+                    notebookNavigator: 'Notebook Navigator'
+                },
+                info: {
+                    dailyNotes: 'Klasör ve tarih formatı Daily Notes çekirdek eklentisinde yapılandırılır.'
+                }
+            },
+            calendarCustomRootFolder: {
+                name: 'Kök klasör',
+                desc: 'Takvim notları için temel klasör.',
+                placeholder: 'Personal/Diary'
+            },
+            calendarCustomFilePattern: {
+                name: 'Dosya kalıbı',
+                desc: 'Kök klasöre göre tarih kalıbı. Desteklenen tokenler: YYYY, MM, M, DD, D. Notlar isteğe bağlı başlık eki içerebilir.',
+                placeholder: 'YYYY/YYYYMMDD',
+                example: 'Geçerli sözdizimi şöyle görünür: {path}',
+                parsingError: 'Kalıp YYYY, MM/M ve DD/D içermelidir. Desteklenen tokenler: YYYY, MM, M, DD, D.'
+            },
+            calendarCustomPromptForTitle: {
+                name: 'Başlık iste',
+                desc: 'Not oluştururken başlık isteyin. Boş başlıkları kabul eder.'
             },
             showTooltips: {
                 name: 'İpuçlarını göster',

@@ -76,6 +76,10 @@ export const STRINGS_DE = {
     navigationCalendar: {
         ariaLabel: 'Kalender',
         dailyNotesNotEnabled: 'Das Kernplugin für tägliche Notizen ist nicht aktiviert.',
+        promptDailyNoteTitle: {
+            title: 'Titel der Tagesnotiz',
+            placeholder: 'Titel eingeben'
+        },
         createDailyNote: {
             title: 'Neue tägliche Notiz',
             message: 'Datei {filename} existiert nicht. Möchten Sie sie erstellen?',
@@ -605,7 +609,8 @@ export const STRINGS_DE = {
             },
             navigation: {
                 appearance: 'Darstellung',
-                shortcutsAndRecent: 'Verknüpfungen & Letzte Einträge'
+                shortcutsAndRecent: 'Verknüpfungen & Letzte Einträge',
+                calendarIntegration: 'Kalenderintegration'
             },
             list: {
                 display: 'Darstellung',
@@ -913,6 +918,33 @@ export const STRINGS_DE = {
             calendarConfirmBeforeCreate: {
                 name: 'Vor Erstellung bestätigen',
                 desc: 'Bestätigungsdialog beim Erstellen einer neuen täglichen Notiz anzeigen.'
+            },
+            calendarIntegrationMode: {
+                name: 'Tagesnotiz-Quelle',
+                desc: 'Quelle für Kalendernotizen.',
+                options: {
+                    dailyNotes: 'Tägliche Notizen',
+                    notebookNavigator: 'Notebook Navigator'
+                },
+                info: {
+                    dailyNotes: 'Ordner und Datumsformat werden im Daily Notes-Core-Plugin konfiguriert.'
+                }
+            },
+            calendarCustomRootFolder: {
+                name: 'Stammordner',
+                desc: 'Basisordner für Kalendernotizen.',
+                placeholder: 'Personal/Diary'
+            },
+            calendarCustomFilePattern: {
+                name: 'Dateimuster',
+                desc: 'Datumsmuster relativ zum Stammordner. Unterstützte Token: YYYY, MM, M, DD, D. Notizen können ein optionales Titelsuffix enthalten.',
+                placeholder: 'YYYY/YYYYMMDD',
+                example: 'Aktuelle Syntax sieht so aus: {path}',
+                parsingError: 'Das Muster muss YYYY, MM/M und DD/D enthalten. Unterstützte Token: YYYY, MM, M, DD, D.'
+            },
+            calendarCustomPromptForTitle: {
+                name: 'Nach Titel fragen',
+                desc: 'Beim Erstellen von Notizen nach Titel fragen. Akzeptiert leere Titel.'
             },
             showTooltips: {
                 name: 'Tooltips anzeigen',

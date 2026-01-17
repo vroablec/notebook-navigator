@@ -2420,6 +2420,14 @@ body {
     --nn-nav-calendar-week-gap: 1px;
     --nn-nav-calendar-weekday-row-height: 14px;
     --nn-nav-calendar-header-row-height: 28px;
+    --nn-nav-calendar-header-font-size: 12px;
+    --nn-nav-calendar-nav-button-size: 28px;
+    --nn-nav-calendar-nav-icon-size: 16px;
+    --nn-nav-calendar-today-height: 28px;
+    --nn-nav-calendar-today-font-size: 12px;
+    --nn-nav-calendar-week-label-font-size: 11px;
+    --nn-nav-calendar-weeknumber-font-size: 10px;
+    --nn-nav-calendar-day-font-size: 12px;
     --nn-nav-calendar-section-gap: 6px;
     --nn-nav-calendar-padding: 8px;
     --nn-nav-calendar-safe-area: 0px;
@@ -2436,6 +2444,17 @@ body {
     --nn-nav-calendar-safe-area: var(--nn-mobile-safe-area-bottom);
     --nn-nav-calendar-scrollbar-gap: 0px;
     --nn-nav-calendar-border-width: 0px;
+    --nn-nav-calendar-weekday-row-height: 16px;
+    --nn-nav-calendar-week-row-height: 32px;
+    --nn-nav-calendar-header-row-height: 32px;
+    --nn-nav-calendar-header-font-size: 14px;
+    --nn-nav-calendar-nav-button-size: 32px;
+    --nn-nav-calendar-nav-icon-size: 18px;
+    --nn-nav-calendar-today-height: 32px;
+    --nn-nav-calendar-today-font-size: 14px;
+    --nn-nav-calendar-week-label-font-size: 12px;
+    --nn-nav-calendar-weeknumber-font-size: 11px;
+    --nn-nav-calendar-day-font-size: 13px;
 }
 
 .nn-navigation-pane[data-calendar='true'],
@@ -2497,7 +2516,7 @@ body {
 }
 
 .nn-navigation-calendar-month {
-    font-size: 12px;
+    font-size: var(--nn-nav-calendar-header-font-size);
     font-weight: 600;
     color: var(--nn-theme-nav-calendar-header-color);
 }
@@ -2511,8 +2530,8 @@ body {
 .nn-navigation-calendar-nav-button {
     -webkit-appearance: none;
     appearance: none;
-    width: 28px;
-    height: 28px;
+    width: var(--nn-nav-calendar-nav-button-size);
+    height: var(--nn-nav-calendar-nav-button-size);
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -2538,8 +2557,8 @@ body {
     background: transparent !important;
     color: var(--nn-theme-nav-calendar-header-color);
     font: inherit;
-    font-size: 12px;
-    height: 28px;
+    font-size: var(--nn-nav-calendar-today-font-size);
+    height: var(--nn-nav-calendar-today-height);
     padding: 0 8px;
     border-radius: 6px;
     cursor: pointer;
@@ -2557,8 +2576,8 @@ body {
 
 /* Calendar month navigation icon sizing (ServiceIcon renders an SVG). */
 .nn-navigation-calendar-nav-button svg {
-    width: 16px;
-    height: 16px;
+    width: var(--nn-nav-calendar-nav-icon-size);
+    height: var(--nn-nav-calendar-nav-icon-size);
 }
 
 .nn-navigation-calendar-weekdays {
@@ -2568,7 +2587,7 @@ body {
     column-gap: 1px;
     grid-template-columns: repeat(7, 1fr);
     color: var(--nn-theme-nav-calendar-week-label-color);
-    font-size: 11px;
+    font-size: var(--nn-nav-calendar-week-label-font-size);
     line-height: 1;
 }
 
@@ -2624,7 +2643,7 @@ body {
     justify-content: flex-end;
     padding-right: var(--nn-nav-calendar-weeknumber-padding-right);
     color: var(--nn-theme-nav-calendar-week-label-color);
-    font-size: 10px;
+    font-size: var(--nn-nav-calendar-weeknumber-font-size);
     line-height: 1;
 }
 
@@ -2698,7 +2717,7 @@ body {
     z-index: 0;
 }
 
-.nn-navigation-calendar-day.has-daily-note {
+.nn-navigation-calendar-day.has-daily-note:not(.has-feature-image):not(.has-feature-image-key) {
     background-color: var(--nn-theme-nav-calendar-day-has-note-bg) !important;
     color: var(--nn-theme-nav-calendar-day-has-note-color);
 }
@@ -2711,6 +2730,16 @@ body {
     color: var(--nn-theme-nav-calendar-day-today-color);
 }
 
+.nn-navigation-calendar[data-highlight-today='true'] .nn-navigation-calendar-day.is-today.has-daily-note .nn-navigation-calendar-day-number,
+.nn-navigation-calendar[data-highlight-today='true']
+    .nn-navigation-calendar-day.is-today.has-feature-image
+    .nn-navigation-calendar-day-number,
+.nn-navigation-calendar[data-highlight-today='true']
+    .nn-navigation-calendar-day.is-today.has-feature-image-key
+    .nn-navigation-calendar-day-number {
+    color: var(--nn-theme-nav-calendar-day-today-bg);
+}
+
 .nn-navigation-calendar-day.has-feature-image {
     color: var(--nn-theme-nav-calendar-day-has-feature-image-color);
 }
@@ -2721,11 +2750,56 @@ body {
         0 2px 8px rgba(0, 0, 0, 0.45);
 }
 
+.nn-navigation-calendar[data-highlight-today='true']
+    .nn-navigation-calendar-day.is-today.has-feature-image
+    .nn-navigation-calendar-day-number {
+    -webkit-text-stroke: 0;
+    text-shadow:
+        1px 0 0 rgba(255, 255, 255, 0.5),
+        -1px 0 0 rgba(255, 255, 255, 0.5),
+        0 1px 0 rgba(255, 255, 255, 0.5),
+        0 -1px 0 rgba(255, 255, 255, 0.5),
+        0 0 2px rgba(255, 255, 255, 1),
+        0 0 8px rgba(255, 255, 255, 1);
+}
+
 .nn-navigation-calendar-day-number {
-    font-size: 12px;
+    font-size: var(--nn-nav-calendar-day-font-size);
     line-height: 1;
     position: relative;
     z-index: 1;
+}
+
+.nn-navigation-calendar-hover-tooltip {
+    position: fixed;
+    z-index: 1000;
+    pointer-events: none;
+    width: 240px;
+    max-width: min(260px, calc(100vw - 16px));
+    padding: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    border-radius: 10px;
+    background: var(--background-secondary);
+    border: 1px solid var(--background-modifier-border);
+    box-shadow: var(--shadow-s, 0 6px 18px rgba(0, 0, 0, 0.2));
+}
+
+.nn-navigation-calendar-hover-tooltip-image {
+    width: 100%;
+    height: 120px;
+    border-radius: 8px;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.nn-navigation-calendar-hover-tooltip-text {
+    white-space: pre-line;
+    font-size: 12px;
+    line-height: 1.25;
+    color: var(--text-normal);
 }
 /* Source: src/styles/sections/list-files.css */
 
@@ -5039,10 +5113,24 @@ body.nn-resizing {
     display: none;
 }
 
+.nn-setting-warning {
+    color: var(--text-error);
+    font-weight: 600;
+}
+
 /* Container for additional info below settings */
 .nn-setting-info-container {
     margin-top: 8px;
     margin-bottom: 8px;
+}
+
+.nn-setting-info-container.nn-setting-info-centered.setting-item {
+    justify-content: center;
+}
+
+.nn-setting-info-container.nn-setting-info-centered .setting-item-info,
+.nn-setting-info-container.nn-setting-info-centered .setting-item-description {
+    text-align: center;
 }
 
 /* Wider text inputs for settings that benefit from more space */

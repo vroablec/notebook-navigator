@@ -77,6 +77,10 @@ export const STRINGS_NL = {
     navigationCalendar: {
         ariaLabel: 'Kalender',
         dailyNotesNotEnabled: 'De dagelijkse notities plugin is niet ingeschakeld.',
+        promptDailyNoteTitle: {
+            title: 'Titel dagelijkse notitie',
+            placeholder: 'Voer titel in'
+        },
         createDailyNote: {
             title: 'Nieuwe dagelijkse notitie',
             message: 'Bestand {filename} bestaat niet. Wilt u het aanmaken?',
@@ -606,7 +610,8 @@ export const STRINGS_NL = {
             },
             navigation: {
                 appearance: 'Uiterlijk',
-                shortcutsAndRecent: 'Snelkoppelingen en recente items'
+                shortcutsAndRecent: 'Snelkoppelingen en recente items',
+                calendarIntegration: 'Kalenderintegratie'
             },
             list: {
                 display: 'Uiterlijk',
@@ -913,6 +918,33 @@ export const STRINGS_NL = {
             calendarConfirmBeforeCreate: {
                 name: 'Bevestigen voor aanmaken',
                 desc: 'Toon een bevestigingsdialoog bij het aanmaken van een nieuwe dagelijkse notitie.'
+            },
+            calendarIntegrationMode: {
+                name: 'Dagelijkse notitie bron',
+                desc: 'Bron voor kalendernotities.',
+                options: {
+                    dailyNotes: 'Dagelijkse notities',
+                    notebookNavigator: 'Notebook Navigator'
+                },
+                info: {
+                    dailyNotes: 'Map en datumformaat worden geconfigureerd in de Daily Notes core plugin.'
+                }
+            },
+            calendarCustomRootFolder: {
+                name: 'Hoofdmap',
+                desc: 'Basismap voor kalendernotities.',
+                placeholder: 'Personal/Diary'
+            },
+            calendarCustomFilePattern: {
+                name: 'Bestandspatroon',
+                desc: 'Datumpatroon relatief aan hoofdmap. Ondersteunde tokens: YYYY, MM, M, DD, D. Notities kunnen een optioneel titelachtervoegsel bevatten.',
+                placeholder: 'YYYY/YYYYMMDD',
+                example: 'Huidige syntaxis ziet er zo uit: {path}',
+                parsingError: 'Patroon moet YYYY, MM/M en DD/D bevatten. Ondersteunde tokens: YYYY, MM, M, DD, D.'
+            },
+            calendarCustomPromptForTitle: {
+                name: 'Vraag om titel',
+                desc: 'Vraag om titel bij het maken van notities. Accepteert lege titels.'
             },
             showTooltips: {
                 name: 'Tooltips tonen',

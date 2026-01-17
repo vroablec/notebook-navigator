@@ -76,6 +76,10 @@ export const STRINGS_ZH_CN = {
     navigationCalendar: {
         ariaLabel: '导航日历',
         dailyNotesNotEnabled: '未启用每日笔记。请在 Obsidian 设置 → 核心插件中启用每日笔记。',
+        promptDailyNoteTitle: {
+            title: '每日笔记标题',
+            placeholder: '输入标题'
+        },
         createDailyNote: {
             title: '创建每日笔记',
             message: '每日笔记 {filename} 不存在。是否创建？',
@@ -603,7 +607,8 @@ export const STRINGS_ZH_CN = {
             },
             navigation: {
                 appearance: '外观',
-                shortcutsAndRecent: '快捷方式和最近项目'
+                shortcutsAndRecent: '快捷方式和最近项目',
+                calendarIntegration: '日历集成'
             },
             list: {
                 display: '外观',
@@ -909,6 +914,33 @@ export const STRINGS_ZH_CN = {
             calendarConfirmBeforeCreate: {
                 name: '创建前确认',
                 desc: '点击没有笔记的日期时显示确认对话框。'
+            },
+            calendarIntegrationMode: {
+                name: '日记来源',
+                desc: '日历笔记的来源。',
+                options: {
+                    dailyNotes: '日记',
+                    notebookNavigator: 'Notebook Navigator'
+                },
+                info: {
+                    dailyNotes: '文件夹和日期格式在日记核心插件中配置。'
+                }
+            },
+            calendarCustomRootFolder: {
+                name: '根文件夹',
+                desc: '日历笔记的基础文件夹。',
+                placeholder: 'Personal/Diary'
+            },
+            calendarCustomFilePattern: {
+                name: '文件模式',
+                desc: '相对于根文件夹的日期模式。支持的标记：YYYY、MM、M、DD、D。笔记可以包含可选的标题后缀。',
+                placeholder: 'YYYY/YYYYMMDD',
+                example: '当前语法如下：{path}',
+                parsingError: '模式必须包含 YYYY、MM/M 和 DD/D。支持的标记：YYYY、MM、M、DD、D。'
+            },
+            calendarCustomPromptForTitle: {
+                name: '提示输入标题',
+                desc: '创建笔记时提示输入标题。允许空标题。'
             },
             showTooltips: {
                 name: '显示工具提示',

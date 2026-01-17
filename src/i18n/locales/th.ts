@@ -77,6 +77,10 @@ export const STRINGS_TH = {
     navigationCalendar: {
         ariaLabel: 'ปฏิทิน',
         dailyNotesNotEnabled: 'ปลั๊กอินบันทึกรายวันไม่ได้เปิดใช้งาน',
+        promptDailyNoteTitle: {
+            title: 'ชื่อบันทึกรายวัน',
+            placeholder: 'ป้อนชื่อเรื่อง'
+        },
         createDailyNote: {
             title: 'บันทึกรายวันใหม่',
             message: 'ไฟล์ {filename} ไม่มีอยู่ คุณต้องการสร้างหรือไม่?',
@@ -604,7 +608,8 @@ export const STRINGS_TH = {
             },
             navigation: {
                 appearance: 'ลักษณะ',
-                shortcutsAndRecent: 'ทางลัดและรายการล่าสุด'
+                shortcutsAndRecent: 'ทางลัดและรายการล่าสุด',
+                calendarIntegration: 'การรวมปฏิทิน'
             },
             list: {
                 display: 'ลักษณะ',
@@ -911,6 +916,33 @@ export const STRINGS_TH = {
             calendarConfirmBeforeCreate: {
                 name: 'ยืนยันก่อนสร้าง',
                 desc: 'แสดงกล่องยืนยันเมื่อสร้างบันทึกรายวันใหม่'
+            },
+            calendarIntegrationMode: {
+                name: 'แหล่งที่มาบันทึกรายวัน',
+                desc: 'แหล่งที่มาสำหรับบันทึกปฏิทิน',
+                options: {
+                    dailyNotes: 'บันทึกรายวัน',
+                    notebookNavigator: 'Notebook Navigator'
+                },
+                info: {
+                    dailyNotes: 'โฟลเดอร์และรูปแบบวันที่ถูกกำหนดค่าในปลั๊กอิน Daily Notes หลัก'
+                }
+            },
+            calendarCustomRootFolder: {
+                name: 'โฟลเดอร์หลัก',
+                desc: 'โฟลเดอร์ฐานสำหรับบันทึกปฏิทิน',
+                placeholder: 'Personal/Diary'
+            },
+            calendarCustomFilePattern: {
+                name: 'รูปแบบไฟล์',
+                desc: 'รูปแบบวันที่เทียบกับโฟลเดอร์หลัก โทเค็นที่รองรับ: YYYY, MM, M, DD, D บันทึกสามารถรวมส่วนต่อท้ายชื่อเรื่องที่เป็นทางเลือกได้',
+                placeholder: 'YYYY/YYYYMMDD',
+                example: 'รูปแบบปัจจุบันมีลักษณะดังนี้: {path}',
+                parsingError: 'รูปแบบต้องรวม YYYY, MM/M และ DD/D โทเค็นที่รองรับ: YYYY, MM, M, DD, D'
+            },
+            calendarCustomPromptForTitle: {
+                name: 'ขอชื่อเรื่อง',
+                desc: 'ขอชื่อเรื่องเมื่อสร้างบันทึก ยอมรับชื่อเรื่องว่าง'
             },
             showTooltips: {
                 name: 'แสดง tooltips',

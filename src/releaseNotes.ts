@@ -78,8 +78,13 @@ const RELEASE_NOTES: ReleaseNote[] = [
         version: '2.1.1',
         date: '2026-01-16',
         showOnUpdate: true,
-        new: [],
-        improved: ['Calendar overlay now renders in the list pane when using vertical split.'],
+        new: [
+            'New setting ==Navigation pane > Calendar integration==. Switch between Daily notes integration and a custom format that also supports daily note titles.'
+        ],
+        improved: [
+            'The calendar widget now renders in the bottom of the list pane when using vertical split.',
+            'Hover over calendar days now shows a tooltip with feature image, date, and title.'
+        ],
         changed: [],
         fixed: [
             'Fixed an issue with UI scale causing the floating toolbar buttons on iOS with Obsidian 1.11 and later to be mispositioned.',

@@ -61,6 +61,9 @@ export type ShortcutBadgeDisplayMode = 'index' | 'count' | 'none';
 /** Number of calendar week rows shown in the navigation pane */
 export type CalendarWeeksToShow = 1 | 2 | 3 | 4 | 5 | 6;
 
+/** Source used for calendar notes in the navigation pane */
+export type CalendarIntegrationMode = 'daily-notes' | 'notebook-navigator';
+
 /** Default display modes for list items */
 export type ListDisplayMode = 'standard' | 'compact';
 
@@ -158,6 +161,12 @@ export interface NotebookNavigatorSettings {
     calendarHighlightToday: boolean;
     calendarShowWeekNumber: boolean;
     calendarConfirmBeforeCreate: boolean;
+
+    // Navigation pane tab - Calendar integration
+    calendarIntegrationMode: CalendarIntegrationMode;
+    calendarCustomRootFolder: string;
+    calendarCustomFilePattern: string;
+    calendarCustomPromptForTitle: boolean;
 
     // Navigation pane tab - Appearance
     colorIconOnly: boolean;

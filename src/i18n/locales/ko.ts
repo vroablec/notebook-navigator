@@ -76,6 +76,10 @@ export const STRINGS_KO = {
     navigationCalendar: {
         ariaLabel: '달력',
         dailyNotesNotEnabled: '데일리 노트 코어 플러그인이 활성화되어 있지 않습니다.',
+        promptDailyNoteTitle: {
+            title: '데일리 노트 제목',
+            placeholder: '제목 입력'
+        },
         createDailyNote: {
             title: '새 데일리 노트',
             message: '파일 {filename}이(가) 존재하지 않습니다. 생성하시겠습니까?',
@@ -604,7 +608,8 @@ export const STRINGS_KO = {
             },
             navigation: {
                 appearance: '모양',
-                shortcutsAndRecent: '바로가기 및 최근 항목'
+                shortcutsAndRecent: '바로가기 및 최근 항목',
+                calendarIntegration: '캘린더 연동'
             },
             list: {
                 display: '모양',
@@ -911,6 +916,33 @@ export const STRINGS_KO = {
             calendarConfirmBeforeCreate: {
                 name: '생성 전 확인',
                 desc: '새 데일리 노트를 생성할 때 확인 대화 상자를 표시합니다.'
+            },
+            calendarIntegrationMode: {
+                name: '데일리 노트 소스',
+                desc: '캘린더 노트 소스.',
+                options: {
+                    dailyNotes: '데일리 노트',
+                    notebookNavigator: 'Notebook Navigator'
+                },
+                info: {
+                    dailyNotes: '폴더 및 날짜 형식은 데일리 노트 코어 플러그인에서 설정됩니다.'
+                }
+            },
+            calendarCustomRootFolder: {
+                name: '루트 폴더',
+                desc: '캘린더 노트의 기본 폴더.',
+                placeholder: 'Personal/Diary'
+            },
+            calendarCustomFilePattern: {
+                name: '파일 패턴',
+                desc: '루트 폴더 기준 날짜 패턴. 지원되는 토큰: YYYY, MM, M, DD, D. 노트에는 선택적 제목 접미사를 포함할 수 있습니다.',
+                placeholder: 'YYYY/YYYYMMDD',
+                example: '현재 구문은 다음과 같습니다: {path}',
+                parsingError: '패턴에는 YYYY, MM/M, DD/D가 포함되어야 합니다. 지원되는 토큰: YYYY, MM, M, DD, D.'
+            },
+            calendarCustomPromptForTitle: {
+                name: '제목 입력',
+                desc: '노트 생성 시 제목 입력. 빈 제목 허용.'
             },
             showTooltips: {
                 name: '도구 설명 표시',

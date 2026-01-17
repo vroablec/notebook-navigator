@@ -23,9 +23,18 @@ import { DEFAULT_SETTINGS } from '../defaultSettings';
 import type { CalendarWeeksToShow, ItemScope, ShortcutBadgeDisplayMode } from '../types';
 import type { SettingsTabContext } from './SettingsTabContext';
 import { runAsyncAction } from '../../utils/async';
+import {
+    createCalendarCustomDateFormatter,
+    ensureMarkdownFileName,
+    isCalendarCustomDatePatternValid,
+    normalizeCalendarCustomFilePattern,
+    normalizeCalendarCustomRootFolder,
+    normalizeCalendarVaultFolderPath,
+    splitCalendarCustomPattern
+} from '../../utils/calendarCustomNotePatterns';
 import { getActiveVaultProfile } from '../../utils/vaultProfiles';
 import { createSettingGroupFactory } from '../settingGroups';
-import { createSubSettingsContainer, wireToggleSettingWithSubSettings } from '../subSettings';
+import { createSubSettingsContainer, setElementVisible, wireToggleSettingWithSubSettings } from '../subSettings';
 import { getMomentApi } from '../../utils/moment';
 
 const CALENDAR_LOCALE_SYSTEM_DEFAULT = 'system-default';
@@ -44,7 +53,7 @@ function formatCalendarWeeksOption(count: number): string {
 
 /** Renders the navigation pane settings tab */
 export function renderNavigationPaneTab(context: SettingsTabContext): void {
-    const { containerEl, plugin, addToggleSetting } = context;
+    const { containerEl, plugin, addToggleSetting, createDebouncedTextSetting } = context;
     const getActiveProfile = () => getActiveVaultProfile(plugin.settings);
 
     const createGroup = createSettingGroupFactory(containerEl);
@@ -261,6 +270,164 @@ export function renderNavigationPaneTab(context: SettingsTabContext): void {
                 await plugin.saveSettingsAndUpdate();
             })
         );
+
+    const calendarIntegrationGroup = createGroup(strings.settings.groups.navigation.calendarIntegration);
+
+    const calendarIntegrationSetting = calendarIntegrationGroup.addSetting(setting => {
+        setting
+            .setName(strings.settings.items.calendarIntegrationMode.name)
+            .setDesc(strings.settings.items.calendarIntegrationMode.desc)
+            .addDropdown(dropdown =>
+                dropdown
+                    .addOption('daily-notes', strings.settings.items.calendarIntegrationMode.options.dailyNotes)
+                    .addOption('notebook-navigator', strings.settings.items.calendarIntegrationMode.options.notebookNavigator)
+                    .setValue(plugin.settings.calendarIntegrationMode)
+                    .onChange(async value => {
+                        if (value !== 'daily-notes' && value !== 'notebook-navigator') {
+                            return;
+                        }
+                        plugin.settings.calendarIntegrationMode = value;
+                        await plugin.saveSettingsAndUpdate();
+                        renderCalendarIntegrationVisibility();
+                    })
+            );
+    });
+
+    const dailyNotesInfoSettingsEl = createSubSettingsContainer(calendarIntegrationSetting);
+    const customCalendarSettingsEl = createSubSettingsContainer(calendarIntegrationSetting);
+
+    const dailyNotesInfoSetting = new Setting(dailyNotesInfoSettingsEl).setName('').setDesc('');
+    dailyNotesInfoSetting.settingEl.addClass('nn-setting-info-container');
+    dailyNotesInfoSetting.settingEl.addClass('nn-setting-info-centered');
+    dailyNotesInfoSetting.descEl.empty();
+    dailyNotesInfoSetting.descEl.createDiv({ text: strings.settings.items.calendarIntegrationMode.info.dailyNotes });
+
+    const calendarCustomRootFolderSetting = createDebouncedTextSetting(
+        customCalendarSettingsEl,
+        strings.settings.items.calendarCustomRootFolder.name,
+        strings.settings.items.calendarCustomRootFolder.desc,
+        strings.settings.items.calendarCustomRootFolder.placeholder,
+        () => normalizeCalendarCustomRootFolder(plugin.settings.calendarCustomRootFolder),
+        value => {
+            plugin.settings.calendarCustomRootFolder = normalizeCalendarCustomRootFolder(value);
+        },
+        undefined,
+        () => renderCalendarCustomFilePatternPreview()
+    );
+    calendarCustomRootFolderSetting.controlEl.addClass('nn-setting-wide-input');
+
+    const calendarCustomFilePatternSetting = createDebouncedTextSetting(
+        customCalendarSettingsEl,
+        strings.settings.items.calendarCustomFilePattern.name,
+        strings.settings.items.calendarCustomFilePattern.desc,
+        strings.settings.items.calendarCustomFilePattern.placeholder,
+        () => normalizeCalendarCustomFilePattern(plugin.settings.calendarCustomFilePattern),
+        value => {
+            plugin.settings.calendarCustomFilePattern = normalizeCalendarCustomFilePattern(value);
+        },
+        undefined,
+        () => renderCalendarIntegrationVisibility()
+    );
+    calendarCustomFilePatternSetting.controlEl.addClass('nn-setting-wide-input');
+
+    const calendarCustomFilePatternExampleEl = calendarCustomFilePatternSetting.descEl.createDiv();
+    const calendarCustomFilePatternExampleTextEl = calendarCustomFilePatternExampleEl.createEl('strong');
+
+    const calendarCustomFilePatternErrorEl = calendarCustomFilePatternSetting.descEl.createDiv({
+        cls: 'setting-item-description nn-setting-hidden nn-setting-warning'
+    });
+
+    new Setting(customCalendarSettingsEl)
+        .setName(strings.settings.items.calendarCustomPromptForTitle.name)
+        .setDesc(strings.settings.items.calendarCustomPromptForTitle.desc)
+        .addToggle(toggle =>
+            toggle.setValue(plugin.settings.calendarCustomPromptForTitle).onChange(async value => {
+                plugin.settings.calendarCustomPromptForTitle = value;
+                await plugin.saveSettingsAndUpdate();
+            })
+        );
+
+    const rootFolderInputEl = calendarCustomRootFolderSetting.controlEl.querySelector('input');
+    const filePatternInputEl = calendarCustomFilePatternSetting.controlEl.querySelector('input');
+
+    // Read current input values while typing; the setting values are updated via debounced callbacks.
+    const getInputValue = (element: Element | null, fallback: string): string => {
+        if (element instanceof HTMLInputElement) {
+            return element.value;
+        }
+        return fallback;
+    };
+
+    /** Updates the preview path shown under the custom calendar file pattern setting */
+    const renderCalendarCustomFilePatternPreview = (): void => {
+        const momentApi = getMomentApi();
+        if (!momentApi) {
+            calendarCustomFilePatternExampleTextEl.setText(strings.settings.items.calendarCustomFilePattern.example.replace('{path}', ''));
+            return;
+        }
+
+        const rootFolderRaw = getInputValue(rootFolderInputEl, plugin.settings.calendarCustomRootFolder);
+        const patternRaw = getInputValue(filePatternInputEl, plugin.settings.calendarCustomFilePattern);
+
+        const rootFolder = normalizeCalendarCustomRootFolder(rootFolderRaw);
+        const normalizedPattern = normalizeCalendarCustomFilePattern(patternRaw);
+        const { folderPattern, filePattern } = splitCalendarCustomPattern(normalizedPattern);
+
+        const sampleDate = momentApi('2026-01-16', 'YYYY-MM-DD', true);
+        if (!sampleDate.isValid()) {
+            calendarCustomFilePatternExampleTextEl.setText(strings.settings.items.calendarCustomFilePattern.example.replace('{path}', ''));
+            return;
+        }
+
+        const folderFormatter = createCalendarCustomDateFormatter(folderPattern);
+        const fileFormatter = createCalendarCustomDateFormatter(filePattern);
+
+        const folderSuffix = folderFormatter(sampleDate);
+        const rawFolderPath = rootFolder ? (folderSuffix ? `${rootFolder}/${folderSuffix}` : rootFolder) : folderSuffix;
+        const folderPath = normalizeCalendarVaultFolderPath(rawFolderPath || '/');
+
+        const formattedFilePattern = fileFormatter(sampleDate).trim();
+        const fileName = ensureMarkdownFileName(formattedFilePattern);
+        const filePath = folderPath === '/' ? fileName : `${folderPath}/${fileName}`;
+
+        calendarCustomFilePatternExampleTextEl.setText(
+            strings.settings.items.calendarCustomFilePattern.example.replace('{path}', filePath)
+        );
+    };
+
+    /** Updates calendar integration sub-setting visibility and validates the custom file pattern */
+    const renderCalendarIntegrationVisibility = (): void => {
+        const isDailyNotes = plugin.settings.calendarIntegrationMode === 'daily-notes';
+        const isCustom = plugin.settings.calendarIntegrationMode === 'notebook-navigator';
+
+        setElementVisible(dailyNotesInfoSettingsEl, isDailyNotes);
+        setElementVisible(customCalendarSettingsEl, isCustom);
+
+        if (!isCustom) {
+            setElementVisible(calendarCustomFilePatternErrorEl, false);
+            return;
+        }
+
+        const patternRaw = getInputValue(filePatternInputEl, plugin.settings.calendarCustomFilePattern);
+        const normalizedPattern = normalizeCalendarCustomFilePattern(patternRaw);
+        const { folderPattern, filePattern } = splitCalendarCustomPattern(normalizedPattern);
+        const customPattern = folderPattern ? `${folderPattern}/${filePattern}` : filePattern;
+        const showError = !isCalendarCustomDatePatternValid(customPattern);
+        calendarCustomFilePatternErrorEl.setText(showError ? strings.settings.items.calendarCustomFilePattern.parsingError : '');
+        setElementVisible(calendarCustomFilePatternErrorEl, showError);
+
+        renderCalendarCustomFilePatternPreview();
+    };
+
+    if (rootFolderInputEl instanceof HTMLInputElement) {
+        rootFolderInputEl.addEventListener('input', () => renderCalendarIntegrationVisibility());
+    }
+
+    if (filePatternInputEl instanceof HTMLInputElement) {
+        filePatternInputEl.addEventListener('input', () => renderCalendarIntegrationVisibility());
+    }
+
+    renderCalendarIntegrationVisibility();
 
     const appearanceGroup = createGroup(strings.settings.groups.navigation.appearance);
 
