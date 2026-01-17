@@ -891,8 +891,8 @@ interface ToolbarButtonConfig<T extends string> {
 const NAVIGATION_TOOLBAR_BUTTONS: ToolbarButtonConfig<NavigationToolbarButtonId>[] = [
     { id: 'toggleDualPane', uxIconId: 'nav-show-dual-pane', label: strings.paneHeader.showDualPane },
     { id: 'expandCollapse', uxIconId: 'nav-expand-all', label: strings.paneHeader.expandAllFolders },
-    { id: 'calendar', uxIconId: 'nav-calendar', label: strings.paneHeader.showCalendar },
     { id: 'hiddenItems', uxIconId: 'nav-hidden-items', label: strings.paneHeader.showExcludedItems },
+    { id: 'calendar', uxIconId: 'nav-calendar', label: strings.paneHeader.showCalendar },
     { id: 'rootReorder', uxIconId: 'nav-root-reorder', label: strings.paneHeader.reorderRootFolders },
     { id: 'newFolder', uxIconId: 'nav-new-folder', label: strings.paneHeader.newFolder }
 ];

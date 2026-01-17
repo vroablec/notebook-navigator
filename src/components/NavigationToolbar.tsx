@@ -99,16 +99,6 @@ export function NavigationToolbar({
                                 />
                             </button>
                         ) : null}
-                        {showCalendarButton ? (
-                            <button
-                                className={`${leftButtonBaseClassName}${isCalendarVisible ? ' nn-mobile-toolbar-button-active' : ''}`}
-                                aria-label={isCalendarVisible ? strings.paneHeader.hideCalendar : strings.paneHeader.showCalendar}
-                                onClick={toggleShowCalendar}
-                                tabIndex={-1}
-                            >
-                                <ServiceIcon iconId={resolveUXIcon(settings.interfaceIcons, 'nav-calendar')} />
-                            </button>
-                        ) : null}
                         {showHiddenItemsButton ? (
                             <button
                                 className={`${leftButtonBaseClassName}${showHiddenItems ? ' nn-mobile-toolbar-button-active' : ''}`}
@@ -125,6 +115,16 @@ export function NavigationToolbar({
                                 tabIndex={-1}
                             >
                                 <ServiceIcon iconId={resolveUXIcon(settings.interfaceIcons, 'nav-hidden-items')} />
+                            </button>
+                        ) : null}
+                        {showCalendarButton ? (
+                            <button
+                                className={`${leftButtonBaseClassName}${isCalendarVisible ? ' nn-mobile-toolbar-button-active' : ''}`}
+                                aria-label={isCalendarVisible ? strings.paneHeader.hideCalendar : strings.paneHeader.showCalendar}
+                                onClick={toggleShowCalendar}
+                                tabIndex={-1}
+                            >
+                                <ServiceIcon iconId={resolveUXIcon(settings.interfaceIcons, 'nav-calendar')} />
                             </button>
                         ) : null}
                         {showRootReorderButton ? (

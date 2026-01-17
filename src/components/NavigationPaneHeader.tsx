@@ -169,17 +169,6 @@ export function NavigationPaneHeader({
                             />
                         </button>
                     ) : null}
-                    {showCalendarButton ? (
-                        <button
-                            className={`nn-icon-button ${isCalendarVisible ? 'nn-icon-button-active' : ''}`}
-                            aria-label={isCalendarVisible ? strings.paneHeader.hideCalendar : strings.paneHeader.showCalendar}
-                            onClick={toggleShowCalendar}
-                            tabIndex={-1}
-                            type="button"
-                        >
-                            <ServiceIcon iconId={resolveUXIcon(settings.interfaceIcons, 'nav-calendar')} />
-                        </button>
-                    ) : null}
                     {showHiddenItemsButton ? (
                         <button
                             className={`nn-icon-button ${showHiddenItems ? 'nn-icon-button-active' : ''}`}
@@ -197,6 +186,17 @@ export function NavigationPaneHeader({
                             tabIndex={-1}
                         >
                             <ServiceIcon iconId={resolveUXIcon(settings.interfaceIcons, 'nav-hidden-items')} />
+                        </button>
+                    ) : null}
+                    {showCalendarButton ? (
+                        <button
+                            className={`nn-icon-button ${isCalendarVisible ? 'nn-icon-button-active' : ''}`}
+                            aria-label={isCalendarVisible ? strings.paneHeader.hideCalendar : strings.paneHeader.showCalendar}
+                            onClick={toggleShowCalendar}
+                            tabIndex={-1}
+                            type="button"
+                        >
+                            <ServiceIcon iconId={resolveUXIcon(settings.interfaceIcons, 'nav-calendar')} />
                         </button>
                     ) : null}
                     {showRootReorderButton ? (
