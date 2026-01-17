@@ -81,6 +81,7 @@ const RELEASE_NOTES: ReleaseNote[] = [
         new: [],
         improved: [],
         changed: [
+            "'Show notes from subfolders' and calendar are now disabled by default. It creates a simpler and easier startup experience for new users.",
             'PDF feature image generation no longer falls back to reading full PDFs into memory when pdf.js URL loading fails.',
             'PDF thumbnail decoding now uses the same max pixel cap as other thumbnail fallback decode paths.',
             'Mobile devices now skip PDF cover thumbnails for PDF files larger than 20 MB.',
