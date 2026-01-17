@@ -240,12 +240,53 @@ export default class NotebookNavigatorPlugin extends Plugin implements ISettings
         await this.saveSettingsAndUpdate();
     }
 
+    private updateSettingAndMirrorToLocalStorage<K extends SyncModeSettingId & keyof NotebookNavigatorSettings>(params: {
+        settingId: K;
+        localStorageKey: string;
+        nextValue: NotebookNavigatorSettings[K];
+    }): void {
+        if (this.settings[params.settingId] === params.nextValue) {
+            return;
+        }
+
+        this.settings[params.settingId] = params.nextValue;
+        localStorage.set(params.localStorageKey, params.nextValue);
+        this.persistSyncModeSettingUpdate(params.settingId);
+    }
+
+    private updateBoundedNumberSettingAndMirror(params: {
+        settingId: 'paneTransitionDuration' | 'navIndent' | 'navItemHeight' | 'compactItemHeight';
+        localStorageKey: string;
+        rawValue: number;
+        min: number;
+        max: number;
+        fallback: number;
+    }): void {
+        const parsed = this.parseFiniteNumber(params.rawValue);
+        const next = parsed !== null ? Math.min(params.max, Math.max(params.min, parsed)) : params.fallback;
+        this.updateSettingAndMirrorToLocalStorage({
+            settingId: params.settingId,
+            localStorageKey: params.localStorageKey,
+            nextValue: next
+        });
+    }
+
     private getSyncModeRegistry(): SyncModeRegistry {
         if (this.syncModeRegistry) {
             return this.syncModeRegistry;
         }
 
         type PersistedKey = keyof NotebookNavigatorSettings;
+
+        const setLocalStorage = <T>(key: string, value: T): void => {
+            localStorage.set(key, value);
+        };
+
+        const mirrorFromSettings = <T>(key: string, getValue: () => T) => {
+            return () => {
+                setLocalStorage(key, getValue());
+            };
+        };
 
         const deletePersistedKeys = (persisted: Record<string, unknown>, keys: readonly PersistedKey[]) => {
             keys.forEach(key => {
@@ -263,6 +304,100 @@ export default class NotebookNavigatorPlugin extends Plugin implements ISettings
                 ...update
             };
             this.persistUXPreferences(false);
+        };
+
+        const createUXPreferenceEntry = (params: {
+            settingId: 'includeDescendantNotes' | 'showCalendar';
+            persistedKey: 'includeDescendantNotes' | 'showCalendar';
+        }) => {
+            return createEntry({
+                persistedKeys: [params.persistedKey],
+                loadPhase: 'preProfiles',
+                resolveOnLoad: () => {
+                    const storedUXPreferences = localStorage.get<unknown>(this.keys.uxPreferencesKey);
+                    const storedValid = this.isUXPreferencesRecord(storedUXPreferences);
+                    const base: UXPreferences = storedValid
+                        ? { ...DEFAULT_UX_PREFERENCES, ...storedUXPreferences }
+                        : { ...DEFAULT_UX_PREFERENCES };
+                    const isDeviceLocal = this.isDeviceLocal(params.settingId);
+                    const nextValue = isDeviceLocal
+                        ? base[params.persistedKey]
+                        : this.sanitizeBooleanSetting(this.settings[params.persistedKey], DEFAULT_SETTINGS[params.persistedKey]);
+                    this.settings[params.persistedKey] = nextValue;
+
+                    if (!storedValid || base[params.persistedKey] !== nextValue) {
+                        setLocalStorage(this.keys.uxPreferencesKey, {
+                            ...base,
+                            [params.persistedKey]: nextValue
+                        });
+                    }
+
+                    return { migrated: false };
+                },
+                mirrorToLocalStorage: () => {
+                    mirrorUXPreferences({
+                        [params.persistedKey]: this.settings[params.persistedKey]
+                    });
+                }
+            });
+        };
+
+        const createResolvedLocalStorageEntry = <T>(params: {
+            settingId: SyncModeSettingId;
+            persistedKeys: readonly PersistedKey[];
+            loadPhase: 'preProfiles' | 'postProfiles';
+            localStorageKey: string;
+            resolveDeviceLocal: (storedData: Record<string, unknown> | null) => { value: T; migrated: boolean };
+            sanitizeSynced: () => T;
+            getCurrent: () => T;
+            setCurrent: (value: T) => void;
+            cleanupOnLoad?: boolean;
+            deleteFromPersisted?: (persisted: Record<string, unknown>) => void;
+        }) => {
+            return createEntry({
+                persistedKeys: params.persistedKeys,
+                loadPhase: params.loadPhase,
+                cleanupOnLoad: params.cleanupOnLoad,
+                deleteFromPersisted: params.deleteFromPersisted,
+                resolveOnLoad: ({ storedData }) => {
+                    if (this.isDeviceLocal(params.settingId)) {
+                        const resolved = params.resolveDeviceLocal(storedData);
+                        params.setCurrent(resolved.value);
+                        return { migrated: resolved.migrated };
+                    }
+
+                    const nextValue = params.sanitizeSynced();
+                    params.setCurrent(nextValue);
+                    setLocalStorage(params.localStorageKey, nextValue);
+                    return { migrated: false };
+                },
+                mirrorToLocalStorage: mirrorFromSettings(params.localStorageKey, params.getCurrent)
+            });
+        };
+
+        const createResolvedLocalStorageSettingEntry = <K extends SyncModeSettingId & PersistedKey>(params: {
+            settingId: K;
+            loadPhase: 'preProfiles' | 'postProfiles';
+            localStorageKey: string;
+            resolveDeviceLocal: (storedData: Record<string, unknown> | null) => { value: NotebookNavigatorSettings[K]; migrated: boolean };
+            sanitizeSynced: () => NotebookNavigatorSettings[K];
+            cleanupOnLoad?: boolean;
+            deleteFromPersisted?: (persisted: Record<string, unknown>) => void;
+        }) => {
+            return createResolvedLocalStorageEntry<NotebookNavigatorSettings[K]>({
+                settingId: params.settingId,
+                persistedKeys: [params.settingId],
+                loadPhase: params.loadPhase,
+                localStorageKey: params.localStorageKey,
+                resolveDeviceLocal: params.resolveDeviceLocal,
+                sanitizeSynced: params.sanitizeSynced,
+                getCurrent: () => this.settings[params.settingId],
+                setCurrent: value => {
+                    this.settings[params.settingId] = value;
+                },
+                cleanupOnLoad: params.cleanupOnLoad,
+                deleteFromPersisted: params.deleteFromPersisted
+            });
         };
 
         const createEntry = (params: {
@@ -300,76 +435,34 @@ export default class NotebookNavigatorPlugin extends Plugin implements ISettings
                     this.settings.vaultProfile = isDeviceLocal
                         ? this.resolveActiveVaultProfileId()
                         : this.sanitizeVaultProfileId(this.settings.vaultProfile);
-                    localStorage.set(this.keys.vaultProfileKey, this.settings.vaultProfile);
+                    setLocalStorage(this.keys.vaultProfileKey, this.settings.vaultProfile);
                     return { migrated: false };
                 },
-                mirrorToLocalStorage: () => {
-                    localStorage.set(this.keys.vaultProfileKey, this.settings.vaultProfile);
-                }
+                mirrorToLocalStorage: mirrorFromSettings(this.keys.vaultProfileKey, () => this.settings.vaultProfile)
             }),
-            tagSortOrder: createEntry({
-                persistedKeys: ['tagSortOrder'],
+            tagSortOrder: createResolvedLocalStorageSettingEntry({
+                settingId: 'tagSortOrder',
                 loadPhase: 'preProfiles',
-                resolveOnLoad: ({ storedData }) => {
-                    const isDeviceLocal = this.isDeviceLocal('tagSortOrder');
-                    this.settings.tagSortOrder = isDeviceLocal
-                        ? resolveTagSortOrder({ storedData, keys: this.keys, defaultSettings: DEFAULT_SETTINGS })
-                        : this.sanitizeTagSortOrderSetting(this.settings.tagSortOrder);
-                    if (!isDeviceLocal) {
-                        localStorage.set(this.keys.tagSortOrderKey, this.settings.tagSortOrder);
-                    }
-                    return { migrated: false };
-                },
-                mirrorToLocalStorage: () => {
-                    localStorage.set(this.keys.tagSortOrderKey, this.settings.tagSortOrder);
-                }
+                localStorageKey: this.keys.tagSortOrderKey,
+                resolveDeviceLocal: storedData => ({
+                    value: resolveTagSortOrder({ storedData, keys: this.keys, defaultSettings: DEFAULT_SETTINGS }),
+                    migrated: false
+                }),
+                sanitizeSynced: () => this.sanitizeTagSortOrderSetting(this.settings.tagSortOrder)
             }),
-            searchProvider: createEntry({
-                persistedKeys: ['searchProvider'],
+            searchProvider: createResolvedLocalStorageSettingEntry({
+                settingId: 'searchProvider',
                 loadPhase: 'preProfiles',
-                resolveOnLoad: ({ storedData }) => {
-                    const isDeviceLocal = this.isDeviceLocal('searchProvider');
-                    this.settings.searchProvider = isDeviceLocal
-                        ? resolveSearchProvider({ storedData, keys: this.keys, defaultSettings: DEFAULT_SETTINGS })
-                        : this.sanitizeSearchProviderSetting(this.settings.searchProvider);
-                    if (!isDeviceLocal) {
-                        localStorage.set(this.keys.searchProviderKey, this.settings.searchProvider);
-                    }
-                    return { migrated: false };
-                },
-                mirrorToLocalStorage: () => {
-                    localStorage.set(this.keys.searchProviderKey, this.settings.searchProvider);
-                }
+                localStorageKey: this.keys.searchProviderKey,
+                resolveDeviceLocal: storedData => ({
+                    value: resolveSearchProvider({ storedData, keys: this.keys, defaultSettings: DEFAULT_SETTINGS }),
+                    migrated: false
+                }),
+                sanitizeSynced: () => this.sanitizeSearchProviderSetting(this.settings.searchProvider)
             }),
-            includeDescendantNotes: createEntry({
-                persistedKeys: ['includeDescendantNotes'],
-                loadPhase: 'preProfiles',
-                resolveOnLoad: () => {
-                    const storedUXPreferences = localStorage.get<unknown>(this.keys.uxPreferencesKey);
-                    const storedValid = this.isUXPreferencesRecord(storedUXPreferences);
-                    const base: UXPreferences = storedValid
-                        ? { ...DEFAULT_UX_PREFERENCES, ...storedUXPreferences }
-                        : { ...DEFAULT_UX_PREFERENCES };
-                    const isDeviceLocal = this.isDeviceLocal('includeDescendantNotes');
-                    const includeDescendantNotes = isDeviceLocal
-                        ? base.includeDescendantNotes
-                        : this.sanitizeBooleanSetting(this.settings.includeDescendantNotes, DEFAULT_SETTINGS.includeDescendantNotes);
-                    this.settings.includeDescendantNotes = includeDescendantNotes;
-
-                    if (!storedValid || base.includeDescendantNotes !== includeDescendantNotes) {
-                        localStorage.set(this.keys.uxPreferencesKey, {
-                            ...base,
-                            includeDescendantNotes
-                        });
-                    }
-
-                    return { migrated: false };
-                },
-                mirrorToLocalStorage: () => {
-                    mirrorUXPreferences({
-                        includeDescendantNotes: this.settings.includeDescendantNotes
-                    });
-                }
+            includeDescendantNotes: createUXPreferenceEntry({
+                settingId: 'includeDescendantNotes',
+                persistedKey: 'includeDescendantNotes'
             }),
             dualPane: createEntry({
                 persistedKeys: ['dualPane'],
@@ -382,12 +475,10 @@ export default class NotebookNavigatorPlugin extends Plugin implements ISettings
                         ? (parsedDualPane ?? DEFAULT_SETTINGS.dualPane)
                         : this.sanitizeBooleanSetting(this.settings.dualPane, DEFAULT_SETTINGS.dualPane);
                     this.settings.dualPane = dualPane;
-                    localStorage.set(this.keys.dualPaneKey, dualPane ? '1' : '0');
+                    setLocalStorage(this.keys.dualPaneKey, dualPane ? '1' : '0');
                     return { migrated: false };
                 },
-                mirrorToLocalStorage: () => {
-                    localStorage.set(this.keys.dualPaneKey, this.settings.dualPane ? '1' : '0');
-                }
+                mirrorToLocalStorage: mirrorFromSettings(this.keys.dualPaneKey, () => (this.settings.dualPane ? '1' : '0'))
             }),
             dualPaneOrientation: createEntry({
                 persistedKeys: ['dualPaneOrientation'],
@@ -400,196 +491,78 @@ export default class NotebookNavigatorPlugin extends Plugin implements ISettings
                         ? (parsedDualPaneOrientation ?? DEFAULT_SETTINGS.dualPaneOrientation)
                         : this.sanitizeDualPaneOrientationSetting(this.settings.dualPaneOrientation);
                     this.settings.dualPaneOrientation = dualPaneOrientation;
-                    localStorage.set(this.keys.dualPaneOrientationKey, dualPaneOrientation);
+                    setLocalStorage(this.keys.dualPaneOrientationKey, dualPaneOrientation);
                     return { migrated: false };
                 },
-                mirrorToLocalStorage: () => {
-                    localStorage.set(this.keys.dualPaneOrientationKey, this.settings.dualPaneOrientation);
-                }
+                mirrorToLocalStorage: mirrorFromSettings(this.keys.dualPaneOrientationKey, () => this.settings.dualPaneOrientation)
             }),
-            paneTransitionDuration: createEntry({
-                persistedKeys: ['paneTransitionDuration'],
+            paneTransitionDuration: createResolvedLocalStorageSettingEntry({
+                settingId: 'paneTransitionDuration',
                 loadPhase: 'preProfiles',
-                resolveOnLoad: ({ storedData }) => {
-                    const isDeviceLocal = this.isDeviceLocal('paneTransitionDuration');
-                    if (isDeviceLocal) {
-                        const resolved = resolvePaneTransitionDuration({ storedData, keys: this.keys, defaultSettings: DEFAULT_SETTINGS });
-                        this.settings.paneTransitionDuration = resolved.value;
-                        return { migrated: resolved.migrated };
-                    }
-                    this.settings.paneTransitionDuration = this.sanitizePaneTransitionDurationSetting(this.settings.paneTransitionDuration);
-                    localStorage.set(this.keys.paneTransitionDurationKey, this.settings.paneTransitionDuration);
-                    return { migrated: false };
-                },
-                mirrorToLocalStorage: () => {
-                    localStorage.set(this.keys.paneTransitionDurationKey, this.settings.paneTransitionDuration);
-                }
+                localStorageKey: this.keys.paneTransitionDurationKey,
+                resolveDeviceLocal: storedData =>
+                    resolvePaneTransitionDuration({ storedData, keys: this.keys, defaultSettings: DEFAULT_SETTINGS }),
+                sanitizeSynced: () => this.sanitizePaneTransitionDurationSetting(this.settings.paneTransitionDuration)
             }),
-            toolbarVisibility: createEntry({
-                persistedKeys: ['toolbarVisibility'],
+            toolbarVisibility: createResolvedLocalStorageSettingEntry({
+                settingId: 'toolbarVisibility',
                 loadPhase: 'preProfiles',
-                resolveOnLoad: ({ storedData }) => {
-                    const isDeviceLocal = this.isDeviceLocal('toolbarVisibility');
-                    if (isDeviceLocal) {
-                        const resolved = resolveToolbarVisibility({ storedData, keys: this.keys, defaultSettings: DEFAULT_SETTINGS });
-                        this.settings.toolbarVisibility = resolved.value;
-                        return { migrated: resolved.migrated };
-                    }
-                    this.settings.toolbarVisibility = this.sanitizeToolbarVisibilitySetting(this.settings.toolbarVisibility);
-                    localStorage.set(this.keys.toolbarVisibilityKey, this.settings.toolbarVisibility);
-                    return { migrated: false };
-                },
-                mirrorToLocalStorage: () => {
-                    localStorage.set(this.keys.toolbarVisibilityKey, this.settings.toolbarVisibility);
-                }
+                localStorageKey: this.keys.toolbarVisibilityKey,
+                resolveDeviceLocal: storedData =>
+                    resolveToolbarVisibility({ storedData, keys: this.keys, defaultSettings: DEFAULT_SETTINGS }),
+                sanitizeSynced: () => this.sanitizeToolbarVisibilitySetting(this.settings.toolbarVisibility)
             }),
-            showCalendar: createEntry({
-                persistedKeys: ['showCalendar'],
-                loadPhase: 'preProfiles',
-                resolveOnLoad: () => {
-                    const storedUXPreferences = localStorage.get<unknown>(this.keys.uxPreferencesKey);
-                    const storedValid = this.isUXPreferencesRecord(storedUXPreferences);
-                    const base: UXPreferences = storedValid
-                        ? { ...DEFAULT_UX_PREFERENCES, ...storedUXPreferences }
-                        : { ...DEFAULT_UX_PREFERENCES };
-                    const isDeviceLocal = this.isDeviceLocal('showCalendar');
-                    const showCalendar = isDeviceLocal
-                        ? base.showCalendar
-                        : this.sanitizeBooleanSetting(this.settings.showCalendar, DEFAULT_SETTINGS.showCalendar);
-                    this.settings.showCalendar = showCalendar;
-
-                    if (!storedValid || base.showCalendar !== showCalendar) {
-                        localStorage.set(this.keys.uxPreferencesKey, {
-                            ...base,
-                            showCalendar
-                        });
-                    }
-
-                    return { migrated: false };
-                },
-                mirrorToLocalStorage: () => {
-                    mirrorUXPreferences({
-                        showCalendar: this.settings.showCalendar
-                    });
-                }
+            showCalendar: createUXPreferenceEntry({
+                settingId: 'showCalendar',
+                persistedKey: 'showCalendar'
             }),
-            navIndent: createEntry({
-                persistedKeys: ['navIndent'],
+            navIndent: createResolvedLocalStorageSettingEntry({
+                settingId: 'navIndent',
                 loadPhase: 'preProfiles',
-                resolveOnLoad: ({ storedData }) => {
-                    const isDeviceLocal = this.isDeviceLocal('navIndent');
-                    if (isDeviceLocal) {
-                        const resolved = resolveNavIndent({ storedData, keys: this.keys, defaultSettings: DEFAULT_SETTINGS });
-                        this.settings.navIndent = resolved.value;
-                        return { migrated: resolved.migrated };
-                    }
-                    this.settings.navIndent = this.sanitizeNavIndentSetting(this.settings.navIndent);
-                    localStorage.set(this.keys.navIndentKey, this.settings.navIndent);
-                    return { migrated: false };
-                },
-                mirrorToLocalStorage: () => {
-                    localStorage.set(this.keys.navIndentKey, this.settings.navIndent);
-                }
+                localStorageKey: this.keys.navIndentKey,
+                resolveDeviceLocal: storedData => resolveNavIndent({ storedData, keys: this.keys, defaultSettings: DEFAULT_SETTINGS }),
+                sanitizeSynced: () => this.sanitizeNavIndentSetting(this.settings.navIndent)
             }),
-            navItemHeight: createEntry({
-                persistedKeys: ['navItemHeight'],
+            navItemHeight: createResolvedLocalStorageSettingEntry({
+                settingId: 'navItemHeight',
                 loadPhase: 'preProfiles',
-                resolveOnLoad: ({ storedData }) => {
-                    const isDeviceLocal = this.isDeviceLocal('navItemHeight');
-                    if (isDeviceLocal) {
-                        const resolved = resolveNavItemHeight({ storedData, keys: this.keys, defaultSettings: DEFAULT_SETTINGS });
-                        this.settings.navItemHeight = resolved.value;
-                        return { migrated: resolved.migrated };
-                    }
-                    this.settings.navItemHeight = this.sanitizeNavItemHeightSetting(this.settings.navItemHeight);
-                    localStorage.set(this.keys.navItemHeightKey, this.settings.navItemHeight);
-                    return { migrated: false };
-                },
-                mirrorToLocalStorage: () => {
-                    localStorage.set(this.keys.navItemHeightKey, this.settings.navItemHeight);
-                }
+                localStorageKey: this.keys.navItemHeightKey,
+                resolveDeviceLocal: storedData => resolveNavItemHeight({ storedData, keys: this.keys, defaultSettings: DEFAULT_SETTINGS }),
+                sanitizeSynced: () => this.sanitizeNavItemHeightSetting(this.settings.navItemHeight)
             }),
-            navItemHeightScaleText: createEntry({
-                persistedKeys: ['navItemHeightScaleText'],
+            navItemHeightScaleText: createResolvedLocalStorageSettingEntry({
+                settingId: 'navItemHeightScaleText',
                 loadPhase: 'preProfiles',
-                resolveOnLoad: ({ storedData }) => {
-                    const isDeviceLocal = this.isDeviceLocal('navItemHeightScaleText');
-                    if (isDeviceLocal) {
-                        const resolved = resolveNavItemHeightScaleText({ storedData, keys: this.keys, defaultSettings: DEFAULT_SETTINGS });
-                        this.settings.navItemHeightScaleText = resolved.value;
-                        return { migrated: resolved.migrated };
-                    }
-                    this.settings.navItemHeightScaleText = this.sanitizeBooleanSetting(
-                        this.settings.navItemHeightScaleText,
-                        DEFAULT_SETTINGS.navItemHeightScaleText
-                    );
-                    localStorage.set(this.keys.navItemHeightScaleTextKey, this.settings.navItemHeightScaleText);
-                    return { migrated: false };
-                },
-                mirrorToLocalStorage: () => {
-                    localStorage.set(this.keys.navItemHeightScaleTextKey, this.settings.navItemHeightScaleText);
-                }
+                localStorageKey: this.keys.navItemHeightScaleTextKey,
+                resolveDeviceLocal: storedData =>
+                    resolveNavItemHeightScaleText({ storedData, keys: this.keys, defaultSettings: DEFAULT_SETTINGS }),
+                sanitizeSynced: () =>
+                    this.sanitizeBooleanSetting(this.settings.navItemHeightScaleText, DEFAULT_SETTINGS.navItemHeightScaleText)
             }),
-            calendarWeeksToShow: createEntry({
-                persistedKeys: ['calendarWeeksToShow'],
+            calendarWeeksToShow: createResolvedLocalStorageSettingEntry({
+                settingId: 'calendarWeeksToShow',
                 loadPhase: 'preProfiles',
-                resolveOnLoad: ({ storedData }) => {
-                    const isDeviceLocal = this.isDeviceLocal('calendarWeeksToShow');
-                    if (isDeviceLocal) {
-                        const resolved = resolveCalendarWeeksToShow({ storedData, keys: this.keys, defaultSettings: DEFAULT_SETTINGS });
-                        this.settings.calendarWeeksToShow = resolved.value;
-                        return { migrated: resolved.migrated };
-                    }
-                    this.settings.calendarWeeksToShow = this.sanitizeCalendarWeeksToShowSetting(this.settings.calendarWeeksToShow);
-                    localStorage.set(this.keys.calendarWeeksToShowKey, this.settings.calendarWeeksToShow);
-                    return { migrated: false };
-                },
-                mirrorToLocalStorage: () => {
-                    localStorage.set(this.keys.calendarWeeksToShowKey, this.settings.calendarWeeksToShow);
-                }
+                localStorageKey: this.keys.calendarWeeksToShowKey,
+                resolveDeviceLocal: storedData =>
+                    resolveCalendarWeeksToShow({ storedData, keys: this.keys, defaultSettings: DEFAULT_SETTINGS }),
+                sanitizeSynced: () => this.sanitizeCalendarWeeksToShowSetting(this.settings.calendarWeeksToShow)
             }),
-            compactItemHeight: createEntry({
-                persistedKeys: ['compactItemHeight'],
+            compactItemHeight: createResolvedLocalStorageSettingEntry({
+                settingId: 'compactItemHeight',
                 loadPhase: 'preProfiles',
-                resolveOnLoad: ({ storedData }) => {
-                    const isDeviceLocal = this.isDeviceLocal('compactItemHeight');
-                    if (isDeviceLocal) {
-                        const resolved = resolveCompactItemHeight({ storedData, keys: this.keys, defaultSettings: DEFAULT_SETTINGS });
-                        this.settings.compactItemHeight = resolved.value;
-                        return { migrated: resolved.migrated };
-                    }
-                    this.settings.compactItemHeight = this.sanitizeCompactItemHeightSetting(this.settings.compactItemHeight);
-                    localStorage.set(this.keys.compactItemHeightKey, this.settings.compactItemHeight);
-                    return { migrated: false };
-                },
-                mirrorToLocalStorage: () => {
-                    localStorage.set(this.keys.compactItemHeightKey, this.settings.compactItemHeight);
-                }
+                localStorageKey: this.keys.compactItemHeightKey,
+                resolveDeviceLocal: storedData =>
+                    resolveCompactItemHeight({ storedData, keys: this.keys, defaultSettings: DEFAULT_SETTINGS }),
+                sanitizeSynced: () => this.sanitizeCompactItemHeightSetting(this.settings.compactItemHeight)
             }),
-            compactItemHeightScaleText: createEntry({
-                persistedKeys: ['compactItemHeightScaleText'],
+            compactItemHeightScaleText: createResolvedLocalStorageSettingEntry({
+                settingId: 'compactItemHeightScaleText',
                 loadPhase: 'preProfiles',
-                resolveOnLoad: ({ storedData }) => {
-                    const isDeviceLocal = this.isDeviceLocal('compactItemHeightScaleText');
-                    if (isDeviceLocal) {
-                        const resolved = resolveCompactItemHeightScaleText({
-                            storedData,
-                            keys: this.keys,
-                            defaultSettings: DEFAULT_SETTINGS
-                        });
-                        this.settings.compactItemHeightScaleText = resolved.value;
-                        return { migrated: resolved.migrated };
-                    }
-                    this.settings.compactItemHeightScaleText = this.sanitizeBooleanSetting(
-                        this.settings.compactItemHeightScaleText,
-                        DEFAULT_SETTINGS.compactItemHeightScaleText
-                    );
-                    localStorage.set(this.keys.compactItemHeightScaleTextKey, this.settings.compactItemHeightScaleText);
-                    return { migrated: false };
-                },
-                mirrorToLocalStorage: () => {
-                    localStorage.set(this.keys.compactItemHeightScaleTextKey, this.settings.compactItemHeightScaleText);
-                }
+                localStorageKey: this.keys.compactItemHeightScaleTextKey,
+                resolveDeviceLocal: storedData =>
+                    resolveCompactItemHeightScaleText({ storedData, keys: this.keys, defaultSettings: DEFAULT_SETTINGS }),
+                sanitizeSynced: () =>
+                    this.sanitizeBooleanSetting(this.settings.compactItemHeightScaleText, DEFAULT_SETTINGS.compactItemHeightScaleText)
             }),
             uiScale: createEntry({
                 persistedKeys: ['desktopScale', 'mobileScale'],
@@ -622,12 +595,12 @@ export default class NotebookNavigatorPlugin extends Plugin implements ISettings
                     this.settings.desktopScale = sanitizeUIScale(this.settings.desktopScale);
                     this.settings.mobileScale = sanitizeUIScale(this.settings.mobileScale);
                     const currentScale = sanitizeUIScale(Platform.isMobile ? this.settings.mobileScale : this.settings.desktopScale);
-                    localStorage.set(this.keys.uiScaleKey, currentScale);
+                    setLocalStorage(this.keys.uiScaleKey, currentScale);
                     return { migrated: false };
                 },
                 mirrorToLocalStorage: () => {
                     const next = sanitizeUIScale(Platform.isMobile ? this.settings.mobileScale : this.settings.desktopScale);
-                    localStorage.set(this.keys.uiScaleKey, next);
+                    setLocalStorage(this.keys.uiScaleKey, next);
                 }
             })
         };
@@ -804,6 +777,18 @@ export default class NotebookNavigatorPlugin extends Plugin implements ISettings
         return null;
     }
 
+    private sanitizeBoundedIntegerSetting(value: unknown, params: { min: number; max: number; fallback: number }): number {
+        const parsed = this.parseFiniteNumber(value);
+        if (parsed === null) {
+            return params.fallback;
+        }
+        const rounded = Math.round(parsed);
+        if (rounded < params.min || rounded > params.max) {
+            return params.fallback;
+        }
+        return rounded;
+    }
+
     private sanitizeBooleanSetting(value: unknown, fallback: boolean): boolean {
         return typeof value === 'boolean' ? value : fallback;
     }
@@ -814,39 +799,19 @@ export default class NotebookNavigatorPlugin extends Plugin implements ISettings
     }
 
     private sanitizePaneTransitionDurationSetting(value: unknown): number {
-        const parsed = this.parseFiniteNumber(value);
-        if (parsed === null) {
-            return DEFAULT_SETTINGS.paneTransitionDuration;
-        }
-        const rounded = Math.round(parsed);
-        if (rounded < MIN_PANE_TRANSITION_DURATION_MS || rounded > MAX_PANE_TRANSITION_DURATION_MS) {
-            return DEFAULT_SETTINGS.paneTransitionDuration;
-        }
-        return rounded;
+        return this.sanitizeBoundedIntegerSetting(value, {
+            min: MIN_PANE_TRANSITION_DURATION_MS,
+            max: MAX_PANE_TRANSITION_DURATION_MS,
+            fallback: DEFAULT_SETTINGS.paneTransitionDuration
+        });
     }
 
     private sanitizeNavIndentSetting(value: unknown): number {
-        const parsed = this.parseFiniteNumber(value);
-        if (parsed === null) {
-            return DEFAULT_SETTINGS.navIndent;
-        }
-        const rounded = Math.round(parsed);
-        if (rounded < 10 || rounded > 24) {
-            return DEFAULT_SETTINGS.navIndent;
-        }
-        return rounded;
+        return this.sanitizeBoundedIntegerSetting(value, { min: 10, max: 24, fallback: DEFAULT_SETTINGS.navIndent });
     }
 
     private sanitizeNavItemHeightSetting(value: unknown): number {
-        const parsed = this.parseFiniteNumber(value);
-        if (parsed === null) {
-            return DEFAULT_SETTINGS.navItemHeight;
-        }
-        const rounded = Math.round(parsed);
-        if (rounded < 20 || rounded > 28) {
-            return DEFAULT_SETTINGS.navItemHeight;
-        }
-        return rounded;
+        return this.sanitizeBoundedIntegerSetting(value, { min: 20, max: 28, fallback: DEFAULT_SETTINGS.navItemHeight });
     }
 
     private sanitizeCalendarWeeksToShowSetting(value: unknown): CalendarWeeksToShow {
@@ -862,15 +827,7 @@ export default class NotebookNavigatorPlugin extends Plugin implements ISettings
     }
 
     private sanitizeCompactItemHeightSetting(value: unknown): number {
-        const parsed = this.parseFiniteNumber(value);
-        if (parsed === null) {
-            return DEFAULT_SETTINGS.compactItemHeight;
-        }
-        const rounded = Math.round(parsed);
-        if (rounded < 20 || rounded > 28) {
-            return DEFAULT_SETTINGS.compactItemHeight;
-        }
-        return rounded;
+        return this.sanitizeBoundedIntegerSetting(value, { min: 20, max: 28, fallback: DEFAULT_SETTINGS.compactItemHeight });
     }
 
     private sanitizeTagSortOrderSetting(value: unknown): TagSortOrder {
@@ -1130,34 +1087,15 @@ export default class NotebookNavigatorPlugin extends Plugin implements ISettings
             // Clear all localStorage data (if plugin was reinstalled)
             this.clearAllLocalStorage();
 
-            // Re-seed device-local defaults cleared above
-            localStorage.set(this.keys.tagSortOrderKey, this.settings.tagSortOrder);
-            localStorage.set(this.keys.searchProviderKey, this.settings.searchProvider);
-            const initialScale = sanitizeUIScale(Platform.isMobile ? this.settings.mobileScale : this.settings.desktopScale);
-            localStorage.set(this.keys.uiScaleKey, initialScale);
-            localStorage.set(this.keys.paneTransitionDurationKey, this.settings.paneTransitionDuration);
-            localStorage.set(this.keys.toolbarVisibilityKey, this.settings.toolbarVisibility);
-            localStorage.set(this.keys.navIndentKey, this.settings.navIndent);
-            localStorage.set(this.keys.navItemHeightKey, this.settings.navItemHeight);
-            localStorage.set(this.keys.navItemHeightScaleTextKey, this.settings.navItemHeightScaleText);
-            localStorage.set(this.keys.calendarWeeksToShowKey, this.settings.calendarWeeksToShow);
-            localStorage.set(this.keys.compactItemHeightKey, this.settings.compactItemHeight);
-            localStorage.set(this.keys.compactItemHeightScaleTextKey, this.settings.compactItemHeightScaleText);
-
-            // Persist the active vault profile for this device
-            localStorage.set(this.keys.vaultProfileKey, this.settings.vaultProfile);
+            // Re-seed per-device mirrors cleared above
+            this.uxPreferences = { ...DEFAULT_UX_PREFERENCES };
+            const syncModeRegistry = this.getSyncModeRegistry();
+            SYNC_MODE_SETTING_IDS.forEach(settingId => {
+                syncModeRegistry[settingId].mirrorToLocalStorage();
+            });
 
             this.dualPanePreference = this.settings.dualPane;
             this.dualPaneOrientationPreference = this.settings.dualPaneOrientation;
-            localStorage.set(this.keys.dualPaneKey, this.dualPanePreference ? '1' : '0');
-            localStorage.set(this.keys.dualPaneOrientationKey, this.dualPaneOrientationPreference);
-
-            this.uxPreferences = {
-                ...DEFAULT_UX_PREFERENCES,
-                includeDescendantNotes: this.settings.includeDescendantNotes,
-                showCalendar: this.settings.showCalendar
-            };
-            this.persistUXPreferences(false);
 
             // Ensure root folder is expanded on first launch (default is enabled)
             if (this.settings.showRootFolder) {
@@ -1474,30 +1412,25 @@ export default class NotebookNavigatorPlugin extends Plugin implements ISettings
      */
     public setSearchProvider(provider: 'internal' | 'omnisearch'): void {
         const normalized = provider === 'omnisearch' ? 'omnisearch' : 'internal';
-        if (this.settings.searchProvider === normalized) {
-            return;
-        }
-        this.settings.searchProvider = normalized;
-        localStorage.set(this.keys.searchProviderKey, normalized);
-        this.persistSyncModeSettingUpdate('searchProvider');
+        this.updateSettingAndMirrorToLocalStorage({
+            settingId: 'searchProvider',
+            localStorageKey: this.keys.searchProviderKey,
+            nextValue: normalized
+        });
     }
 
     /**
      * Updates the single-pane transition duration and persists to local storage.
      */
     public setPaneTransitionDuration(durationMs: number): void {
-        const parsed = this.parseFiniteNumber(durationMs);
-        const next =
-            parsed !== null
-                ? Math.min(MAX_PANE_TRANSITION_DURATION_MS, Math.max(MIN_PANE_TRANSITION_DURATION_MS, parsed))
-                : DEFAULT_SETTINGS.paneTransitionDuration;
-
-        if (this.settings.paneTransitionDuration === next) {
-            return;
-        }
-        this.settings.paneTransitionDuration = next;
-        localStorage.set(this.keys.paneTransitionDurationKey, next);
-        this.persistSyncModeSettingUpdate('paneTransitionDuration');
+        this.updateBoundedNumberSettingAndMirror({
+            settingId: 'paneTransitionDuration',
+            localStorageKey: this.keys.paneTransitionDurationKey,
+            rawValue: durationMs,
+            min: MIN_PANE_TRANSITION_DURATION_MS,
+            max: MAX_PANE_TRANSITION_DURATION_MS,
+            fallback: DEFAULT_SETTINGS.paneTransitionDuration
+        });
     }
 
     /**
@@ -1512,78 +1445,75 @@ export default class NotebookNavigatorPlugin extends Plugin implements ISettings
      * Updates navigation tree indentation and persists to local storage.
      */
     public setNavIndent(indent: number): void {
-        const parsed = this.parseFiniteNumber(indent);
-        const next = parsed !== null ? Math.min(24, Math.max(10, parsed)) : DEFAULT_SETTINGS.navIndent;
-        if (this.settings.navIndent === next) {
-            return;
-        }
-        this.settings.navIndent = next;
-        localStorage.set(this.keys.navIndentKey, next);
-        this.persistSyncModeSettingUpdate('navIndent');
+        this.updateBoundedNumberSettingAndMirror({
+            settingId: 'navIndent',
+            localStorageKey: this.keys.navIndentKey,
+            rawValue: indent,
+            min: 10,
+            max: 24,
+            fallback: DEFAULT_SETTINGS.navIndent
+        });
     }
 
     /**
      * Updates navigation item height and persists to local storage.
      */
     public setNavItemHeight(height: number): void {
-        const parsed = this.parseFiniteNumber(height);
-        const next = parsed !== null ? Math.min(28, Math.max(20, parsed)) : DEFAULT_SETTINGS.navItemHeight;
-        if (this.settings.navItemHeight === next) {
-            return;
-        }
-        this.settings.navItemHeight = next;
-        localStorage.set(this.keys.navItemHeightKey, next);
-        this.persistSyncModeSettingUpdate('navItemHeight');
+        this.updateBoundedNumberSettingAndMirror({
+            settingId: 'navItemHeight',
+            localStorageKey: this.keys.navItemHeightKey,
+            rawValue: height,
+            min: 20,
+            max: 28,
+            fallback: DEFAULT_SETTINGS.navItemHeight
+        });
     }
 
     /**
      * Updates navigation text scaling with item height and persists to local storage.
      */
     public setNavItemHeightScaleText(enabled: boolean): void {
-        if (this.settings.navItemHeightScaleText === enabled) {
-            return;
-        }
-        this.settings.navItemHeightScaleText = enabled;
-        localStorage.set(this.keys.navItemHeightScaleTextKey, enabled);
-        this.persistSyncModeSettingUpdate('navItemHeightScaleText');
+        this.updateSettingAndMirrorToLocalStorage({
+            settingId: 'navItemHeightScaleText',
+            localStorageKey: this.keys.navItemHeightScaleTextKey,
+            nextValue: enabled
+        });
     }
 
     /**
      * Updates calendar weeks to show and persists to local storage.
      */
     public setCalendarWeeksToShow(weeks: CalendarWeeksToShow): void {
-        if (this.settings.calendarWeeksToShow === weeks) {
-            return;
-        }
-        this.settings.calendarWeeksToShow = weeks;
-        localStorage.set(this.keys.calendarWeeksToShowKey, weeks);
-        this.persistSyncModeSettingUpdate('calendarWeeksToShow');
+        this.updateSettingAndMirrorToLocalStorage({
+            settingId: 'calendarWeeksToShow',
+            localStorageKey: this.keys.calendarWeeksToShowKey,
+            nextValue: weeks
+        });
     }
 
     /**
      * Updates compact list item height and persists to local storage.
      */
     public setCompactItemHeight(height: number): void {
-        const parsed = this.parseFiniteNumber(height);
-        const next = parsed !== null ? Math.min(28, Math.max(20, parsed)) : DEFAULT_SETTINGS.compactItemHeight;
-        if (this.settings.compactItemHeight === next) {
-            return;
-        }
-        this.settings.compactItemHeight = next;
-        localStorage.set(this.keys.compactItemHeightKey, next);
-        this.persistSyncModeSettingUpdate('compactItemHeight');
+        this.updateBoundedNumberSettingAndMirror({
+            settingId: 'compactItemHeight',
+            localStorageKey: this.keys.compactItemHeightKey,
+            rawValue: height,
+            min: 20,
+            max: 28,
+            fallback: DEFAULT_SETTINGS.compactItemHeight
+        });
     }
 
     /**
      * Updates compact list text scaling with item height and persists to local storage.
      */
     public setCompactItemHeightScaleText(enabled: boolean): void {
-        if (this.settings.compactItemHeightScaleText === enabled) {
-            return;
-        }
-        this.settings.compactItemHeightScaleText = enabled;
-        localStorage.set(this.keys.compactItemHeightScaleTextKey, enabled);
-        this.persistSyncModeSettingUpdate('compactItemHeightScaleText');
+        this.updateSettingAndMirrorToLocalStorage({
+            settingId: 'compactItemHeightScaleText',
+            localStorageKey: this.keys.compactItemHeightScaleTextKey,
+            nextValue: enabled
+        });
     }
 
     /**
@@ -1642,13 +1572,7 @@ export default class NotebookNavigatorPlugin extends Plugin implements ISettings
 
         this.settings.includeDescendantNotes = next;
         this.updateUXPreference('includeDescendantNotes', next);
-        if (this.isDeviceLocal('includeDescendantNotes')) {
-            return;
-        }
-
-        runAsyncAction(async () => {
-            await this.saveSettingsAndUpdate();
-        });
+        this.persistSyncModeSettingUpdate('includeDescendantNotes');
     }
 
     public toggleIncludeDescendantNotes(): void {
@@ -1675,13 +1599,7 @@ export default class NotebookNavigatorPlugin extends Plugin implements ISettings
 
         this.settings.showCalendar = next;
         this.updateUXPreference('showCalendar', next);
-        if (this.isDeviceLocal('showCalendar')) {
-            return;
-        }
-
-        runAsyncAction(async () => {
-            await this.saveSettingsAndUpdate();
-        });
+        this.persistSyncModeSettingUpdate('showCalendar');
     }
 
     public toggleShowCalendar(): void {
