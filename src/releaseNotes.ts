@@ -76,10 +76,11 @@ export interface ReleaseNote {
 const RELEASE_NOTES: ReleaseNote[] = [
     {
         version: '2.1.1',
-        date: '2026-01-16',
+        date: '2026-01-17',
         showOnUpdate: true,
         new: [
-            'New setting ==Navigation pane > Calendar integration==. Switch between Daily notes integration and a custom format that also supports daily note titles.',
+            'New setting ==Navigation pane > Calendar integration==. Switch between "Daily notes" core plugin integration and a custom format that also supports daily note titles.',
+            'New command: ==Open all files==. Opens all files in the currently selected folder or tags. Warns when trying to open 15 or more files.',
             'New command: ==Toggle calendar==. Toggles the calendar overlay on or off.',
             'New command: ==Toggle left sidebar==. Toggle the left sidebar and opens Notebook Navigator when uncollapsing the left sidebar (unlike Obsidian’s built-in Toggle left sidebar command which restores the previous left sidebar view).'
         ],
