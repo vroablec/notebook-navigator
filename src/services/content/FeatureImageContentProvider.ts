@@ -49,12 +49,9 @@ const EXTERNAL_REQUEST_MAX_LIFETIME_MS = LIMITS.thumbnails.featureImage.external
 const EXTERNAL_REQUEST_TIMEOUT_DEBT_MAX = Platform.isMobile
     ? LIMITS.thumbnails.featureImage.externalRequest.timeoutDebtMax.mobile
     : LIMITS.thumbnails.featureImage.externalRequest.timeoutDebtMax.desktop;
-// Maximum pixels allowed for a single source image on mobile (width * height).
-const MOBILE_MAX_IMAGE_PIXELS = LIMITS.thumbnails.featureImage.maxImagePixels.mobile;
-const DESKTOP_MAX_IMAGE_PIXELS = LIMITS.thumbnails.featureImage.maxImagePixels.desktop;
 // Maximum total pixels that can be decoded concurrently on mobile devices.
-// Keep this in sync with `MOBILE_MAX_IMAGE_PIXELS` so near-limit images decode one at a time.
 const MOBILE_IMAGE_DECODE_BUDGET_PIXELS = LIMITS.thumbnails.featureImage.imageDecodeBudgetPixels.mobile;
+const DESKTOP_IMAGE_DECODE_BUDGET_PIXELS = LIMITS.thumbnails.featureImage.imageDecodeBudgetPixels.desktop;
 // Maximum size (in bytes) of images read into memory before decoding/resizing.
 const MAX_LOCAL_IMAGE_BYTES = Platform.isMobile
     ? LIMITS.thumbnails.featureImage.maxImageBytes.local.mobile
@@ -105,7 +102,9 @@ export type FeatureImageThumbnailRuntime = {
 export function createFeatureImageThumbnailRuntime(): FeatureImageThumbnailRuntime {
     return {
         externalRequestLimiter: createRenderLimiter(LIMITS.thumbnails.featureImage.externalRequest.parallelLimit),
-        imageDecodeLimiter: createRenderBudgetLimiter(Platform.isMobile ? MOBILE_IMAGE_DECODE_BUDGET_PIXELS : Number.MAX_SAFE_INTEGER),
+        imageDecodeLimiter: createRenderBudgetLimiter(
+            Platform.isMobile ? MOBILE_IMAGE_DECODE_BUDGET_PIXELS : DESKTOP_IMAGE_DECODE_BUDGET_PIXELS
+        ),
         thumbnailCanvasLimiter: createRenderLimiter(LIMITS.thumbnails.featureImage.thumbnailCanvasParallelLimit),
         thumbnailCanvasPool: [],
         logOnce: createOnceLogger(),
@@ -610,16 +609,7 @@ export class FeatureImageContentProvider extends BaseContentProvider {
             return null;
         }
 
-        // Reject images exceeding platform-specific pixel limits to prevent out-of-memory crashes.
         const pixelCount = dimensions.width * dimensions.height;
-        const maxPixels = Platform.isMobile ? MOBILE_MAX_IMAGE_PIXELS : DESKTOP_MAX_IMAGE_PIXELS;
-        if (pixelCount > maxPixels) {
-            this.thumbnailRuntime.logOnce(
-                `featureImage-too-large:${effectiveMimeType}:${dimensions.width}x${dimensions.height}:${source}`,
-                `[${source}] Skipping ${effectiveMimeType} (${dimensions.width}x${dimensions.height}) - image too large`
-            );
-            return null;
-        }
 
         const { width: targetWidth, height: targetHeight } = this.calculateThumbnailDimensions(dimensions.width, dimensions.height);
         if (targetWidth === dimensions.width && targetHeight === dimensions.height) {

@@ -130,26 +130,15 @@ export const LIMITS = {
              * - Canvas operations can be CPU and memory heavy. A cap prevents "encode storms" on large vault scans.
              */
             thumbnailCanvasParallelLimit: 6,
-            maxImagePixels: {
-                /**
-                 * Upper bound on source image pixel count (width * height) that we will attempt to decode.
-                 *
-                 * Rationale:
-                 * - Extremely large images can crash decoders or cause OOM during decode/resize.
-                 * - Mobile is stricter because decoding is more memory constrained.
-                 */
-                mobile: 50_000_000,
-                desktop: 100_000_000
-            },
             imageDecodeBudgetPixels: {
                 /**
-                 * Total pixel budget that can be decoded concurrently on mobile.
+                 * Total pixel budget that can be decoded concurrently.
                  *
-                 * Rationale:
-                 * - Prevents multiple large images from decoding simultaneously and blowing memory.
-                 * - Kept close to `maxImagePixels.mobile` so near-limit images decode one at a time.
+                 * Used by:
+                 * - `createFeatureImageThumbnailRuntime()` to limit concurrent image decode/resize work.
                  */
-                mobile: 100_000_000
+                mobile: 100_000_000,
+                desktop: Number.MAX_SAFE_INTEGER
             },
             maxImageBytes: {
                 local: {
@@ -197,6 +186,10 @@ export const LIMITS = {
              * - `renderPdfCoverThumbnail()` to cap concurrency.
              */
             maxParallelRenders: 2,
+            /**
+             * Maximum concurrent PDF page renders on mobile.
+             */
+            maxParallelRendersMobile: 1,
             /**
              * Idle timeout for the shared pdf.js worker.
              *

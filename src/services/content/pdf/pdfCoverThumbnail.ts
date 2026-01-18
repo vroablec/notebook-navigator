@@ -63,7 +63,7 @@ type PdfPage = {
 const DEFAULT_WORKER_IDLE_TIMEOUT_MS = LIMITS.thumbnails.pdf.workerIdleTimeoutMs;
 // Maximum concurrent PDF page renders to limit memory usage
 const MAX_PARALLEL_PDF_RENDERS = LIMITS.thumbnails.pdf.maxParallelRenders;
-const MOBILE_MAX_PARALLEL_PDF_RENDERS = 1;
+const MOBILE_MAX_PARALLEL_PDF_RENDERS = LIMITS.thumbnails.pdf.maxParallelRendersMobile;
 
 // Shared pdf.js worker instance reused across renders
 let sharedWorker: PdfWorker | null = null;
