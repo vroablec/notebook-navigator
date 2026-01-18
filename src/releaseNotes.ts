@@ -76,12 +76,19 @@ export interface ReleaseNote {
 const RELEASE_NOTES: ReleaseNote[] = [
     {
         version: '2.1.3',
-        date: '2026-01-18',
+        date: '2026-01-20',
         showOnUpdate: true,
-        new: [],
+        new: [
+            'Public API: Added a new ==Menus API== for extending the Notebook Navigator context menus! You can now "hook" into the file and folder context menus of Notebook Navigator to add your own menu items. The new API methods are:',
+            '==registerFileMenu(callback)== for adding items to the file context menu.',
+            '==registerFolderMenu(callback)== for adding items to the folder context menu.'
+        ],
         improved: [],
         changed: [],
-        fixed: ["Fixed an issue where the What's New modal didn't appear after updating the plugin."]
+        fixed: [
+            "Fixed an issue where the What's New modal never appeared after updating the plugin.",
+            'Fixed an issue where calendar cells on some devices and themes rendered with variable width.'
+    ]
     },
     {
         version: '2.1.2',

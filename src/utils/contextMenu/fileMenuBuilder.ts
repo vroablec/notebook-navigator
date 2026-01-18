@@ -303,6 +303,16 @@ export function buildFileMenu(params: FileMenuBuilderParams): void {
 
         menu.addSeparator();
 
+        const addedMenuExtensions =
+            services.plugin.api?.menus?.applyFileMenuExtensions({
+                menu,
+                file,
+                selection: { mode: 'multiple', files: [...cachedSelectedFiles] }
+            }) ?? 0;
+        if (addedMenuExtensions > 0) {
+            menu.addSeparator();
+        }
+
         // Move, Duplicate, Delete - grouped together
         // Move note(s) to folder
         const allMarkdownForMove = cachedSelectedFiles.every(f => f.extension === 'md');
@@ -411,6 +421,18 @@ export function buildFileMenu(params: FileMenuBuilderParams): void {
         }
 
         if (canRevealInFolder || canRevealInSystemExplorer) {
+            menu.addSeparator();
+        }
+    }
+
+    if (!shouldShowMultiOptions) {
+        const addedMenuExtensions =
+            services.plugin.api?.menus?.applyFileMenuExtensions({
+                menu,
+                file,
+                selection: { mode: 'single', files: [file] }
+            }) ?? 0;
+        if (addedMenuExtensions > 0) {
             menu.addSeparator();
         }
     }

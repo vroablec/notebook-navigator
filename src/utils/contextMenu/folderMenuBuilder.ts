@@ -427,6 +427,11 @@ export function buildFolderMenu(params: FolderMenuBuilderParams): void {
         menu.addSeparator();
     }
 
+    const addedMenuExtensions = services.plugin.api?.menus?.applyFolderMenuExtensions({ menu, folder }) ?? 0;
+    if (addedMenuExtensions > 0) {
+        menu.addSeparator();
+    }
+
     // Hide/Unhide folder (not available for root folder)
     if (folder.path !== '/') {
         const { showHiddenItems } = services.visibility;
