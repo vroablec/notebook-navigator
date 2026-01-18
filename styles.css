@@ -2585,14 +2585,14 @@ body {
     display: grid;
     align-items: center;
     column-gap: 1px;
-    grid-template-columns: repeat(7, 1fr);
+    grid-template-columns: repeat(7, minmax(0, 1fr));
     color: var(--nn-theme-nav-calendar-week-label-color);
     font-size: var(--nn-nav-calendar-week-label-font-size);
     line-height: 1;
 }
 
 .nn-navigation-calendar-weekdays[data-weeknumbers='true'] {
-    grid-template-columns: var(--nn-nav-calendar-weeknumber-column-width) repeat(7, 1fr);
+    grid-template-columns: var(--nn-nav-calendar-weeknumber-column-width) repeat(7, minmax(0, 1fr));
 }
 
 .nn-navigation-calendar-weekday,
@@ -2628,12 +2628,12 @@ body {
 
 .nn-navigation-calendar-week {
     display: grid;
-    grid-template-columns: repeat(7, 1fr);
+    grid-template-columns: repeat(7, minmax(0, 1fr));
     column-gap: 1px;
 }
 
 .nn-navigation-calendar-weeks[data-weeknumbers='true'] .nn-navigation-calendar-week {
-    grid-template-columns: var(--nn-nav-calendar-weeknumber-column-width) repeat(7, 1fr);
+    grid-template-columns: var(--nn-nav-calendar-weeknumber-column-width) repeat(7, minmax(0, 1fr));
 }
 
 .nn-navigation-calendar-weeknumber {
@@ -2654,7 +2654,10 @@ body {
     height: var(--nn-nav-calendar-week-row-height);
     border: none !important;
     border-radius: 6px;
-    padding: 0;
+    box-sizing: border-box;
+    min-width: 0;
+    width: 100%;
+    padding: 0 !important;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -2766,6 +2769,7 @@ body {
 .nn-navigation-calendar-day-number {
     font-size: var(--nn-nav-calendar-day-font-size);
     line-height: 1;
+    font-variant-numeric: tabular-nums;
     position: relative;
     z-index: 1;
 }
