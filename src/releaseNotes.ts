@@ -78,14 +78,10 @@ const RELEASE_NOTES: ReleaseNote[] = [
         version: '2.1.3',
         date: '2026-01-18',
         showOnUpdate: true,
-        new: [
-        ],
+        new: [],
         improved: [],
-        changed: [
-        ],
-        fixed: [
-            'Fixed an issue where the What\'s New modal didn\'t appear after updating the plugin.'
-        ]
+        changed: [],
+        fixed: ["Fixed an issue where the What's New modal didn't appear after updating the plugin."]
     },
     {
         version: '2.1.2',

@@ -194,24 +194,9 @@ export const LIMITS = {
              * Limits for PDF cover thumbnails (pdf.js).
              *
              * Used by:
-             * - `renderPdfCoverThumbnail()` to cap concurrency and avoid very large PDFs.
+             * - `renderPdfCoverThumbnail()` to cap concurrency.
              */
             maxParallelRenders: 2,
-            /**
-             * Skip thumbnails for PDFs larger than this.
-             *
-             * Rationale:
-             * - Very large PDFs can cause big memory spikes (especially if falling back to `readBinary()`).
-             */
-            maxThumbnailBytes: 25 * 1024 * 1024,
-            /**
-             * Stricter mobile size cap for PDF thumbnails.
-             *
-             * Rationale:
-             * - Mobile WebViews can crash/reload when pdf.js loads or renders large/complex PDFs.
-             * - This keeps the thumbnail pipeline bounded even for PDFs that are modest on disk but expensive to decode.
-             */
-            maxThumbnailBytesMobile: 20 * 1024 * 1024,
             /**
              * Idle timeout for the shared pdf.js worker.
              *

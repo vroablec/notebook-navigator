@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { App, loadPdfJs, Platform, type Stat, TFile } from 'obsidian';
+import { App, loadPdfJs, Platform, TFile } from 'obsidian';
 import { LIMITS } from '../../../constants/limits';
 import { isRecord } from '../../../utils/typeGuards';
 import { createRenderLimiter } from '../thumbnail/thumbnailRuntimeUtils';
@@ -64,9 +64,6 @@ const DEFAULT_WORKER_IDLE_TIMEOUT_MS = LIMITS.thumbnails.pdf.workerIdleTimeoutMs
 // Maximum concurrent PDF page renders to limit memory usage
 const MAX_PARALLEL_PDF_RENDERS = LIMITS.thumbnails.pdf.maxParallelRenders;
 const MOBILE_MAX_PARALLEL_PDF_RENDERS = 1;
-// Skip thumbnails for very large PDFs to avoid memory spikes (especially when falling back to readBinary).
-const MAX_PDF_THUMBNAIL_BYTES = LIMITS.thumbnails.pdf.maxThumbnailBytes;
-const MOBILE_MAX_PDF_THUMBNAIL_BYTES = LIMITS.thumbnails.pdf.maxThumbnailBytesMobile;
 
 // Shared pdf.js worker instance reused across renders
 let sharedWorker: PdfWorker | null = null;
@@ -279,40 +276,9 @@ function canvasToBlob(canvas: HTMLCanvasElement, mimeType: string, quality?: num
     });
 }
 
-// Resolves the PDF size in bytes.
-// On some mobile vault adapters, `TFile.stat.size` can be 0 or missing, so this probes via `adapter.stat()`.
-async function resolvePdfFileSizeBytes(app: App, pdfFile: TFile): Promise<number> {
-    const tfileSize = pdfFile.stat.size;
-    if (typeof tfileSize === 'number' && Number.isFinite(tfileSize) && tfileSize > 0) {
-        return tfileSize;
-    }
-
-    try {
-        const stat: Stat | null = await app.vault.adapter.stat(pdfFile.path);
-        const adapterSize = stat?.size;
-        if (typeof adapterSize === 'number' && Number.isFinite(adapterSize) && adapterSize > 0) {
-            return adapterSize;
-        }
-    } catch {
-        // ignore
-    }
-
-    return 0;
-}
-
 // Renders the first page of a PDF file as a thumbnail image blob
 export async function renderPdfCoverThumbnail(app: App, pdfFile: TFile, options: PdfCoverThumbnailOptions): Promise<Blob | null> {
     if (pdfFile.extension.toLowerCase() !== 'pdf') {
-        return null;
-    }
-
-    const fileSize = await resolvePdfFileSizeBytes(app, pdfFile);
-    if (fileSize <= 0 && Platform.isMobile) {
-        return null;
-    }
-
-    const maxBytes = Platform.isMobile ? MOBILE_MAX_PDF_THUMBNAIL_BYTES : MAX_PDF_THUMBNAIL_BYTES;
-    if (fileSize > maxBytes) {
         return null;
     }
 
