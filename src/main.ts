@@ -98,14 +98,26 @@ import { MAX_RECENT_COLORS } from './constants/colorPalette';
 import { NOTEBOOK_NAVIGATOR_ICON_ID, NOTEBOOK_NAVIGATOR_ICON_SVG } from './constants/notebookNavigatorIcon';
 import { createSyncModeRegistry, type SyncModeRegistry } from './services/settings/syncModeRegistry';
 
-const DEFAULT_UX_PREFERENCES: UXPreferences = {
-    searchActive: false,
-    includeDescendantNotes: false,
-    showHiddenItems: false,
-    pinShortcuts: true,
-    // Per-device toggle for the navigation calendar overlay.
-    showCalendar: false
-};
+function getDefaultUXPreferences(): UXPreferences {
+    const defaults: UXPreferences = {
+        // Local-only UX preferences (per-device, stored in localStorage only)
+        searchActive: false,
+        showHiddenItems: false,
+        pinShortcuts: true,
+
+        // UX preferences that mirror settings (sync-mode controlled)
+        includeDescendantNotes: false,
+        // Navigation calendar overlay toggle (mirrors settings; sync-mode controlled)
+        showCalendar: false
+    };
+
+    // Local-only defaults can vary per-device without affecting synced settings.
+    if (Platform.isMobile) {
+        defaults.pinShortcuts = false;
+    }
+
+    return defaults;
+}
 
 const UX_PREFERENCE_KEYS: (keyof UXPreferences)[] = [
     'searchActive',
@@ -153,7 +165,7 @@ export default class NotebookNavigatorPlugin extends Plugin implements ISettings
     // Handles homepage file opening and startup behavior
     private homepageController: HomepageController | null = null;
     private pendingUpdateNotice: ReleaseUpdateNotice | null = null;
-    private uxPreferences: UXPreferences = { ...DEFAULT_UX_PREFERENCES };
+    private uxPreferences: UXPreferences = getDefaultUXPreferences();
     private uxPreferenceListeners = new Map<string, () => void>();
     private syncModeRegistry: SyncModeRegistry | null = null;
     // TODO: Remove legacy UI scale flags and migration when desktopScale/mobileScale are fully dropped
@@ -271,7 +283,7 @@ export default class NotebookNavigatorPlugin extends Plugin implements ISettings
             sanitizeNavItemHeightSetting: value => this.sanitizeNavItemHeightSetting(value),
             sanitizeCalendarWeeksToShowSetting: value => this.sanitizeCalendarWeeksToShowSetting(value),
             sanitizeCompactItemHeightSetting: value => this.sanitizeCompactItemHeightSetting(value),
-            defaultUXPreferences: DEFAULT_UX_PREFERENCES,
+            defaultUXPreferences: getDefaultUXPreferences(),
             isUXPreferencesRecord: value => this.isUXPreferencesRecord(value),
             mirrorUXPreferences: update => {
                 this.uxPreferences = {
@@ -773,7 +785,7 @@ export default class NotebookNavigatorPlugin extends Plugin implements ISettings
             this.clearAllLocalStorage();
 
             // Re-seed per-device mirrors cleared above
-            this.uxPreferences = { ...DEFAULT_UX_PREFERENCES };
+            this.uxPreferences = getDefaultUXPreferences();
             const syncModeRegistry = this.getSyncModeRegistry();
             SYNC_MODE_SETTING_IDS.forEach(settingId => {
                 syncModeRegistry[settingId].mirrorToLocalStorage();
@@ -1304,10 +1316,11 @@ export default class NotebookNavigatorPlugin extends Plugin implements ISettings
     }
 
     private loadUXPreferences(): void {
+        const defaults = getDefaultUXPreferences();
         const stored = localStorage.get<unknown>(this.keys.uxPreferencesKey);
         if (this.isUXPreferencesRecord(stored)) {
             this.uxPreferences = {
-                ...DEFAULT_UX_PREFERENCES,
+                ...defaults,
                 ...stored
             };
 
@@ -1319,7 +1332,7 @@ export default class NotebookNavigatorPlugin extends Plugin implements ISettings
                 this.persistUXPreferences(false);
             }
         } else {
-            this.uxPreferences = { ...DEFAULT_UX_PREFERENCES };
+            this.uxPreferences = defaults;
             this.persistUXPreferences(false);
         }
     }
@@ -1850,8 +1863,9 @@ export default class NotebookNavigatorPlugin extends Plugin implements ISettings
         this.dualPaneOrientationPreference = this.settings.dualPaneOrientation;
         localStorage.set(this.keys.dualPaneOrientationKey, this.dualPaneOrientationPreference);
 
+        const defaults = getDefaultUXPreferences();
         this.uxPreferences = {
-            ...DEFAULT_UX_PREFERENCES,
+            ...defaults,
             includeDescendantNotes: this.settings.includeDescendantNotes,
             showCalendar: this.settings.showCalendar
         };

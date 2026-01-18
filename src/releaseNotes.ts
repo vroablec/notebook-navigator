@@ -88,7 +88,7 @@ const RELEASE_NOTES: ReleaseNote[] = [
         fixed: [
             "Fixed an issue where the What's New modal never appeared after updating the plugin.",
             'Fixed an issue where calendar cells on some devices and themes rendered with variable width.'
-    ]
+        ]
     },
     {
         version: '2.1.2',
