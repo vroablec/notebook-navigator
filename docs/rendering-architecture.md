@@ -98,7 +98,7 @@ colors used for background compositing.
 ### Top-level stack
 
 ```mermaid
-flowchart TD
+graph TD
     OV["NotebookNavigatorView"] --> SM["React.StrictMode"] --> SP["SettingsProvider"] --> UX["UXPreferencesProvider"] --> RD["RecentDataProvider"];
     RD --> SVC["ServicesProvider"] --> SHC["ShortcutsProvider"] --> ST["StorageProvider"] --> EP["ExpansionProvider"] --> SEL["SelectionProvider"];
     SEL --> UI["UIStateProvider"] --> NC["NotebookNavigatorContainer"];
@@ -114,14 +114,14 @@ flowchart TD
 ### NavigationPane subtree
 
 ```mermaid
-flowchart TD
+graph TD
     NPR["NavigationPane"] --> SC["Scroll container"];
     SC --> OVL["Sticky overlay stack"];
     OVL --> NPH["NavigationPaneHeader"];
     OVL --> VTA["VaultTitleArea"];
     OVL --> NTBA["NavigationToolbar Android"];
     OVL --> PB["NavigationBanner pinned"];
-    OVL --> PINNED["Pinned shortcuts/recent"];
+    OVL --> PINNED["Pinned shortcuts and recent notes"];
     SC --> NB["NavigationBanner unpinned"];
     SC -->|normal mode| NPL["Virtualized navigation list"];
     SC -->|root reorder| NRP["NavigationRootReorderPanel"];
@@ -132,7 +132,7 @@ flowchart TD
 ### ListPane subtree
 
 ```mermaid
-flowchart TD
+graph TD
     LPR["ListPane"] --> SC["Scroll container"];
     SC --> OVL["Sticky overlay stack"];
     OVL --> LPH["ListPaneHeader"];
