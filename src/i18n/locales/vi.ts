@@ -605,6 +605,7 @@ export const STRINGS_VI = {
         },
         groups: {
             general: {
+                vaultProfiles: 'Hồ sơ vault',
                 filtering: 'Lọc',
                 behavior: 'Hành vi',
                 view: 'Giao diện',

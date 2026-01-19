@@ -605,6 +605,7 @@ export const STRINGS_TR = {
         },
         groups: {
             general: {
+                vaultProfiles: 'Kasa profilleri',
                 filtering: 'Filtreleme',
                 behavior: 'Davranış',
                 view: 'Görünüm',

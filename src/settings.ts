@@ -87,6 +87,7 @@ export class NotebookNavigatorSettingTab extends PluginSettingTab {
     private pendingStatisticsRefreshRequested = false;
     private metadataInfoChangeUnsubscribe: (() => void) | null = null;
     private settingsUpdateListenerId = 'settings-tab';
+    private tabSettingsUpdateListeners = new Map<string, () => void>();
 
     /**
      * Creates a new settings tab
@@ -105,10 +106,19 @@ export class NotebookNavigatorSettingTab extends PluginSettingTab {
 
     private ensureSettingsUpdateListener(): void {
         this.plugin.registerSettingsUpdateListener(this.settingsUpdateListenerId, () => {
-            if (!this.plugin.isExternalSettingsUpdate()) {
+            if (this.plugin.isExternalSettingsUpdate()) {
+                this.refreshFromExternalSettingsUpdate();
                 return;
             }
-            this.refreshFromExternalSettingsUpdate();
+
+            const listeners = Array.from(this.tabSettingsUpdateListeners.values());
+            listeners.forEach(callback => {
+                try {
+                    callback();
+                } catch {
+                    // Ignore errors from settings-tab UI callbacks
+                }
+            });
         });
     }
 
@@ -541,6 +551,7 @@ export class NotebookNavigatorSettingTab extends PluginSettingTab {
         this.tabButtons.clear();
         this.statsTextEl = null;
         this.metadataInfoEl = null;
+        this.tabSettingsUpdateListeners.clear();
         this.showTagsListeners = [];
         this.currentShowTagsVisible = this.plugin.settings.showTags;
 
@@ -617,6 +628,12 @@ export class NotebookNavigatorSettingTab extends PluginSettingTab {
                 this.createDebouncedTextAreaSetting(parent, name, desc, placeholder, getValue, setValue, options),
             configureDebouncedTextAreaSetting: (setting, name, desc, placeholder, getValue, setValue, options) =>
                 this.configureDebouncedTextAreaSetting(setting, name, desc, placeholder, getValue, setValue, options),
+            registerSettingsUpdateListener: (id, listener) => {
+                this.tabSettingsUpdateListeners.set(id, listener);
+            },
+            unregisterSettingsUpdateListener: id => {
+                this.tabSettingsUpdateListeners.delete(id);
+            },
             registerMetadataInfoElement: element => {
                 this.metadataInfoEl = element;
             },
@@ -856,6 +873,7 @@ export class NotebookNavigatorSettingTab extends PluginSettingTab {
         // Clear references and state
         this.statsTextEl = null;
         this.metadataInfoEl = null;
+        this.tabSettingsUpdateListeners.clear();
         this.tabContentMap.clear();
         this.tabButtons.clear();
         this.showTagsListeners = [];

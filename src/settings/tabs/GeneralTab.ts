@@ -152,6 +152,7 @@ export function renderGeneralTab(context: SettingsTabContext): void {
             });
     });
 
+    const vaultProfilesGroup = createGroup(strings.settings.groups.general.vaultProfiles);
     const filteringGroup = createGroup(strings.settings.groups.general.filtering);
 
     const fallbackProfileName = strings.settings.items.vaultProfiles.defaultName || 'Default';
@@ -175,15 +176,9 @@ export function renderGeneralTab(context: SettingsTabContext): void {
     let hiddenFileTagsInput: HTMLInputElement | null = null;
     let excludedFilesInput: HTMLInputElement | null = null;
     let hiddenFileNamesInput: HTMLInputElement | null = null;
-    let vaultTitleSetting: Setting | null = null;
 
     // Updates all profile-related UI controls with current settings values
     const refreshProfileControls = () => {
-        const shouldShowVaultTitleSetting = !Platform.isMobile && plugin.settings.vaultProfiles.length > 1;
-        if (vaultTitleSetting) {
-            setElementVisible(vaultTitleSetting.settingEl, shouldShowVaultTitleSetting);
-        }
-
         if (profileDropdown) {
             const selectEl = profileDropdown.selectEl;
             while (selectEl.firstChild) {
@@ -285,7 +280,7 @@ export function renderGeneralTab(context: SettingsTabContext): void {
         modal.open();
     };
 
-    const profileSetting = filteringGroup.addSetting(setting => {
+    const profileSetting = vaultProfilesGroup.addSetting(setting => {
         setting.setName(strings.settings.items.vaultProfiles.name).setDesc(strings.settings.items.vaultProfiles.desc);
     });
 
@@ -326,7 +321,7 @@ export function renderGeneralTab(context: SettingsTabContext): void {
     addSettingSyncModeToggle({ setting: profileSetting, plugin, settingId: 'vaultProfile' });
 
     if (!Platform.isMobile) {
-        vaultTitleSetting = filteringGroup.addSetting(setting => {
+        vaultProfilesGroup.addSetting(setting => {
             setting
                 .setName(strings.settings.items.vaultTitle.name)
                 .setDesc(strings.settings.items.vaultTitle.desc)

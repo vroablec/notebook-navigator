@@ -605,6 +605,7 @@ export const STRINGS_RU = {
         },
         groups: {
             general: {
+                vaultProfiles: 'Профили хранилища',
                 filtering: 'Фильтрация',
                 behavior: 'Поведение',
                 view: 'Внешний вид',

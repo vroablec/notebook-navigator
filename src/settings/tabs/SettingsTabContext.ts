@@ -108,6 +108,10 @@ export interface SettingsTabContext {
     configureDebouncedTextSetting: DebouncedTextSettingConfigurer;
     createDebouncedTextAreaSetting: DebouncedTextAreaSettingFactory;
     configureDebouncedTextAreaSetting: DebouncedTextAreaSettingConfigurer;
+    /** Registers a listener for plugin settings updates while the settings tab is open */
+    registerSettingsUpdateListener(id: string, listener: () => void): void;
+    /** Unregisters a previously registered settings update listener */
+    unregisterSettingsUpdateListener(id: string): void;
     /** Registers the element where metadata info should be displayed */
     registerMetadataInfoElement(element: HTMLElement): void;
     /** Registers the element where statistics should be displayed */

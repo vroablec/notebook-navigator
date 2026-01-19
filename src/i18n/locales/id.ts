@@ -605,6 +605,7 @@ export const STRINGS_ID = {
         },
         groups: {
             general: {
+                vaultProfiles: 'Profil vault',
                 filtering: 'Penyaringan',
                 behavior: 'Perilaku',
                 view: 'Tampilan',

@@ -605,6 +605,7 @@ export const STRINGS_FA = {
         },
         groups: {
             general: {
+                vaultProfiles: 'پروفایل‌های خزانه',
                 filtering: 'فیلتر کردن',
                 behavior: 'رفتار',
                 view: 'ظاهر',

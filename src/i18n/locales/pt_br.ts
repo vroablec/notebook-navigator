@@ -602,6 +602,7 @@ export const STRINGS_PT_BR = {
         },
         groups: {
             general: {
+                vaultProfiles: 'Perfis do cofre',
                 filtering: 'Filtragem',
                 behavior: 'Comportamento',
                 view: 'Aparência',

@@ -605,6 +605,7 @@ export const STRINGS_PT = {
         },
         groups: {
             general: {
+                vaultProfiles: 'Perfis do cofre',
                 filtering: 'Filtragem',
                 behavior: 'Comportamento',
                 view: 'Aparência',

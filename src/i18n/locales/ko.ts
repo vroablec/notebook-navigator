@@ -605,6 +605,7 @@ export const STRINGS_KO = {
         },
         groups: {
             general: {
+                vaultProfiles: '보관소 프로필',
                 filtering: '필터링',
                 behavior: '동작',
                 view: '모양',

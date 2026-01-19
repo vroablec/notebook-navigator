@@ -491,6 +491,9 @@ export function renderNavigationPaneTab(context: SettingsTabContext): void {
     });
 
     renderNavigationBannerValue();
+    context.registerSettingsUpdateListener('navigation-pane-navigation-banner', () => {
+        renderNavigationBannerValue();
+    });
 
     const navigationBannerSubSettingsEl = createSubSettingsContainer(navigationBannerSetting);
     const pinNavigationBannerSetting = new Setting(navigationBannerSubSettingsEl)

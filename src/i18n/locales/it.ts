@@ -605,6 +605,7 @@ export const STRINGS_IT = {
         },
         groups: {
             general: {
+                vaultProfiles: 'Profili vault',
                 filtering: 'Filtri',
                 behavior: 'Comportamento',
                 view: 'Aspetto',

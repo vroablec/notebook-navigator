@@ -607,6 +607,7 @@ export const STRINGS_PL = {
         },
         groups: {
             general: {
+                vaultProfiles: 'Profile sejfu',
                 filtering: 'Filtrowanie',
                 behavior: 'Zachowanie',
                 view: 'Wygląd',

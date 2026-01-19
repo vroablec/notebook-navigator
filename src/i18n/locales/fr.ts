@@ -606,6 +606,7 @@ export const STRINGS_FR = {
         },
         groups: {
             general: {
+                vaultProfiles: 'Profils du coffre',
                 filtering: 'Filtrage',
                 behavior: 'Comportement',
                 view: 'Apparence',

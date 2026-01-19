@@ -605,6 +605,7 @@ export const STRINGS_UK = {
         },
         groups: {
             general: {
+                vaultProfiles: 'Профілі сховища',
                 filtering: 'Фільтрація',
                 behavior: 'Поведінка',
                 view: 'Вигляд',

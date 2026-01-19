@@ -604,6 +604,7 @@ export const STRINGS_ZH_TW = {
         },
         groups: {
             general: {
+                vaultProfiles: '保險庫設定檔',
                 filtering: '篩選',
                 behavior: '行為',
                 view: '外觀',

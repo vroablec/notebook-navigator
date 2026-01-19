@@ -606,6 +606,7 @@ export const STRINGS_ES = {
         },
         groups: {
             general: {
+                vaultProfiles: 'Perfiles de bóveda',
                 filtering: 'Filtrado',
                 behavior: 'Comportamiento',
                 view: 'Apariencia',

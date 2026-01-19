@@ -605,6 +605,7 @@ export const STRINGS_TH = {
         },
         groups: {
             general: {
+                vaultProfiles: 'โปรไฟล์ห้องนิรภัย',
                 filtering: 'การกรอง',
                 behavior: 'พฤติกรรม',
                 view: 'ลักษณะ',

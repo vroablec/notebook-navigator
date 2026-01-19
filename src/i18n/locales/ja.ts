@@ -606,6 +606,7 @@ export const STRINGS_JA = {
         },
         groups: {
             general: {
+                vaultProfiles: '保管庫プロファイル',
                 filtering: 'フィルター',
                 behavior: '動作',
                 view: '外観',

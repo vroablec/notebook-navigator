@@ -607,6 +607,7 @@ export const STRINGS_NL = {
         },
         groups: {
             general: {
+                vaultProfiles: 'Kluisprofielen',
                 filtering: 'Filteren',
                 behavior: 'Gedrag',
                 view: 'Uiterlijk',

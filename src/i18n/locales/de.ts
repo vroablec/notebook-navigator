@@ -606,6 +606,7 @@ export const STRINGS_DE = {
         },
         groups: {
             general: {
+                vaultProfiles: 'Tresorprofile',
                 filtering: 'Filterung',
                 behavior: 'Verhalten',
                 view: 'Darstellung',

@@ -604,6 +604,7 @@ export const STRINGS_ZH_CN = {
         },
         groups: {
             general: {
+                vaultProfiles: '仓库配置文件',
                 filtering: '过滤',
                 behavior: '行为',
                 view: '外观',

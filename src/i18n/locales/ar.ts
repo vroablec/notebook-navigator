@@ -605,6 +605,7 @@ export const STRINGS_AR = {
         },
         groups: {
             general: {
+                vaultProfiles: 'ملفات الخزنة',
                 filtering: 'التصفية',
                 behavior: 'السلوك',
                 view: 'المظهر',
