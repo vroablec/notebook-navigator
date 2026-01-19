@@ -100,19 +100,19 @@ The dedicated stores are cleared alongside the main file store during a full reb
 
 ```mermaid
 graph TD
-    User[User action] --> Trigger[Settings button / command palette]
-    Trigger --> Plugin[NotebookNavigatorPlugin.rebuildCache]
-    Plugin --> Activate[activateView() + resolve navigator leaf]
-    Activate --> View[NotebookNavigatorView.rebuildCache]
-    View --> Component[NotebookNavigatorComponent.rebuildCache]
-    Component --> Storage[StorageContext.rebuildCache]
+    User["User action"] --> Trigger["Settings button or command palette"]
+    Trigger --> Plugin["NotebookNavigatorPlugin.rebuildCache"]
+    Plugin --> Activate["activateView() and resolve navigator leaf"]
+    Activate --> View["NotebookNavigatorView.rebuildCache"]
+    View --> Component["NotebookNavigatorComponent.rebuildCache"]
+    Component --> Storage["StorageContext.rebuildCache"]
 
-    Storage --> DB[IndexedDBStorage + MemoryFileCache]
-    Storage --> Registry[ContentProviderRegistry]
-    Registry --> MP[MarkdownPipelineContentProvider]
-    Registry --> Tags[TagContentProvider]
-    Registry --> Meta[MetadataContentProvider]
-    Registry --> Thumbs[FeatureImageContentProvider]
+    Storage --> DB["IndexedDBStorage and MemoryFileCache"]
+    Storage --> Registry["ContentProviderRegistry"]
+    Registry --> MP["MarkdownPipelineContentProvider"]
+    Registry --> Tags["TagContentProvider"]
+    Registry --> Meta["MetadataContentProvider"]
+    Registry --> Thumbs["FeatureImageContentProvider"]
 
     MP --> DB
     Tags --> DB
@@ -188,22 +188,24 @@ sequenceDiagram
 
     Storage->>Registry: stopAllProcessing()
     Storage->>DB: clearDatabase()
-    Storage->>Storage: reset tag tree + state\nisStorageReady=false
+    Storage->>Storage: reset tag tree and state
+    Storage->>Storage: isStorageReady=false
 
     Storage->>Storage: buildFileCache(isInitialLoad=true)
-    Storage->>DB: calculateFileDiff + recordFileChanges
+    Storage->>DB: calculateFileDiff
+    Storage->>DB: recordFileChanges
     Storage->>Storage: rebuildTagTree()
     Storage->>Storage: isStorageReady=true
 
     Storage->>Obsidian: queueMetadataContentWhenReady(markdown files, markdownPipeline/tags/metadata)
     Storage->>Registry: queue fileThumbnails (PDF)
 
-    par Background content generation
-        Registry->>Providers: startProcessing(settings)\nqueueFiles(files)
-        Providers->>DB: write content updates
-        DB-->>Storage: onContentChange(changes)
-        Storage->>Storage: scheduleTagTreeRebuild() when tags change
-    end
+    Note over Registry,Providers: Background content generation
+    Registry->>Providers: startProcessing(settings)
+    Registry->>Providers: queueFiles(files)
+    Providers->>DB: write content updates
+    DB-->>Storage: onContentChange(changes)
+    Storage->>Storage: scheduleTagTreeRebuild() when tags change
 ```
 
 ### What gets queued after the database reset
@@ -228,7 +230,7 @@ sequenceDiagram
 
 ```mermaid
 flowchart LR
-    A[Job: markdown file] --> B[Read metadata cache\nfrontmatter + offsets]
+    A[Job: markdown file] --> B["Read metadata cache: frontmatter and offsets"]
     B --> C{Needs body read?}
     C -->|Yes| D[Read markdown content]
     C -->|No| E[Skip body read]
@@ -238,7 +240,7 @@ flowchart LR
     P1 --> P2[Processor: word count]
     P2 --> P3[Processor: custom property]
     P3 --> P4[Processor: feature image]
-    P4 --> G[Write patch to IndexedDB\nupdate stores + status fields + markdownPipelineMtime]
+    P4 --> G["Write patch to IndexedDB: update stores, status fields, markdownPipelineMtime"]
 ```
 
 Body reads are only performed when at least one output requires markdown content:
