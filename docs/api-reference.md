@@ -1,6 +1,6 @@
 # Notebook Navigator API Reference
 
-Updated: 2026-01-19
+Updated: January 19, 2026
 
 The Notebook Navigator plugin exposes a public API for other plugins and scripts to interact with navigator features.
 
