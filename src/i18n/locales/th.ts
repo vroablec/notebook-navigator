@@ -929,6 +929,10 @@ export const STRINGS_TH = {
                 name: 'แสดงหมายเลขสัปดาห์',
                 desc: 'เพิ่มคอลัมน์พร้อมหมายเลขสัปดาห์'
             },
+            calendarShowQuarter: {
+                name: 'แสดงไตรมาส',
+                desc: 'เพิ่มป้ายไตรมาสในส่วนหัวปฏิทิน'
+            },
             calendarConfirmBeforeCreate: {
                 name: 'ยืนยันก่อนสร้าง',
                 desc: 'แสดงกล่องยืนยันเมื่อสร้างบันทึกรายวันใหม่'
@@ -950,11 +954,31 @@ export const STRINGS_TH = {
                 placeholder: 'Personal/Diary'
             },
             calendarCustomFilePattern: {
-                name: 'รูปแบบไฟล์',
-                desc: 'รูปแบบวันที่เทียบกับโฟลเดอร์หลัก โทเค็นที่รองรับ: YYYY, MM, M, DD, D บันทึกสามารถรวมส่วนต่อท้ายชื่อเรื่องที่เป็นทางเลือกได้',
+                name: 'รูปแบบโน้ตรายวัน',
+                desc: 'กำหนดเส้นทางโดยใช้รูปแบบวันที่ Moment',
+                momentDescPrefix: 'กำหนดเส้นทางโดยใช้ ',
+                momentLinkText: 'รูปแบบวันที่ Moment',
+                momentDescSuffix: '',
                 placeholder: 'YYYY/YYYYMMDD',
-                example: 'รูปแบบปัจจุบันมีลักษณะดังนี้: {path}',
-                parsingError: 'รูปแบบต้องรวม YYYY, MM/M และ DD/D โทเค็นที่รองรับ: YYYY, MM, M, DD, D'
+                example: 'รูปแบบปัจจุบัน: {path}',
+                parsingError: 'แพทเทิร์นต้องสามารถฟอร์แมตและพาร์สกลับเป็นวันที่แบบเต็ม (ปี เดือน วัน) ได้',
+                titlePlaceholder: 'ชื่อโน้ต'
+            },
+            calendarCustomWeekPattern: {
+                name: 'รูปแบบโน้ตรายสัปดาห์',
+                parsingError: 'แพทเทิร์นต้องสามารถฟอร์แมตและพาร์สกลับเป็นสัปดาห์แบบเต็ม (ปีของสัปดาห์ หมายเลขสัปดาห์) ได้'
+            },
+            calendarCustomMonthPattern: {
+                name: 'รูปแบบโน้ตรายเดือน',
+                parsingError: 'แพทเทิร์นต้องสามารถฟอร์แมตและพาร์สกลับเป็นเดือนแบบเต็ม (ปี เดือน) ได้'
+            },
+            calendarCustomQuarterPattern: {
+                name: 'รูปแบบโน้ตรายไตรมาส',
+                parsingError: 'แพทเทิร์นต้องสามารถฟอร์แมตและพาร์สกลับเป็นไตรมาสแบบเต็ม (ปี ไตรมาส) ได้'
+            },
+            calendarCustomYearPattern: {
+                name: 'รูปแบบโน้ตรายปี',
+                parsingError: 'แพทเทิร์นต้องสามารถฟอร์แมตและพาร์สกลับเป็นปีแบบเต็ม (ปี) ได้'
             },
             calendarCustomPromptForTitle: {
                 name: 'ขอชื่อเรื่อง',

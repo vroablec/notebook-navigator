@@ -929,6 +929,10 @@ export const STRINGS_KO = {
                 name: '주 번호 표시',
                 desc: '주 번호 열을 추가합니다.'
             },
+            calendarShowQuarter: {
+                name: '분기 표시',
+                desc: '캘린더 헤더에 분기 레이블을 추가합니다.'
+            },
             calendarConfirmBeforeCreate: {
                 name: '생성 전 확인',
                 desc: '새 데일리 노트를 생성할 때 확인 대화 상자를 표시합니다.'
@@ -950,11 +954,31 @@ export const STRINGS_KO = {
                 placeholder: 'Personal/Diary'
             },
             calendarCustomFilePattern: {
-                name: '파일 패턴',
-                desc: '루트 폴더 기준 날짜 패턴. 지원되는 토큰: YYYY, MM, M, DD, D. 노트에는 선택적 제목 접미사를 포함할 수 있습니다.',
+                name: '일일 노트 패턴',
+                desc: 'Moment 날짜 형식을 사용하여 경로 지정.',
+                momentDescPrefix: '',
+                momentLinkText: 'Moment 날짜 형식',
+                momentDescSuffix: '을 사용하여 경로 지정.',
                 placeholder: 'YYYY/YYYYMMDD',
-                example: '현재 구문은 다음과 같습니다: {path}',
-                parsingError: '패턴에는 YYYY, MM/M, DD/D가 포함되어야 합니다. 지원되는 토큰: YYYY, MM, M, DD, D.'
+                example: '현재 구문: {path}',
+                parsingError: '패턴은 전체 날짜(연, 월, 일)로 포맷되고 다시 파싱될 수 있어야 합니다.',
+                titlePlaceholder: '노트 제목'
+            },
+            calendarCustomWeekPattern: {
+                name: '주간 노트 패턴',
+                parsingError: '패턴은 전체 주(주 연도, 주 번호)로 포맷되고 다시 파싱될 수 있어야 합니다.'
+            },
+            calendarCustomMonthPattern: {
+                name: '월간 노트 패턴',
+                parsingError: '패턴은 전체 월(연도, 월)로 포맷되고 다시 파싱될 수 있어야 합니다.'
+            },
+            calendarCustomQuarterPattern: {
+                name: '분기별 노트 패턴',
+                parsingError: '패턴은 전체 분기(연도, 분기)로 포맷되고 다시 파싱될 수 있어야 합니다.'
+            },
+            calendarCustomYearPattern: {
+                name: '연간 노트 패턴',
+                parsingError: '패턴은 전체 연도(연도)로 포맷되고 다시 파싱될 수 있어야 합니다.'
             },
             calendarCustomPromptForTitle: {
                 name: '제목 입력',

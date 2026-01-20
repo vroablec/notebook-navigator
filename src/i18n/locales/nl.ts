@@ -931,6 +931,10 @@ export const STRINGS_NL = {
                 name: 'Weeknummer tonen',
                 desc: 'Voeg een kolom toe met het weeknummer.'
             },
+            calendarShowQuarter: {
+                name: 'Kwartaal tonen',
+                desc: 'Voeg een kwartaallabel toe in de kalender-header.'
+            },
             calendarConfirmBeforeCreate: {
                 name: 'Bevestigen voor aanmaken',
                 desc: 'Toon een bevestigingsdialoog bij het aanmaken van een nieuwe dagelijkse notitie.'
@@ -952,11 +956,31 @@ export const STRINGS_NL = {
                 placeholder: 'Personal/Diary'
             },
             calendarCustomFilePattern: {
-                name: 'Bestandspatroon',
-                desc: 'Datumpatroon relatief aan hoofdmap. Ondersteunde tokens: YYYY, MM, M, DD, D. Notities kunnen een optioneel titelachtervoegsel bevatten.',
+                name: 'Dagelijkse notitie patroon',
+                desc: 'Pad formatteren met Moment-datumnotatie.',
+                momentDescPrefix: 'Pad formatteren met ',
+                momentLinkText: 'Moment-datumnotatie',
+                momentDescSuffix: '.',
                 placeholder: 'YYYY/YYYYMMDD',
-                example: 'Huidige syntaxis ziet er zo uit: {path}',
-                parsingError: 'Patroon moet YYYY, MM/M en DD/D bevatten. Ondersteunde tokens: YYYY, MM, M, DD, D.'
+                example: 'Huidige syntaxis: {path}',
+                parsingError: 'Het patroon moet kunnen formatteren en terug-parsen naar een volledige datum (jaar, maand, dag).',
+                titlePlaceholder: 'Notitie titel'
+            },
+            calendarCustomWeekPattern: {
+                name: 'Wekelijkse notitie patroon',
+                parsingError: 'Het patroon moet kunnen formatteren en terug-parsen naar een volledige week (weekjaar, weeknummer).'
+            },
+            calendarCustomMonthPattern: {
+                name: 'Maandelijkse notitie patroon',
+                parsingError: 'Het patroon moet kunnen formatteren en terug-parsen naar een volledige maand (jaar, maand).'
+            },
+            calendarCustomQuarterPattern: {
+                name: 'Kwartaalnotitie patroon',
+                parsingError: 'Het patroon moet kunnen formatteren en terug-parsen naar een volledig kwartaal (jaar, kwartaal).'
+            },
+            calendarCustomYearPattern: {
+                name: 'Jaarlijkse notitie patroon',
+                parsingError: 'Het patroon moet kunnen formatteren en terug-parsen naar een volledig jaar (jaar).'
             },
             calendarCustomPromptForTitle: {
                 name: 'Vraag om titel',

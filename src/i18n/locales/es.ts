@@ -930,6 +930,10 @@ export const STRINGS_ES = {
                 name: 'Mostrar número de semana',
                 desc: 'Agregar una columna con el número de semana.'
             },
+            calendarShowQuarter: {
+                name: 'Mostrar trimestre',
+                desc: 'Agregar una etiqueta de trimestre en el encabezado del calendario.'
+            },
             calendarConfirmBeforeCreate: {
                 name: 'Confirmar antes de crear nueva nota',
                 desc: 'Mostrar un diálogo de confirmación al crear una nueva nota diaria.'
@@ -951,11 +955,31 @@ export const STRINGS_ES = {
                 placeholder: 'Personal/Diary'
             },
             calendarCustomFilePattern: {
-                name: 'Patrón de archivo',
-                desc: 'Patrón de fecha relativo a la carpeta raíz. Tokens compatibles: YYYY, MM, M, DD, D. Las notas pueden incluir un sufijo de título opcional.',
+                name: 'Patrón de nota diaria',
+                desc: 'Formatear ruta usando formato de fecha de Moment.',
+                momentDescPrefix: 'Formatear ruta usando ',
+                momentLinkText: 'formato de fecha Moment',
+                momentDescSuffix: '.',
                 placeholder: 'YYYY/YYYYMMDD',
-                example: 'La sintaxis actual es así: {path}',
-                parsingError: 'El patrón debe incluir YYYY, MM/M y DD/D. Tokens compatibles: YYYY, MM, M, DD, D.'
+                example: 'Sintaxis actual: {path}',
+                parsingError: 'El patrón debe formatear y volver a analizarse como una fecha completa (año, mes, día).',
+                titlePlaceholder: 'Título de la nota'
+            },
+            calendarCustomWeekPattern: {
+                name: 'Patrón de nota semanal',
+                parsingError: 'El patrón debe formatear y volver a analizarse como una semana completa (año de semana, número de semana).'
+            },
+            calendarCustomMonthPattern: {
+                name: 'Patrón de nota mensual',
+                parsingError: 'El patrón debe formatear y volver a analizarse como un mes completo (año, mes).'
+            },
+            calendarCustomQuarterPattern: {
+                name: 'Patrón de nota trimestral',
+                parsingError: 'El patrón debe formatear y volver a analizarse como un trimestre completo (año, trimestre).'
+            },
+            calendarCustomYearPattern: {
+                name: 'Patrón de nota anual',
+                parsingError: 'El patrón debe formatear y volver a analizarse como un año completo (año).'
             },
             calendarCustomPromptForTitle: {
                 name: 'Solicitar título',

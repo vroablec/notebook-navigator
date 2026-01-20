@@ -929,6 +929,10 @@ export const STRINGS_EN = {
                 name: 'Show week number',
                 desc: 'Add a column with the week number.'
             },
+            calendarShowQuarter: {
+                name: 'Show quarter',
+                desc: 'Add a quarter label in the calendar header.'
+            },
             calendarConfirmBeforeCreate: {
                 name: 'Confirm before creating new note',
                 desc: 'Show a confirmation dialog when creating a new daily note.'
@@ -950,11 +954,31 @@ export const STRINGS_EN = {
                 placeholder: 'Personal/Diary'
             },
             calendarCustomFilePattern: {
-                name: 'File pattern',
-                desc: 'Date pattern relative to root folder. Supported tokens: YYYY, MM, M, DD, D. Notes may include an optional title suffix.',
+                name: 'Daily note pattern',
+                desc: 'Format path using Moment date format.',
+                momentDescPrefix: 'Format path using ',
+                momentLinkText: 'Moment date format',
+                momentDescSuffix: '.',
                 placeholder: 'YYYY/YYYYMMDD',
-                example: 'Current syntax looks like this: {path}',
-                parsingError: 'Pattern must include YYYY, MM/M, and DD/D. Supported tokens: YYYY, MM, M, DD, D.'
+                example: 'Current syntax: {path}',
+                parsingError: 'Pattern must format and parse back to a full date (year, month, day).',
+                titlePlaceholder: 'Note title'
+            },
+            calendarCustomWeekPattern: {
+                name: 'Weekly note pattern',
+                parsingError: 'Pattern must format and parse back to a full week (week year, week number).'
+            },
+            calendarCustomMonthPattern: {
+                name: 'Monthly note pattern',
+                parsingError: 'Pattern must format and parse back to a full month (year, month).'
+            },
+            calendarCustomQuarterPattern: {
+                name: 'Quarterly note pattern',
+                parsingError: 'Pattern must format and parse back to a full quarter (year, quarter).'
+            },
+            calendarCustomYearPattern: {
+                name: 'Yearly note pattern',
+                parsingError: 'Pattern must format and parse back to a full year (year).'
             },
             calendarCustomPromptForTitle: {
                 name: 'Prompt for title',

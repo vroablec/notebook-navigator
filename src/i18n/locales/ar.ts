@@ -929,6 +929,10 @@ export const STRINGS_AR = {
                 name: 'عرض رقم الأسبوع',
                 desc: 'إضافة عمود برقم الأسبوع.'
             },
+            calendarShowQuarter: {
+                name: 'عرض الربع',
+                desc: 'إضافة تسمية الربع في رأس التقويم.'
+            },
             calendarConfirmBeforeCreate: {
                 name: 'تأكيد قبل الإنشاء',
                 desc: 'عرض مربع حوار تأكيد عند إنشاء ملاحظة يومية جديدة.'
@@ -950,11 +954,31 @@ export const STRINGS_AR = {
                 placeholder: 'Personal/Diary'
             },
             calendarCustomFilePattern: {
-                name: 'نمط الملف',
-                desc: 'نمط التاريخ نسبة إلى المجلد الجذر. الرموز المدعومة: YYYY، MM، M، DD، D. يمكن أن تتضمن الملاحظات لاحقة عنوان اختيارية.',
+                name: 'نمط الملاحظة اليومية',
+                desc: 'تنسيق المسار باستخدام تنسيق تاريخ Moment.',
+                momentDescPrefix: 'تنسيق المسار باستخدام ',
+                momentLinkText: 'تنسيق تاريخ Moment',
+                momentDescSuffix: '.',
                 placeholder: 'YYYY/YYYYMMDD',
-                example: 'الصيغة الحالية تبدو هكذا: {path}',
-                parsingError: 'يجب أن يتضمن النمط YYYY وMM/M وDD/D. الرموز المدعومة: YYYY، MM، M، DD، D.'
+                example: 'الصيغة الحالية: {path}',
+                parsingError: 'يجب أن يقوم النمط بتنسيق التاريخ ثم تحليله مرة أخرى كتاريخ كامل (السنة، الشهر، اليوم).',
+                titlePlaceholder: 'عنوان الملاحظة'
+            },
+            calendarCustomWeekPattern: {
+                name: 'نمط الملاحظة الأسبوعية',
+                parsingError: 'يجب أن يقوم النمط بتنسيق الأسبوع ثم تحليله مرة أخرى كأسبوع كامل (سنة الأسبوع، رقم الأسبوع).'
+            },
+            calendarCustomMonthPattern: {
+                name: 'نمط الملاحظة الشهرية',
+                parsingError: 'يجب أن يقوم النمط بتنسيق الشهر ثم تحليله مرة أخرى كشهر كامل (السنة، الشهر).'
+            },
+            calendarCustomQuarterPattern: {
+                name: 'نمط الملاحظة الفصلية',
+                parsingError: 'يجب أن يقوم النمط بتنسيق الفصل ثم تحليله مرة أخرى كفصل كامل (السنة، الفصل).'
+            },
+            calendarCustomYearPattern: {
+                name: 'نمط الملاحظة السنوية',
+                parsingError: 'يجب أن يقوم النمط بتنسيق السنة ثم تحليلها مرة أخرى كسنة كاملة (السنة).'
             },
             calendarCustomPromptForTitle: {
                 name: 'طلب العنوان',

@@ -19,9 +19,10 @@
 import { normalizePath } from 'obsidian';
 
 export const DEFAULT_CALENDAR_CUSTOM_FILE_PATTERN = 'YYYY/YYYYMMDD';
-
-const CALENDAR_CUSTOM_SUPPORTED_DATE_TOKENS = ['YYYY', 'YY', 'MMMM', 'MMM', 'MM', 'M', 'DD', 'D'] as const;
-const CALENDAR_CUSTOM_ALLOWED_DATE_TOKENS = ['YYYY', 'MM', 'DD', 'M', 'D'] as const;
+export const DEFAULT_CALENDAR_CUSTOM_WEEK_PATTERN = 'gggg/[W]ww';
+export const DEFAULT_CALENDAR_CUSTOM_MONTH_PATTERN = 'YYYY/YYYYMM';
+export const DEFAULT_CALENDAR_CUSTOM_QUARTER_PATTERN = 'YYYY/[Q]Q';
+export const DEFAULT_CALENDAR_CUSTOM_YEAR_PATTERN = 'YYYY';
 
 /** Appends .md extension to file name if not already present */
 export function ensureMarkdownFileName(value: string): string {
@@ -46,17 +47,17 @@ export function normalizeCalendarCustomRootFolder(value: string): string {
 }
 
 /** Normalizes file pattern, ensuring .md extension and returning default if invalid */
-export function normalizeCalendarCustomFilePattern(value: string): string {
+export function normalizeCalendarCustomFilePattern(value: string, fallback: string = DEFAULT_CALENDAR_CUSTOM_FILE_PATTERN): string {
     const trimmed = value.trim();
     if (!trimmed) {
-        return DEFAULT_CALENDAR_CUSTOM_FILE_PATTERN;
+        return fallback;
     }
 
     const normalized = normalizePath(trimmed)
         .replace(/ ?\{title\}/gu, '')
         .replace(/\.md$/iu, '');
     if (!normalized || normalized === '/' || normalized === '.') {
-        return DEFAULT_CALENDAR_CUSTOM_FILE_PATTERN;
+        return fallback;
     }
 
     const normalizedWithoutLeadingSlashes = normalized.replace(/^\/+/u, '');
@@ -64,22 +65,22 @@ export function normalizeCalendarCustomFilePattern(value: string): string {
 
     if (slashIndex === -1) {
         const fileName = normalizedWithoutLeadingSlashes.trim();
-        return fileName || DEFAULT_CALENDAR_CUSTOM_FILE_PATTERN;
+        return fileName || fallback;
     }
 
     const folderPart = normalizedWithoutLeadingSlashes.slice(0, slashIndex);
     const filePart = normalizedWithoutLeadingSlashes.slice(slashIndex + 1);
     const filePartTrimmed = filePart.trim();
     if (!filePartTrimmed) {
-        return DEFAULT_CALENDAR_CUSTOM_FILE_PATTERN;
+        return fallback;
     }
 
     return folderPart ? `${folderPart}/${filePartTrimmed}` : filePartTrimmed;
 }
 
 /** Splits file pattern into folder and file components based on last slash */
-export function splitCalendarCustomPattern(value: string): { folderPattern: string; filePattern: string } {
-    const normalized = normalizeCalendarCustomFilePattern(value);
+export function splitCalendarCustomPattern(value: string, fallback?: string): { folderPattern: string; filePattern: string } {
+    const normalized = normalizeCalendarCustomFilePattern(value, fallback);
     const slashIndex = normalized.lastIndexOf('/');
     if (slashIndex === -1) {
         return { folderPattern: '', filePattern: normalized };
@@ -101,53 +102,85 @@ export function normalizeCalendarVaultFolderPath(value: string): string {
 
 /**
  * Returns true when a custom calendar pattern (folder + filename, without extension) can be parsed as a full date
- * (year, month, day) using supported tokens.
+ * (year, month, day).
  */
-export function isCalendarCustomDatePatternValid(pattern: string): boolean {
-    const normalized = pattern
-        .trim()
-        .replace(/\.md$/iu, '')
-        .replace(/ ?\{title\}/gu, '');
+export function isCalendarCustomDatePatternValid(pattern: string, momentApi?: MomentParseApi | null): boolean {
+    const normalized = normalizeCalendarCustomMomentPattern(pattern);
     if (!normalized || normalized === '/' || normalized === '.') {
         return false;
     }
 
-    let hasYear = false;
-    let hasMonth = false;
-    let hasDay = false;
-
-    for (let index = 0; index < normalized.length; ) {
-        const remaining = normalized.slice(index);
-        const token = CALENDAR_CUSTOM_SUPPORTED_DATE_TOKENS.find(entry => remaining.startsWith(entry));
-        if (!token) {
-            index += 1;
-            continue;
-        }
-
-        if (token === 'MMMM' || token === 'MMM' || token === 'YY') {
-            return false;
-        }
-
-        if (token === 'YYYY') {
-            hasYear = true;
-            index += token.length;
-            continue;
-        }
-
-        if (token === 'MM' || token === 'M') {
-            hasMonth = true;
-            index += token.length;
-            continue;
-        }
-
-        if (token === 'DD' || token === 'D') {
-            hasDay = true;
-            index += token.length;
-            continue;
-        }
+    if (!momentApi) {
+        return isCalendarCustomDatePatternValidStatic(normalized);
     }
 
-    return hasYear && hasMonth && hasDay;
+    // Round-trip validation:
+    // 1) Format known sample dates using the provided pattern.
+    // 2) Strict-parse the formatted strings using the same pattern.
+    // 3) Accept the pattern only if the parsed date matches the original date for every sample.
+    //
+    // This ensures the pattern can uniquely represent a full date (year, month, day) when reading note paths back
+    // from the vault, even if it repeats tokens (for example, including the month multiple times).
+    //
+    // Multiple samples are used to ensure the pattern includes enough information to disambiguate year/month/day.
+    return isCalendarCustomMomentPatternRoundTripValid(momentApi, normalized, ['2026-01-16', '2027-02-17'], ['YYYY-MM-DD']);
+}
+
+export function isCalendarCustomWeekPatternValid(pattern: string, momentApi?: MomentParseApi | null): boolean {
+    const normalized = normalizeCalendarCustomMomentPattern(pattern);
+    if (!normalized || normalized === '/' || normalized === '.') {
+        return false;
+    }
+
+    if (!momentApi) {
+        return normalized.includes('w') || normalized.includes('W');
+    }
+
+    return isCalendarCustomMomentPatternRoundTripValid(
+        momentApi,
+        normalized,
+        ['2021-01-01', '2026-06-19', '2027-02-17'],
+        ['GGGG-[W]WW', 'gggg-[W]ww']
+    );
+}
+
+export function isCalendarCustomMonthPatternValid(pattern: string, momentApi?: MomentParseApi | null): boolean {
+    const normalized = normalizeCalendarCustomMomentPattern(pattern);
+    if (!normalized || normalized === '/' || normalized === '.') {
+        return false;
+    }
+
+    if (!momentApi) {
+        return normalized.includes('Y') && normalized.includes('M');
+    }
+
+    return isCalendarCustomMomentPatternRoundTripValid(momentApi, normalized, ['2026-01-16', '2027-02-17'], ['YYYY-MM']);
+}
+
+export function isCalendarCustomQuarterPatternValid(pattern: string, momentApi?: MomentParseApi | null): boolean {
+    const normalized = normalizeCalendarCustomMomentPattern(pattern);
+    if (!normalized || normalized === '/' || normalized === '.') {
+        return false;
+    }
+
+    if (!momentApi) {
+        return normalized.includes('Y') && normalized.includes('Q');
+    }
+
+    return isCalendarCustomMomentPatternRoundTripValid(momentApi, normalized, ['2026-01-16', '2026-07-15', '2027-04-03'], ['YYYY-[Q]Q']);
+}
+
+export function isCalendarCustomYearPatternValid(pattern: string, momentApi?: MomentParseApi | null): boolean {
+    const normalized = normalizeCalendarCustomMomentPattern(pattern);
+    if (!normalized || normalized === '/' || normalized === '.') {
+        return false;
+    }
+
+    if (!momentApi) {
+        return normalized.includes('Y');
+    }
+
+    return isCalendarCustomMomentPatternRoundTripValid(momentApi, normalized, ['2026-01-16', '2027-02-17'], ['YYYY']);
 }
 
 export interface CalendarCustomParsedNotePath {
@@ -168,65 +201,75 @@ interface MomentParseApi {
     (input?: string, format?: string, strict?: boolean): MomentParseResult;
 }
 
-function buildCalendarCustomMomentFormat(pattern: string): string {
-    if (!pattern) {
-        return '';
-    }
+function isCalendarCustomMomentPatternRoundTripValid(
+    momentApi: MomentParseApi,
+    normalizedPattern: string,
+    sampleIsoDates: readonly string[],
+    compareFormats: readonly string[]
+): boolean {
+    for (const compareFormat of compareFormats) {
+        let allSamplesMatch = true;
 
-    let result = '';
-    let literalBuffer = '';
-
-    for (let index = 0; index < pattern.length; ) {
-        const remaining = pattern.slice(index);
-        const token = CALENDAR_CUSTOM_ALLOWED_DATE_TOKENS.find(entry => remaining.startsWith(entry));
-        if (token) {
-            if (literalBuffer) {
-                result += `[${literalBuffer}]`;
-                literalBuffer = '';
+        for (const sampleIso of sampleIsoDates) {
+            const sampleDate = momentApi(sampleIso, 'YYYY-MM-DD', true);
+            if (!sampleDate.isValid()) {
+                allSamplesMatch = false;
+                break;
             }
 
-            result += token;
-            index += token.length;
-            continue;
-        }
-
-        const char = pattern[index] ?? '';
-        if (char === ']') {
-            if (literalBuffer) {
-                result += `[${literalBuffer}]`;
-                literalBuffer = '';
+            const rendered = sampleDate.format(normalizedPattern);
+            if (!rendered) {
+                allSamplesMatch = false;
+                break;
             }
-            result += char;
-            index += 1;
-            continue;
+
+            const parsed = momentApi(rendered, normalizedPattern, true);
+            if (!parsed.isValid()) {
+                allSamplesMatch = false;
+                break;
+            }
+
+            if (parsed.format(compareFormat) !== sampleDate.format(compareFormat)) {
+                allSamplesMatch = false;
+                break;
+            }
         }
 
-        literalBuffer += char;
-        index += 1;
+        if (allSamplesMatch) {
+            return true;
+        }
     }
 
-    if (literalBuffer) {
-        result += `[${literalBuffer}]`;
-    }
-
-    return result;
+    return false;
 }
 
-export function createCalendarCustomDateFormatter(pattern: string): (date: MomentFormatLike) => string {
-    const normalized = pattern
+function normalizeCalendarCustomMomentPattern(pattern: string): string {
+    return pattern
         .trim()
         .replace(/\.md$/iu, '')
         .replace(/ ?\{title\}/gu, '');
+}
+
+function isCalendarCustomDatePatternValidStatic(pattern: string): boolean {
+    const normalized = normalizeCalendarCustomMomentPattern(pattern);
+    if (!normalized || normalized === '/' || normalized === '.') {
+        return false;
+    }
+
+    const hasYear = normalized.includes('YYYY');
+    const hasMonth = normalized.includes('MM') || normalized.includes('M');
+    const hasDay = normalized.includes('DD') || normalized.includes('D');
+
+    return hasYear && hasMonth && hasDay;
+}
+
+export function createCalendarCustomDateFormatter(pattern: string): (date: MomentFormatLike) => string {
+    const normalized = normalizeCalendarCustomMomentPattern(pattern);
     if (!normalized) {
         return () => '';
     }
 
-    const format = buildCalendarCustomMomentFormat(normalized);
-    if (!format) {
-        return () => '';
-    }
-
-    return (date: MomentFormatLike) => date.format(format);
+    return (date: MomentFormatLike) => date.format(normalized);
 }
 
 function stripMarkdownExtension(value: string): string | null {
@@ -246,18 +289,12 @@ export function createCalendarCustomNotePathParser(
     momentApi: MomentParseApi,
     datePattern: string
 ): ((relativePath: string) => CalendarCustomParsedNotePath | null) | null {
-    const trimmedPattern = datePattern
-        .trim()
-        .replace(/\.md$/iu, '')
-        .replace(/ ?\{title\}/gu, '');
-    if (!trimmedPattern || !isCalendarCustomDatePatternValid(trimmedPattern)) {
+    const trimmedPattern = normalizeCalendarCustomMomentPattern(datePattern);
+    if (!trimmedPattern || !isCalendarCustomDatePatternValid(trimmedPattern, momentApi)) {
         return null;
     }
 
-    const format = buildCalendarCustomMomentFormat(trimmedPattern);
-    if (!format) {
-        return null;
-    }
+    const format = trimmedPattern;
 
     return (relativePath: string): CalendarCustomParsedNotePath | null => {
         const withoutExt = stripMarkdownExtension(relativePath);

@@ -929,6 +929,10 @@ export const STRINGS_IT = {
                 name: 'Mostra numero settimana',
                 desc: 'Aggiungi una colonna con il numero della settimana.'
             },
+            calendarShowQuarter: {
+                name: 'Mostra trimestre',
+                desc: "Aggiungi un'etichetta del trimestre nell'intestazione del calendario."
+            },
             calendarConfirmBeforeCreate: {
                 name: 'Conferma prima di creare',
                 desc: 'Mostra una finestra di conferma quando si crea una nuova nota giornaliera.'
@@ -950,11 +954,32 @@ export const STRINGS_IT = {
                 placeholder: 'Personal/Diary'
             },
             calendarCustomFilePattern: {
-                name: 'Modello file',
-                desc: 'Pattern data relativo alla cartella radice. Token supportati: YYYY, MM, M, DD, D. Le note possono includere un suffisso titolo opzionale.',
+                name: 'Modello nota giornaliera',
+                desc: 'Formatta percorso usando formato data Moment.',
+                momentDescPrefix: 'Formatta percorso usando ',
+                momentLinkText: 'formato data Moment',
+                momentDescSuffix: '.',
                 placeholder: 'YYYY/YYYYMMDD',
-                example: 'La sintassi attuale appare così: {path}',
-                parsingError: 'Il pattern deve includere YYYY, MM/M e DD/D. Token supportati: YYYY, MM, M, DD, D.'
+                example: 'Sintassi attuale: {path}',
+                parsingError: 'Il modello deve poter essere formattato e rianalizzato come una data completa (anno, mese, giorno).',
+                titlePlaceholder: 'Titolo nota'
+            },
+            calendarCustomWeekPattern: {
+                name: 'Modello nota settimanale',
+                parsingError:
+                    'Il modello deve poter essere formattato e rianalizzato come una settimana completa (anno settimana, numero settimana).'
+            },
+            calendarCustomMonthPattern: {
+                name: 'Modello nota mensile',
+                parsingError: 'Il modello deve poter essere formattato e rianalizzato come un mese completo (anno, mese).'
+            },
+            calendarCustomQuarterPattern: {
+                name: 'Modello nota trimestrale',
+                parsingError: 'Il modello deve poter essere formattato e rianalizzato come un trimestre completo (anno, trimestre).'
+            },
+            calendarCustomYearPattern: {
+                name: 'Modello nota annuale',
+                parsingError: 'Il modello deve poter essere formattato e rianalizzato come un anno completo (anno).'
             },
             calendarCustomPromptForTitle: {
                 name: 'Richiedi titolo',

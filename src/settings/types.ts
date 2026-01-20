@@ -193,12 +193,17 @@ export interface NotebookNavigatorSettings {
     calendarWeeksToShow: CalendarWeeksToShow;
     calendarHighlightToday: boolean;
     calendarShowWeekNumber: boolean;
+    calendarShowQuarter: boolean;
     calendarConfirmBeforeCreate: boolean;
 
     // Navigation pane tab - Calendar integration
     calendarIntegrationMode: CalendarIntegrationMode;
     calendarCustomRootFolder: string;
     calendarCustomFilePattern: string;
+    calendarCustomWeekPattern: string;
+    calendarCustomMonthPattern: string;
+    calendarCustomQuarterPattern: string;
+    calendarCustomYearPattern: string;
     calendarCustomPromptForTitle: boolean;
 
     // Navigation pane tab - Appearance

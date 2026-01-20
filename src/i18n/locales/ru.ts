@@ -930,6 +930,10 @@ export const STRINGS_RU = {
                 name: 'Показать номер недели',
                 desc: 'Добавить колонку с номером недели.'
             },
+            calendarShowQuarter: {
+                name: 'Показать квартал',
+                desc: 'Добавить метку квартала в заголовок календаря.'
+            },
             calendarConfirmBeforeCreate: {
                 name: 'Подтвердить перед созданием',
                 desc: 'Показать диалог подтверждения при создании новой ежедневной заметки.'
@@ -951,11 +955,31 @@ export const STRINGS_RU = {
                 placeholder: 'Personal/Diary'
             },
             calendarCustomFilePattern: {
-                name: 'Шаблон файла',
-                desc: 'Шаблон даты относительно корневой папки. Поддерживаемые токены: YYYY, MM, M, DD, D. Заметки могут включать необязательный суффикс заголовка.',
+                name: 'Шаблон ежедневной заметки',
+                desc: 'Формат пути с использованием формата даты Moment.',
+                momentDescPrefix: 'Формат пути с использованием ',
+                momentLinkText: 'формата даты Moment',
+                momentDescSuffix: '.',
                 placeholder: 'YYYY/YYYYMMDD',
-                example: 'Текущий синтаксис выглядит так: {path}',
-                parsingError: 'Шаблон должен включать YYYY, MM/M и DD/D. Поддерживаемые токены: YYYY, MM, M, DD, D.'
+                example: 'Текущий синтаксис: {path}',
+                parsingError: 'Шаблон должен форматироваться и разбираться обратно как полная дата (год, месяц, день).',
+                titlePlaceholder: 'Название заметки'
+            },
+            calendarCustomWeekPattern: {
+                name: 'Шаблон еженедельной заметки',
+                parsingError: 'Шаблон должен форматироваться и разбираться обратно как полная неделя (год недели, номер недели).'
+            },
+            calendarCustomMonthPattern: {
+                name: 'Шаблон ежемесячной заметки',
+                parsingError: 'Шаблон должен форматироваться и разбираться обратно как полный месяц (год, месяц).'
+            },
+            calendarCustomQuarterPattern: {
+                name: 'Шаблон квартальной заметки',
+                parsingError: 'Шаблон должен форматироваться и разбираться обратно как полный квартал (год, квартал).'
+            },
+            calendarCustomYearPattern: {
+                name: 'Шаблон годовой заметки',
+                parsingError: 'Шаблон должен форматироваться и разбираться обратно как полный год (год).'
             },
             calendarCustomPromptForTitle: {
                 name: 'Запросить заголовок',

@@ -929,6 +929,10 @@ export const STRINGS_TR = {
                 name: 'Hafta numarasını göster',
                 desc: 'Hafta numarasıyla bir sütun ekle.'
             },
+            calendarShowQuarter: {
+                name: 'Çeyreği göster',
+                desc: 'Takvim başlığına çeyrek etiketi ekle.'
+            },
             calendarConfirmBeforeCreate: {
                 name: 'Oluşturmadan önce onayla',
                 desc: 'Yeni bir günlük not oluştururken onay iletişim kutusu göster.'
@@ -950,11 +954,31 @@ export const STRINGS_TR = {
                 placeholder: 'Personal/Diary'
             },
             calendarCustomFilePattern: {
-                name: 'Dosya kalıbı',
-                desc: 'Kök klasöre göre tarih kalıbı. Desteklenen tokenler: YYYY, MM, M, DD, D. Notlar isteğe bağlı başlık eki içerebilir.',
+                name: 'Günlük not kalıbı',
+                desc: 'Moment tarih biçimini kullanarak yolu biçimlendir.',
+                momentDescPrefix: '',
+                momentLinkText: 'Moment tarih biçimi',
+                momentDescSuffix: ' kullanarak yolu biçimlendir.',
                 placeholder: 'YYYY/YYYYMMDD',
-                example: 'Geçerli sözdizimi şöyle görünür: {path}',
-                parsingError: 'Kalıp YYYY, MM/M ve DD/D içermelidir. Desteklenen tokenler: YYYY, MM, M, DD, D.'
+                example: 'Geçerli sözdizimi: {path}',
+                parsingError: 'Desen, tam bir tarih (yıl, ay, gün) olarak biçimlendirilmeli ve tekrar ayrıştırılabilmelidir.',
+                titlePlaceholder: 'Not başlığı'
+            },
+            calendarCustomWeekPattern: {
+                name: 'Haftalık not kalıbı',
+                parsingError: 'Desen, tam bir hafta (hafta yılı, hafta numarası) olarak biçimlendirilmeli ve tekrar ayrıştırılabilmelidir.'
+            },
+            calendarCustomMonthPattern: {
+                name: 'Aylık not kalıbı',
+                parsingError: 'Desen, tam bir ay (yıl, ay) olarak biçimlendirilmeli ve tekrar ayrıştırılabilmelidir.'
+            },
+            calendarCustomQuarterPattern: {
+                name: 'Çeyreklik not kalıbı',
+                parsingError: 'Desen, tam bir çeyrek (yıl, çeyrek) olarak biçimlendirilmeli ve tekrar ayrıştırılabilmelidir.'
+            },
+            calendarCustomYearPattern: {
+                name: 'Yıllık not kalıbı',
+                parsingError: 'Desen, tam bir yıl (yıl) olarak biçimlendirilmeli ve tekrar ayrıştırılabilmelidir.'
             },
             calendarCustomPromptForTitle: {
                 name: 'Başlık iste',

@@ -929,6 +929,10 @@ export const STRINGS_ID = {
                 name: 'Tampilkan nomor minggu',
                 desc: 'Tambahkan kolom dengan nomor minggu.'
             },
+            calendarShowQuarter: {
+                name: 'Tampilkan kuartal',
+                desc: 'Tambahkan label kuartal di header kalender.'
+            },
             calendarConfirmBeforeCreate: {
                 name: 'Konfirmasi sebelum membuat',
                 desc: 'Tampilkan dialog konfirmasi saat membuat catatan harian baru.'
@@ -950,11 +954,31 @@ export const STRINGS_ID = {
                 placeholder: 'Personal/Diary'
             },
             calendarCustomFilePattern: {
-                name: 'Pola file',
-                desc: 'Pola tanggal relatif terhadap folder root. Token yang didukung: YYYY, MM, M, DD, D. Catatan dapat menyertakan sufiks judul opsional.',
+                name: 'Pola catatan harian',
+                desc: 'Format jalur menggunakan format tanggal Moment.',
+                momentDescPrefix: 'Format jalur menggunakan ',
+                momentLinkText: 'format tanggal Moment',
+                momentDescSuffix: '.',
                 placeholder: 'YYYY/YYYYMMDD',
-                example: 'Sintaks saat ini terlihat seperti ini: {path}',
-                parsingError: 'Pola harus menyertakan YYYY, MM/M, dan DD/D. Token yang didukung: YYYY, MM, M, DD, D.'
+                example: 'Sintaks saat ini: {path}',
+                parsingError: 'Pola harus dapat diformat dan diparse kembali sebagai tanggal lengkap (tahun, bulan, hari).',
+                titlePlaceholder: 'Judul catatan'
+            },
+            calendarCustomWeekPattern: {
+                name: 'Pola catatan mingguan',
+                parsingError: 'Pola harus dapat diformat dan diparse kembali sebagai minggu lengkap (tahun minggu, nomor minggu).'
+            },
+            calendarCustomMonthPattern: {
+                name: 'Pola catatan bulanan',
+                parsingError: 'Pola harus dapat diformat dan diparse kembali sebagai bulan lengkap (tahun, bulan).'
+            },
+            calendarCustomQuarterPattern: {
+                name: 'Pola catatan kuartalan',
+                parsingError: 'Pola harus dapat diformat dan diparse kembali sebagai kuartal lengkap (tahun, kuartal).'
+            },
+            calendarCustomYearPattern: {
+                name: 'Pola catatan tahunan',
+                parsingError: 'Pola harus dapat diformat dan diparse kembali sebagai tahun lengkap (tahun).'
             },
             calendarCustomPromptForTitle: {
                 name: 'Minta judul',

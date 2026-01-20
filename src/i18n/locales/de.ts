@@ -931,6 +931,10 @@ export const STRINGS_DE = {
                 name: 'Wochennummer anzeigen',
                 desc: 'Spalte mit der Wochennummer hinzufügen.'
             },
+            calendarShowQuarter: {
+                name: 'Quartal anzeigen',
+                desc: 'Quartalbezeichnung im Kalender-Header hinzufügen.'
+            },
             calendarConfirmBeforeCreate: {
                 name: 'Vor Erstellung bestätigen',
                 desc: 'Bestätigungsdialog beim Erstellen einer neuen täglichen Notiz anzeigen.'
@@ -952,11 +956,32 @@ export const STRINGS_DE = {
                 placeholder: 'Personal/Diary'
             },
             calendarCustomFilePattern: {
-                name: 'Dateimuster',
-                desc: 'Datumsmuster relativ zum Stammordner. Unterstützte Token: YYYY, MM, M, DD, D. Notizen können ein optionales Titelsuffix enthalten.',
+                name: 'Tägliches-Notiz-Muster',
+                desc: 'Pfad mit Moment-Datumsformat formatieren.',
+                momentDescPrefix: 'Pfad formatieren mit ',
+                momentLinkText: 'Moment-Datumsformat',
+                momentDescSuffix: '.',
                 placeholder: 'YYYY/YYYYMMDD',
-                example: 'Aktuelle Syntax sieht so aus: {path}',
-                parsingError: 'Das Muster muss YYYY, MM/M und DD/D enthalten. Unterstützte Token: YYYY, MM, M, DD, D.'
+                example: 'Aktuelle Syntax: {path}',
+                parsingError: 'Das Muster muss als vollständiges Datum (Jahr, Monat, Tag) formatiert und wieder geparst werden können.',
+                titlePlaceholder: 'Notiz-Titel'
+            },
+            calendarCustomWeekPattern: {
+                name: 'Wöchentliches-Notiz-Muster',
+                parsingError:
+                    'Das Muster muss als vollständige Woche (Wochenjahr, Wochennummer) formatiert und wieder geparst werden können.'
+            },
+            calendarCustomMonthPattern: {
+                name: 'Monatliches-Notiz-Muster',
+                parsingError: 'Das Muster muss als vollständiger Monat (Jahr, Monat) formatiert und wieder geparst werden können.'
+            },
+            calendarCustomQuarterPattern: {
+                name: 'Vierteljährliches-Notiz-Muster',
+                parsingError: 'Das Muster muss als vollständiges Quartal (Jahr, Quartal) formatiert und wieder geparst werden können.'
+            },
+            calendarCustomYearPattern: {
+                name: 'Jährliches-Notiz-Muster',
+                parsingError: 'Das Muster muss als vollständiges Jahr (Jahr) formatiert und wieder geparst werden können.'
             },
             calendarCustomPromptForTitle: {
                 name: 'Nach Titel fragen',

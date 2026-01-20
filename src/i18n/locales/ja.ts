@@ -930,6 +930,10 @@ export const STRINGS_JA = {
                 name: '週番号を表示',
                 desc: '週番号の列を追加します。'
             },
+            calendarShowQuarter: {
+                name: '四半期を表示',
+                desc: 'カレンダーヘッダーに四半期ラベルを追加します。'
+            },
             calendarConfirmBeforeCreate: {
                 name: '作成前に確認',
                 desc: '新しいデイリーノートを作成する際に確認ダイアログを表示します。'
@@ -951,11 +955,31 @@ export const STRINGS_JA = {
                 placeholder: 'Personal/Diary'
             },
             calendarCustomFilePattern: {
-                name: 'ファイルパターン',
-                desc: 'ルートフォルダからの相対的な日付パターン。サポートされるトークン: YYYY、MM、M、DD、D。ノートにはオプションのタイトル接尾辞を含めることができます。',
+                name: 'デイリーノートパターン',
+                desc: 'Moment 日付フォーマットを使用してパスを指定。',
+                momentDescPrefix: '',
+                momentLinkText: 'Moment 日付フォーマット',
+                momentDescSuffix: 'を使用してパスを指定。',
                 placeholder: 'YYYY/YYYYMMDD',
-                example: '現在の構文は次のようになります: {path}',
-                parsingError: 'パターンにはYYYY、MM/M、DD/Dを含める必要があります。サポートされるトークン: YYYY、MM、M、DD、D。'
+                example: '現在の構文: {path}',
+                parsingError: 'パターンは完全な日付（年、月、日）としてフォーマットされ、再度パースできる必要があります。',
+                titlePlaceholder: 'ノートタイトル'
+            },
+            calendarCustomWeekPattern: {
+                name: 'ウィークリーノートパターン',
+                parsingError: 'パターンは完全な週（週年、週番号）としてフォーマットされ、再度パースできる必要があります。'
+            },
+            calendarCustomMonthPattern: {
+                name: 'マンスリーノートパターン',
+                parsingError: 'パターンは完全な月（年、月）としてフォーマットされ、再度パースできる必要があります。'
+            },
+            calendarCustomQuarterPattern: {
+                name: '四半期ノートパターン',
+                parsingError: 'パターンは完全な四半期（年、四半期）としてフォーマットされ、再度パースできる必要があります。'
+            },
+            calendarCustomYearPattern: {
+                name: '年次ノートパターン',
+                parsingError: 'パターンは完全な年（年）としてフォーマットされ、再度パースできる必要があります。'
             },
             calendarCustomPromptForTitle: {
                 name: 'タイトルを入力',

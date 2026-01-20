@@ -927,6 +927,10 @@ export const STRINGS_ZH_CN = {
                 name: '显示周号',
                 desc: '在每行开头显示周号。'
             },
+            calendarShowQuarter: {
+                name: '显示季度',
+                desc: '在日历标题中添加季度标签。'
+            },
             calendarConfirmBeforeCreate: {
                 name: '创建前确认',
                 desc: '点击没有笔记的日期时显示确认对话框。'
@@ -948,11 +952,31 @@ export const STRINGS_ZH_CN = {
                 placeholder: 'Personal/Diary'
             },
             calendarCustomFilePattern: {
-                name: '文件模式',
-                desc: '相对于根文件夹的日期模式。支持的标记：YYYY、MM、M、DD、D。笔记可以包含可选的标题后缀。',
+                name: '日记模式',
+                desc: '使用 Moment 日期格式设置路径。',
+                momentDescPrefix: '使用 ',
+                momentLinkText: 'Moment 日期格式',
+                momentDescSuffix: ' 设置路径。',
                 placeholder: 'YYYY/YYYYMMDD',
-                example: '当前语法如下：{path}',
-                parsingError: '模式必须包含 YYYY、MM/M 和 DD/D。支持的标记：YYYY、MM、M、DD、D。'
+                example: '当前语法：{path}',
+                parsingError: '模式必须能格式化并重新解析为完整日期（年、月、日）。',
+                titlePlaceholder: '笔记标题'
+            },
+            calendarCustomWeekPattern: {
+                name: '周记模式',
+                parsingError: '模式必须能格式化并重新解析为完整周（周年、周数）。'
+            },
+            calendarCustomMonthPattern: {
+                name: '月记模式',
+                parsingError: '模式必须能格式化并重新解析为完整月份（年、月）。'
+            },
+            calendarCustomQuarterPattern: {
+                name: '季度笔记模式',
+                parsingError: '模式必须能格式化并重新解析为完整季度（年、季度）。'
+            },
+            calendarCustomYearPattern: {
+                name: '年记模式',
+                parsingError: '模式必须能格式化并重新解析为完整年份（年）。'
             },
             calendarCustomPromptForTitle: {
                 name: '提示输入标题',

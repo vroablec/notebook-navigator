@@ -931,6 +931,10 @@ export const STRINGS_PL = {
                 name: 'Pokaż numer tygodnia',
                 desc: 'Dodaj kolumnę z numerem tygodnia.'
             },
+            calendarShowQuarter: {
+                name: 'Pokaż kwartał',
+                desc: 'Dodaj etykietę kwartału w nagłówku kalendarza.'
+            },
             calendarConfirmBeforeCreate: {
                 name: 'Potwierdź przed utworzeniem',
                 desc: 'Pokaż okno potwierdzenia podczas tworzenia nowej dziennej notatki.'
@@ -952,11 +956,31 @@ export const STRINGS_PL = {
                 placeholder: 'Personal/Diary'
             },
             calendarCustomFilePattern: {
-                name: 'Wzorzec pliku',
-                desc: 'Wzorzec daty względem folderu głównego. Obsługiwane tokeny: YYYY, MM, M, DD, D. Notatki mogą zawierać opcjonalny sufiks tytułu.',
+                name: 'Wzorzec notatki dziennej',
+                desc: 'Formatuj ścieżkę używając formatu daty Moment.',
+                momentDescPrefix: 'Formatuj ścieżkę używając ',
+                momentLinkText: 'formatu daty Moment',
+                momentDescSuffix: '.',
                 placeholder: 'YYYY/YYYYMMDD',
-                example: 'Aktualna składnia wygląda tak: {path}',
-                parsingError: 'Wzorzec musi zawierać YYYY, MM/M i DD/D. Obsługiwane tokeny: YYYY, MM, M, DD, D.'
+                example: 'Aktualna składnia: {path}',
+                parsingError: 'Wzorzec musi dać się sformatować i ponownie sparsować jako pełną datę (rok, miesiąc, dzień).',
+                titlePlaceholder: 'Tytuł notatki'
+            },
+            calendarCustomWeekPattern: {
+                name: 'Wzorzec notatki tygodniowej',
+                parsingError: 'Wzorzec musi dać się sformatować i ponownie sparsować jako pełny tydzień (rok tygodnia, numer tygodnia).'
+            },
+            calendarCustomMonthPattern: {
+                name: 'Wzorzec notatki miesięcznej',
+                parsingError: 'Wzorzec musi dać się sformatować i ponownie sparsować jako pełny miesiąc (rok, miesiąc).'
+            },
+            calendarCustomQuarterPattern: {
+                name: 'Wzorzec notatki kwartalnej',
+                parsingError: 'Wzorzec musi dać się sformatować i ponownie sparsować jako pełny kwartał (rok, kwartał).'
+            },
+            calendarCustomYearPattern: {
+                name: 'Wzorzec notatki rocznej',
+                parsingError: 'Wzorzec musi dać się sformatować i ponownie sparsować jako pełny rok (rok).'
             },
             calendarCustomPromptForTitle: {
                 name: 'Pytaj o tytuł',

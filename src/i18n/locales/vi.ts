@@ -929,6 +929,10 @@ export const STRINGS_VI = {
                 name: 'Hiển thị số tuần',
                 desc: 'Thêm cột với số tuần.'
             },
+            calendarShowQuarter: {
+                name: 'Hiển thị quý',
+                desc: 'Thêm nhãn quý vào tiêu đề lịch.'
+            },
             calendarConfirmBeforeCreate: {
                 name: 'Xác nhận trước khi tạo',
                 desc: 'Hiển thị hộp thoại xác nhận khi tạo ghi chú hàng ngày mới.'
@@ -950,11 +954,31 @@ export const STRINGS_VI = {
                 placeholder: 'Personal/Diary'
             },
             calendarCustomFilePattern: {
-                name: 'Mẫu tệp',
-                desc: 'Mẫu ngày tương đối với thư mục gốc. Token được hỗ trợ: YYYY, MM, M, DD, D. Ghi chú có thể bao gồm hậu tố tiêu đề tùy chọn.',
+                name: 'Mẫu ghi chú hàng ngày',
+                desc: 'Định dạng đường dẫn sử dụng định dạng ngày Moment.',
+                momentDescPrefix: 'Định dạng đường dẫn sử dụng ',
+                momentLinkText: 'định dạng ngày Moment',
+                momentDescSuffix: '.',
                 placeholder: 'YYYY/YYYYMMDD',
-                example: 'Cú pháp hiện tại trông như thế này: {path}',
-                parsingError: 'Mẫu phải bao gồm YYYY, MM/M và DD/D. Token được hỗ trợ: YYYY, MM, M, DD, D.'
+                example: 'Cú pháp hiện tại: {path}',
+                parsingError: 'Mẫu phải có thể định dạng và phân tích lại thành một ngày đầy đủ (năm, tháng, ngày).',
+                titlePlaceholder: 'Tiêu đề ghi chú'
+            },
+            calendarCustomWeekPattern: {
+                name: 'Mẫu ghi chú hàng tuần',
+                parsingError: 'Mẫu phải có thể định dạng và phân tích lại thành một tuần đầy đủ (năm tuần, số tuần).'
+            },
+            calendarCustomMonthPattern: {
+                name: 'Mẫu ghi chú hàng tháng',
+                parsingError: 'Mẫu phải có thể định dạng và phân tích lại thành một tháng đầy đủ (năm, tháng).'
+            },
+            calendarCustomQuarterPattern: {
+                name: 'Mẫu ghi chú hàng quý',
+                parsingError: 'Mẫu phải có thể định dạng và phân tích lại thành một quý đầy đủ (năm, quý).'
+            },
+            calendarCustomYearPattern: {
+                name: 'Mẫu ghi chú hàng năm',
+                parsingError: 'Mẫu phải có thể định dạng và phân tích lại thành một năm đầy đủ (năm).'
             },
             calendarCustomPromptForTitle: {
                 name: 'Yêu cầu tiêu đề',

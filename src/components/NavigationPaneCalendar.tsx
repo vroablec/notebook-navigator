@@ -859,8 +859,14 @@ export function NavigationPaneCalendar({ onWeekCountChange }: NavigationPaneCale
         if (!momentApi || !cursorDate) {
             return '';
         }
-        return cursorDate.clone().locale(displayLocale).format('MMMM YYYY');
-    }, [cursorDate, displayLocale, momentApi]);
+        const date = cursorDate.clone().locale(displayLocale);
+        const formatted = date.format('MMMM YYYY');
+        if (!settings.calendarShowQuarter) {
+            return formatted;
+        }
+        const quarterLabel = date.format('[Q]Q');
+        return `${formatted} (${quarterLabel})`;
+    }, [cursorDate, displayLocale, momentApi, settings.calendarShowQuarter]);
 
     const handleNavigate = useCallback(
         (delta: number) => {
@@ -940,7 +946,7 @@ export function NavigationPaneCalendar({ onWeekCountChange }: NavigationPaneCale
 
             const { folderPattern, filePattern } = splitCalendarCustomPattern(settings.calendarCustomFilePattern);
             const customPattern = folderPattern ? `${folderPattern}/${filePattern}` : filePattern;
-            if (!isCalendarCustomDatePatternValid(customPattern)) {
+            if (!isCalendarCustomDatePatternValid(customPattern, momentApi)) {
                 new Notice(strings.settings.items.calendarCustomFilePattern.parsingError);
                 return;
             }
@@ -1034,7 +1040,7 @@ export function NavigationPaneCalendar({ onWeekCountChange }: NavigationPaneCale
 
             createWithoutPrompt();
         },
-        [app, collapseNavigationIfMobile, dailyNoteSettings, openFile, settings]
+        [app, collapseNavigationIfMobile, dailyNoteSettings, momentApi, openFile, settings]
     );
 
     if (!momentApi || !cursorDate) {

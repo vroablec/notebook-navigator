@@ -929,6 +929,10 @@ export const STRINGS_FA = {
                 name: 'نمایش شماره هفته',
                 desc: 'افزودن ستون شماره هفته.'
             },
+            calendarShowQuarter: {
+                name: 'نمایش فصل',
+                desc: 'افزودن برچسب فصل در سربرگ تقویم.'
+            },
             calendarConfirmBeforeCreate: {
                 name: 'تأیید قبل از ایجاد',
                 desc: 'نمایش پنجره تأیید هنگام ایجاد یادداشت روزانه جدید.'
@@ -950,11 +954,31 @@ export const STRINGS_FA = {
                 placeholder: 'Personal/Diary'
             },
             calendarCustomFilePattern: {
-                name: 'الگوی فایل',
-                desc: 'الگوی تاریخ نسبت به پوشه ریشه. توکن‌های پشتیبانی‌شده: YYYY، MM، M، DD، D. یادداشت‌ها می‌توانند شامل پسوند عنوان اختیاری باشند.',
+                name: 'الگوی یادداشت روزانه',
+                desc: 'قالب‌بندی مسیر با استفاده از فرمت تاریخ Moment.',
+                momentDescPrefix: 'قالب‌بندی مسیر با استفاده از ',
+                momentLinkText: 'فرمت تاریخ Moment',
+                momentDescSuffix: '.',
                 placeholder: 'YYYY/YYYYMMDD',
-                example: 'نحوه نگارش فعلی به این شکل است: {path}',
-                parsingError: 'الگو باید شامل YYYY، MM/M و DD/D باشد. توکن‌های پشتیبانی‌شده: YYYY، MM، M، DD، D.'
+                example: 'نحوه نگارش فعلی: {path}',
+                parsingError: 'الگو باید بتواند به یک تاریخ کامل (سال، ماه، روز) قالب‌بندی شود و دوباره به همان تاریخ تجزیه شود.',
+                titlePlaceholder: 'عنوان یادداشت'
+            },
+            calendarCustomWeekPattern: {
+                name: 'الگوی یادداشت هفتگی',
+                parsingError: 'الگو باید بتواند به یک هفته کامل (سال هفته، شماره هفته) قالب‌بندی شود و دوباره تجزیه شود.'
+            },
+            calendarCustomMonthPattern: {
+                name: 'الگوی یادداشت ماهانه',
+                parsingError: 'الگو باید بتواند به یک ماه کامل (سال، ماه) قالب‌بندی شود و دوباره تجزیه شود.'
+            },
+            calendarCustomQuarterPattern: {
+                name: 'الگوی یادداشت فصلی',
+                parsingError: 'الگو باید بتواند به یک فصل کامل (سال، فصل) قالب‌بندی شود و دوباره تجزیه شود.'
+            },
+            calendarCustomYearPattern: {
+                name: 'الگوی یادداشت سالانه',
+                parsingError: 'الگو باید بتواند به یک سال کامل (سال) قالب‌بندی شود و دوباره تجزیه شود.'
             },
             calendarCustomPromptForTitle: {
                 name: 'درخواست عنوان',

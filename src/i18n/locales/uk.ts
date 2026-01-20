@@ -929,6 +929,10 @@ export const STRINGS_UK = {
                 name: 'Показати номер тижня',
                 desc: 'Додати колонку з номером тижня.'
             },
+            calendarShowQuarter: {
+                name: 'Показати квартал',
+                desc: 'Додати мітку кварталу в заголовок календаря.'
+            },
             calendarConfirmBeforeCreate: {
                 name: 'Підтвердити перед створенням',
                 desc: 'Показати діалог підтвердження при створенні нової щоденної нотатки.'
@@ -950,11 +954,31 @@ export const STRINGS_UK = {
                 placeholder: 'Personal/Diary'
             },
             calendarCustomFilePattern: {
-                name: 'Шаблон файлу',
-                desc: "Шаблон дати відносно кореневої папки. Підтримувані токени: YYYY, MM, M, DD, D. Нотатки можуть включати необов'язковий суфікс заголовка.",
+                name: 'Шаблон щоденної нотатки',
+                desc: 'Формат шляху з використанням формату дати Moment.',
+                momentDescPrefix: 'Формат шляху з використанням ',
+                momentLinkText: 'формату дати Moment',
+                momentDescSuffix: '.',
                 placeholder: 'YYYY/YYYYMMDD',
-                example: 'Поточний синтаксис виглядає так: {path}',
-                parsingError: 'Шаблон повинен включати YYYY, MM/M та DD/D. Підтримувані токени: YYYY, MM, M, DD, D.'
+                example: 'Поточний синтаксис: {path}',
+                parsingError: 'Шаблон має форматуватися і знову розбиратися як повна дата (рік, місяць, день).',
+                titlePlaceholder: 'Назва нотатки'
+            },
+            calendarCustomWeekPattern: {
+                name: 'Шаблон щотижневої нотатки',
+                parsingError: 'Шаблон має форматуватися і знову розбиратися як повний тиждень (рік тижня, номер тижня).'
+            },
+            calendarCustomMonthPattern: {
+                name: 'Шаблон щомісячної нотатки',
+                parsingError: 'Шаблон має форматуватися і знову розбиратися як повний місяць (рік, місяць).'
+            },
+            calendarCustomQuarterPattern: {
+                name: 'Шаблон квартальної нотатки',
+                parsingError: 'Шаблон має форматуватися і знову розбиратися як повний квартал (рік, квартал).'
+            },
+            calendarCustomYearPattern: {
+                name: 'Шаблон річної нотатки',
+                parsingError: 'Шаблон має форматуватися і знову розбиратися як повний рік (рік).'
             },
             calendarCustomPromptForTitle: {
                 name: 'Запитати заголовок',
