@@ -2561,8 +2561,9 @@ body {
 }
 
 .nn-navigation-calendar-period-button.has-period-note {
-    background-color: var(--nn-theme-nav-calendar-day-has-note-bg) !important;
-    color: var(--nn-theme-nav-calendar-day-has-note-color);
+    text-decoration-line: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 2px;
 }
 
 .nn-navigation-calendar-nav {
@@ -2715,8 +2716,9 @@ body {
 }
 
 .nn-navigation-calendar-weeknumber-button.has-period-note {
-    background-color: var(--nn-theme-nav-calendar-day-has-note-bg) !important;
-    color: var(--nn-theme-nav-calendar-day-has-note-color);
+    text-decoration-line: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 2px;
 }
 
 .nn-navigation-calendar-day {
@@ -2760,10 +2762,6 @@ body {
     .nn-navigation-calendar-period-button:hover,
     .nn-navigation-calendar-weeknumber-button:hover {
         filter: brightness(1.05);
-    }
-
-    .nn-navigation-calendar-period-button:hover:not(.has-period-note),
-    .nn-navigation-calendar-weeknumber-button:hover:not(.has-period-note) {
         background-color: var(--nn-theme-nav-calendar-hover-bg) !important;
     }
 
