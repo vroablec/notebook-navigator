@@ -637,6 +637,7 @@ export const STRINGS_RU = {
         },
         syncMode: {
             notSynced: '(не синхронизировано)',
+            disabled: '(отключено)',
             switchToSynced: 'Включить синхронизацию',
             switchToLocal: 'Отключить синхронизацию'
         },

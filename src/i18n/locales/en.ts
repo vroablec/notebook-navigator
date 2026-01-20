@@ -637,6 +637,7 @@ export const STRINGS_EN = {
         },
         syncMode: {
             notSynced: '(not synced)',
+            disabled: '(disabled)',
             switchToSynced: 'Enable sync',
             switchToLocal: 'Disable sync'
         },

@@ -637,6 +637,7 @@ export const STRINGS_KO = {
         },
         syncMode: {
             notSynced: '(동기화되지 않음)',
+            disabled: '(비활성화됨)',
             switchToSynced: '동기화 활성화',
             switchToLocal: '동기화 비활성화'
         },

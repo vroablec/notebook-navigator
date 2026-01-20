@@ -637,6 +637,7 @@ export const STRINGS_TR = {
         },
         syncMode: {
             notSynced: '(senkronize edilmedi)',
+            disabled: '(devre dışı)',
             switchToSynced: 'Senkronizasyonu etkinleştir',
             switchToLocal: 'Senkronizasyonu devre dışı bırak'
         },

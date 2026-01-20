@@ -336,6 +336,87 @@ export function renderCalendarTab(context: SettingsTabContext): void {
         cls: 'setting-item-description nn-setting-hidden nn-setting-warning'
     });
 
+    const disabledMarker = strings.settings.syncMode.disabled;
+    const setPatternSettingEnabled = (params: {
+        setting: Setting;
+        inputEl: HTMLInputElement | null;
+        enabled: boolean;
+    }): void => {
+        const { setting, inputEl, enabled } = params;
+        if (inputEl) {
+            inputEl.disabled = !enabled;
+        }
+
+        setting.settingEl.classList.toggle('nn-setting-disabled', !enabled);
+        if (setting.nameEl) {
+            setting.nameEl.setAttr('data-nn-setting-marker', disabledMarker);
+            if (!enabled) {
+                setting.nameEl.addClass('nn-setting-name-marker');
+            } else {
+                setting.nameEl.removeClass('nn-setting-name-marker');
+            }
+        }
+    };
+
+    const updatePatternSettingStates = (): void => {
+        setPatternSettingEnabled({
+            setting: calendarCustomWeekPattern.setting,
+            inputEl: calendarCustomWeekPattern.inputEl,
+            enabled: plugin.settings.calendarCustomWeekEnabled
+        });
+        setPatternSettingEnabled({
+            setting: calendarCustomMonthPattern.setting,
+            inputEl: calendarCustomMonthPattern.inputEl,
+            enabled: plugin.settings.calendarCustomMonthEnabled
+        });
+        setPatternSettingEnabled({
+            setting: calendarCustomQuarterPattern.setting,
+            inputEl: calendarCustomQuarterPattern.inputEl,
+            enabled: plugin.settings.calendarCustomQuarterEnabled
+        });
+        setPatternSettingEnabled({
+            setting: calendarCustomYearPattern.setting,
+            inputEl: calendarCustomYearPattern.inputEl,
+            enabled: plugin.settings.calendarCustomYearEnabled
+        });
+    };
+
+    calendarCustomWeekPattern.setting.addToggle(toggle =>
+        toggle.setValue(plugin.settings.calendarCustomWeekEnabled).onChange(async enabled => {
+            plugin.settings.calendarCustomWeekEnabled = enabled;
+            updatePatternSettingStates();
+            renderCalendarIntegrationVisibility();
+            await plugin.saveSettingsAndUpdate();
+        })
+    );
+
+    calendarCustomMonthPattern.setting.addToggle(toggle =>
+        toggle.setValue(plugin.settings.calendarCustomMonthEnabled).onChange(async enabled => {
+            plugin.settings.calendarCustomMonthEnabled = enabled;
+            updatePatternSettingStates();
+            renderCalendarIntegrationVisibility();
+            await plugin.saveSettingsAndUpdate();
+        })
+    );
+
+    calendarCustomQuarterPattern.setting.addToggle(toggle =>
+        toggle.setValue(plugin.settings.calendarCustomQuarterEnabled).onChange(async enabled => {
+            plugin.settings.calendarCustomQuarterEnabled = enabled;
+            updatePatternSettingStates();
+            renderCalendarIntegrationVisibility();
+            await plugin.saveSettingsAndUpdate();
+        })
+    );
+
+    calendarCustomYearPattern.setting.addToggle(toggle =>
+        toggle.setValue(plugin.settings.calendarCustomYearEnabled).onChange(async enabled => {
+            plugin.settings.calendarCustomYearEnabled = enabled;
+            updatePatternSettingStates();
+            renderCalendarIntegrationVisibility();
+            await plugin.saveSettingsAndUpdate();
+        })
+    );
+
     new Setting(customCalendarSettingsEl)
         .setName(strings.settings.items.calendarCustomPromptForTitle.name)
         .setDesc(strings.settings.items.calendarCustomPromptForTitle.desc)
@@ -357,10 +438,10 @@ export function renderCalendarTab(context: SettingsTabContext): void {
         const emptyExample = exampleTemplate.replace('{path}', '');
         const setAllExamples = (text: string) => {
             calendarCustomFilePattern.exampleTextEl.setText(text);
-            calendarCustomWeekPattern.exampleTextEl.setText(text);
-            calendarCustomMonthPattern.exampleTextEl.setText(text);
-            calendarCustomQuarterPattern.exampleTextEl.setText(text);
-            calendarCustomYearPattern.exampleTextEl.setText(text);
+            calendarCustomWeekPattern.exampleTextEl.setText(plugin.settings.calendarCustomWeekEnabled ? text : '');
+            calendarCustomMonthPattern.exampleTextEl.setText(plugin.settings.calendarCustomMonthEnabled ? text : '');
+            calendarCustomQuarterPattern.exampleTextEl.setText(plugin.settings.calendarCustomQuarterEnabled ? text : '');
+            calendarCustomYearPattern.exampleTextEl.setText(plugin.settings.calendarCustomYearEnabled ? text : '');
         };
 
         if (!momentApi) {
@@ -398,22 +479,30 @@ export function renderCalendarTab(context: SettingsTabContext): void {
 
         const weekPatternRaw = getInputValue(calendarCustomWeekPattern.inputEl, plugin.settings.calendarCustomWeekPattern);
         calendarCustomWeekPattern.exampleTextEl.setText(
-            exampleTemplate.replace('{path}', formatExample(weekPatternRaw, DEFAULT_CALENDAR_CUSTOM_WEEK_PATTERN))
+            plugin.settings.calendarCustomWeekEnabled
+                ? exampleTemplate.replace('{path}', formatExample(weekPatternRaw, DEFAULT_CALENDAR_CUSTOM_WEEK_PATTERN))
+                : ''
         );
 
         const monthPatternRaw = getInputValue(calendarCustomMonthPattern.inputEl, plugin.settings.calendarCustomMonthPattern);
         calendarCustomMonthPattern.exampleTextEl.setText(
-            exampleTemplate.replace('{path}', formatExample(monthPatternRaw, DEFAULT_CALENDAR_CUSTOM_MONTH_PATTERN))
+            plugin.settings.calendarCustomMonthEnabled
+                ? exampleTemplate.replace('{path}', formatExample(monthPatternRaw, DEFAULT_CALENDAR_CUSTOM_MONTH_PATTERN))
+                : ''
         );
 
         const quarterPatternRaw = getInputValue(calendarCustomQuarterPattern.inputEl, plugin.settings.calendarCustomQuarterPattern);
         calendarCustomQuarterPattern.exampleTextEl.setText(
-            exampleTemplate.replace('{path}', formatExample(quarterPatternRaw, DEFAULT_CALENDAR_CUSTOM_QUARTER_PATTERN))
+            plugin.settings.calendarCustomQuarterEnabled
+                ? exampleTemplate.replace('{path}', formatExample(quarterPatternRaw, DEFAULT_CALENDAR_CUSTOM_QUARTER_PATTERN))
+                : ''
         );
 
         const yearPatternRaw = getInputValue(calendarCustomYearPattern.inputEl, plugin.settings.calendarCustomYearPattern);
         calendarCustomYearPattern.exampleTextEl.setText(
-            exampleTemplate.replace('{path}', formatExample(yearPatternRaw, DEFAULT_CALENDAR_CUSTOM_YEAR_PATTERN))
+            plugin.settings.calendarCustomYearEnabled
+                ? exampleTemplate.replace('{path}', formatExample(yearPatternRaw, DEFAULT_CALENDAR_CUSTOM_YEAR_PATTERN))
+                : ''
         );
     };
 
@@ -435,8 +524,11 @@ export function renderCalendarTab(context: SettingsTabContext): void {
 
         if (!isCustom) {
             setAllErrorsHidden();
+            updatePatternSettingStates();
             return;
         }
+
+        updatePatternSettingStates();
 
         const momentApi = getMomentApi();
 
@@ -453,19 +545,28 @@ export function renderCalendarTab(context: SettingsTabContext): void {
 
         const weekPatternRaw = getInputValue(calendarCustomWeekPattern.inputEl, plugin.settings.calendarCustomWeekPattern);
         const weekCustomPattern = buildCustomPattern(weekPatternRaw, DEFAULT_CALENDAR_CUSTOM_WEEK_PATTERN);
-        const showWeekError = weekPatternRaw.trim() !== '' && !isCalendarCustomWeekPatternValid(weekCustomPattern, momentApi);
+        const showWeekError =
+            plugin.settings.calendarCustomWeekEnabled &&
+            weekPatternRaw.trim() !== '' &&
+            !isCalendarCustomWeekPatternValid(weekCustomPattern, momentApi);
         calendarCustomWeekPatternErrorEl.setText(showWeekError ? strings.settings.items.calendarCustomWeekPattern.parsingError : '');
         setElementVisible(calendarCustomWeekPatternErrorEl, showWeekError);
 
         const monthPatternRaw = getInputValue(calendarCustomMonthPattern.inputEl, plugin.settings.calendarCustomMonthPattern);
         const monthCustomPattern = buildCustomPattern(monthPatternRaw, DEFAULT_CALENDAR_CUSTOM_MONTH_PATTERN);
-        const showMonthError = monthPatternRaw.trim() !== '' && !isCalendarCustomMonthPatternValid(monthCustomPattern, momentApi);
+        const showMonthError =
+            plugin.settings.calendarCustomMonthEnabled &&
+            monthPatternRaw.trim() !== '' &&
+            !isCalendarCustomMonthPatternValid(monthCustomPattern, momentApi);
         calendarCustomMonthPatternErrorEl.setText(showMonthError ? strings.settings.items.calendarCustomMonthPattern.parsingError : '');
         setElementVisible(calendarCustomMonthPatternErrorEl, showMonthError);
 
         const quarterPatternRaw = getInputValue(calendarCustomQuarterPattern.inputEl, plugin.settings.calendarCustomQuarterPattern);
         const quarterCustomPattern = buildCustomPattern(quarterPatternRaw, DEFAULT_CALENDAR_CUSTOM_QUARTER_PATTERN);
-        const showQuarterError = quarterPatternRaw.trim() !== '' && !isCalendarCustomQuarterPatternValid(quarterCustomPattern, momentApi);
+        const showQuarterError =
+            plugin.settings.calendarCustomQuarterEnabled &&
+            quarterPatternRaw.trim() !== '' &&
+            !isCalendarCustomQuarterPatternValid(quarterCustomPattern, momentApi);
         calendarCustomQuarterPatternErrorEl.setText(
             showQuarterError ? strings.settings.items.calendarCustomQuarterPattern.parsingError : ''
         );
@@ -473,7 +574,10 @@ export function renderCalendarTab(context: SettingsTabContext): void {
 
         const yearPatternRaw = getInputValue(calendarCustomYearPattern.inputEl, plugin.settings.calendarCustomYearPattern);
         const yearCustomPattern = buildCustomPattern(yearPatternRaw, DEFAULT_CALENDAR_CUSTOM_YEAR_PATTERN);
-        const showYearError = yearPatternRaw.trim() !== '' && !isCalendarCustomYearPatternValid(yearCustomPattern, momentApi);
+        const showYearError =
+            plugin.settings.calendarCustomYearEnabled &&
+            yearPatternRaw.trim() !== '' &&
+            !isCalendarCustomYearPatternValid(yearCustomPattern, momentApi);
         calendarCustomYearPatternErrorEl.setText(showYearError ? strings.settings.items.calendarCustomYearPattern.parsingError : '');
         setElementVisible(calendarCustomYearPatternErrorEl, showYearError);
 

@@ -117,9 +117,13 @@ export const DEFAULT_SETTINGS: NotebookNavigatorSettings = {
     calendarIntegrationMode: 'daily-notes',
     calendarCustomRootFolder: '',
     calendarCustomFilePattern: DEFAULT_CALENDAR_CUSTOM_FILE_PATTERN,
+    calendarCustomWeekEnabled: false,
     calendarCustomWeekPattern: DEFAULT_CALENDAR_CUSTOM_WEEK_PATTERN,
+    calendarCustomMonthEnabled: false,
     calendarCustomMonthPattern: DEFAULT_CALENDAR_CUSTOM_MONTH_PATTERN,
+    calendarCustomQuarterEnabled: false,
     calendarCustomQuarterPattern: DEFAULT_CALENDAR_CUSTOM_QUARTER_PATTERN,
+    calendarCustomYearEnabled: false,
     calendarCustomYearPattern: DEFAULT_CALENDAR_CUSTOM_YEAR_PATTERN,
     calendarCustomPromptForTitle: true,
 

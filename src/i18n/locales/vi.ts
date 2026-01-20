@@ -637,6 +637,7 @@ export const STRINGS_VI = {
         },
         syncMode: {
             notSynced: '(chưa đồng bộ)',
+            disabled: '(đã tắt)',
             switchToSynced: 'Bật đồng bộ',
             switchToLocal: 'Tắt đồng bộ'
         },

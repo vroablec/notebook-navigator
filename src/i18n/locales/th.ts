@@ -637,6 +637,7 @@ export const STRINGS_TH = {
         },
         syncMode: {
             notSynced: '(ไม่ซิงค์)',
+            disabled: '(ปิดใช้งาน)',
             switchToSynced: 'เปิดใช้งานการซิงค์',
             switchToLocal: 'ปิดใช้งานการซิงค์'
         },

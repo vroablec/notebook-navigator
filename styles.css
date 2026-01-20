@@ -5138,21 +5138,29 @@ body.nn-resizing {
     opacity: 1;
 }
 
-/* "Not synced" marker appended to setting names */
-.nn-settings-tab-root .setting-item-name.nn-setting-not-synced::after {
-    content: ' ' attr(data-nn-sync-marker);
+/* Setting name marker appended to setting names */
+.nn-settings-tab-root .setting-item-name.nn-setting-name-marker::after {
+    content: ' ' attr(data-nn-setting-marker);
     color: var(--text-muted);
     font-weight: normal;
 }
 
-.mod-rtl .nn-settings-tab-root .setting-item-name.nn-setting-not-synced::after {
+.mod-rtl .nn-settings-tab-root .setting-item-name.nn-setting-name-marker::after {
     content: '';
 }
 
-.mod-rtl .nn-settings-tab-root .setting-item-name.nn-setting-not-synced::before {
-    content: attr(data-nn-sync-marker) ' ';
+.mod-rtl .nn-settings-tab-root .setting-item-name.nn-setting-name-marker::before {
+    content: attr(data-nn-setting-marker) ' ';
     color: var(--text-muted);
     font-weight: normal;
+}
+
+/* Dim disabled calendar pattern text inputs */
+.nn-settings-tab-root .setting-item.nn-setting-disabled input[type='text']:disabled {
+    opacity: 0.6;
+    pointer-events: none;
+    -webkit-user-select: none;
+    user-select: none;
 }
 
 /* Container for additional info below settings */

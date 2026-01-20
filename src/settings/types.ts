@@ -200,9 +200,13 @@ export interface NotebookNavigatorSettings {
     calendarIntegrationMode: CalendarIntegrationMode;
     calendarCustomRootFolder: string;
     calendarCustomFilePattern: string;
+    calendarCustomWeekEnabled: boolean;
     calendarCustomWeekPattern: string;
+    calendarCustomMonthEnabled: boolean;
     calendarCustomMonthPattern: string;
+    calendarCustomQuarterEnabled: boolean;
     calendarCustomQuarterPattern: string;
+    calendarCustomYearEnabled: boolean;
     calendarCustomYearPattern: string;
     calendarCustomPromptForTitle: boolean;
 

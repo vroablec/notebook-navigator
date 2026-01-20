@@ -637,6 +637,7 @@ export const STRINGS_FA = {
         },
         syncMode: {
             notSynced: '(همگام نشده)',
+            disabled: '(غیرفعال)',
             switchToSynced: 'فعال‌سازی همگام‌سازی',
             switchToLocal: 'غیرفعال‌سازی همگام‌سازی'
         },

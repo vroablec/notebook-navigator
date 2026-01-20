@@ -639,6 +639,7 @@ export const STRINGS_PL = {
         },
         syncMode: {
             notSynced: '(niezsynchronizowane)',
+            disabled: '(wyłączone)',
             switchToSynced: 'Włącz synchronizację',
             switchToLocal: 'Wyłącz synchronizację'
         },

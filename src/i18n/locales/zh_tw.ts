@@ -636,6 +636,7 @@ export const STRINGS_ZH_TW = {
         },
         syncMode: {
             notSynced: '（未同步）',
+            disabled: '（已停用）',
             switchToSynced: '啟用同步',
             switchToLocal: '停用同步'
         },

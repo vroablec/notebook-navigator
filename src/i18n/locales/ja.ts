@@ -638,6 +638,7 @@ export const STRINGS_JA = {
         },
         syncMode: {
             notSynced: '（未同期）',
+            disabled: '（無効）',
             switchToSynced: '同期を有効化',
             switchToLocal: '同期を無効化'
         },
