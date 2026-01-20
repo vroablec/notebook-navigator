@@ -85,7 +85,7 @@ const RELEASE_NOTES: ReleaseNote[] = [
             'New setting: ==Navigation pane > Appearance > Pin banner==. Enable to keep the banner pinned to top, disable to make it scroll with the navigation tree.'
         ],
         improved: [],
-        changed: [],
+        changed: ['Folders with folder notes no longer shows a note icon by default.'],
         fixed: [
             "Fixed an issue where the What's New modal never appeared after updating the plugin.",
             'Fixed an issue where calendar cells on some devices and themes rendered with variable width.'

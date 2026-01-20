@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Menu, MenuItem, TFile, App, Platform, FileSystemAdapter } from 'obsidian';
+import { Menu, MenuItem, TFile, TFolder, App, Platform, FileSystemAdapter } from 'obsidian';
 import { FileMenuBuilderParams } from './menuTypes';
 import { strings } from '../../i18n';
 import { getInternalPlugin } from '../../utils/typeGuards';
@@ -38,6 +38,7 @@ import { showNotice } from '../noticeUtils';
 import { confirmRemoveAllTagsFromFiles, openAddTagToFilesModal, removeTagFromFilesWithPrompt } from '../tagModalHelpers';
 import { addStyleMenu } from './styleMenuBuilder';
 import { resolveUXIconForMenu } from '../uxIcons';
+import { isFolderNote } from '../../utils/folderNotes';
 
 /**
  * Builds the context menu for a file
@@ -66,6 +67,11 @@ export function buildFileMenu(params: FileMenuBuilderParams): void {
     // If right-clicking on an unselected file while having multi-selection,
     // treat it as a single file operation
     const shouldShowMultiOptions = isMultipleSelected && isFileSelected;
+    const isFolderNoteFile =
+        !shouldShowMultiOptions &&
+        settings.enableFolderNotes &&
+        file.parent instanceof TFolder &&
+        isFolderNote(file, file.parent, settings);
 
     // Cache the current file list to avoid regenerating it multiple times
     const cachedFileList = (() => {
@@ -451,14 +457,15 @@ export function buildFileMenu(params: FileMenuBuilderParams): void {
 
         // Rename note
         menu.addItem((item: MenuItem) => {
-            setAsyncOnClick(
-                item
-                    .setTitle(isMarkdown ? strings.contextMenu.file.renameNote : strings.contextMenu.file.renameFile)
-                    .setIcon('lucide-pencil'),
-                async () => {
-                    await fileSystemOps.renameFile(file);
-                }
-            );
+            const title = isFolderNoteFile
+                ? strings.contextMenu.folder.detachFolderNote
+                : isMarkdown
+                  ? strings.contextMenu.file.renameNote
+                  : strings.contextMenu.file.renameFile;
+            const iconId = isFolderNoteFile ? 'lucide-unlink' : 'lucide-pencil';
+            setAsyncOnClick(item.setTitle(title).setIcon(iconId), async () => {
+                await fileSystemOps.renameFile(file);
+            });
         });
 
         // Move to folder
@@ -481,7 +488,7 @@ export function buildFileMenu(params: FileMenuBuilderParams): void {
         addSingleFileDuplicateOption(menu, file, fileSystemOps);
 
         // Delete note
-        addSingleFileDeleteOption(menu, file, selectionState, settings, fileSystemOps, selectionDispatch);
+        addSingleFileDeleteOption(menu, file, selectionState, settings, fileSystemOps, selectionDispatch, isFolderNoteFile);
     }
 }
 
@@ -771,34 +778,35 @@ function addSingleFileDeleteOption(
     selectionState: SelectionState,
     settings: NotebookNavigatorSettings,
     fileSystemOps: FileSystemOperations,
-    selectionDispatch: React.Dispatch<SelectionAction>
+    selectionDispatch: React.Dispatch<SelectionAction>,
+    isFolderNoteFile: boolean
 ): void {
     menu.addItem((item: MenuItem) => {
-        setAsyncOnClick(
-            item
-                .setTitle(file.extension === 'md' ? strings.contextMenu.file.deleteNote : strings.contextMenu.file.deleteFile)
-                .setIcon('lucide-trash'),
-            async () => {
-                // Check if this is the currently selected file
-                if (selectionState.selectedFile?.path === file.path) {
-                    // Use the smart delete handler
-                    await fileSystemOps.deleteSelectedFile(
-                        file,
-                        settings,
-                        {
-                            selectionType: selectionState.selectionType,
-                            selectedFolder: selectionState.selectedFolder || undefined,
-                            selectedTag: selectionState.selectedTag || undefined
-                        },
-                        selectionDispatch,
-                        settings.confirmBeforeDelete
-                    );
-                } else {
-                    // Normal deletion - not the currently selected file
-                    await fileSystemOps.deleteFile(file, settings.confirmBeforeDelete);
-                }
+        const title = isFolderNoteFile
+            ? strings.contextMenu.folder.deleteFolderNote
+            : file.extension === 'md'
+              ? strings.contextMenu.file.deleteNote
+              : strings.contextMenu.file.deleteFile;
+        setAsyncOnClick(item.setTitle(title).setIcon('lucide-trash'), async () => {
+            // Check if this is the currently selected file
+            if (selectionState.selectedFile?.path === file.path) {
+                // Use the smart delete handler
+                await fileSystemOps.deleteSelectedFile(
+                    file,
+                    settings,
+                    {
+                        selectionType: selectionState.selectionType,
+                        selectedFolder: selectionState.selectedFolder || undefined,
+                        selectedTag: selectionState.selectedTag || undefined
+                    },
+                    selectionDispatch,
+                    settings.confirmBeforeDelete
+                );
+            } else {
+                // Normal deletion - not the currently selected file
+                await fileSystemOps.deleteFile(file, settings.confirmBeforeDelete);
             }
-        );
+        });
     });
 }
 

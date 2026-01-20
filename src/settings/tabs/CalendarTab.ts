@@ -337,11 +337,7 @@ export function renderCalendarTab(context: SettingsTabContext): void {
     });
 
     const disabledMarker = strings.settings.syncMode.disabled;
-    const setPatternSettingEnabled = (params: {
-        setting: Setting;
-        inputEl: HTMLInputElement | null;
-        enabled: boolean;
-    }): void => {
+    const setPatternSettingEnabled = (params: { setting: Setting; inputEl: HTMLInputElement | null; enabled: boolean }): void => {
         const { setting, inputEl, enabled } = params;
         if (inputEl) {
             inputEl.disabled = !enabled;

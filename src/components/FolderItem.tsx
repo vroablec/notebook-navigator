@@ -210,13 +210,10 @@ export const FolderItem = React.memo(function FolderItem({
         if (isRootFolder) {
             return hasChildren && isExpanded ? 'open-vault' : 'vault';
         }
-        if (hasFolderNote) {
-            return resolveUXIcon(settings.interfaceIcons, 'nav-folder-note');
-        }
         return hasChildren && isExpanded
             ? resolveUXIcon(settings.interfaceIcons, 'nav-folder-open')
             : resolveUXIcon(settings.interfaceIcons, 'nav-folder-closed');
-    }, [hasChildren, hasFolderNote, icon, isExpanded, isRootFolder, settings.interfaceIcons]);
+    }, [hasChildren, icon, isExpanded, isRootFolder, settings.interfaceIcons]);
     const customBackground = backgroundColor;
 
     // Memoize className to avoid string concatenation on every render
@@ -333,10 +330,6 @@ export const FolderItem = React.memo(function FolderItem({
                 // Root folder - use vault icon (open/closed based on expansion state)
                 const vaultIconName = hasChildren && isExpanded ? 'open-vault' : 'vault';
                 iconService.renderIcon(iconRef.current, vaultIconName);
-            } else if (hasFolderNote) {
-                // Folder note - show folder note icon
-                const folderNoteIconName = resolveUXIcon(settings.interfaceIcons, 'nav-folder-note');
-                iconService.renderIcon(iconRef.current, folderNoteIconName);
             } else {
                 // Default icon - show open folder only if has children AND is expanded
                 const iconName =
@@ -346,7 +339,7 @@ export const FolderItem = React.memo(function FolderItem({
                 iconService.renderIcon(iconRef.current, iconName);
             }
         }
-    }, [hasChildren, hasFolderNote, icon, iconVersion, isExpanded, isRootFolder, settings.interfaceIcons, shouldShowFolderIcon]);
+    }, [hasChildren, icon, iconVersion, isExpanded, isRootFolder, settings.interfaceIcons, shouldShowFolderIcon]);
 
     // Enable context menu
     const folderMenuConfig = disableContextMenu
