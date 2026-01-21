@@ -532,6 +532,11 @@ export const STRINGS_AR = {
         open: 'فتح', // Command palette: Opens the Notebook Navigator view (English: Open)
         toggleLeftSidebar: 'تبديل الشريط الجانبي الأيسر', // Command palette: Toggles left sidebar, opening Notebook Navigator when uncollapsing (English: Toggle left sidebar)
         openHomepage: 'فتح الصفحة الرئيسية', // Command palette: Opens the Notebook Navigator view and loads the homepage file (English: Open homepage)
+        openDailyNote: 'فتح الملاحظة اليومية',
+        openWeeklyNote: 'فتح الملاحظة الأسبوعية',
+        openMonthlyNote: 'فتح الملاحظة الشهرية',
+        openQuarterlyNote: 'فتح الملاحظة الفصلية',
+        openYearlyNote: 'فتح الملاحظة السنوية',
         revealFile: 'الكشف عن الملف', // Command palette: Reveals and selects the currently active file in the navigator (English: Reveal file)
         search: 'بحث', // Command palette: Toggle search in the file list (English: Search)
         toggleDualPane: 'تبديل تخطيط اللوحتين', // Command palette: Toggles between single-pane and dual-pane layout (English: Toggle dual pane layout)

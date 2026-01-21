@@ -532,6 +532,11 @@ export const STRINGS_PT = {
         open: 'Abrir', // Command palette: Opens the Notebook Navigator view (English: Open)
         toggleLeftSidebar: 'Alternar barra lateral esquerda', // Command palette: Toggles left sidebar, opening Notebook Navigator when uncollapsing (English: Toggle left sidebar)
         openHomepage: 'Abrir página inicial', // Command palette: Opens the Notebook Navigator view and loads the homepage file (English: Open homepage)
+        openDailyNote: 'Abrir nota diária',
+        openWeeklyNote: 'Abrir nota semanal',
+        openMonthlyNote: 'Abrir nota mensal',
+        openQuarterlyNote: 'Abrir nota trimestral',
+        openYearlyNote: 'Abrir nota anual',
         revealFile: 'Revelar ficheiro', // Command palette: Reveals and selects the currently active file in the navigator (English: Reveal file)
         search: 'Pesquisar', // Command palette: Toggle search in the file list (English: Search)
         toggleDualPane: 'Alternar layout de painel duplo', // Command palette: Toggles between single-pane and dual-pane layout (English: Toggle dual pane layout)

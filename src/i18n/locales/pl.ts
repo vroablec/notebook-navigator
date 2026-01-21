@@ -534,6 +534,11 @@ export const STRINGS_PL = {
         open: 'Otwórz', // Command palette: Opens the Notebook Navigator view (English: Open)
         toggleLeftSidebar: 'Przełącz lewy pasek boczny', // Command palette: Toggles left sidebar, opening Notebook Navigator when uncollapsing (English: Toggle left sidebar)
         openHomepage: 'Otwórz stronę główną', // Command palette: Opens the Notebook Navigator view and loads the homepage file (English: Open homepage)
+        openDailyNote: 'Otwórz dzienną notatkę',
+        openWeeklyNote: 'Otwórz tygodniową notatkę',
+        openMonthlyNote: 'Otwórz miesięczną notatkę',
+        openQuarterlyNote: 'Otwórz kwartalną notatkę',
+        openYearlyNote: 'Otwórz roczną notatkę',
         revealFile: 'Pokaż plik', // Command palette: Reveals and selects the currently active file in the navigator (English: Reveal file)
         search: 'Szukaj', // Command palette: Toggle search in the file list (English: Search)
         toggleDualPane: 'Przełącz układ podwójnego panelu', // Command palette: Toggles between single-pane and dual-pane layout (English: Toggle dual pane layout)

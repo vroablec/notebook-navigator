@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import type { Locale } from 'date-fns';
+import type { Day, FirstWeekContainsDate, Locale } from 'date-fns';
 import * as locales from 'date-fns/locale';
 
 type LocalesMap = typeof locales & Record<string, Locale>;
@@ -46,4 +46,27 @@ export function getDateFnsLocale(language: string): Locale {
     const localeName = LOCALE_EXCEPTIONS[normalized] || normalized;
     const localesMap = locales as LocalesMap;
     return localesMap[localeName] || locales.enUS;
+}
+
+export interface CalendarWeekConfig {
+    weekStartsOn: Day;
+    firstWeekContainsDate: FirstWeekContainsDate;
+}
+
+function toDay(value: unknown, fallback: Day): Day {
+    return typeof value === 'number' && Number.isInteger(value) && value >= 0 && value <= 6 ? (value as Day) : fallback;
+}
+
+function toFirstWeekContainsDate(value: unknown, fallback: FirstWeekContainsDate): FirstWeekContainsDate {
+    return value === 1 || value === 4 ? value : fallback;
+}
+
+export function getCalendarWeekConfig(language: string): CalendarWeekConfig {
+    const locale = getDateFnsLocale(language);
+    const options = locale.options ?? {};
+
+    return {
+        weekStartsOn: toDay(options.weekStartsOn, 1),
+        firstWeekContainsDate: toFirstWeekContainsDate(options.firstWeekContainsDate, 4)
+    };
 }

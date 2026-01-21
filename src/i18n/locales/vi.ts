@@ -532,6 +532,11 @@ export const STRINGS_VI = {
         open: 'Mở', // Command palette: Opens the Notebook Navigator view (English: Open)
         toggleLeftSidebar: 'Bật/tắt thanh bên trái', // Command palette: Toggles left sidebar, opening Notebook Navigator when uncollapsing (English: Toggle left sidebar)
         openHomepage: 'Mở trang chủ', // Command palette: Opens the Notebook Navigator view and loads the homepage file (English: Open homepage)
+        openDailyNote: 'Mở ghi chú hằng ngày',
+        openWeeklyNote: 'Mở ghi chú hằng tuần',
+        openMonthlyNote: 'Mở ghi chú hằng tháng',
+        openQuarterlyNote: 'Mở ghi chú hằng quý',
+        openYearlyNote: 'Mở ghi chú hằng năm',
         revealFile: 'Hiện tệp', // Command palette: Reveals and selects the currently active file in the navigator (English: Reveal file)
         search: 'Tìm kiếm', // Command palette: Toggle search in the file list (English: Search)
         toggleDualPane: 'Bật/tắt hai ngăn', // Command palette: Toggles between single-pane and dual-pane layout (English: Toggle dual pane layout)

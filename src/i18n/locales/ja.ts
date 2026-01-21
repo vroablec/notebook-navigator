@@ -533,6 +533,11 @@ export const STRINGS_JA = {
         open: '開く', // Command palette: Opens the Notebook Navigator view (English: Open)
         toggleLeftSidebar: '左サイドバーの切り替え', // Command palette: Toggles left sidebar, opening Notebook Navigator when uncollapsing (English: Toggle left sidebar)
         openHomepage: 'ホームページを開く', // Command palette: Opens the Notebook Navigator view and loads the homepage file (English: Open homepage)
+        openDailyNote: 'デイリーノートを開く',
+        openWeeklyNote: 'ウィークリーノートを開く',
+        openMonthlyNote: 'マンスリーノートを開く',
+        openQuarterlyNote: '四半期ノートを開く',
+        openYearlyNote: '年間ノートを開く',
         revealFile: 'ファイルを表示', // Command palette: Reveals and selects the currently active file in the navigator (English: Reveal file)
         search: '検索', // Command palette: Toggle search in the file list (English: Search)
         toggleDualPane: 'デュアルペインレイアウトを切り替え', // Command palette: Toggles between single-pane and dual-pane layout (English: Toggle dual pane layout)

@@ -190,11 +190,19 @@ Set custom hotkeys for these commands in Obsidian's Hotkeys settings:
 **Layout & display**
 
 - `Notebook Navigator: Toggle dual pane layout` Toggle single/dual-pane layout (desktop). **Suggestion:** Bind to a shortcut key like `Cmd/Ctrl+Shift+A` to quickly switch between single-pane and dual-pane layout
-- `Notebook Navigator: Toggle calendar` Toggles calendar on or off. **Suggestion:** Bind to a shortcut key like `Cmd/Ctrl+Shift+C` to quickly show the calendar
 - `Notebook Navigator: Toggle descendants` Toggle subfolders / descendants notes display for folders and tags. **Suggestion:** Bind to a shortcut key like `Cmd/Ctrl+Shift+D` to quickly toggle display of notes from subfolders / descendants
 - `Notebook Navigator: Toggle hidden items` Show or hide hidden folders, tags, and notes
 - `Notebook Navigator: Toggle tag sort` Toggle between alphabetical and frequency-based tag sorting
 - `Notebook Navigator: Collapse / expand all items` Collapse or expand all items based on the current state. When `Keep selected item expanded` is enabled (default on), all folders except the current one will be collapsed. This is handy to keep the navigation tree tidy when searching for documents
+
+**Calendar**
+
+- `Notebook Navigator: Toggle calendar` Toggles calendar on or off. **Suggestion:** Bind to a shortcut key like `Cmd/Ctrl+Shift+C` to quickly show the calendar
+- `Notebook Navigator: Open daily note` Opens today's daily note based on calendar settings. Creates the note if it doesn't exist
+- `Notebook Navigator: Open weekly note` Opens the current weekly note. Creates the note if it doesn't exist
+- `Notebook Navigator: Open monthly note` Opens the current monthly note. Creates the note if it doesn't exist
+- `Notebook Navigator: Open quarterly note` Opens the current quarterly note. Creates the note if it doesn't exist
+- `Notebook Navigator: Open yearly note` Opens the current yearly note. Creates the note if it doesn't exist
 
 **File operations**
 
@@ -247,6 +255,11 @@ Set custom hotkeys for these commands in Obsidian's Hotkeys settings:
 | `notebook-navigator:search`                 | Notebook Navigator: Search                                                                           |
 | `notebook-navigator:toggle-dual-pane`       | Notebook Navigator: Toggle dual pane layout                                                          |
 | `notebook-navigator:toggle-calendar`        | Notebook Navigator: Toggle calendar                                                                  |
+| `notebook-navigator:open-daily-note`        | Notebook Navigator: Open daily note                                                                  |
+| `notebook-navigator:open-weekly-note`       | Notebook Navigator: Open weekly note                                                                 |
+| `notebook-navigator:open-monthly-note`      | Notebook Navigator: Open monthly note                                                                |
+| `notebook-navigator:open-quarterly-note`    | Notebook Navigator: Open quarterly note                                                              |
+| `notebook-navigator:open-yearly-note`       | Notebook Navigator: Open yearly note                                                                 |
 | `notebook-navigator:toggle-descendants`     | Notebook Navigator: Toggle descendants                                                               |
 | `notebook-navigator:toggle-hidden`          | Notebook Navigator: Toggle hidden items (folders, tags, notes)                                       |
 | `notebook-navigator:toggle-tag-sort`        | Notebook Navigator: Toggle tag sort                                                                  |

@@ -532,6 +532,11 @@ export const STRINGS_KO = {
         open: '열기', // Command palette: Opens the Notebook Navigator view (English: Open)
         toggleLeftSidebar: '왼쪽 사이드바 전환', // Command palette: Toggles left sidebar, opening Notebook Navigator when uncollapsing (English: Toggle left sidebar)
         openHomepage: '홈페이지 열기', // Command palette: Opens the Notebook Navigator view and loads the homepage file (English: Open homepage)
+        openDailyNote: '일일 노트 열기',
+        openWeeklyNote: '주간 노트 열기',
+        openMonthlyNote: '월간 노트 열기',
+        openQuarterlyNote: '분기 노트 열기',
+        openYearlyNote: '연간 노트 열기',
         revealFile: '파일 표시', // Command palette: Reveals and selects the currently active file in the navigator (English: Reveal file)
         search: '검색', // Command palette: Toggle search in the file list (English: Search)
         toggleDualPane: '이중 창 레이아웃 전환', // Command palette: Toggles between single-pane and dual-pane layout (English: Toggle dual pane layout)

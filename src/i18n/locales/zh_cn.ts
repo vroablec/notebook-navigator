@@ -531,6 +531,11 @@ export const STRINGS_ZH_CN = {
         open: '打开', // Command palette: Opens the Notebook Navigator view (English: Open)
         toggleLeftSidebar: '切换左侧边栏', // Command palette: Toggles left sidebar, opening Notebook Navigator when uncollapsing (English: Toggle left sidebar)
         openHomepage: '打开主页', // Command palette: Opens the Notebook Navigator view and loads the homepage file (English: Open homepage)
+        openDailyNote: '打开每日笔记',
+        openWeeklyNote: '打开每周笔记',
+        openMonthlyNote: '打开每月笔记',
+        openQuarterlyNote: '打开季度笔记',
+        openYearlyNote: '打开每年笔记',
         revealFile: '定位文件', // Command palette: Reveals and selects the currently active file in the navigator (English: Reveal file)
         search: '搜索', // Command palette: Toggle search in the file list (English: Search)
         toggleDualPane: '切换双窗格布局', // Command palette: Toggles between single-pane and dual-pane layout (English: Toggle dual pane layout)

@@ -532,6 +532,11 @@ export const STRINGS_TR = {
         open: 'Aç', // Command palette: Opens the Notebook Navigator view (English: Open)
         toggleLeftSidebar: 'Sol kenar çubuğunu aç/kapat', // Command palette: Toggles left sidebar, opening Notebook Navigator when uncollapsing (English: Toggle left sidebar)
         openHomepage: 'Ana sayfayı aç', // Command palette: Opens the Notebook Navigator view and loads the homepage file (English: Open homepage)
+        openDailyNote: 'Günlük notu aç',
+        openWeeklyNote: 'Haftalık notu aç',
+        openMonthlyNote: 'Aylık notu aç',
+        openQuarterlyNote: 'Çeyreklik notu aç',
+        openYearlyNote: 'Yıllık notu aç',
         revealFile: 'Dosyayı göster', // Command palette: Reveals and selects the currently active file in the navigator (English: Reveal file)
         search: 'Ara', // Command palette: Toggle search in the file list (English: Search)
         toggleDualPane: 'Çift bölme düzenini aç/kapat', // Command palette: Toggles between single-pane and dual-pane layout (English: Toggle dual pane layout)

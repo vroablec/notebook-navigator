@@ -532,6 +532,11 @@ export const STRINGS_UK = {
         open: 'Відкрити', // Command palette: Opens the Notebook Navigator view (English: Open)
         toggleLeftSidebar: 'Перемкнути ліву бічну панель', // Command palette: Toggles left sidebar, opening Notebook Navigator when uncollapsing (English: Toggle left sidebar)
         openHomepage: 'Відкрити домашню сторінку', // Command palette: Opens the Notebook Navigator view and loads the homepage file (English: Open homepage)
+        openDailyNote: 'Відкрити щоденну нотатку',
+        openWeeklyNote: 'Відкрити щотижневу нотатку',
+        openMonthlyNote: 'Відкрити щомісячну нотатку',
+        openQuarterlyNote: 'Відкрити квартальну нотатку',
+        openYearlyNote: 'Відкрити щорічну нотатку',
         revealFile: 'Показати файл', // Command palette: Reveals and selects the currently active file in the navigator (English: Reveal file)
         search: 'Пошук', // Command palette: Toggle search in the file list (English: Search)
         toggleDualPane: 'Перемкнути подвійну панель', // Command palette: Toggles between single-pane and dual-pane layout (English: Toggle dual pane layout)
