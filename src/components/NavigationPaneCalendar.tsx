@@ -33,7 +33,7 @@ import {
     getDailyNoteFilename,
     getDailyNoteSettings as getCoreDailyNoteSettings
 } from '../utils/dailyNotes';
-import { getMomentApi, type MomentApi, type MomentInstance } from '../utils/moment';
+import { getMomentApi, resolveMomentLocale, type MomentInstance } from '../utils/moment';
 import { getCalendarWeekConfig } from '../utils/dateFnsLocale';
 import { ServiceIcon } from './ServiceIcon';
 import { useFileOpener } from '../hooks/useFileOpener';
@@ -182,32 +182,6 @@ function clamp(value: number, min: number, max: number): number {
 
 function formatIsoDate(date: MomentInstance): string {
     return date.format('YYYY-MM-DD');
-}
-
-function resolveMomentLocale(requestedLocale: string, momentApi: MomentApi | null, fallbackLocale: string): string {
-    // `moment` locale ids are not guaranteed to be canonical BCP-47 tags (and may use `_`); normalize and fall back
-    // to the best available match (full tag -> lowercase -> base language).
-    if (!momentApi) {
-        return fallbackLocale || 'en';
-    }
-
-    const available = new Set(momentApi.locales());
-    const normalized = (requestedLocale || '').replace(/_/g, '-');
-    if (available.has(normalized)) {
-        return normalized;
-    }
-
-    const lower = normalized.toLowerCase();
-    if (available.has(lower)) {
-        return lower;
-    }
-
-    const base = lower.split('-')[0];
-    if (base && available.has(base)) {
-        return base;
-    }
-
-    return fallbackLocale || momentApi.locale() || 'en';
 }
 
 function getDayOfWeek(date: MomentInstance): number {

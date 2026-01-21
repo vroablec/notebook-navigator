@@ -42,7 +42,7 @@ import { getFolderNote, isFolderNote, isSupportedFolderNoteExtension, type Folde
 import { isFolderInExcludedFolder, shouldExcludeFile } from '../../utils/fileFilters';
 import { getEffectiveFrontmatterExclusions, isFileHiddenBySettings } from '../../utils/exclusionUtils';
 import { runAsyncAction } from '../../utils/async';
-import { getMomentApi, type MomentApi, type MomentInstance } from '../../utils/moment';
+import { getMomentApi, resolveMomentLocale, type MomentInstance } from '../../utils/moment';
 import { NotebookNavigatorView } from '../../view/NotebookNavigatorView';
 import { getActiveHiddenFolders, getActiveVaultProfile } from '../../utils/vaultProfiles';
 import { showNotice } from '../../utils/noticeUtils';
@@ -353,30 +353,6 @@ function openVaultProfilePicker(plugin: NotebookNavigatorPlugin): void {
         onSelect: profileId => plugin.setVaultProfile(profileId)
     });
     modal.open();
-}
-
-function resolveMomentLocale(requestedLocale: string, momentApi: MomentApi | null, fallbackLocale: string): string {
-    if (!momentApi) {
-        return fallbackLocale || 'en';
-    }
-
-    const available = new Set(momentApi.locales());
-    const normalized = (requestedLocale || '').replace(/_/g, '-');
-    if (available.has(normalized)) {
-        return normalized;
-    }
-
-    const lower = normalized.toLowerCase();
-    if (available.has(lower)) {
-        return lower;
-    }
-
-    const base = lower.split('-')[0];
-    if (base && available.has(base)) {
-        return base;
-    }
-
-    return fallbackLocale || momentApi.locale() || 'en';
 }
 
 async function openFileInActiveLeaf(plugin: NotebookNavigatorPlugin, file: TFile): Promise<void> {
