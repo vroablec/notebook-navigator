@@ -906,10 +906,6 @@ export const STRINGS_ZH_TW = {
                 name: '將最近筆記與捷徑一起釘選',
                 desc: '釘選捷徑時包含最近筆記。'
             },
-            showCalendar: {
-                name: '顯示日曆',
-                desc: '在導覽窗格中顯示每日筆記日曆。'
-            },
             calendarLocale: {
                 name: '日曆語言',
                 desc: '選擇日曆顯示的語言。',

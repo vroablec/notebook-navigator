@@ -909,10 +909,6 @@ export const STRINGS_JA = {
                 name: '最近のノートをショートカットと一緒に固定',
                 desc: 'ショートカットを固定するときに最近のノートを含める。'
             },
-            showCalendar: {
-                name: 'カレンダーを表示',
-                desc: 'ナビゲーションペインの下部にカレンダーを表示します。'
-            },
             calendarLocale: {
                 name: 'ロケール',
                 desc: '週番号と週の開始曜日を制御します。',

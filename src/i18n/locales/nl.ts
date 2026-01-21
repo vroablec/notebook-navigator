@@ -910,10 +910,6 @@ export const STRINGS_NL = {
                 name: 'Recente notities met snelkoppelingen vastpinnen',
                 desc: 'Recente notities opnemen wanneer snelkoppelingen zijn vastgepind.'
             },
-            showCalendar: {
-                name: 'Kalender tonen',
-                desc: 'Toon een kalender onderaan het navigatiepaneel.'
-            },
             calendarLocale: {
                 name: 'Taal',
                 desc: 'Bepaalt weeknummering en eerste dag van de week.',

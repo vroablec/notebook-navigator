@@ -908,10 +908,6 @@ export const STRINGS_VI = {
                 name: 'Ghim ghi chú gần đây cùng lối tắt',
                 desc: 'Bao gồm ghi chú gần đây khi lối tắt được ghim.'
             },
-            showCalendar: {
-                name: 'Hiển thị lịch',
-                desc: 'Hiển thị lịch ở dưới cùng của bảng điều hướng.'
-            },
             calendarLocale: {
                 name: 'Ngôn ngữ',
                 desc: 'Điều khiển đánh số tuần và ngày đầu tuần.',

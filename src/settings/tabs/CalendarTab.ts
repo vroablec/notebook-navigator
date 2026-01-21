@@ -64,19 +64,6 @@ export function renderCalendarTab(context: SettingsTabContext): void {
 
     const topGroup = createGroup(undefined);
 
-    const showCalendarSetting = topGroup.addSetting(setting => {
-        setting
-            .setName(strings.settings.items.showCalendar.name)
-            .setDesc(strings.settings.items.showCalendar.desc)
-            .addToggle(toggle =>
-                toggle.setValue(plugin.getUXPreferences().showCalendar).onChange(value => {
-                    plugin.setShowCalendar(value);
-                })
-            );
-    });
-
-    addSettingSyncModeToggle({ setting: showCalendarSetting, plugin, settingId: 'showCalendar' });
-
     const momentApi = getMomentApi();
     // Offer moment locales as options; the selected locale is used for week rules (start-of-week + week numbering).
     const localeOptions = momentApi ? [...momentApi.locales()].sort((a, b) => a.localeCompare(b)) : [];

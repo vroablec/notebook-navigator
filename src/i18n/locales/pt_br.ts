@@ -905,10 +905,6 @@ export const STRINGS_PT_BR = {
                 name: 'Fixar notas recentes com atalhos',
                 desc: 'Incluir notas recentes quando os atalhos estiverem fixados.'
             },
-            showCalendar: {
-                name: 'Mostrar calendário',
-                desc: 'Mostrar um calendário na parte inferior do painel de navegação.'
-            },
             calendarLocale: {
                 name: 'Idioma',
                 desc: 'Controla a numeração das semanas e o primeiro dia da semana.',

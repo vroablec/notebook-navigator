@@ -908,10 +908,6 @@ export const STRINGS_TR = {
                 name: 'Son notları kısayollarla birlikte sabitle',
                 desc: 'Kısayollar sabitlendiğinde son notları dahil et.'
             },
-            showCalendar: {
-                name: 'Takvimi göster',
-                desc: 'Gezinme panelinin altında bir takvim göster.'
-            },
             calendarLocale: {
                 name: 'Dil',
                 desc: 'Hafta numaralandırmasını ve haftanın ilk gününü kontrol eder.',

@@ -909,10 +909,6 @@ export const STRINGS_ES = {
                 name: 'Fijar notas recientes con accesos directos',
                 desc: 'Incluir notas recientes cuando se fijan los accesos directos.'
             },
-            showCalendar: {
-                name: 'Mostrar calendario',
-                desc: 'Mostrar un calendario en la parte inferior del panel de navegación.'
-            },
             calendarLocale: {
                 name: 'Configuración regional',
                 desc: 'Controla la numeración de semanas y el primer día de la semana.',

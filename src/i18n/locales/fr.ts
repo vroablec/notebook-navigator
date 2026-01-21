@@ -910,10 +910,6 @@ export const STRINGS_FR = {
                 name: 'Épingler les notes récentes avec les raccourcis',
                 desc: "Inclure les notes récentes lors de l'épinglage des raccourcis."
             },
-            showCalendar: {
-                name: 'Afficher le calendrier',
-                desc: 'Afficher un calendrier en bas du panneau de navigation.'
-            },
             calendarLocale: {
                 name: 'Langue',
                 desc: 'Contrôle la numérotation des semaines et le premier jour de la semaine.',

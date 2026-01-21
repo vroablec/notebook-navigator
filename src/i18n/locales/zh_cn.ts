@@ -906,10 +906,6 @@ export const STRINGS_ZH_CN = {
                 name: '将最近笔记与快捷方式一起固定',
                 desc: '固定快捷方式时包含最近笔记。'
             },
-            showCalendar: {
-                name: '显示日历',
-                desc: '在导航窗格中显示每日笔记日历。'
-            },
             calendarLocale: {
                 name: '日历语言',
                 desc: '选择日历显示的语言。',

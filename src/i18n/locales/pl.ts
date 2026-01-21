@@ -910,10 +910,6 @@ export const STRINGS_PL = {
                 name: 'Przypnij ostatnie notatki razem ze skrótami',
                 desc: 'Dołącz ostatnie notatki podczas przypinania skrótów.'
             },
-            showCalendar: {
-                name: 'Pokaż kalendarz',
-                desc: 'Wyświetl kalendarz na dole panelu nawigacji.'
-            },
             calendarLocale: {
                 name: 'Język',
                 desc: 'Kontroluje numerację tygodni i pierwszy dzień tygodnia.',

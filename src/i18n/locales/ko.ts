@@ -908,10 +908,6 @@ export const STRINGS_KO = {
                 name: '바로가기와 함께 최근 노트 고정',
                 desc: '바로가기를 고정할 때 최근 노트를 포함합니다.'
             },
-            showCalendar: {
-                name: '달력 표시',
-                desc: '탐색 창 하단에 달력을 표시합니다.'
-            },
             calendarLocale: {
                 name: '지역',
                 desc: '주 번호와 한 주의 첫 번째 요일을 제어합니다.',

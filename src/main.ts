@@ -102,13 +102,12 @@ const UX_PREFERENCES_DEFAULTS = {
     base: {
         // Local-only UX preferences (per-device, stored in localStorage only)
         searchActive: false,
+        showCalendar: false,
         showHiddenItems: false,
         pinShortcuts: true,
 
         // UX preferences that mirror settings (sync-mode controlled)
-        includeDescendantNotes: DEFAULT_SETTINGS.includeDescendantNotes,
-        // Navigation calendar overlay toggle (mirrors settings; sync-mode controlled)
-        showCalendar: DEFAULT_SETTINGS.showCalendar
+        includeDescendantNotes: DEFAULT_SETTINGS.includeDescendantNotes
     },
     platform: {
         // Platform-specific default overrides.
@@ -151,7 +150,6 @@ const LEGACY_LOCAL_SYNC_MODE_SETTING_IDS = new Set<SyncModeSettingId>([
     'dualPaneOrientation',
     'paneTransitionDuration',
     'toolbarVisibility',
-    'showCalendar',
     'navIndent',
     'navItemHeight',
     'navItemHeightScaleText',
@@ -379,19 +377,14 @@ export default class NotebookNavigatorPlugin extends Plugin implements ISettings
             this.dualPanePreference = this.settings.dualPane;
             this.dualPaneOrientationPreference = this.settings.dualPaneOrientation;
             const previousIncludeDescendantNotes = this.uxPreferences.includeDescendantNotes;
-            const previousShowCalendar = this.uxPreferences.showCalendar;
             this.uxPreferences = {
                 ...this.uxPreferences,
-                includeDescendantNotes: this.settings.includeDescendantNotes,
-                showCalendar: this.settings.showCalendar
+                includeDescendantNotes: this.settings.includeDescendantNotes
             };
             this.initializeRecentDataManager();
             this.isHandlingExternalSettingsUpdate = true;
             this.onSettingsUpdate();
-            if (
-                previousIncludeDescendantNotes !== this.uxPreferences.includeDescendantNotes ||
-                previousShowCalendar !== this.uxPreferences.showCalendar
-            ) {
+            if (previousIncludeDescendantNotes !== this.uxPreferences.includeDescendantNotes) {
                 this.notifyUXPreferencesUpdate();
             }
         } finally {
@@ -414,6 +407,9 @@ export default class NotebookNavigatorPlugin extends Plugin implements ISettings
 
         // Start with default settings
         this.settings = { ...DEFAULT_SETTINGS, ...(storedSettings ?? {}) };
+
+        const settingsRecord = this.settings as unknown as Record<string, unknown>;
+        delete settingsRecord['showCalendar'];
         // Validate and normalize keyboard shortcuts to use standard modifier names
         this.settings.keyboardShortcuts = sanitizeKeyboardShortcuts(this.settings.keyboardShortcuts);
         this.normalizeSyncModes({ storedData, isFirstLaunch });
@@ -1344,10 +1340,7 @@ export default class NotebookNavigatorPlugin extends Plugin implements ISettings
         if (this.uxPreferences.showCalendar === next) {
             return;
         }
-
-        this.settings.showCalendar = next;
         this.updateUXPreference('showCalendar', next);
-        this.persistSyncModeSettingUpdate('showCalendar');
     }
 
     public toggleShowCalendar(): void {
@@ -1827,6 +1820,7 @@ export default class NotebookNavigatorPlugin extends Plugin implements ISettings
         delete rest.recentColors;
         delete rest.lastReleaseCheckAt;
         delete rest.latestKnownRelease;
+        delete rest.showCalendar;
         const syncModeRegistry = this.getSyncModeRegistry();
         SYNC_MODE_SETTING_IDS.forEach(settingId => {
             if (!this.isLocal(settingId)) {
@@ -1917,8 +1911,7 @@ export default class NotebookNavigatorPlugin extends Plugin implements ISettings
         const defaults = getDefaultUXPreferences();
         this.uxPreferences = {
             ...defaults,
-            includeDescendantNotes: this.settings.includeDescendantNotes,
-            showCalendar: this.settings.showCalendar
+            includeDescendantNotes: this.settings.includeDescendantNotes
         };
         localStorage.set(this.keys.uxPreferencesKey, this.uxPreferences);
         localStorage.set(STORAGE_KEYS.localStorageVersionKey, LOCALSTORAGE_VERSION);

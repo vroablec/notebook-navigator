@@ -908,10 +908,6 @@ export const STRINGS_EN = {
                 name: 'Pin recent notes with shortcuts',
                 desc: 'Include recent notes when shortcuts are pinned.'
             },
-            showCalendar: {
-                name: 'Show calendar',
-                desc: 'Show a calendar at the bottom of the navigation pane.'
-            },
             calendarLocale: {
                 name: 'Locale',
                 desc: 'Controls week numbering and first day of the week.',

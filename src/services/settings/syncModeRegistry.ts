@@ -188,10 +188,7 @@ export function createSyncModeRegistry(params: CreateSyncModeRegistryParams): Sy
         });
     };
 
-    const createUXPreferenceEntry = (entryParams: {
-        settingId: 'includeDescendantNotes' | 'showCalendar';
-        persistedKey: 'includeDescendantNotes' | 'showCalendar';
-    }) => {
+    const createUXPreferenceEntry = (entryParams: { settingId: 'includeDescendantNotes'; persistedKey: 'includeDescendantNotes' }) => {
         return createEntry({
             persistedKeys: [entryParams.persistedKey],
             loadPhase: 'preProfiles',
@@ -322,10 +319,6 @@ export function createSyncModeRegistry(params: CreateSyncModeRegistryParams): Sy
                 resolvePinNavigationBanner({ storedData, keys: params.keys, defaultSettings: params.defaultSettings }),
             sanitizeSynced: () =>
                 params.sanitizeBooleanSetting(params.getSettings().pinNavigationBanner, params.defaultSettings.pinNavigationBanner)
-        }),
-        showCalendar: createUXPreferenceEntry({
-            settingId: 'showCalendar',
-            persistedKey: 'showCalendar'
         }),
         navIndent: createResolvedLocalStorageSettingEntry({
             settingId: 'navIndent',

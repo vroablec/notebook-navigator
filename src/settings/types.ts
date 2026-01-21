@@ -41,7 +41,6 @@ export const SYNC_MODE_SETTING_IDS = [
     'paneTransitionDuration',
     'toolbarVisibility',
     'pinNavigationBanner',
-    'showCalendar',
     'navIndent',
     'navItemHeight',
     'navItemHeightScaleText',
@@ -188,7 +187,6 @@ export interface NotebookNavigatorSettings {
     recentNotesCount: number;
 
     // Calendar tab - Calendar
-    showCalendar: boolean;
     calendarLocale: string;
     calendarWeeksToShow: CalendarWeeksToShow;
     calendarHighlightToday: boolean;

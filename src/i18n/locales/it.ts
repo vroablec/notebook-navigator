@@ -908,10 +908,6 @@ export const STRINGS_IT = {
                 name: 'Fissa note recenti con scorciatoie',
                 desc: 'Includi le note recenti quando le scorciatoie sono fissate.'
             },
-            showCalendar: {
-                name: 'Mostra calendario',
-                desc: 'Mostra un calendario nella parte inferiore del pannello di navigazione.'
-            },
             calendarLocale: {
                 name: 'Lingua',
                 desc: 'Controlla la numerazione delle settimane e il primo giorno della settimana.',

@@ -910,10 +910,6 @@ export const STRINGS_DE = {
                 name: 'Neueste Notizen mit Lesezeichen anheften',
                 desc: 'Neueste Notizen beim Anheften von Lesezeichen einbeziehen.'
             },
-            showCalendar: {
-                name: 'Kalender anzeigen',
-                desc: 'Zeigt einen Kalender am unteren Rand des Navigationsbereichs an.'
-            },
             calendarLocale: {
                 name: 'Gebietsschema',
                 desc: 'Steuert Wochennummerierung und ersten Wochentag.',

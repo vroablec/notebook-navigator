@@ -908,10 +908,6 @@ export const STRINGS_ID = {
                 name: 'Sematkan catatan terbaru bersama pintasan',
                 desc: 'Sertakan catatan terbaru saat pintasan disematkan.'
             },
-            showCalendar: {
-                name: 'Tampilkan kalender',
-                desc: 'Tampilkan kalender di bagian bawah panel navigasi.'
-            },
             calendarLocale: {
                 name: 'Bahasa',
                 desc: 'Mengontrol penomoran minggu dan hari pertama dalam seminggu.',
