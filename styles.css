@@ -2715,6 +2715,10 @@ body {
         box-shadow 120ms ease;
 }
 
+.nn-navigation-calendar button.nn-navigation-calendar-weeknumber {
+    color: var(--nn-theme-nav-calendar-week-label-color);
+}
+
 .nn-navigation-calendar-weeknumber-button.has-period-note {
     text-decoration-line: underline;
     text-decoration-thickness: 1px;
