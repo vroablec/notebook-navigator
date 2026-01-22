@@ -575,6 +575,7 @@ export const STRINGS_NL = {
     // Plugin UI
     plugin: {
         viewName: 'Notebook Navigator',
+        calendarViewName: 'Kalender',
         ribbonTooltip: 'Notebook Navigator',
         revealInNavigator: 'Tonen in Notebook Navigator'
     },
@@ -909,6 +910,14 @@ export const STRINGS_NL = {
             pinRecentNotesWithShortcuts: {
                 name: 'Recente notities met snelkoppelingen vastpinnen',
                 desc: 'Recente notities opnemen wanneer snelkoppelingen zijn vastgepind.'
+            },
+            calendarPlacement: {
+                name: 'Kalenderpositie',
+                desc: 'Weergeven in Navigator of de rechter zijbalk.',
+                options: {
+                    leftPanel: 'Navigator',
+                    rightPanel: 'Rechter zijbalk'
+                }
             },
             calendarLocale: {
                 name: 'Taal',

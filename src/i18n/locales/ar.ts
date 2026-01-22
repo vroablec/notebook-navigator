@@ -573,6 +573,7 @@ export const STRINGS_AR = {
     // Plugin UI
     plugin: {
         viewName: 'متصفح الدفتر', // Name shown in the view header/tab (English: Notebook Navigator)
+        calendarViewName: 'تقويم', // Name shown in the view header/tab (English: Calendar)
         ribbonTooltip: 'متصفح الدفتر', // Tooltip for the ribbon icon in the left sidebar (English: Notebook Navigator)
         revealInNavigator: 'الكشف في متصفح الدفتر' // Context menu item to reveal a file in the navigator (English: Reveal in Notebook Navigator)
     },
@@ -907,6 +908,14 @@ export const STRINGS_AR = {
             pinRecentNotesWithShortcuts: {
                 name: 'تثبيت الملاحظات الحديثة مع الاختصارات',
                 desc: 'تضمين الملاحظات الحديثة عند تثبيت الاختصارات.'
+            },
+            calendarPlacement: {
+                name: 'موضع التقويم',
+                desc: 'العرض في Navigator أو الشريط الجانبي الأيمن.',
+                options: {
+                    leftPanel: 'Navigator',
+                    rightPanel: 'الشريط الجانبي الأيمن'
+                }
             },
             calendarLocale: {
                 name: 'اللغة',

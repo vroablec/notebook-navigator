@@ -574,6 +574,7 @@ export const STRINGS_FR = {
     // Plugin UI
     plugin: {
         viewName: 'Navigateur de Carnets', // Name shown in the view header/tab (English: Notebook Navigator)
+        calendarViewName: 'Calendrier', // Name shown in the view header/tab (English: Calendar)
         ribbonTooltip: 'Navigateur de Carnets', // Tooltip for the ribbon icon in the left sidebar (English: Notebook Navigator)
         revealInNavigator: 'Révéler dans le Navigateur de Carnets' // Context menu item to reveal a file in the navigator (English: Reveal in Notebook Navigator)
     },
@@ -909,6 +910,14 @@ export const STRINGS_FR = {
             pinRecentNotesWithShortcuts: {
                 name: 'Épingler les notes récentes avec les raccourcis',
                 desc: "Inclure les notes récentes lors de l'épinglage des raccourcis."
+            },
+            calendarPlacement: {
+                name: 'Emplacement du calendrier',
+                desc: 'Afficher dans Navigator ou dans la barre latérale droite.',
+                options: {
+                    leftPanel: 'Navigator',
+                    rightPanel: 'Barre latérale droite'
+                }
             },
             calendarLocale: {
                 name: 'Langue',

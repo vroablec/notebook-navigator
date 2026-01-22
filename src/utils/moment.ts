@@ -19,6 +19,7 @@
 export interface MomentLocaleData {
     firstDayOfWeek(): number;
     weekdaysMin(): string[];
+    weekdaysShort(): string[];
 }
 
 export interface MomentInstance {

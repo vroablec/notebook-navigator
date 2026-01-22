@@ -573,6 +573,7 @@ export const STRINGS_UK = {
     // Plugin UI
     plugin: {
         viewName: 'Notebook Navigator', // Name shown in the view header/tab (English: Notebook Navigator)
+        calendarViewName: 'Календар', // Name shown in the view header/tab (English: Calendar)
         ribbonTooltip: 'Notebook Navigator', // Tooltip for the ribbon icon in the left sidebar (English: Notebook Navigator)
         revealInNavigator: 'Показати в Notebook Navigator' // Context menu item to reveal a file in the navigator (English: Reveal in Notebook Navigator)
     },
@@ -907,6 +908,14 @@ export const STRINGS_UK = {
             pinRecentNotesWithShortcuts: {
                 name: 'Закріпити останні нотатки разом з ярликами',
                 desc: 'Включати останні нотатки при закріпленні ярликів.'
+            },
+            calendarPlacement: {
+                name: 'Розташування календаря',
+                desc: 'Відображати в Navigator або на правій бічній панелі.',
+                options: {
+                    leftPanel: 'Navigator',
+                    rightPanel: 'Права бічна панель'
+                }
             },
             calendarLocale: {
                 name: 'Мова',

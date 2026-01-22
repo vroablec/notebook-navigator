@@ -570,6 +570,7 @@ export const STRINGS_PT_BR = {
     // Plugin UI
     plugin: {
         viewName: 'Notebook Navigator',
+        calendarViewName: 'Calendário',
         ribbonTooltip: 'Notebook Navigator',
         revealInNavigator: 'Revelar no Notebook Navigator'
     },
@@ -904,6 +905,14 @@ export const STRINGS_PT_BR = {
             pinRecentNotesWithShortcuts: {
                 name: 'Fixar notas recentes com atalhos',
                 desc: 'Incluir notas recentes quando os atalhos estiverem fixados.'
+            },
+            calendarPlacement: {
+                name: 'Posição do calendário',
+                desc: 'Exibir no Navigator ou na barra lateral direita.',
+                options: {
+                    leftPanel: 'Navigator',
+                    rightPanel: 'Barra lateral direita'
+                }
             },
             calendarLocale: {
                 name: 'Idioma',

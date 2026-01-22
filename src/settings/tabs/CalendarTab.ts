@@ -18,7 +18,7 @@
 
 import { DropdownComponent, Setting } from 'obsidian';
 import { getCurrentLanguage, strings } from '../../i18n';
-import type { CalendarWeeksToShow } from '../types';
+import { isCalendarPlacement, type CalendarWeeksToShow } from '../types';
 import type { SettingsTabContext } from './SettingsTabContext';
 import {
     createCalendarCustomDateFormatter,
@@ -63,6 +63,26 @@ export function renderCalendarTab(context: SettingsTabContext): void {
     const createGroup = createSettingGroupFactory(containerEl);
 
     const topGroup = createGroup(undefined);
+
+    const calendarPlacementSetting = topGroup.addSetting(setting => {
+        setting.setName(strings.settings.items.calendarPlacement.name).setDesc(strings.settings.items.calendarPlacement.desc);
+    });
+
+    calendarPlacementSetting.addDropdown((dropdown: DropdownComponent) => {
+        dropdown
+            .addOption('left-panel', strings.settings.items.calendarPlacement.options.leftPanel)
+            .addOption('right-panel', strings.settings.items.calendarPlacement.options.rightPanel)
+            .setValue(plugin.settings.calendarPlacement)
+            .onChange(value => {
+                if (!isCalendarPlacement(value)) {
+                    return;
+                }
+
+                plugin.setCalendarPlacement(value);
+            });
+    });
+
+    addSettingSyncModeToggle({ setting: calendarPlacementSetting, plugin, settingId: 'calendarPlacement' });
 
     const momentApi = getMomentApi();
     // Offer moment locales as options; the selected locale is used for week rules (start-of-week + week numbering).

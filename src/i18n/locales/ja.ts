@@ -574,6 +574,7 @@ export const STRINGS_JA = {
     // Plugin UI
     plugin: {
         viewName: 'ノートブックナビゲーター', // Name shown in the view header/tab (English: Notebook Navigator)
+        calendarViewName: 'カレンダー', // Name shown in the view header/tab (English: Calendar)
         ribbonTooltip: 'ノートブックナビゲーター', // Tooltip for the ribbon icon in the left sidebar (English: Notebook Navigator)
         revealInNavigator: 'ノートブックナビゲーターで表示' // Context menu item to reveal a file in the navigator (English: Reveal in Notebook Navigator)
     },
@@ -908,6 +909,14 @@ export const STRINGS_JA = {
             pinRecentNotesWithShortcuts: {
                 name: '最近のノートをショートカットと一緒に固定',
                 desc: 'ショートカットを固定するときに最近のノートを含める。'
+            },
+            calendarPlacement: {
+                name: 'カレンダーの配置',
+                desc: 'Navigatorまたは右サイドバーに表示します。',
+                options: {
+                    leftPanel: 'Navigator',
+                    rightPanel: '右サイドバー'
+                }
             },
             calendarLocale: {
                 name: 'ロケール',

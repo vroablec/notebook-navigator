@@ -573,6 +573,7 @@ export const STRINGS_VI = {
     // Plugin UI
     plugin: {
         viewName: 'Notebook Navigator', // Name shown in the view header/tab (English: Notebook Navigator)
+        calendarViewName: 'Lịch', // Name shown in the view header/tab (English: Calendar)
         ribbonTooltip: 'Notebook Navigator', // Tooltip for the ribbon icon in the left sidebar (English: Notebook Navigator)
         revealInNavigator: 'Hiện trong Notebook Navigator' // Context menu item to reveal a file in the navigator (English: Reveal in Notebook Navigator)
     },
@@ -907,6 +908,14 @@ export const STRINGS_VI = {
             pinRecentNotesWithShortcuts: {
                 name: 'Ghim ghi chú gần đây cùng lối tắt',
                 desc: 'Bao gồm ghi chú gần đây khi lối tắt được ghim.'
+            },
+            calendarPlacement: {
+                name: 'Vị trí lịch',
+                desc: 'Hiển thị trong Navigator hoặc thanh bên phải.',
+                options: {
+                    leftPanel: 'Navigator',
+                    rightPanel: 'Thanh bên phải'
+                }
             },
             calendarLocale: {
                 name: 'Ngôn ngữ',

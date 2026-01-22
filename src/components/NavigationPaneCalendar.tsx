@@ -25,7 +25,8 @@ import { ConfirmModal } from '../modals/ConfirmModal';
 import { InputModal } from '../modals/InputModal';
 import { useServices } from '../context/ServicesContext';
 import { useSettingsState } from '../context/SettingsContext';
-import { useFileCache } from '../context/StorageContext';
+import { useFileCacheOptional } from '../context/StorageContext';
+import { getDBInstanceOrNull } from '../storage/fileOperations';
 import { runAsyncAction } from '../utils/async';
 import {
     createDailyNote,
@@ -58,6 +59,7 @@ import {
 } from '../utils/calendarCustomNotePatterns';
 import { getTooltipPlacement } from '../utils/domUtils';
 import { resolveUXIconForMenu } from '../utils/uxIcons';
+import type { CalendarWeeksToShow } from '../settings/types';
 
 interface CalendarDay {
     date: MomentInstance;
@@ -243,6 +245,8 @@ function getPathRelativeToCustomCalendarRoot(folderPath: string, customRootFolde
 
 export interface NavigationPaneCalendarProps {
     onWeekCountChange?: (count: number) => void;
+    layout?: 'overlay' | 'panel';
+    weeksToShowOverride?: CalendarWeeksToShow;
 }
 
 interface CalendarHoverTooltipState {
@@ -255,10 +259,13 @@ type CustomCalendarNoteKind = CalendarNoteKind;
 type CustomCalendarNoteConfig = CalendarNoteConfig;
 const MAX_CUSTOM_CALENDAR_LOOKUP_CACHE_ENTRIES = 512;
 
-export function NavigationPaneCalendar({ onWeekCountChange }: NavigationPaneCalendarProps) {
+export function NavigationPaneCalendar({ onWeekCountChange, layout = 'overlay', weeksToShowOverride }: NavigationPaneCalendarProps) {
     const { app, fileSystemOps, isMobile } = useServices();
     const settings = useSettingsState();
-    const { getDB } = useFileCache();
+    const weeksToShowSetting = weeksToShowOverride ?? settings.calendarWeeksToShow;
+    const fileCache = useFileCacheOptional();
+    const [dbFallback, setDbFallback] = useState(() => getDBInstanceOrNull());
+    const db = fileCache?.getDB() ?? dbFallback;
     const openFile = useFileOpener();
     const calendarLabelId = useId();
 
@@ -269,6 +276,40 @@ export function NavigationPaneCalendar({ onWeekCountChange }: NavigationPaneCale
     const [vaultVersion, setVaultVersion] = useState(0);
     const [contentVersion, setContentVersion] = useState(0);
     const visibleDailyNotePathsRef = useRef<Set<string>>(new Set());
+
+    useEffect(() => {
+        if (typeof window === 'undefined') {
+            return;
+        }
+
+        if (fileCache) {
+            return;
+        }
+
+        if (dbFallback) {
+            return;
+        }
+
+        let isActive = true;
+        const intervalId = window.setInterval(() => {
+            if (!isActive) {
+                return;
+            }
+
+            const instance = getDBInstanceOrNull();
+            if (!instance) {
+                return;
+            }
+
+            window.clearInterval(intervalId);
+            setDbFallback(instance);
+        }, 250);
+
+        return () => {
+            isActive = false;
+            window.clearInterval(intervalId);
+        };
+    }, [dbFallback, fileCache]);
 
     useEffect(() => {
         const onVaultUpdate = () => setVaultVersion(v => v + 1);
@@ -284,7 +325,10 @@ export function NavigationPaneCalendar({ onWeekCountChange }: NavigationPaneCale
     }, [app.vault]);
 
     useEffect(() => {
-        const db = getDB();
+        if (!db) {
+            return;
+        }
+
         return db.onContentChange(changes => {
             const visiblePaths = visibleDailyNotePathsRef.current;
             const hasCalendarRelevantChange = changes.some(change => {
@@ -302,7 +346,7 @@ export function NavigationPaneCalendar({ onWeekCountChange }: NavigationPaneCale
                 setContentVersion(v => v + 1);
             }
         });
-    }, [getDB]);
+    }, [db]);
 
     useEffect(() => {
         // Obsidian exposes `window.moment` after startup; in tests (or very early) it may be unavailable.
@@ -365,13 +409,20 @@ export function NavigationPaneCalendar({ onWeekCountChange }: NavigationPaneCale
         }
 
         const firstDay = weekStartsOn;
-        const labels = momentApi().locale(displayLocale).localeData().weekdaysMin();
+        const localeData = momentApi().locale(displayLocale).localeData();
+        const labels = layout === 'panel' ? localeData.weekdaysShort() : localeData.weekdaysMin();
         if (!Array.isArray(labels) || labels.length !== 7) {
             return [];
         }
         const ordered = [...labels.slice(firstDay), ...labels.slice(0, firstDay)];
+        if (layout === 'panel') {
+            return ordered.map(label => {
+                const normalized = label.trim().replace(/\./g, '');
+                return normalized.length > 3 ? normalized.slice(0, 3) : normalized;
+            });
+        }
         return ordered.map(label => Array.from(label.trim())[0] ?? '');
-    }, [displayLocale, momentApi, weekStartsOn]);
+    }, [displayLocale, layout, momentApi, weekStartsOn]);
 
     const dailyNoteSettings = useMemo(() => {
         // Force refresh when vault contents change so `getDailyNoteFile()` reflects created/renamed/deleted daily notes.
@@ -401,7 +452,7 @@ export function NavigationPaneCalendar({ onWeekCountChange }: NavigationPaneCale
         const folderIndexCache = new Map<string, Map<string, CustomCalendarIndexEntry> | null>();
         const folderFormatter = createCalendarCustomDateFormatter(customFolderPattern);
 
-        const weeksToShow = clamp(settings.calendarWeeksToShow, 1, 6);
+        const weeksToShow = clamp(weeksToShowSetting, 1, 6);
         const cursor = cursorDate.clone().startOf('day');
         const cursorWeekStart = startOfWeek(cursor.clone(), weekStartsOn);
         const targetMonth = cursor.month();
@@ -491,7 +542,7 @@ export function NavigationPaneCalendar({ onWeekCountChange }: NavigationPaneCale
         settings.calendarCustomFilePattern,
         settings.calendarCustomRootFolder,
         settings.calendarIntegrationMode,
-        settings.calendarWeeksToShow,
+        weeksToShowSetting,
         weekConfig,
         weekStartsOn
     ]);
@@ -513,8 +564,11 @@ export function NavigationPaneCalendar({ onWeekCountChange }: NavigationPaneCale
         // Force refresh when calendar-relevant content changes so feature-image keys reflect the latest metadata.
         void contentVersion;
 
+        if (!db) {
+            return new Map<string, string>();
+        }
+
         const keys = new Map<string, string>();
-        const db = getDB();
 
         for (const week of weeks) {
             for (const day of week.days) {
@@ -534,7 +588,7 @@ export function NavigationPaneCalendar({ onWeekCountChange }: NavigationPaneCale
         }
 
         return keys;
-    }, [contentVersion, getDB, weeks]);
+    }, [contentVersion, db, weeks]);
 
     useLayoutEffect(() => {
         if (weeks.length === 0) {
@@ -583,7 +637,16 @@ export function NavigationPaneCalendar({ onWeekCountChange }: NavigationPaneCale
             }
         }
 
-        const db = getDB();
+        if (!db) {
+            const existing = featureImageUrlMapRef.current;
+            for (const entry of existing.values()) {
+                URL.revokeObjectURL(entry.url);
+            }
+            existing.clear();
+            setFeatureImageUrls({});
+            return;
+        }
+
         const previousMap = featureImageUrlMapRef.current;
         const nextMap = new Map<string, { key: string; url: string }>();
 
@@ -646,7 +709,7 @@ export function NavigationPaneCalendar({ onWeekCountChange }: NavigationPaneCale
         return () => {
             isActive = false;
         };
-    }, [featureImageKeysByIso, getDB, weeks]);
+    }, [db, featureImageKeysByIso, weeks]);
 
     /** Calculates and updates tooltip position relative to anchor element, handling viewport boundaries */
     const updateHoverTooltipPosition = useCallback(() => {
@@ -796,13 +859,13 @@ export function NavigationPaneCalendar({ onWeekCountChange }: NavigationPaneCale
                 return;
             }
             setHoverTooltip(null);
-            const weeksToShow = clamp(settings.calendarWeeksToShow, 1, 6);
+            const weeksToShow = clamp(weeksToShowSetting, 1, 6);
             const unit = weeksToShow === 6 ? 'month' : 'week';
             const step = weeksToShow === 6 ? delta : delta * weeksToShow;
 
             setCursorDate(prev => (prev ?? momentApi().startOf('day')).clone().add(step, unit));
         },
-        [momentApi, settings.calendarWeeksToShow]
+        [momentApi, weeksToShowSetting]
     );
 
     const handleToday = useCallback(() => {
@@ -1229,6 +1292,8 @@ export function NavigationPaneCalendar({ onWeekCountChange }: NavigationPaneCale
                 role="group"
                 aria-labelledby={calendarLabelId}
                 data-highlight-today={highlightToday ? 'true' : undefined}
+                data-layout={layout}
+                data-weeknumbers={showWeekNumbers ? 'true' : undefined}
             >
                 <span id={calendarLabelId} className="nn-visually-hidden">
                     {strings.navigationCalendar.ariaLabel}
@@ -1477,11 +1542,14 @@ export function NavigationPaneCalendar({ onWeekCountChange }: NavigationPaneCale
                                     const featureImageUrl = featureImageUrls[day.iso] ?? null;
                                     const hasFeatureImageKey = featureImageKeysByIso.has(day.iso);
                                     const isToday = todayIso === day.iso;
+                                    const dayOfWeek = day.date.toDate().getDay();
+                                    const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
 
                                     const className = [
                                         'nn-navigation-calendar-day',
                                         day.inMonth ? 'is-in-month' : 'is-outside-month',
                                         isToday ? 'is-today' : '',
+                                        isWeekend ? 'is-weekend' : 'is-weekday',
                                         hasDailyNote ? 'has-daily-note' : '',
                                         hasFeatureImageKey ? 'has-feature-image-key' : '',
                                         featureImageUrl ? 'has-feature-image' : ''

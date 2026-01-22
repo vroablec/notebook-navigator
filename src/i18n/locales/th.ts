@@ -573,6 +573,7 @@ export const STRINGS_TH = {
     // Plugin UI
     plugin: {
         viewName: 'Notebook Navigator',
+        calendarViewName: 'ปฏิทิน',
         ribbonTooltip: 'Notebook Navigator',
         revealInNavigator: 'แสดงใน Notebook Navigator'
     },
@@ -907,6 +908,14 @@ export const STRINGS_TH = {
             pinRecentNotesWithShortcuts: {
                 name: 'ปักหมุดโน้ตล่าสุดพร้อมทางลัด',
                 desc: 'รวมโน้ตล่าสุดเมื่อปักหมุดทางลัด'
+            },
+            calendarPlacement: {
+                name: 'ตำแหน่งปฏิทิน',
+                desc: 'แสดงใน Navigator หรือแถบด้านขวา',
+                options: {
+                    leftPanel: 'Navigator',
+                    rightPanel: 'แถบด้านขวา'
+                }
             },
             calendarLocale: {
                 name: 'ภาษา',

@@ -574,6 +574,7 @@ export const STRINGS_ES = {
     // Plugin UI
     plugin: {
         viewName: 'Navegador de Cuadernos', // Name shown in the view header/tab (English: Notebook Navigator)
+        calendarViewName: 'Calendario', // Name shown in the view header/tab (English: Calendar)
         ribbonTooltip: 'Navegador de Cuadernos', // Tooltip for the ribbon icon in the left sidebar (English: Notebook Navigator)
         revealInNavigator: 'Mostrar en el Navegador de Cuadernos' // Context menu item to reveal a file in the navigator (English: Reveal in Notebook Navigator)
     },
@@ -908,6 +909,14 @@ export const STRINGS_ES = {
             pinRecentNotesWithShortcuts: {
                 name: 'Fijar notas recientes con accesos directos',
                 desc: 'Incluir notas recientes cuando se fijan los accesos directos.'
+            },
+            calendarPlacement: {
+                name: 'Ubicación del calendario',
+                desc: 'Mostrar en Navigator o en la barra lateral derecha.',
+                options: {
+                    leftPanel: 'Navigator',
+                    rightPanel: 'Barra lateral derecha'
+                }
             },
             calendarLocale: {
                 name: 'Configuración regional',

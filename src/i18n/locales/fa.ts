@@ -573,6 +573,7 @@ export const STRINGS_FA = {
     // Plugin UI
     plugin: {
         viewName: 'Notebook Navigator',
+        calendarViewName: 'تقویم',
         ribbonTooltip: 'Notebook Navigator',
         revealInNavigator: 'نمایش در Notebook Navigator'
     },
@@ -907,6 +908,14 @@ export const STRINGS_FA = {
             pinRecentNotesWithShortcuts: {
                 name: 'سنجاق کردن یادداشت‌های اخیر با میانبرها',
                 desc: 'هنگام سنجاق کردن میانبرها، یادداشت‌های اخیر را نیز شامل شود.'
+            },
+            calendarPlacement: {
+                name: 'محل قرارگیری تقویم',
+                desc: 'نمایش در Navigator یا نوار کناری سمت راست.',
+                options: {
+                    leftPanel: 'Navigator',
+                    rightPanel: 'نوار کناری سمت راست'
+                }
             },
             calendarLocale: {
                 name: 'زبان',

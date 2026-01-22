@@ -20,6 +20,7 @@ import { Platform } from 'obsidian';
 
 import {
     migrateUIScales,
+    resolveCalendarPlacement,
     resolveCalendarWeeksToShow,
     resolveCompactItemHeight,
     resolveCompactItemHeightScaleText,
@@ -67,6 +68,7 @@ interface CreateSyncModeRegistryParams {
     sanitizeToolbarVisibilitySetting: (value: unknown) => NotebookNavigatorSettings['toolbarVisibility'];
     sanitizeNavIndentSetting: (value: unknown) => number;
     sanitizeNavItemHeightSetting: (value: unknown) => number;
+    sanitizeCalendarPlacementSetting: (value: unknown) => NotebookNavigatorSettings['calendarPlacement'];
     sanitizeCalendarWeeksToShowSetting: (value: unknown) => NotebookNavigatorSettings['calendarWeeksToShow'];
     sanitizeCompactItemHeightSetting: (value: unknown) => number;
 
@@ -343,6 +345,14 @@ export function createSyncModeRegistry(params: CreateSyncModeRegistryParams): Sy
                 resolveNavItemHeightScaleText({ storedData, keys: params.keys, defaultSettings: params.defaultSettings }),
             sanitizeSynced: () =>
                 params.sanitizeBooleanSetting(params.getSettings().navItemHeightScaleText, params.defaultSettings.navItemHeightScaleText)
+        }),
+        calendarPlacement: createResolvedLocalStorageSettingEntry({
+            settingId: 'calendarPlacement',
+            loadPhase: 'preProfiles',
+            localStorageKey: params.keys.calendarPlacementKey,
+            resolveDeviceLocal: storedData =>
+                resolveCalendarPlacement({ storedData, keys: params.keys, defaultSettings: params.defaultSettings }),
+            sanitizeSynced: () => params.sanitizeCalendarPlacementSetting(params.getSettings().calendarPlacement)
         }),
         calendarWeeksToShow: createResolvedLocalStorageSettingEntry({
             settingId: 'calendarWeeksToShow',

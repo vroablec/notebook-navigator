@@ -572,6 +572,7 @@ export const STRINGS_ZH_CN = {
     // Plugin UI
     plugin: {
         viewName: '笔记本导航器', // Name shown in the view header/tab (English: Notebook Navigator)
+        calendarViewName: '日历', // Name shown in the view header/tab (English: Calendar)
         ribbonTooltip: '笔记本导航器', // Tooltip for the ribbon icon in the left sidebar (English: Notebook Navigator)
         revealInNavigator: '在笔记本导航器中定位' // Context menu item to reveal a file in the navigator (English: Reveal in Notebook Navigator)
     },
@@ -905,6 +906,14 @@ export const STRINGS_ZH_CN = {
             pinRecentNotesWithShortcuts: {
                 name: '将最近笔记与快捷方式一起固定',
                 desc: '固定快捷方式时包含最近笔记。'
+            },
+            calendarPlacement: {
+                name: '日历位置',
+                desc: '在 Navigator 或右侧边栏中显示。',
+                options: {
+                    leftPanel: 'Navigator',
+                    rightPanel: '右侧边栏'
+                }
             },
             calendarLocale: {
                 name: '日历语言',

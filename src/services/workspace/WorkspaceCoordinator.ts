@@ -16,11 +16,12 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { TFile, WorkspaceLeaf } from 'obsidian';
+import { requireApiVersion, TFile, WorkspaceLeaf } from 'obsidian';
 import type NotebookNavigatorPlugin from '../../main';
-import { NOTEBOOK_NAVIGATOR_VIEW } from '../../types';
+import { NOTEBOOK_NAVIGATOR_CALENDAR_VIEW, NOTEBOOK_NAVIGATOR_VIEW } from '../../types';
 import { NotebookNavigatorView } from '../../view/NotebookNavigatorView';
 import type { RevealFileOptions } from '../../hooks/useNavigatorReveal';
+import { getLeafSplitLocation } from '../../utils/workspaceSplit';
 
 /**
  * Coordinates interactions with Obsidian's workspace that relate to the Notebook Navigator view.
@@ -31,6 +32,78 @@ export default class WorkspaceCoordinator {
 
     constructor(plugin: NotebookNavigatorPlugin) {
         this.plugin = plugin;
+    }
+
+    public detachCalendarViewLeaves(): void {
+        const leaves = this.plugin.app.workspace.getLeavesOfType(NOTEBOOK_NAVIGATOR_CALENDAR_VIEW);
+        for (const leaf of leaves) {
+            leaf.detach();
+        }
+    }
+
+    async ensureCalendarViewInRightSidebar(options?: { reveal?: boolean; shouldContinue?: () => boolean }): Promise<WorkspaceLeaf | null> {
+        const reveal = options?.reveal ?? false;
+        const shouldContinue = options?.shouldContinue ?? (() => true);
+        const { workspace } = this.plugin.app;
+
+        if (!shouldContinue()) {
+            return null;
+        }
+
+        const existingLeaves = workspace.getLeavesOfType(NOTEBOOK_NAVIGATOR_CALENDAR_VIEW);
+        let rightSidebarLeaf: WorkspaceLeaf | null = null;
+        for (const leaf of existingLeaves) {
+            const location = getLeafSplitLocation(this.plugin.app, leaf);
+            if (location === 'right-sidebar') {
+                if (!rightSidebarLeaf) {
+                    rightSidebarLeaf = leaf;
+                    continue;
+                }
+            }
+
+            leaf.detach();
+        }
+
+        if (rightSidebarLeaf) {
+            if (reveal && shouldContinue()) {
+                await workspace.revealLeaf(rightSidebarLeaf);
+            }
+            return rightSidebarLeaf;
+        }
+
+        if (!shouldContinue()) {
+            return null;
+        }
+
+        if (requireApiVersion('1.7.2')) {
+            const leaf = await workspace.ensureSideLeaf(NOTEBOOK_NAVIGATOR_CALENDAR_VIEW, 'right', {
+                active: reveal,
+                reveal,
+                split: true
+            });
+            if (!shouldContinue()) {
+                this.detachCalendarViewLeaves();
+                return null;
+            }
+            return leaf;
+        }
+
+        const leaf = workspace.getRightLeaf(true);
+        if (!leaf) {
+            return null;
+        }
+
+        await leaf.setViewState({ type: NOTEBOOK_NAVIGATOR_CALENDAR_VIEW, active: reveal });
+        if (reveal && shouldContinue()) {
+            await workspace.revealLeaf(leaf);
+        }
+
+        if (!shouldContinue()) {
+            this.detachCalendarViewLeaves();
+            return null;
+        }
+
+        return leaf;
     }
 
     /**

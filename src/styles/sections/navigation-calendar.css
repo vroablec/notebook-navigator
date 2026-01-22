@@ -477,3 +477,148 @@
     line-height: 1.25;
     color: var(--text-normal);
 }
+
+/* ========================================================================
+   Right Sidebar Calendar
+   ======================================================================== */
+
+.nn-calendar-right-panel {
+    overflow: auto;
+}
+
+.nn-calendar-right-panel-content {
+    padding: 10px 12px;
+}
+
+.nn-calendar-right-panel .nn-navigation-calendar[data-layout='panel'] {
+    height: auto;
+    --nn-nav-calendar-section-gap: 6px;
+    --nn-nav-calendar-header-font-size: var(--nn-nav-calendar-today-font-size);
+    --nn-nav-calendar-nav-button-size: 34px;
+    --nn-nav-calendar-day-font-size: 13px;
+    --nn-nav-calendar-nav-icon-size: var(--nn-nav-calendar-day-font-size);
+    --nn-nav-calendar-week-label-font-size: 12px;
+    --nn-nav-calendar-weeknumber-font-size: var(--nn-nav-calendar-week-label-font-size);
+    --nn-nav-calendar-today-font-size: var(--nn-nav-calendar-day-font-size);
+    --nn-nav-calendar-weeknumber-column-width: 34px;
+    --nn-nav-calendar-weeknumber-padding-right: 6px;
+}
+
+.nn-calendar-right-panel .nn-navigation-calendar[data-layout='panel'] .nn-navigation-calendar-header {
+    height: auto;
+}
+
+.nn-calendar-right-panel .nn-navigation-calendar[data-layout='panel'] .nn-navigation-calendar-weekdays {
+    height: auto;
+    column-gap: 0;
+}
+
+.nn-calendar-right-panel .nn-navigation-calendar[data-layout='panel'] .nn-navigation-calendar-weekdays[data-weeknumbers='true'] {
+    grid-template-columns: var(--nn-nav-calendar-weeknumber-column-width) repeat(7, minmax(0, 1fr));
+}
+
+.nn-calendar-right-panel .nn-navigation-calendar[data-layout='panel'] .nn-navigation-calendar-weeks {
+    gap: 0;
+}
+
+.nn-calendar-right-panel .nn-navigation-calendar[data-layout='panel'] .nn-navigation-calendar-weeks[data-weeknumbers='true']::before {
+    display: none;
+}
+
+.nn-calendar-right-panel .nn-navigation-calendar[data-layout='panel'] .nn-navigation-calendar-week {
+    column-gap: 0;
+}
+
+.nn-calendar-right-panel
+    .nn-navigation-calendar[data-layout='panel']
+    .nn-navigation-calendar-weeks[data-weeknumbers='true']
+    .nn-navigation-calendar-week {
+    grid-template-columns: var(--nn-nav-calendar-weeknumber-column-width) repeat(7, minmax(0, 1fr));
+}
+
+.nn-calendar-right-panel .nn-navigation-calendar[data-layout='panel'] .nn-navigation-calendar-weeknumber-divider {
+    display: none;
+}
+
+.nn-calendar-right-panel .nn-navigation-calendar[data-layout='panel'] .nn-navigation-calendar-weeknumber {
+    height: auto;
+    align-items: flex-end;
+    padding-bottom: 4px;
+    border-top: 1px solid var(--background-modifier-border);
+    border-left: 1px solid var(--background-modifier-border);
+}
+
+.nn-calendar-right-panel
+    .nn-navigation-calendar[data-layout='panel']
+    .nn-navigation-calendar-week:last-child
+    .nn-navigation-calendar-weeknumber {
+    border-bottom: 1px solid var(--background-modifier-border);
+}
+
+.nn-calendar-right-panel .nn-navigation-calendar[data-layout='panel'] .nn-navigation-calendar-day {
+    height: auto;
+    aspect-ratio: 1 / 1;
+    border-radius: 0;
+    border: none !important;
+    align-items: flex-end;
+    justify-content: flex-end;
+    padding: 0 !important;
+    border-top: 1px solid var(--background-modifier-border) !important;
+    border-left: 1px solid var(--background-modifier-border) !important;
+}
+
+.nn-calendar-right-panel .nn-navigation-calendar[data-layout='panel'] .nn-navigation-calendar-week .nn-navigation-calendar-day:last-child {
+    border-right: 1px solid var(--background-modifier-border) !important;
+}
+
+.nn-calendar-right-panel .nn-navigation-calendar[data-layout='panel'] .nn-navigation-calendar-week:last-child .nn-navigation-calendar-day {
+    border-bottom: 1px solid var(--background-modifier-border) !important;
+}
+
+.nn-calendar-right-panel .nn-navigation-calendar[data-layout='panel'][data-weeknumbers='true'] .nn-navigation-calendar-month {
+    padding-left: var(--nn-nav-calendar-weeknumber-column-width);
+}
+
+.nn-calendar-right-panel .nn-navigation-calendar[data-layout='panel'] .nn-navigation-calendar-day-number {
+    font-weight: 400;
+    padding-right: 4px;
+    padding-bottom: 4px;
+}
+
+.nn-calendar-right-panel
+    .nn-navigation-calendar[data-layout='panel']
+    .nn-navigation-calendar-day.has-daily-note
+    .nn-navigation-calendar-day-number {
+    font-weight: 400;
+}
+
+.nn-calendar-right-panel
+    .nn-navigation-calendar[data-layout='panel'][data-highlight-today='true']
+    .nn-navigation-calendar-day.is-today
+    .nn-navigation-calendar-day-number {
+    font-weight: 600;
+}
+
+@media (hover: hover) and (pointer: fine) {
+    .nn-calendar-right-panel .nn-navigation-calendar[data-layout='panel'] .nn-navigation-calendar-day:hover {
+        background-color: var(--nn-theme-nav-calendar-hover-bg) !important;
+        border-color: color-mix(in srgb, var(--nn-theme-nav-calendar-hover-bg) 55%, var(--background-modifier-border));
+    }
+}
+
+.nn-calendar-right-panel
+    .nn-navigation-calendar[data-layout='panel'][data-highlight-today='true']
+    .nn-navigation-calendar-day.is-today:not(.has-daily-note):not(.has-feature-image):not(.has-feature-image-key)::before {
+    content: none;
+}
+
+.nn-calendar-right-panel .nn-navigation-calendar[data-layout='panel'][data-highlight-today='true'] .nn-navigation-calendar-day.is-today {
+    border-color: var(--nn-theme-nav-calendar-day-today-bg);
+}
+
+.nn-calendar-right-panel
+    .nn-navigation-calendar[data-layout='panel'][data-highlight-today='true']
+    .nn-navigation-calendar-day.is-today
+    .nn-navigation-calendar-day-number {
+    color: var(--nn-theme-nav-calendar-day-today-bg);
+}

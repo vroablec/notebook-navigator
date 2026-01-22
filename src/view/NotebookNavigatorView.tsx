@@ -61,6 +61,44 @@ import {
 } from '../utils/androidFontScale';
 import { ensureNotebookNavigatorSvgFilters } from '../utils/svgFilters';
 
+export function setupNotebookNavigatorViewContainer(container: HTMLElement): { isMobile: boolean } {
+    container.empty();
+    container.classList.add('notebook-navigator');
+
+    const isMobile = Platform.isMobile;
+    if (isMobile) {
+        container.classList.add('notebook-navigator-mobile');
+
+        if (Platform.isAndroidApp) {
+            container.classList.add('notebook-navigator-android');
+            if (requireApiVersion('1.11.0')) {
+                container.classList.add('notebook-navigator-obsidian-1-11-plus-android');
+            }
+            applyAndroidFontCompensation(container);
+        } else if (Platform.isIosApp) {
+            container.classList.add('notebook-navigator-ios');
+
+            if (requireApiVersion('1.11.0')) {
+                container.classList.add('notebook-navigator-obsidian-1-11-plus-ios');
+            }
+        }
+    }
+
+    ensureNotebookNavigatorSvgFilters();
+    return { isMobile };
+}
+
+export function teardownNotebookNavigatorViewContainer(container: HTMLElement): void {
+    clearAndroidFontCompensation(container);
+    container.classList.remove('notebook-navigator');
+    container.classList.remove('notebook-navigator-mobile');
+    container.classList.remove('notebook-navigator-android');
+    container.classList.remove('notebook-navigator-obsidian-1-11-plus-android');
+    container.classList.remove('notebook-navigator-ios');
+    container.classList.remove('notebook-navigator-obsidian-1-11-plus-ios');
+    container.empty();
+}
+
 /**
  * Custom Obsidian view that hosts the React-based Notebook Navigator interface
  * Manages the lifecycle of the React application and provides integration between
@@ -115,32 +153,7 @@ export class NotebookNavigatorView extends ItemView {
         if (!(container instanceof HTMLElement)) {
             return;
         }
-        container.empty(); // Clear previous content
-        container.classList.add('notebook-navigator');
-
-        // Detect mobile environment and add mobile class
-        const isMobile = Platform.isMobile;
-        if (isMobile) {
-            container.classList.add('notebook-navigator-mobile');
-
-            // Add platform-specific classes
-            if (Platform.isAndroidApp) {
-                container.classList.add('notebook-navigator-android');
-                if (requireApiVersion('1.11.0')) {
-                    container.classList.add('notebook-navigator-obsidian-1-11-plus-android');
-                }
-                // Detect and compensate for Android textZoom BEFORE React renders
-                applyAndroidFontCompensation(container);
-            } else if (Platform.isIosApp) {
-                container.classList.add('notebook-navigator-ios');
-
-                if (requireApiVersion('1.11.0')) {
-                    container.classList.add('notebook-navigator-obsidian-1-11-plus-ios');
-                }
-            }
-        }
-
-        ensureNotebookNavigatorSvgFilters();
+        const { isMobile } = setupNotebookNavigatorViewContainer(container);
 
         this.root = createRoot(container);
         this.root.render(
@@ -246,17 +259,8 @@ export class NotebookNavigatorView extends ItemView {
         if (!(container instanceof HTMLElement)) {
             return;
         }
-        clearAndroidFontCompensation(container);
-        container.classList.remove('notebook-navigator');
-        // Also remove mobile/platform-specific classes added on open
-        container.classList.remove('notebook-navigator-mobile');
-        container.classList.remove('notebook-navigator-android');
-        container.classList.remove('notebook-navigator-obsidian-1-11-plus-android');
-        container.classList.remove('notebook-navigator-ios');
-        container.classList.remove('notebook-navigator-obsidian-1-11-plus-ios');
         this.root?.unmount();
-        // Ensure container is cleared after unmount
-        container.empty();
+        teardownNotebookNavigatorViewContainer(container);
         this.root = null;
     }
 

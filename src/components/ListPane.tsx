@@ -161,7 +161,8 @@ export const ListPane = React.memo(
         const uiState = useUIState();
         const uiDispatch = useUIDispatch();
         const isVerticalDualPane = !uiState.singlePane && settings.dualPaneOrientation === 'vertical';
-        const shouldRenderCalendarOverlay = showCalendar && isVerticalDualPane;
+        const calendarPlacement = settings.calendarPlacement;
+        const shouldRenderCalendarOverlay = calendarPlacement === 'left-panel' && showCalendar && isVerticalDualPane;
         const shortcuts = useShortcuts();
         const { addSearchShortcut, removeSearchShortcut, searchShortcutsByName } = shortcuts;
         const listPaneRef = useRef<HTMLDivElement>(null);

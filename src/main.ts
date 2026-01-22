@@ -32,6 +32,7 @@ import {
     LocalStorageKeys,
     MAX_PANE_TRANSITION_DURATION_MS,
     MIN_PANE_TRANSITION_DURATION_MS,
+    NOTEBOOK_NAVIGATOR_CALENDAR_VIEW,
     NOTEBOOK_NAVIGATOR_VIEW,
     STORAGE_KEYS,
     type DualPaneOrientation,
@@ -53,6 +54,7 @@ import { ExternalIconProviderId } from './services/icons/external/providerRegist
 import type { NavigateToFolderOptions } from './hooks/useNavigatorReveal';
 import ReleaseCheckService, { type ReleaseUpdateNotice } from './services/ReleaseCheckService';
 import { NotebookNavigatorView } from './view/NotebookNavigatorView';
+import { NotebookNavigatorCalendarView } from './view/NotebookNavigatorCalendarView';
 import { getDefaultDateFormat, getDefaultTimeFormat } from './i18n';
 import { localStorage, LOCALSTORAGE_VERSION } from './utils/localStorage';
 import { NotebookNavigatorAPI } from './api/NotebookNavigatorAPI';
@@ -80,7 +82,9 @@ import registerWorkspaceEvents from './services/workspace/registerWorkspaceEvent
 import type { RevealFileOptions } from './hooks/useNavigatorReveal';
 import type { FolderAppearance } from './hooks/useListPaneAppearance';
 import {
+    type CalendarPlacement,
     type CalendarWeeksToShow,
+    isCalendarPlacement,
     isSettingSyncMode,
     isSortOption,
     isTagSortOrder,
@@ -204,6 +208,9 @@ export default class NotebookNavigatorPlugin extends Plugin implements ISettings
     // Track whether legacy scales still need to be kept in persisted settings until this device migrates them
     private shouldPersistDesktopScale = false;
     private shouldPersistMobileScale = false;
+    private hasWorkspaceLayoutReady = false;
+    private lastCalendarPlacement: CalendarPlacement | null = null;
+    private calendarPlacementRequestId = 0;
     private hiddenFolderCacheKey: string | null = null;
     private hiddenTagCacheKey: string | null = null;
     private hiddenFileNamesCacheKey: string | null = null;
@@ -314,6 +321,7 @@ export default class NotebookNavigatorPlugin extends Plugin implements ISettings
             sanitizeNavIndentSetting: value => this.sanitizeNavIndentSetting(value),
             sanitizeNavItemHeightSetting: value => this.sanitizeNavItemHeightSetting(value),
             sanitizeCalendarWeeksToShowSetting: value => this.sanitizeCalendarWeeksToShowSetting(value),
+            sanitizeCalendarPlacementSetting: value => this.sanitizeCalendarPlacementSetting(value),
             sanitizeCompactItemHeightSetting: value => this.sanitizeCompactItemHeightSetting(value),
             defaultUXPreferences: getDefaultUXPreferences(),
             isUXPreferencesRecord: value => this.isUXPreferencesRecord(value),
@@ -545,6 +553,10 @@ export default class NotebookNavigatorPlugin extends Plugin implements ISettings
 
     private sanitizeNavItemHeightSetting(value: unknown): number {
         return this.sanitizeBoundedIntegerSetting(value, { min: 20, max: 28, fallback: DEFAULT_SETTINGS.navItemHeight });
+    }
+
+    private sanitizeCalendarPlacementSetting(value: unknown): CalendarPlacement {
+        return isCalendarPlacement(value) ? value : DEFAULT_SETTINGS.calendarPlacement;
     }
 
     private sanitizeCalendarWeeksToShowSetting(value: unknown): CalendarWeeksToShow {
@@ -911,6 +923,9 @@ export default class NotebookNavigatorPlugin extends Plugin implements ISettings
         this.registerView(NOTEBOOK_NAVIGATOR_VIEW, leaf => {
             return new NotebookNavigatorView(leaf, this);
         });
+        this.registerView(NOTEBOOK_NAVIGATOR_CALENDAR_VIEW, leaf => {
+            return new NotebookNavigatorCalendarView(leaf, this);
+        });
 
         // Register commands
         registerNavigatorCommands(this);
@@ -926,6 +941,7 @@ export default class NotebookNavigatorPlugin extends Plugin implements ISettings
         const shouldActivateOnStartup = isFirstLaunch;
 
         this.app.workspace.onLayoutReady(() => {
+            this.hasWorkspaceLayoutReady = true;
             // Execute startup tasks asynchronously to avoid blocking the layout
             runAsyncAction(async () => {
                 if (this.isUnloading) {
@@ -944,6 +960,8 @@ export default class NotebookNavigatorPlugin extends Plugin implements ISettings
 
                 // Trigger Style Settings plugin to parse our settings
                 this.app.workspace.trigger('parse-style-settings');
+
+                this.applyCalendarPlacementView({ force: true, reveal: false });
 
                 // Check for new GitHub releases if enabled, without blocking startup
                 if (this.settings.checkForUpdatesOnStart) {
@@ -1232,6 +1250,14 @@ export default class NotebookNavigatorPlugin extends Plugin implements ISettings
             settingId: 'calendarWeeksToShow',
             localStorageKey: this.keys.calendarWeeksToShowKey,
             nextValue: weeks
+        });
+    }
+
+    public setCalendarPlacement(placement: CalendarPlacement): void {
+        this.updateSettingAndMirrorToLocalStorage({
+            settingId: 'calendarPlacement',
+            localStorageKey: this.keys.calendarPlacementKey,
+            nextValue: placement
         });
     }
 
@@ -1932,6 +1958,45 @@ export default class NotebookNavigatorPlugin extends Plugin implements ISettings
         this.onSettingsUpdate();
     }
 
+    private applyCalendarPlacementView(options: { force?: boolean; reveal?: boolean } = {}): void {
+        if (this.isUnloading || !this.hasWorkspaceLayoutReady) {
+            return;
+        }
+
+        const coordinator = this.workspaceCoordinator;
+        if (!coordinator) {
+            return;
+        }
+
+        const nextPlacement = this.settings.calendarPlacement;
+        const previousPlacement = this.lastCalendarPlacement;
+        const force = options.force ?? false;
+
+        if (!force && previousPlacement === nextPlacement) {
+            return;
+        }
+
+        this.lastCalendarPlacement = nextPlacement;
+        const requestId = ++this.calendarPlacementRequestId;
+
+        if (nextPlacement === 'right-panel') {
+            const reveal = options.reveal ?? false;
+            runAsyncAction(() =>
+                coordinator.ensureCalendarViewInRightSidebar({
+                    reveal,
+                    shouldContinue: () =>
+                        !this.isUnloading &&
+                        this.hasWorkspaceLayoutReady &&
+                        this.calendarPlacementRequestId === requestId &&
+                        this.settings.calendarPlacement === 'right-panel'
+                })
+            );
+            return;
+        }
+
+        coordinator.detachCalendarViewLeaves();
+    }
+
     /**
      * Removes unused metadata entries from settings and saves
      */
@@ -1982,6 +2047,9 @@ export default class NotebookNavigatorPlugin extends Plugin implements ISettings
                 // Silently ignore errors from settings update callbacks
             }
         });
+
+        const shouldRevealCalendarView = this.lastCalendarPlacement !== 'right-panel' && this.settings.calendarPlacement === 'right-panel';
+        this.applyCalendarPlacementView({ reveal: shouldRevealCalendarView });
     }
 
     /**

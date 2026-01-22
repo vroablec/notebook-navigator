@@ -572,6 +572,7 @@ export const STRINGS_ZH_TW = {
     // Plugin UI
     plugin: {
         viewName: '筆記本導覽器',
+        calendarViewName: '日曆',
         ribbonTooltip: '筆記本導覽器',
         revealInNavigator: '在筆記本導覽器中定位'
     },
@@ -905,6 +906,14 @@ export const STRINGS_ZH_TW = {
             pinRecentNotesWithShortcuts: {
                 name: '將最近筆記與捷徑一起釘選',
                 desc: '釘選捷徑時包含最近筆記。'
+            },
+            calendarPlacement: {
+                name: '日曆位置',
+                desc: '在 Navigator 或右側邊欄中顯示。',
+                options: {
+                    leftPanel: 'Navigator',
+                    rightPanel: '右側邊欄'
+                }
             },
             calendarLocale: {
                 name: '日曆語言',

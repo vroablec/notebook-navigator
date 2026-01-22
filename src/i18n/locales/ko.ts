@@ -573,6 +573,7 @@ export const STRINGS_KO = {
     // Plugin UI
     plugin: {
         viewName: 'Notebook Navigator', // Name shown in the view header/tab (English: Notebook Navigator)
+        calendarViewName: '캘린더', // Name shown in the view header/tab (English: Calendar)
         ribbonTooltip: 'Notebook Navigator', // Tooltip for the ribbon icon in the left sidebar (English: Notebook Navigator)
         revealInNavigator: 'Notebook Navigator에서 표시' // Context menu item to reveal a file in the navigator (English: Reveal in Notebook Navigator)
     },
@@ -907,6 +908,14 @@ export const STRINGS_KO = {
             pinRecentNotesWithShortcuts: {
                 name: '바로가기와 함께 최근 노트 고정',
                 desc: '바로가기를 고정할 때 최근 노트를 포함합니다.'
+            },
+            calendarPlacement: {
+                name: '캘린더 위치',
+                desc: 'Navigator 또는 오른쪽 사이드바에 표시합니다.',
+                options: {
+                    leftPanel: 'Navigator',
+                    rightPanel: '오른쪽 사이드바'
+                }
             },
             calendarLocale: {
                 name: '지역',

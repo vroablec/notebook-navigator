@@ -44,6 +44,7 @@ export const SYNC_MODE_SETTING_IDS = [
     'navIndent',
     'navItemHeight',
     'navItemHeightScaleText',
+    'calendarPlacement',
     'calendarWeeksToShow',
     'compactItemHeight',
     'compactItemHeightScaleText',
@@ -88,6 +89,13 @@ export type ShortcutBadgeDisplayMode = 'index' | 'count' | 'none';
 
 /** Number of calendar week rows shown in the navigation pane */
 export type CalendarWeeksToShow = 1 | 2 | 3 | 4 | 5 | 6;
+
+/** Where the calendar is shown in the navigator UI. */
+export type CalendarPlacement = 'left-panel' | 'right-panel';
+
+export function isCalendarPlacement(value: unknown): value is CalendarPlacement {
+    return value === 'left-panel' || value === 'right-panel';
+}
 
 /** Source used for calendar notes in the navigation pane */
 export type CalendarIntegrationMode = 'daily-notes' | 'notebook-navigator';
@@ -187,6 +195,7 @@ export interface NotebookNavigatorSettings {
     recentNotesCount: number;
 
     // Calendar tab - Calendar
+    calendarPlacement: CalendarPlacement;
     calendarLocale: string;
     calendarWeeksToShow: CalendarWeeksToShow;
     calendarHighlightToday: boolean;

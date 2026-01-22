@@ -573,6 +573,7 @@ export const STRINGS_ID = {
     // Plugin UI
     plugin: {
         viewName: 'Notebook Navigator',
+        calendarViewName: 'Kalender',
         ribbonTooltip: 'Notebook Navigator',
         revealInNavigator: 'Tampilkan di Notebook Navigator'
     },
@@ -907,6 +908,14 @@ export const STRINGS_ID = {
             pinRecentNotesWithShortcuts: {
                 name: 'Sematkan catatan terbaru bersama pintasan',
                 desc: 'Sertakan catatan terbaru saat pintasan disematkan.'
+            },
+            calendarPlacement: {
+                name: 'Penempatan kalender',
+                desc: 'Tampilkan di Navigator atau sidebar kanan.',
+                options: {
+                    leftPanel: 'Navigator',
+                    rightPanel: 'Sidebar kanan'
+                }
             },
             calendarLocale: {
                 name: 'Bahasa',

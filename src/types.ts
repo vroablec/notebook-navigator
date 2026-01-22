@@ -30,6 +30,12 @@ import { App, WorkspaceLeaf } from 'obsidian';
 export const NOTEBOOK_NAVIGATOR_VIEW = 'notebook-navigator';
 
 /**
+ * Unique identifier for the Notebook Navigator calendar view type.
+ * Used by Obsidian to register and manage the right sidebar calendar view.
+ */
+export const NOTEBOOK_NAVIGATOR_CALENDAR_VIEW = 'notebook-navigator-calendar';
+
+/**
  * Special tag identifier for untagged notes
  * Using double underscore to avoid conflicts with real tags
  */
@@ -244,6 +250,7 @@ export interface LocalStorageKeys {
     navIndentKey: string;
     navItemHeightKey: string;
     navItemHeightScaleTextKey: string;
+    calendarPlacementKey: string;
     calendarWeeksToShowKey: string;
     compactItemHeightKey: string;
     compactItemHeightScaleTextKey: string;
@@ -290,6 +297,7 @@ export const STORAGE_KEYS: LocalStorageKeys = {
     navIndentKey: 'notebook-navigator-nav-indent',
     navItemHeightKey: 'notebook-navigator-nav-item-height',
     navItemHeightScaleTextKey: 'notebook-navigator-nav-item-height-scale-text',
+    calendarPlacementKey: 'notebook-navigator-calendar-placement',
     calendarWeeksToShowKey: 'notebook-navigator-calendar-weeks-to-show',
     compactItemHeightKey: 'notebook-navigator-compact-item-height',
     compactItemHeightScaleTextKey: 'notebook-navigator-compact-item-height-scale-text'

@@ -575,6 +575,7 @@ export const STRINGS_PL = {
     // Plugin UI
     plugin: {
         viewName: 'Notebook Navigator', // Name shown in the view header/tab (English: Notebook Navigator)
+        calendarViewName: 'Kalendarz', // Name shown in the view header/tab (English: Calendar)
         ribbonTooltip: 'Notebook Navigator', // Tooltip for the ribbon icon in the left sidebar (English: Notebook Navigator)
         revealInNavigator: 'Pokaż w Notebook Navigator' // Context menu item to reveal a file in the navigator (English: Reveal in Notebook Navigator)
     },
@@ -909,6 +910,14 @@ export const STRINGS_PL = {
             pinRecentNotesWithShortcuts: {
                 name: 'Przypnij ostatnie notatki razem ze skrótami',
                 desc: 'Dołącz ostatnie notatki podczas przypinania skrótów.'
+            },
+            calendarPlacement: {
+                name: 'Położenie kalendarza',
+                desc: 'Wyświetlaj w Navigator lub na prawym pasku bocznym.',
+                options: {
+                    leftPanel: 'Navigator',
+                    rightPanel: 'Prawy pasek boczny'
+                }
             },
             calendarLocale: {
                 name: 'Język',
