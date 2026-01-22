@@ -569,8 +569,8 @@ export class NotebookNavigatorSettingTab extends PluginSettingTab {
         // Define all settings tabs
         const tabs: SettingsPaneDefinition[] = [
             { id: 'general', label: strings.settings.sections.general, render: renderGeneralTab },
-            { id: 'navigation-pane', label: strings.settings.sections.navigationPane, render: renderNavigationPaneTab },
             { id: 'calendar', label: strings.settings.sections.calendar, render: renderCalendarTab },
+            { id: 'navigation-pane', label: strings.settings.sections.navigationPane, render: renderNavigationPaneTab },
             {
                 id: 'folders-tags',
                 label: strings.settings.sections.foldersAndTags,
