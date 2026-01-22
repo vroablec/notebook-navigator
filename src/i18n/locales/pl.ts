@@ -939,6 +939,10 @@ export const STRINGS_PL = {
                 name: 'Wyróżnij dzisiejszą datę',
                 desc: 'Pokaż czerwone kółko i pogrubiony tekst na dzisiejszej dacie.'
             },
+            calendarShowFeatureImage: {
+                name: 'Pokaż obraz wyróżniający',
+                desc: 'Wyświetlaj obrazy wyróżniające dla notatek w kalendarzu.'
+            },
             calendarShowWeekNumber: {
                 name: 'Pokaż numer tygodnia',
                 desc: 'Dodaj kolumnę z numerem tygodnia.'

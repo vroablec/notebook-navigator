@@ -935,6 +935,10 @@ export const STRINGS_ZH_TW = {
                 name: '醒目顯示今天日期',
                 desc: '在今天日期上顯示紅色圓圈和粗體文字。'
             },
+            calendarShowFeatureImage: {
+                name: '顯示特色圖片',
+                desc: '在日曆中顯示筆記的特色圖片。'
+            },
             calendarShowWeekNumber: {
                 name: '顯示週號',
                 desc: '在每行開頭顯示週號。'

@@ -939,6 +939,10 @@ export const STRINGS_NL = {
                 name: 'Datum van vandaag markeren',
                 desc: 'Toon een rode cirkel en vetgedrukte tekst op de datum van vandaag.'
             },
+            calendarShowFeatureImage: {
+                name: 'Uitgelichte afbeelding tonen',
+                desc: 'Toon uitgelichte afbeeldingen voor notities in de kalender.'
+            },
             calendarShowWeekNumber: {
                 name: 'Weeknummer tonen',
                 desc: 'Voeg een kolom toe met het weeknummer.'

@@ -935,6 +935,10 @@ export const STRINGS_ZH_CN = {
                 name: '高亮今天日期',
                 desc: '在今天日期上显示红色圆圈和加粗文本。'
             },
+            calendarShowFeatureImage: {
+                name: '显示特色图片',
+                desc: '在日历中显示笔记的特色图片。'
+            },
             calendarShowWeekNumber: {
                 name: '显示周号',
                 desc: '在每行开头显示周号。'

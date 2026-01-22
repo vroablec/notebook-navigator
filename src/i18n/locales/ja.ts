@@ -938,6 +938,10 @@ export const STRINGS_JA = {
                 name: '今日の日付を強調表示',
                 desc: '今日の日付に赤い円と太字のテキストを表示します。'
             },
+            calendarShowFeatureImage: {
+                name: 'アイキャッチ画像を表示',
+                desc: 'カレンダーでノートのアイキャッチ画像を表示します。'
+            },
             calendarShowWeekNumber: {
                 name: '週番号を表示',
                 desc: '週番号の列を追加します。'

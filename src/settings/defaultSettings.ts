@@ -109,6 +109,7 @@ export const DEFAULT_SETTINGS: NotebookNavigatorSettings = {
     calendarLocale: 'system-default',
     calendarWeeksToShow: 1,
     calendarHighlightToday: true,
+    calendarShowFeatureImage: true,
     calendarShowWeekNumber: false,
     calendarShowQuarter: false,
     calendarConfirmBeforeCreate: true,

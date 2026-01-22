@@ -199,6 +199,7 @@ export interface NotebookNavigatorSettings {
     calendarLocale: string;
     calendarWeeksToShow: CalendarWeeksToShow;
     calendarHighlightToday: boolean;
+    calendarShowFeatureImage: boolean;
     calendarShowWeekNumber: boolean;
     calendarShowQuarter: boolean;
     calendarConfirmBeforeCreate: boolean;

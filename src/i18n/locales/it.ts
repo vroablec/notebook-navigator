@@ -937,6 +937,10 @@ export const STRINGS_IT = {
                 name: 'Evidenzia la data di oggi',
                 desc: 'Mostra un cerchio rosso e testo in grassetto sulla data di oggi.'
             },
+            calendarShowFeatureImage: {
+                name: 'Mostra immagine in evidenza',
+                desc: 'Visualizza le immagini in evidenza delle note nel calendario.'
+            },
             calendarShowWeekNumber: {
                 name: 'Mostra numero settimana',
                 desc: 'Aggiungi una colonna con il numero della settimana.'

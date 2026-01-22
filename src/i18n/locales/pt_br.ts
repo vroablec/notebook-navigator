@@ -934,6 +934,10 @@ export const STRINGS_PT_BR = {
                 name: 'Destacar a data de hoje',
                 desc: 'Mostrar um círculo vermelho e texto em negrito na data de hoje.'
             },
+            calendarShowFeatureImage: {
+                name: 'Mostrar imagem de destaque',
+                desc: 'Mostrar imagens de destaque das notas no calendário.'
+            },
             calendarShowWeekNumber: {
                 name: 'Mostrar número da semana',
                 desc: 'Adicionar uma coluna com o número da semana.'

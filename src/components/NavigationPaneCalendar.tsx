@@ -564,6 +564,10 @@ export function NavigationPaneCalendar({ onWeekCountChange, layout = 'overlay', 
         // Force refresh when calendar-relevant content changes so feature-image keys reflect the latest metadata.
         void contentVersion;
 
+        if (!settings.calendarShowFeatureImage) {
+            return new Map<string, string>();
+        }
+
         if (!db) {
             return new Map<string, string>();
         }
@@ -588,7 +592,7 @@ export function NavigationPaneCalendar({ onWeekCountChange, layout = 'overlay', 
         }
 
         return keys;
-    }, [contentVersion, db, weeks]);
+    }, [contentVersion, db, settings.calendarShowFeatureImage, weeks]);
 
     useLayoutEffect(() => {
         if (weeks.length === 0) {
@@ -605,19 +609,41 @@ export function NavigationPaneCalendar({ onWeekCountChange, layout = 'overlay', 
     const hoverTooltipRef = useRef<HTMLDivElement | null>(null);
     const hoverTooltipAnchorRef = useRef<HTMLElement | null>(null);
 
-    useEffect(() => {
-        return () => {
-            // Always release object URLs on unmount to avoid leaking blobs.
-            const existing = featureImageUrlMapRef.current;
-            for (const entry of existing.values()) {
-                URL.revokeObjectURL(entry.url);
+    const clearFeatureImageUrls = useCallback((resetState: boolean) => {
+        const existing = featureImageUrlMapRef.current;
+        if (existing.size === 0) {
+            if (resetState) {
+                setFeatureImageUrls(previous => (Object.keys(previous).length === 0 ? previous : {}));
             }
-            existing.clear();
-        };
+            return;
+        }
+
+        for (const entry of existing.values()) {
+            URL.revokeObjectURL(entry.url);
+        }
+        existing.clear();
+
+        if (resetState) {
+            setFeatureImageUrls(previous => (Object.keys(previous).length === 0 ? previous : {}));
+        }
     }, []);
 
     useEffect(() => {
+        return () => {
+            // Always release object URLs on unmount to avoid leaking blobs.
+            clearFeatureImageUrls(false);
+        };
+    }, [clearFeatureImageUrls]);
+
+    useEffect(() => {
         let isActive = true;
+
+        if (!db || !settings.calendarShowFeatureImage) {
+            clearFeatureImageUrls(true);
+            return () => {
+                isActive = false;
+            };
+        }
 
         // Only days with a daily note AND a computed feature-image key participate in background image loading.
         const noteDays: { iso: string; file: TFile; key: string }[] = [];
@@ -635,16 +661,6 @@ export function NavigationPaneCalendar({ onWeekCountChange, layout = 'overlay', 
 
                 noteDays.push({ iso: day.iso, file: day.file, key: featureKey });
             }
-        }
-
-        if (!db) {
-            const existing = featureImageUrlMapRef.current;
-            for (const entry of existing.values()) {
-                URL.revokeObjectURL(entry.url);
-            }
-            existing.clear();
-            setFeatureImageUrls({});
-            return;
         }
 
         const previousMap = featureImageUrlMapRef.current;
@@ -709,7 +725,7 @@ export function NavigationPaneCalendar({ onWeekCountChange, layout = 'overlay', 
         return () => {
             isActive = false;
         };
-    }, [db, featureImageKeysByIso, weeks]);
+    }, [clearFeatureImageUrls, db, featureImageKeysByIso, settings.calendarShowFeatureImage, weeks]);
 
     /** Calculates and updates tooltip position relative to anchor element, handling viewport boundaries */
     const updateHoverTooltipPosition = useCallback(() => {

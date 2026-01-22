@@ -937,6 +937,10 @@ export const STRINGS_AR = {
                 name: 'تمييز تاريخ اليوم',
                 desc: 'إظهار دائرة حمراء ونص غامق على تاريخ اليوم.'
             },
+            calendarShowFeatureImage: {
+                name: 'عرض صورة الميزة',
+                desc: 'عرض صور الميزات للملاحظات في التقويم.'
+            },
             calendarShowWeekNumber: {
                 name: 'عرض رقم الأسبوع',
                 desc: 'إضافة عمود برقم الأسبوع.'

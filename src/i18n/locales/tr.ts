@@ -937,6 +937,10 @@ export const STRINGS_TR = {
                 name: 'Bugünün tarihini vurgula',
                 desc: 'Bugünün tarihinde kırmızı bir daire ve kalın metin göster.'
             },
+            calendarShowFeatureImage: {
+                name: 'Öne çıkan görseli göster',
+                desc: 'Takvimdeki notların öne çıkan görsellerini göster.'
+            },
             calendarShowWeekNumber: {
                 name: 'Hafta numarasını göster',
                 desc: 'Hafta numarasıyla bir sütun ekle.'

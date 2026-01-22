@@ -939,6 +939,10 @@ export const STRINGS_DE = {
                 name: 'Heutiges Datum hervorheben',
                 desc: 'Einen roten Kreis und fetten Text für das heutige Datum anzeigen.'
             },
+            calendarShowFeatureImage: {
+                name: 'Feature-Bild anzeigen',
+                desc: 'Feature-Bilder für Notizen im Kalender anzeigen.'
+            },
             calendarShowWeekNumber: {
                 name: 'Wochennummer anzeigen',
                 desc: 'Spalte mit der Wochennummer hinzufügen.'

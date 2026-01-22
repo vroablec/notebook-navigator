@@ -939,6 +939,10 @@ export const STRINGS_FR = {
                 name: "Mettre en évidence la date d'aujourd'hui",
                 desc: "Afficher un cercle rouge et du texte en gras sur la date d'aujourd'hui."
             },
+            calendarShowFeatureImage: {
+                name: "Afficher l'image mise en avant",
+                desc: 'Afficher les images mises en avant des notes dans le calendrier.'
+            },
             calendarShowWeekNumber: {
                 name: 'Afficher le numéro de semaine',
                 desc: 'Ajouter une colonne avec le numéro de semaine.'

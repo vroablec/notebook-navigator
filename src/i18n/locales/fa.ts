@@ -937,6 +937,10 @@ export const STRINGS_FA = {
                 name: 'برجسته کردن تاریخ امروز',
                 desc: 'نمایش دایره قرمز و متن پررنگ در تاریخ امروز.'
             },
+            calendarShowFeatureImage: {
+                name: 'نمایش تصویر شاخص',
+                desc: 'نمایش تصاویر شاخص یادداشت‌ها در تقویم.'
+            },
             calendarShowWeekNumber: {
                 name: 'نمایش شماره هفته',
                 desc: 'افزودن ستون شماره هفته.'

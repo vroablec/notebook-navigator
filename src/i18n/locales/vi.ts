@@ -937,6 +937,10 @@ export const STRINGS_VI = {
                 name: 'Làm nổi bật ngày hôm nay',
                 desc: 'Hiển thị vòng tròn đỏ và chữ in đậm cho ngày hôm nay.'
             },
+            calendarShowFeatureImage: {
+                name: 'Hiển thị hình ảnh nổi bật',
+                desc: 'Hiển thị hình ảnh nổi bật của ghi chú trong lịch.'
+            },
             calendarShowWeekNumber: {
                 name: 'Hiển thị số tuần',
                 desc: 'Thêm cột với số tuần.'

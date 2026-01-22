@@ -937,6 +937,10 @@ export const STRINGS_EN = {
                 name: "Highlight today's date",
                 desc: "Show a red circle and bold text on today's date."
             },
+            calendarShowFeatureImage: {
+                name: 'Show feature image',
+                desc: 'Display feature images for notes in the calendar.'
+            },
             calendarShowWeekNumber: {
                 name: 'Show week number',
                 desc: 'Add a column with the week number.'
