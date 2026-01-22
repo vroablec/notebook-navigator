@@ -455,7 +455,7 @@
     padding: 8px;
     display: flex;
     flex-direction: column;
-    gap: 6px;
+    gap: 0;
     border-radius: 10px;
     background: var(--background-secondary);
     border: 1px solid var(--background-modifier-border);
@@ -469,13 +469,6 @@
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
-}
-
-.nn-navigation-calendar-hover-tooltip-text {
-    white-space: pre-line;
-    font-size: 12px;
-    line-height: 1.25;
-    color: var(--text-normal);
 }
 
 /* ========================================================================

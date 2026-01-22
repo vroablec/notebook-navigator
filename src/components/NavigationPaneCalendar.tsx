@@ -28,6 +28,7 @@ import { useSettingsState } from '../context/SettingsContext';
 import { useFileCacheOptional } from '../context/StorageContext';
 import { getDBInstanceOrNull } from '../storage/fileOperations';
 import { runAsyncAction } from '../utils/async';
+import { DateUtils } from '../utils/dateUtils';
 import {
     createDailyNote,
     getDailyNoteFile,
@@ -61,6 +62,15 @@ import { getTooltipPlacement } from '../utils/domUtils';
 import { resolveUXIconForMenu } from '../utils/uxIcons';
 import type { CalendarWeeksToShow } from '../settings/types';
 
+interface CalendarHoverTooltipData {
+    imageUrl: string | null;
+    title: string;
+    dateTimestamp: number;
+    previewPath: string | null;
+    previewEnabled: boolean;
+    showDate: boolean;
+}
+
 interface CalendarDay {
     date: MomentInstance;
     iso: string;
@@ -84,10 +94,9 @@ interface CalendarDayButtonProps {
     onContextMenu: (event: React.MouseEvent<HTMLButtonElement>) => void;
     style: React.CSSProperties | undefined;
     tooltipEnabled: boolean;
-    tooltipImageUrl: string | null;
-    tooltipText: string;
+    tooltipData: CalendarHoverTooltipData;
     onHideTooltip: (element: HTMLElement) => void;
-    onShowTooltip: (element: HTMLElement, tooltipText: string, tooltipImageUrl: string | null) => void;
+    onShowTooltip: (element: HTMLElement, tooltipData: CalendarHoverTooltipData) => void;
 }
 
 /** Renders a calendar day button with hover tooltip support on desktop */
@@ -100,12 +109,23 @@ function CalendarDayButton({
     onContextMenu,
     style,
     tooltipEnabled,
-    tooltipImageUrl,
-    tooltipText,
+    tooltipData,
     onHideTooltip,
     onShowTooltip
 }: CalendarDayButtonProps) {
     const buttonRef = useRef<HTMLButtonElement | null>(null);
+    const { dateTimestamp, imageUrl, previewEnabled, previewPath, showDate, title } = tooltipData;
+    const tooltipDataMemo = useMemo<CalendarHoverTooltipData>(
+        () => ({
+            imageUrl,
+            title,
+            dateTimestamp,
+            previewPath,
+            previewEnabled,
+            showDate
+        }),
+        [dateTimestamp, imageUrl, previewEnabled, previewPath, showDate, title]
+    );
 
     const handleMouseEnter = useCallback(() => {
         if (isMobile || !tooltipEnabled) {
@@ -117,8 +137,8 @@ function CalendarDayButton({
             return;
         }
 
-        onShowTooltip(element, tooltipText, tooltipImageUrl);
-    }, [isMobile, onShowTooltip, tooltipEnabled, tooltipImageUrl, tooltipText]);
+        onShowTooltip(element, tooltipDataMemo);
+    }, [isMobile, onShowTooltip, tooltipDataMemo, tooltipEnabled]);
 
     const handleMouseLeave = useCallback(() => {
         const element = buttonRef.current;
@@ -156,8 +176,8 @@ function CalendarDayButton({
             return;
         }
 
-        onShowTooltip(element, tooltipText, tooltipImageUrl);
-    }, [isMobile, onShowTooltip, tooltipEnabled, tooltipImageUrl, tooltipText]);
+        onShowTooltip(element, tooltipDataMemo);
+    }, [isMobile, onShowTooltip, tooltipDataMemo, tooltipEnabled]);
 
     return (
         <button
@@ -251,13 +271,31 @@ export interface NavigationPaneCalendarProps {
 
 interface CalendarHoverTooltipState {
     anchorEl: HTMLElement;
-    imageUrl: string | null;
-    text: string;
+    tooltipData: CalendarHoverTooltipData;
 }
 
 type CustomCalendarNoteKind = CalendarNoteKind;
 type CustomCalendarNoteConfig = CalendarNoteConfig;
 const MAX_CUSTOM_CALENDAR_LOOKUP_CACHE_ENTRIES = 512;
+
+function parseCalendarBasenameTitle(basename: string): { title: string; showDate: boolean } {
+    const trimmed = basename.trim();
+    if (!trimmed) {
+        return { title: '', showDate: false };
+    }
+
+    const match = /^(\d{8}|\d{4}-\d{2}-\d{2})(?:[ \t]+(.+))?$/u.exec(trimmed);
+    if (!match) {
+        return { title: trimmed, showDate: false };
+    }
+
+    const suffix = match[2]?.trim() ?? '';
+    if (suffix) {
+        return { title: suffix, showDate: true };
+    }
+
+    return { title: '', showDate: false };
+}
 
 export function NavigationPaneCalendar({ onWeekCountChange, layout = 'overlay', weeksToShowOverride }: NavigationPaneCalendarProps) {
     const { app, fileSystemOps, isMobile } = useServices();
@@ -276,6 +314,7 @@ export function NavigationPaneCalendar({ onWeekCountChange, layout = 'overlay', 
     const [vaultVersion, setVaultVersion] = useState(0);
     const [contentVersion, setContentVersion] = useState(0);
     const visibleDailyNotePathsRef = useRef<Set<string>>(new Set());
+    const hoverTooltipStateRef = useRef<CalendarHoverTooltipState | null>(null);
 
     useEffect(() => {
         if (typeof window === 'undefined') {
@@ -336,6 +375,7 @@ export function NavigationPaneCalendar({ onWeekCountChange, layout = 'overlay', 
                     return false;
                 }
                 return (
+                    change.changes.preview !== undefined ||
                     change.changes.featureImage !== undefined ||
                     change.changes.featureImageKey !== undefined ||
                     change.changes.featureImageStatus !== undefined
@@ -608,6 +648,17 @@ export function NavigationPaneCalendar({ onWeekCountChange, layout = 'overlay', 
     const [hoverTooltipStyle, setHoverTooltipStyle] = useState<React.CSSProperties | null>(null);
     const hoverTooltipRef = useRef<HTMLDivElement | null>(null);
     const hoverTooltipAnchorRef = useRef<HTMLElement | null>(null);
+    const lastHoverTooltipPreviewVisibleRef = useRef<boolean | null>(null);
+
+    const hoverTooltipPreviewText =
+        hoverTooltip && db && hoverTooltip.tooltipData.previewEnabled && hoverTooltip.tooltipData.previewPath
+            ? db.getCachedPreviewText(hoverTooltip.tooltipData.previewPath)
+            : '';
+    const shouldShowHoverTooltipPreview = hoverTooltipPreviewText.trim().length > 0;
+    const hoverTooltipDateText =
+        hoverTooltip && hoverTooltip.tooltipData.showDate
+            ? DateUtils.formatDate(hoverTooltip.tooltipData.dateTimestamp, settings.dateFormat)
+            : '';
 
     const clearFeatureImageUrls = useCallback((resetState: boolean) => {
         const existing = featureImageUrlMapRef.current;
@@ -727,6 +778,10 @@ export function NavigationPaneCalendar({ onWeekCountChange, layout = 'overlay', 
         };
     }, [clearFeatureImageUrls, db, featureImageKeysByIso, settings.calendarShowFeatureImage, weeks]);
 
+    useEffect(() => {
+        hoverTooltipStateRef.current = hoverTooltip;
+    }, [hoverTooltip]);
+
     /** Calculates and updates tooltip position relative to anchor element, handling viewport boundaries */
     const updateHoverTooltipPosition = useCallback(() => {
         if (!hoverTooltip) {
@@ -807,6 +862,22 @@ export function NavigationPaneCalendar({ onWeekCountChange, layout = 'overlay', 
         updateHoverTooltipPosition();
     }, [updateHoverTooltipPosition]);
 
+    useLayoutEffect(() => {
+        if (!hoverTooltip || isMobile) {
+            lastHoverTooltipPreviewVisibleRef.current = null;
+            return;
+        }
+
+        const previous = lastHoverTooltipPreviewVisibleRef.current;
+        lastHoverTooltipPreviewVisibleRef.current = shouldShowHoverTooltipPreview;
+
+        if (previous === null || previous === shouldShowHoverTooltipPreview) {
+            return;
+        }
+
+        updateHoverTooltipPosition();
+    }, [hoverTooltip, isMobile, shouldShowHoverTooltipPreview, updateHoverTooltipPosition]);
+
     useEffect(() => {
         if (!hoverTooltip) {
             return;
@@ -840,20 +911,49 @@ export function NavigationPaneCalendar({ onWeekCountChange, layout = 'overlay', 
         };
     }, [hoverTooltip, updateHoverTooltipPosition]);
 
-    const handleShowTooltip = useCallback((element: HTMLElement, tooltipText: string, tooltipImageUrl: string | null) => {
-        if (hoverTooltipAnchorRef.current !== element) {
-            hoverTooltipAnchorRef.current = element;
-            setHoverTooltipStyle(null);
-        }
-
-        setHoverTooltip(existing => {
-            if (existing && existing.anchorEl === element && existing.text === tooltipText && existing.imageUrl === tooltipImageUrl) {
-                return existing;
+    const handleShowTooltip = useCallback(
+        (element: HTMLElement, tooltipData: CalendarHoverTooltipData) => {
+            if (hoverTooltipAnchorRef.current !== element) {
+                hoverTooltipAnchorRef.current = element;
+                setHoverTooltipStyle(null);
             }
 
-            return { anchorEl: element, imageUrl: tooltipImageUrl, text: tooltipText };
-        });
-    }, []);
+            const existing = hoverTooltipStateRef.current;
+            const current = existing && existing.anchorEl === element ? existing.tooltipData : null;
+            const isUnchanged =
+                current !== null &&
+                current.imageUrl === tooltipData.imageUrl &&
+                current.title === tooltipData.title &&
+                current.dateTimestamp === tooltipData.dateTimestamp &&
+                current.previewPath === tooltipData.previewPath &&
+                current.previewEnabled === tooltipData.previewEnabled &&
+                current.showDate === tooltipData.showDate;
+
+            const previewPath = tooltipData.previewPath;
+            if (!isUnchanged && tooltipData.previewEnabled && previewPath && db) {
+                runAsyncAction(() => db.ensurePreviewTextLoaded(previewPath));
+            }
+
+            setHoverTooltip(existing => {
+                if (existing && existing.anchorEl === element) {
+                    const current = existing.tooltipData;
+                    if (
+                        current.imageUrl === tooltipData.imageUrl &&
+                        current.title === tooltipData.title &&
+                        current.dateTimestamp === tooltipData.dateTimestamp &&
+                        current.previewPath === tooltipData.previewPath &&
+                        current.previewEnabled === tooltipData.previewEnabled &&
+                        current.showDate === tooltipData.showDate
+                    ) {
+                        return existing;
+                    }
+                }
+
+                return { anchorEl: element, tooltipData };
+            });
+        },
+        [db]
+    );
 
     const handleHideTooltip = useCallback((element: HTMLElement) => {
         if (hoverTooltipAnchorRef.current === element) {
@@ -1292,13 +1392,26 @@ export function NavigationPaneCalendar({ onWeekCountChange, layout = 'overlay', 
                           }
                           role="tooltip"
                       >
-                          {hoverTooltip.imageUrl ? (
+                          {hoverTooltip.tooltipData.imageUrl ? (
                               <div
                                   className="nn-navigation-calendar-hover-tooltip-image"
-                                  style={{ backgroundImage: `url(${hoverTooltip.imageUrl})` }}
+                                  style={{ backgroundImage: `url(${hoverTooltip.tooltipData.imageUrl})` }}
                               />
                           ) : null}
-                          <div className="nn-navigation-calendar-hover-tooltip-text">{hoverTooltip.text}</div>
+                          <div className="nn-compact-file-text-content">
+                              <div
+                                  className="nn-file-name"
+                                  style={{ '--filename-rows': 2, height: 'auto', minHeight: 0 } as React.CSSProperties}
+                              >
+                                  {hoverTooltip.tooltipData.title}
+                              </div>
+                              {shouldShowHoverTooltipPreview ? (
+                                  <div className="nn-file-preview" style={{ '--preview-rows': 2 } as React.CSSProperties}>
+                                      {hoverTooltipPreviewText}
+                                  </div>
+                              ) : null}
+                              {hoverTooltipDateText ? <div className="nn-file-date">{hoverTooltipDateText}</div> : null}
+                          </div>
                       </div>,
                       document.body
                   )
@@ -1578,9 +1691,24 @@ export function NavigationPaneCalendar({ onWeekCountChange, layout = 'overlay', 
                                         : undefined;
 
                                     const ariaLabel = day.date.clone().locale(displayLocale).format('LL');
-                                    const tooltipText = day.title ? `${ariaLabel}\n${day.title}` : ariaLabel;
-                                    const tooltipAriaText = tooltipText.replace(/\n+/gu, ', ');
+                                    const dateTimestamp = day.date.toDate().getTime();
+                                    const basenameTitle = day.file ? parseCalendarBasenameTitle(day.file.basename) : null;
+                                    const tooltipTitleCandidate = day.title || basenameTitle?.title || '';
+                                    const tooltipTitle =
+                                        tooltipTitleCandidate.length > 0
+                                            ? tooltipTitleCandidate
+                                            : DateUtils.formatDate(dateTimestamp, settings.dateFormat);
+                                    const showDate = Boolean(day.title || basenameTitle?.showDate);
+                                    const tooltipAriaText = tooltipTitleCandidate ? `${ariaLabel}, ${tooltipTitleCandidate}` : ariaLabel;
                                     const tooltipEnabled = Boolean(day.file || featureImageUrl);
+                                    const tooltipData: CalendarHoverTooltipData = {
+                                        imageUrl: featureImageUrl,
+                                        title: tooltipTitle || ariaLabel,
+                                        dateTimestamp,
+                                        previewPath: day.file?.path ?? null,
+                                        previewEnabled: Boolean(day.file && day.file.extension === 'md'),
+                                        showDate
+                                    };
 
                                     return (
                                         <CalendarDayButton
@@ -1589,8 +1717,7 @@ export function NavigationPaneCalendar({ onWeekCountChange, layout = 'overlay', 
                                             ariaText={tooltipAriaText}
                                             style={style}
                                             tooltipEnabled={tooltipEnabled}
-                                            tooltipImageUrl={featureImageUrl}
-                                            tooltipText={tooltipText}
+                                            tooltipData={tooltipData}
                                             dayNumber={dayNumber}
                                             isMobile={isMobile}
                                             onShowTooltip={handleShowTooltip}
