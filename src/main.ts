@@ -1958,7 +1958,15 @@ export default class NotebookNavigatorPlugin extends Plugin implements ISettings
         this.onSettingsUpdate();
     }
 
-    private applyCalendarPlacementView(options: { force?: boolean; reveal?: boolean } = {}): void {
+    private isObsidianSettingsModalOpen(): boolean {
+        if (typeof document === 'undefined') {
+            return false;
+        }
+
+        return document.querySelector('.modal.mod-settings, .modal-container.mod-settings') !== null;
+    }
+
+    private applyCalendarPlacementView(options: { force?: boolean; reveal?: boolean; activate?: boolean } = {}): void {
         if (this.isUnloading || !this.hasWorkspaceLayoutReady) {
             return;
         }
@@ -1981,9 +1989,11 @@ export default class NotebookNavigatorPlugin extends Plugin implements ISettings
 
         if (nextPlacement === 'right-sidebar') {
             const reveal = options.reveal ?? false;
+            const activate = options.activate ?? reveal;
             runAsyncAction(() =>
                 coordinator.ensureCalendarViewInRightSidebar({
                     reveal,
+                    activate,
                     shouldContinue: () =>
                         !this.isUnloading &&
                         this.hasWorkspaceLayoutReady &&
@@ -2050,7 +2060,8 @@ export default class NotebookNavigatorPlugin extends Plugin implements ISettings
 
         const shouldRevealCalendarView =
             this.lastCalendarPlacement !== 'right-sidebar' && this.settings.calendarPlacement === 'right-sidebar';
-        this.applyCalendarPlacementView({ reveal: shouldRevealCalendarView });
+        const shouldActivateCalendarView = shouldRevealCalendarView && !this.isObsidianSettingsModalOpen();
+        this.applyCalendarPlacementView({ reveal: shouldRevealCalendarView, activate: shouldActivateCalendarView });
     }
 
     /**
