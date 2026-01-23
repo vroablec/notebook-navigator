@@ -2606,7 +2606,7 @@ body {
     appearance: none;
     border: none !important;
     background: transparent !important;
-    color: var(--nn-theme-calendar-header-color);
+    color: var(--nn-theme-foreground-muted);
     font: inherit;
     font-size: var(--nn-nav-calendar-today-font-size);
     font-weight: 600;
@@ -2626,9 +2626,12 @@ body {
         box-shadow 120ms ease;
 }
 
-.nn-navigation-calendar button.nn-navigation-calendar-nav-button,
-.nn-navigation-calendar button.nn-navigation-calendar-today {
+.nn-navigation-calendar button.nn-navigation-calendar-nav-button {
     color: var(--nn-theme-calendar-header-color);
+}
+
+.nn-navigation-calendar button.nn-navigation-calendar-today {
+    color: var(--nn-theme-foreground-muted);
 }
 
 /* Calendar month navigation icon sizing (ServiceIcon renders an SVG). */
