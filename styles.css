@@ -2812,7 +2812,7 @@ body {
     color: var(--nn-theme-calendar-day-in-month-color);
 }
 
-.nn-navigation-calendar[data-highlight-today='true'] .nn-navigation-calendar-day.is-today {
+.nn-navigation-calendar[data-highlight-today='true'] .nn-navigation-calendar-day.is-today:not(.has-daily-note):not(.has-feature-image) {
     color: var(--nn-theme-calendar-day-today-color);
 }
 
