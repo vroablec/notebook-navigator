@@ -77,10 +77,6 @@ export const STRINGS_TH = {
     navigationCalendar: {
         ariaLabel: 'ปฏิทิน',
         dailyNotesNotEnabled: 'ปลั๊กอินบันทึกรายวันไม่ได้เปิดใช้งาน',
-        promptDailyNoteTitle: {
-            title: 'ชื่อบันทึกรายวัน',
-            placeholder: 'ป้อนชื่อเรื่อง'
-        },
         createDailyNote: {
             title: 'บันทึกรายวันใหม่',
             message: 'ไฟล์ {filename} ไม่มีอยู่ คุณต้องการสร้างหรือไม่?',
@@ -977,8 +973,7 @@ export const STRINGS_TH = {
                 momentDescSuffix: '',
                 placeholder: 'YYYY/YYYYMMDD',
                 example: 'รูปแบบปัจจุบัน: {path}',
-                parsingError: 'แพทเทิร์นต้องสามารถฟอร์แมตและพาร์สกลับเป็นวันที่แบบเต็ม (ปี เดือน วัน) ได้',
-                titlePlaceholder: 'ชื่อโน้ต'
+                parsingError: 'แพทเทิร์นต้องสามารถฟอร์แมตและพาร์สกลับเป็นวันที่แบบเต็ม (ปี เดือน วัน) ได้'
             },
             calendarCustomWeekPattern: {
                 name: 'โน้ตรายสัปดาห์',
@@ -995,10 +990,6 @@ export const STRINGS_TH = {
             calendarCustomYearPattern: {
                 name: 'โน้ตรายปี',
                 parsingError: 'แพทเทิร์นต้องสามารถฟอร์แมตและพาร์สกลับเป็นปีแบบเต็ม (ปี) ได้'
-            },
-            calendarCustomPromptForTitle: {
-                name: 'ขอชื่อเรื่อง',
-                desc: 'ขอชื่อเรื่องเมื่อสร้างบันทึก ยอมรับชื่อเรื่องว่าง'
             },
             showTooltips: {
                 name: 'แสดง tooltips',

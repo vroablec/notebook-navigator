@@ -76,10 +76,6 @@ export const STRINGS_PL = {
     navigationCalendar: {
         ariaLabel: 'Kalendarz',
         dailyNotesNotEnabled: 'Wtyczka dziennych notatek nie jest włączona.',
-        promptDailyNoteTitle: {
-            title: 'Tytuł dziennej notatki',
-            placeholder: 'Wprowadź tytuł'
-        },
         createDailyNote: {
             title: 'Nowa dzienna notatka',
             message: 'Plik {filename} nie istnieje. Czy chcesz go utworzyć?',
@@ -979,8 +975,7 @@ export const STRINGS_PL = {
                 momentDescSuffix: '.',
                 placeholder: 'YYYY/YYYYMMDD',
                 example: 'Aktualna składnia: {path}',
-                parsingError: 'Wzorzec musi dać się sformatować i ponownie sparsować jako pełną datę (rok, miesiąc, dzień).',
-                titlePlaceholder: 'Tytuł notatki'
+                parsingError: 'Wzorzec musi dać się sformatować i ponownie sparsować jako pełną datę (rok, miesiąc, dzień).'
             },
             calendarCustomWeekPattern: {
                 name: 'Notatki tygodniowe',
@@ -997,10 +992,6 @@ export const STRINGS_PL = {
             calendarCustomYearPattern: {
                 name: 'Notatki roczne',
                 parsingError: 'Wzorzec musi dać się sformatować i ponownie sparsować jako pełny rok (rok).'
-            },
-            calendarCustomPromptForTitle: {
-                name: 'Pytaj o tytuł',
-                desc: 'Pytaj o tytuł podczas tworzenia notatek. Akceptuje puste tytuły.'
             },
             showTooltips: {
                 name: 'Pokaż podpowiedzi',

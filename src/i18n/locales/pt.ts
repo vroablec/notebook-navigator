@@ -77,10 +77,6 @@ export const STRINGS_PT = {
     navigationCalendar: {
         ariaLabel: 'Calendário',
         dailyNotesNotEnabled: 'O plugin de notas diárias não está ativado.',
-        promptDailyNoteTitle: {
-            title: 'Título da nota diária',
-            placeholder: 'Introduza o título'
-        },
         createDailyNote: {
             title: 'Nova nota diária',
             message: 'O ficheiro {filename} não existe. Deseja criá-lo?',
@@ -977,8 +973,7 @@ export const STRINGS_PT = {
                 momentDescSuffix: '.',
                 placeholder: 'YYYY/YYYYMMDD',
                 example: 'Sintaxe atual: {path}',
-                parsingError: 'O padrão deve ser formatado e analisado novamente como uma data completa (ano, mês, dia).',
-                titlePlaceholder: 'Título da nota'
+                parsingError: 'O padrão deve ser formatado e analisado novamente como uma data completa (ano, mês, dia).'
             },
             calendarCustomWeekPattern: {
                 name: 'Notas semanais',
@@ -996,10 +991,6 @@ export const STRINGS_PT = {
             calendarCustomYearPattern: {
                 name: 'Notas anuais',
                 parsingError: 'O padrão deve ser formatado e analisado novamente como um ano completo (ano).'
-            },
-            calendarCustomPromptForTitle: {
-                name: 'Pedir título',
-                desc: 'Pedir título ao criar notas. Aceita títulos vazios.'
             },
             showTooltips: {
                 name: 'Mostrar dicas',

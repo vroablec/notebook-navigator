@@ -77,10 +77,6 @@ export const STRINGS_IT = {
     navigationCalendar: {
         ariaLabel: 'Calendario',
         dailyNotesNotEnabled: 'Il plugin delle note giornaliere non è abilitato.',
-        promptDailyNoteTitle: {
-            title: 'Titolo nota giornaliera',
-            placeholder: 'Inserisci titolo'
-        },
         createDailyNote: {
             title: 'Nuova nota giornaliera',
             message: 'Il file {filename} non esiste. Vuoi crearlo?',
@@ -977,8 +973,7 @@ export const STRINGS_IT = {
                 momentDescSuffix: '.',
                 placeholder: 'YYYY/YYYYMMDD',
                 example: 'Sintassi attuale: {path}',
-                parsingError: 'Il modello deve poter essere formattato e rianalizzato come una data completa (anno, mese, giorno).',
-                titlePlaceholder: 'Titolo nota'
+                parsingError: 'Il modello deve poter essere formattato e rianalizzato come una data completa (anno, mese, giorno).'
             },
             calendarCustomWeekPattern: {
                 name: 'Note settimanali',
@@ -996,10 +991,6 @@ export const STRINGS_IT = {
             calendarCustomYearPattern: {
                 name: 'Note annuali',
                 parsingError: 'Il modello deve poter essere formattato e rianalizzato come un anno completo (anno).'
-            },
-            calendarCustomPromptForTitle: {
-                name: 'Richiedi titolo',
-                desc: 'Richiedi titolo durante la creazione di note. Accetta titoli vuoti.'
             },
             showTooltips: {
                 name: 'Mostra tooltip',

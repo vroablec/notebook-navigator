@@ -77,10 +77,6 @@ export const STRINGS_AR = {
     navigationCalendar: {
         ariaLabel: 'التقويم',
         dailyNotesNotEnabled: 'إضافة الملاحظات اليومية غير مفعلة.',
-        promptDailyNoteTitle: {
-            title: 'عنوان الملاحظة اليومية',
-            placeholder: 'أدخل العنوان'
-        },
         createDailyNote: {
             title: 'ملاحظة يومية جديدة',
             message: 'الملف {filename} غير موجود. هل تريد إنشاءه؟',
@@ -977,8 +973,7 @@ export const STRINGS_AR = {
                 momentDescSuffix: '.',
                 placeholder: 'YYYY/YYYYMMDD',
                 example: 'الصيغة الحالية: {path}',
-                parsingError: 'يجب أن يقوم النمط بتنسيق التاريخ ثم تحليله مرة أخرى كتاريخ كامل (السنة، الشهر، اليوم).',
-                titlePlaceholder: 'عنوان الملاحظة'
+                parsingError: 'يجب أن يقوم النمط بتنسيق التاريخ ثم تحليله مرة أخرى كتاريخ كامل (السنة، الشهر، اليوم).'
             },
             calendarCustomWeekPattern: {
                 name: 'الملاحظات الأسبوعية',
@@ -995,10 +990,6 @@ export const STRINGS_AR = {
             calendarCustomYearPattern: {
                 name: 'الملاحظات السنوية',
                 parsingError: 'يجب أن يقوم النمط بتنسيق السنة ثم تحليلها مرة أخرى كسنة كاملة (السنة).'
-            },
-            calendarCustomPromptForTitle: {
-                name: 'طلب العنوان',
-                desc: 'طلب العنوان عند إنشاء الملاحظات. يقبل العناوين الفارغة.'
             },
             showTooltips: {
                 name: 'إظهار التلميحات',

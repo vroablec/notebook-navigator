@@ -76,10 +76,6 @@ export const STRINGS_ZH_TW = {
     navigationCalendar: {
         ariaLabel: '導覽日曆',
         dailyNotesNotEnabled: '未啟用每日筆記。請在 Obsidian 設定 → 核心外掛中啟用每日筆記。',
-        promptDailyNoteTitle: {
-            title: '每日筆記標題',
-            placeholder: '輸入標題'
-        },
         createDailyNote: {
             title: '建立每日筆記',
             message: '每日筆記 {filename} 不存在。是否建立？',
@@ -975,8 +971,7 @@ export const STRINGS_ZH_TW = {
                 momentDescSuffix: ' 設定路徑。',
                 placeholder: 'YYYY/YYYYMMDD',
                 example: '目前語法：{path}',
-                parsingError: '模式必須能格式化並重新解析為完整日期（年、月、日）。',
-                titlePlaceholder: '筆記標題'
+                parsingError: '模式必須能格式化並重新解析為完整日期（年、月、日）。'
             },
             calendarCustomWeekPattern: {
                 name: '週記',
@@ -993,10 +988,6 @@ export const STRINGS_ZH_TW = {
             calendarCustomYearPattern: {
                 name: '年記',
                 parsingError: '模式必須能格式化並重新解析為完整年份（年）。'
-            },
-            calendarCustomPromptForTitle: {
-                name: '提示輸入標題',
-                desc: '建立筆記時提示輸入標題。允許空標題。'
             },
             showTooltips: {
                 name: '顯示工具提示',

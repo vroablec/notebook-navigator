@@ -77,10 +77,6 @@ export const STRINGS_TR = {
     navigationCalendar: {
         ariaLabel: 'Takvim',
         dailyNotesNotEnabled: 'Günlük notlar eklentisi etkin değil.',
-        promptDailyNoteTitle: {
-            title: 'Günlük not başlığı',
-            placeholder: 'Başlık girin'
-        },
         createDailyNote: {
             title: 'Yeni günlük not',
             message: '{filename} dosyası mevcut değil. Oluşturmak ister misiniz?',
@@ -977,8 +973,7 @@ export const STRINGS_TR = {
                 momentDescSuffix: ' kullanarak yolu biçimlendir.',
                 placeholder: 'YYYY/YYYYMMDD',
                 example: 'Geçerli sözdizimi: {path}',
-                parsingError: 'Desen, tam bir tarih (yıl, ay, gün) olarak biçimlendirilmeli ve tekrar ayrıştırılabilmelidir.',
-                titlePlaceholder: 'Not başlığı'
+                parsingError: 'Desen, tam bir tarih (yıl, ay, gün) olarak biçimlendirilmeli ve tekrar ayrıştırılabilmelidir.'
             },
             calendarCustomWeekPattern: {
                 name: 'Haftalık notlar',
@@ -995,10 +990,6 @@ export const STRINGS_TR = {
             calendarCustomYearPattern: {
                 name: 'Yıllık notlar',
                 parsingError: 'Desen, tam bir yıl (yıl) olarak biçimlendirilmeli ve tekrar ayrıştırılabilmelidir.'
-            },
-            calendarCustomPromptForTitle: {
-                name: 'Başlık iste',
-                desc: 'Not oluştururken başlık isteyin. Boş başlıkları kabul eder.'
             },
             showTooltips: {
                 name: 'İpuçlarını göster',

@@ -24,6 +24,14 @@ export const DEFAULT_CALENDAR_CUSTOM_MONTH_PATTERN = 'YYYY/YYYYMM';
 export const DEFAULT_CALENDAR_CUSTOM_QUARTER_PATTERN = 'YYYY/[Q]Q';
 export const DEFAULT_CALENDAR_CUSTOM_YEAR_PATTERN = 'YYYY';
 
+/**
+ * Removes the legacy `{title}` token from calendar patterns so it is not treated as a literal path segment.
+ * Calendar notes resolve by formatted date path only.
+ */
+function stripCalendarTitleToken(value: string): string {
+    return value.replace(/[ \t]*\{title\}/gu, '');
+}
+
 /** Appends .md extension to file name if not already present */
 export function ensureMarkdownFileName(value: string): string {
     const trimmed = value.trim();
@@ -53,9 +61,8 @@ export function normalizeCalendarCustomFilePattern(value: string, fallback: stri
         return fallback;
     }
 
-    const normalized = normalizePath(trimmed)
-        .replace(/ ?\{title\}/gu, '')
-        .replace(/\.md$/iu, '');
+    const withoutTitleToken = stripCalendarTitleToken(trimmed);
+    const normalized = normalizePath(withoutTitleToken).replace(/\.md$/iu, '');
     if (!normalized || normalized === '/' || normalized === '.') {
         return fallback;
     }
@@ -183,11 +190,6 @@ export function isCalendarCustomYearPatternValid(pattern: string, momentApi?: Mo
     return isCalendarCustomMomentPatternRoundTripValid(momentApi, normalized, ['2026-01-16', '2027-02-17'], ['YYYY']);
 }
 
-export interface CalendarCustomParsedNotePath {
-    iso: string;
-    title: string;
-}
-
 interface MomentFormatLike {
     format: (format?: string) => string;
 }
@@ -244,10 +246,8 @@ function isCalendarCustomMomentPatternRoundTripValid(
 }
 
 function normalizeCalendarCustomMomentPattern(pattern: string): string {
-    return pattern
-        .trim()
-        .replace(/\.md$/iu, '')
-        .replace(/ ?\{title\}/gu, '');
+    // Pattern validators and formatters operate on the date pattern only; `{title}` is not supported.
+    return stripCalendarTitleToken(pattern.trim()).replace(/\.md$/iu, '');
 }
 
 function isCalendarCustomDatePatternValidStatic(pattern: string): boolean {
@@ -270,75 +270,4 @@ export function createCalendarCustomDateFormatter(pattern: string): (date: Momen
     }
 
     return (date: MomentFormatLike) => date.format(normalized);
-}
-
-function stripMarkdownExtension(value: string): string | null {
-    return /\.md$/iu.test(value) ? value.replace(/\.md$/iu, '') : null;
-}
-
-function tryParseCalendarCustomMoment(momentApi: MomentParseApi, input: string, format: string): string | null {
-    const parsed = momentApi(input, format, true);
-    return parsed.isValid() ? parsed.format('YYYY-MM-DD') : null;
-}
-
-/**
- * Creates a parser for calendar note paths (relative to the configured root folder) that extracts ISO dates and
- * optional title suffixes.
- */
-export function createCalendarCustomNotePathParser(
-    momentApi: MomentParseApi,
-    datePattern: string
-): ((relativePath: string) => CalendarCustomParsedNotePath | null) | null {
-    const trimmedPattern = normalizeCalendarCustomMomentPattern(datePattern);
-    if (!trimmedPattern || !isCalendarCustomDatePatternValid(trimmedPattern, momentApi)) {
-        return null;
-    }
-
-    const format = trimmedPattern;
-
-    return (relativePath: string): CalendarCustomParsedNotePath | null => {
-        const withoutExt = stripMarkdownExtension(relativePath);
-        if (!withoutExt) {
-            return null;
-        }
-
-        const directIso = tryParseCalendarCustomMoment(momentApi, withoutExt, format);
-        if (directIso) {
-            return { iso: directIso, title: '' };
-        }
-
-        const slashIndex = withoutExt.lastIndexOf('/');
-        const folderPrefix = slashIndex === -1 ? '' : withoutExt.slice(0, slashIndex + 1);
-        const filePart = slashIndex === -1 ? withoutExt : withoutExt.slice(slashIndex + 1);
-
-        const whitespacePattern = /[ \t]+/gu;
-        const matches = [...filePart.matchAll(whitespacePattern)];
-        for (let index = matches.length - 1; index >= 0; index--) {
-            const match = matches[index];
-            const start = match.index;
-            if (start === undefined) {
-                continue;
-            }
-
-            const title = filePart.slice(start + match[0].length).trim();
-            if (!title) {
-                continue;
-            }
-
-            const candidateFile = filePart.slice(0, start);
-            if (!candidateFile) {
-                continue;
-            }
-
-            const candidatePath = `${folderPrefix}${candidateFile}`;
-            const iso = tryParseCalendarCustomMoment(momentApi, candidatePath, format);
-            if (!iso) {
-                continue;
-            }
-
-            return { iso, title };
-        }
-
-        return null;
-    };
 }

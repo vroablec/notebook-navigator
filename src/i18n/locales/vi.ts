@@ -77,10 +77,6 @@ export const STRINGS_VI = {
     navigationCalendar: {
         ariaLabel: 'Lịch',
         dailyNotesNotEnabled: 'Plugin ghi chú hàng ngày chưa được bật.',
-        promptDailyNoteTitle: {
-            title: 'Tiêu đề ghi chú hàng ngày',
-            placeholder: 'Nhập tiêu đề'
-        },
         createDailyNote: {
             title: 'Ghi chú hàng ngày mới',
             message: 'Tệp {filename} không tồn tại. Bạn có muốn tạo không?',
@@ -977,8 +973,7 @@ export const STRINGS_VI = {
                 momentDescSuffix: '.',
                 placeholder: 'YYYY/YYYYMMDD',
                 example: 'Cú pháp hiện tại: {path}',
-                parsingError: 'Mẫu phải có thể định dạng và phân tích lại thành một ngày đầy đủ (năm, tháng, ngày).',
-                titlePlaceholder: 'Tiêu đề ghi chú'
+                parsingError: 'Mẫu phải có thể định dạng và phân tích lại thành một ngày đầy đủ (năm, tháng, ngày).'
             },
             calendarCustomWeekPattern: {
                 name: 'Ghi chú hàng tuần',
@@ -995,10 +990,6 @@ export const STRINGS_VI = {
             calendarCustomYearPattern: {
                 name: 'Ghi chú hàng năm',
                 parsingError: 'Mẫu phải có thể định dạng và phân tích lại thành một năm đầy đủ (năm).'
-            },
-            calendarCustomPromptForTitle: {
-                name: 'Yêu cầu tiêu đề',
-                desc: 'Yêu cầu tiêu đề khi tạo ghi chú. Chấp nhận tiêu đề trống.'
             },
             showTooltips: {
                 name: 'Hiện chú thích',

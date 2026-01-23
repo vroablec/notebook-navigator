@@ -216,7 +216,6 @@ export interface NotebookNavigatorSettings {
     calendarCustomQuarterPattern: string;
     calendarCustomYearEnabled: boolean;
     calendarCustomYearPattern: string;
-    calendarCustomPromptForTitle: boolean;
 
     // Navigation pane tab - Appearance
     colorIconOnly: boolean;

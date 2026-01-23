@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Platform, TFile, TFolder, normalizePath, type App } from 'obsidian';
+import { TFile, TFolder, normalizePath, type App } from 'obsidian';
 import { strings } from '../i18n';
 import type { NotebookNavigatorSettings } from '../settings/types';
 import {
@@ -35,14 +35,7 @@ import {
     normalizeCalendarVaultFolderPath,
     splitCalendarCustomPattern
 } from './calendarCustomNotePatterns';
-import { stripForbiddenNameCharactersAllPlatforms, stripForbiddenNameCharactersWindows } from './fileNameUtils';
 import type { MomentApi, MomentInstance } from './moment';
-
-export interface CalendarNoteIndexEntry {
-    file: TFile;
-    title: string;
-    mtime: number;
-}
 
 export type CalendarNoteKind = 'day' | 'week' | 'month' | 'quarter' | 'year';
 
@@ -92,54 +85,6 @@ export function getCalendarNoteConfig(kind: CalendarNoteKind, settings: Notebook
     }
 }
 
-function stripMarkdownExtension(fileName: string): string | null {
-    return /\.md$/iu.test(fileName) ? fileName.replace(/\.md$/iu, '') : null;
-}
-
-function parseCalendarNoteTitleSuffix(baseName: string, filePrefix: string): string | null {
-    if (baseName === filePrefix) {
-        return '';
-    }
-
-    if (!baseName.startsWith(filePrefix)) {
-        return null;
-    }
-
-    const nextChar = baseName[filePrefix.length];
-    if (!nextChar || !/[\t ]/u.test(nextChar)) {
-        return null;
-    }
-
-    return baseName.slice(filePrefix.length).trim();
-}
-
-function findBestMatchingCalendarNoteInFolder(folder: TFolder, filePrefix: string): CalendarNoteIndexEntry | null {
-    let bestEntry: CalendarNoteIndexEntry | null = null;
-
-    for (const child of folder.children) {
-        if (!(child instanceof TFile) || child.extension !== 'md') {
-            continue;
-        }
-
-        const baseName = stripMarkdownExtension(child.name);
-        if (!baseName) {
-            continue;
-        }
-
-        const title = parseCalendarNoteTitleSuffix(baseName, filePrefix);
-        if (title === null) {
-            continue;
-        }
-
-        const mtime = child.stat?.mtime ?? 0;
-        if (!bestEntry || mtime > bestEntry.mtime) {
-            bestEntry = { file: child, title, mtime };
-        }
-    }
-
-    return bestEntry;
-}
-
 export function buildCustomCalendarMomentPattern(calendarCustomFilePattern: string, fallbackPattern?: string): string {
     const { folderPattern, filePattern } = splitCalendarCustomPattern(calendarCustomFilePattern, fallbackPattern);
     return folderPattern ? `${folderPattern}/${filePattern}` : filePattern;
@@ -151,7 +96,6 @@ export function buildCustomCalendarFilePathForPattern(
         calendarCustomRootFolder: string;
     },
     calendarCustomFilePattern: string,
-    title: string,
     fallbackPattern?: string
 ): { folderPath: string; fileName: string; filePath: string; formattedFilePattern: string } {
     const customRootFolder = normalizeCalendarCustomRootFolder(settings.calendarCustomRootFolder);
@@ -168,54 +112,14 @@ export function buildCustomCalendarFilePathForPattern(
     const folderPath = normalizeCalendarVaultFolderPath(rawFolderPath || '/');
 
     const formattedFilePattern = fileFormatter(date).trim();
-    const titleSuffix = title ? ` ${title}` : '';
-    const fileName = ensureMarkdownFileName(`${formattedFilePattern}${titleSuffix}`.trim());
+    const fileName = ensureMarkdownFileName(formattedFilePattern);
     const filePath = folderPath === '/' ? fileName : normalizePath(`${folderPath}/${fileName}`);
 
     return { folderPath, fileName, filePath, formattedFilePattern };
 }
 
-export function resolveExistingCustomCalendarNote(params: {
-    app: App;
-    date: MomentInstance;
-    settings: {
-        calendarCustomRootFolder: string;
-    };
-    calendarCustomFilePattern: string;
-    fallbackPattern?: string;
-    allowTitleSuffixMatch?: boolean;
-}): CalendarNoteIndexEntry | null {
-    const { folderPath, filePath, formattedFilePattern } = buildCustomCalendarFilePathForPattern(
-        params.date,
-        params.settings,
-        params.calendarCustomFilePattern,
-        '',
-        params.fallbackPattern
-    );
-
-    if (!formattedFilePattern || !filePath) {
-        return null;
-    }
-
-    const direct = params.app.vault.getAbstractFileByPath(filePath);
-    if (direct instanceof TFile) {
-        return { file: direct, title: '', mtime: direct.stat?.mtime ?? 0 };
-    }
-
-    const folder = folderPath === '/' ? params.app.vault.getRoot() : params.app.vault.getAbstractFileByPath(folderPath);
-    if (!(folder instanceof TFolder)) {
-        return null;
-    }
-
-    if (params.allowTitleSuffixMatch === false) {
-        return null;
-    }
-
-    return findBestMatchingCalendarNoteInFolder(folder, formattedFilePattern);
-}
-
 /** Creates nested folders recursively if they don't exist, returns final folder or null when a path segment is not a folder. */
-export async function ensureCalendarFolderExists(app: App, folderPath: string): Promise<TFolder | null> {
+async function ensureCalendarFolderExists(app: App, folderPath: string): Promise<TFolder | null> {
     if (folderPath === '/' || !folderPath) {
         return app.vault.getRoot();
     }
@@ -243,17 +147,21 @@ export async function ensureCalendarFolderExists(app: App, folderPath: string): 
     return folder instanceof TFolder ? folder : null;
 }
 
-/** Strips forbidden filename characters from calendar note title based on platform. */
-export function sanitizeCalendarTitle(rawTitle: string): string {
-    const trimmed = rawTitle.trim();
-    if (!trimmed) {
-        return '';
+function getCalendarNoteBaseName(fileName: string): string | null {
+    const baseName = fileName.replace(/\.md$/iu, '').trim();
+    return baseName.length > 0 ? baseName : null;
+}
+
+export async function createCalendarMarkdownFile(app: App, folderPath: string, fileName: string): Promise<TFile> {
+    const baseName = getCalendarNoteBaseName(fileName);
+    if (!baseName) {
+        throw new Error('Invalid calendar note filename');
     }
 
-    let sanitized = stripForbiddenNameCharactersAllPlatforms(trimmed);
-    if (Platform.isWin) {
-        sanitized = stripForbiddenNameCharactersWindows(sanitized);
+    const folder = await ensureCalendarFolderExists(app, folderPath);
+    if (!folder) {
+        throw new Error('Calendar folder path is not a folder');
     }
 
-    return sanitized.trim();
+    return await app.fileManager.createNewMarkdownFile(folder, baseName);
 }

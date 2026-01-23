@@ -32,11 +32,9 @@ import {
 import {
     buildCustomCalendarFilePathForPattern,
     buildCustomCalendarMomentPattern,
-    ensureCalendarFolderExists,
+    createCalendarMarkdownFile,
     getCalendarNoteConfig,
-    sanitizeCalendarTitle,
-    type CalendarNoteKind,
-    resolveExistingCustomCalendarNote
+    type CalendarNoteKind
 } from '../../utils/calendarNotes';
 import { getFolderNote, isFolderNote, isSupportedFolderNoteExtension, type FolderNoteDetectionSettings } from '../../utils/folderNotes';
 import { isFolderInExcludedFolder, shouldExcludeFile } from '../../utils/fileFilters';
@@ -47,7 +45,6 @@ import { NotebookNavigatorView } from '../../view/NotebookNavigatorView';
 import { getActiveHiddenFolders, getActiveVaultProfile } from '../../utils/vaultProfiles';
 import { showNotice } from '../../utils/noticeUtils';
 import { ConfirmModal } from '../../modals/ConfirmModal';
-import { InputModal } from '../../modals/InputModal';
 import { SelectVaultProfileModal } from '../../modals/SelectVaultProfileModal';
 import { localStorage } from '../../utils/localStorage';
 import { NOTEBOOK_NAVIGATOR_VIEW, STORAGE_KEYS, type VisibilityPreferences } from '../../types';
@@ -372,12 +369,7 @@ async function openFileInActiveLeaf(plugin: NotebookNavigatorPlugin, file: TFile
     await openFile();
 }
 
-async function createAndOpenCustomCalendarNote(
-    plugin: NotebookNavigatorPlugin,
-    kind: CalendarNoteKind,
-    date: MomentInstance,
-    title: string
-) {
+async function createAndOpenCustomCalendarNote(plugin: NotebookNavigatorPlugin, kind: CalendarNoteKind, date: MomentInstance) {
     const config = getCalendarNoteConfig(kind, plugin.settings);
     const settings = { calendarCustomRootFolder: plugin.settings.calendarCustomRootFolder };
 
@@ -385,7 +377,6 @@ async function createAndOpenCustomCalendarNote(
         date,
         settings,
         config.calendarCustomFilePattern,
-        title,
         config.fallbackPattern
     );
 
@@ -395,32 +386,16 @@ async function createAndOpenCustomCalendarNote(
         return;
     }
 
-    let folder: TFolder | null = null;
+    let created: TFile;
     try {
-        folder = await ensureCalendarFolderExists(plugin.app, folderPath);
-    } catch (error) {
-        console.error('Failed to create calendar folder', error);
-        showNotice(strings.common.unknownError, { variant: 'warning' });
-        return;
-    }
-    if (!folder) {
-        showNotice(strings.common.unknownError, { variant: 'warning' });
-        return;
-    }
-
-    const baseName = fileName.replace(/\.md$/iu, '').trim();
-    if (!baseName) {
-        showNotice(strings.common.unknownError, { variant: 'warning' });
-        return;
-    }
-
-    try {
-        const created = await plugin.app.fileManager.createNewMarkdownFile(folder, baseName);
-        await openFileInActiveLeaf(plugin, created);
+        created = await createCalendarMarkdownFile(plugin.app, folderPath, fileName);
     } catch (error) {
         console.error('Failed to create calendar note', error);
         showNotice(strings.common.unknownError, { variant: 'warning' });
+        return;
     }
+
+    await openFileInActiveLeaf(plugin, created);
 }
 
 async function openCalendarNoteForToday(plugin: NotebookNavigatorPlugin, kind: CalendarNoteKind): Promise<void> {
@@ -495,42 +470,11 @@ async function openCalendarNoteForToday(plugin: NotebookNavigatorPlugin, kind: C
     }
 
     const settings = { calendarCustomRootFolder: plugin.settings.calendarCustomRootFolder };
-    const expected = buildCustomCalendarFilePathForPattern(
-        dateForPath,
-        settings,
-        config.calendarCustomFilePattern,
-        '',
-        config.fallbackPattern
-    );
-
-    const existing = resolveExistingCustomCalendarNote({
-        app: plugin.app,
-        date: dateForPath,
-        settings,
-        calendarCustomFilePattern: config.calendarCustomFilePattern,
-        fallbackPattern: config.fallbackPattern,
-        allowTitleSuffixMatch: true
-    });
-
-    const file = existing?.file ?? null;
+    const expected = buildCustomCalendarFilePathForPattern(dateForPath, settings, config.calendarCustomFilePattern, config.fallbackPattern);
+    const fileEntry = plugin.app.vault.getAbstractFileByPath(expected.filePath);
+    const file = fileEntry instanceof TFile ? fileEntry : null;
     if (!file) {
-        const createFile = () => runAsyncAction(() => createAndOpenCustomCalendarNote(plugin, kind, dateForPath, ''));
-
-        if (plugin.settings.calendarCustomPromptForTitle) {
-            const modal = new InputModal(
-                plugin.app,
-                strings.settings.items.calendarCustomFilePattern.titlePlaceholder,
-                strings.navigationCalendar.promptDailyNoteTitle.placeholder,
-                value => {
-                    const title = sanitizeCalendarTitle(value);
-                    runAsyncAction(() => createAndOpenCustomCalendarNote(plugin, kind, dateForPath, title));
-                },
-                '',
-                { submitButtonText: strings.navigationCalendar.createDailyNote.confirmButton }
-            );
-            modal.open();
-            return;
-        }
+        const createFile = () => runAsyncAction(() => createAndOpenCustomCalendarNote(plugin, kind, dateForPath));
 
         if (plugin.settings.calendarConfirmBeforeCreate) {
             new ConfirmModal(

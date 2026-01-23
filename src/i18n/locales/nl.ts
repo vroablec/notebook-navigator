@@ -77,10 +77,6 @@ export const STRINGS_NL = {
     navigationCalendar: {
         ariaLabel: 'Kalender',
         dailyNotesNotEnabled: 'De dagelijkse notities plugin is niet ingeschakeld.',
-        promptDailyNoteTitle: {
-            title: 'Titel dagelijkse notitie',
-            placeholder: 'Voer titel in'
-        },
         createDailyNote: {
             title: 'Nieuwe dagelijkse notitie',
             message: 'Bestand {filename} bestaat niet. Wilt u het aanmaken?',
@@ -979,8 +975,7 @@ export const STRINGS_NL = {
                 momentDescSuffix: '.',
                 placeholder: 'YYYY/YYYYMMDD',
                 example: 'Huidige syntaxis: {path}',
-                parsingError: 'Het patroon moet kunnen formatteren en terug-parsen naar een volledige datum (jaar, maand, dag).',
-                titlePlaceholder: 'Notitie titel'
+                parsingError: 'Het patroon moet kunnen formatteren en terug-parsen naar een volledige datum (jaar, maand, dag).'
             },
             calendarCustomWeekPattern: {
                 name: 'Wekelijkse notities',
@@ -997,10 +992,6 @@ export const STRINGS_NL = {
             calendarCustomYearPattern: {
                 name: 'Jaarlijkse notities',
                 parsingError: 'Het patroon moet kunnen formatteren en terug-parsen naar een volledig jaar (jaar).'
-            },
-            calendarCustomPromptForTitle: {
-                name: 'Vraag om titel',
-                desc: 'Vraag om titel bij het maken van notities. Accepteert lege titels.'
             },
             showTooltips: {
                 name: 'Tooltips tonen',

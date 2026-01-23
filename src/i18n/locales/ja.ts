@@ -76,10 +76,6 @@ export const STRINGS_JA = {
     navigationCalendar: {
         ariaLabel: 'カレンダー',
         dailyNotesNotEnabled: 'デイリーノートプラグインが有効になっていません。',
-        promptDailyNoteTitle: {
-            title: 'デイリーノートのタイトル',
-            placeholder: 'タイトルを入力'
-        },
         createDailyNote: {
             title: '新規デイリーノート',
             message: 'ファイル {filename} は存在しません。作成しますか？',
@@ -978,8 +974,7 @@ export const STRINGS_JA = {
                 momentDescSuffix: 'を使用してパスを指定。',
                 placeholder: 'YYYY/YYYYMMDD',
                 example: '現在の構文: {path}',
-                parsingError: 'パターンは完全な日付（年、月、日）としてフォーマットされ、再度パースできる必要があります。',
-                titlePlaceholder: 'ノートタイトル'
+                parsingError: 'パターンは完全な日付（年、月、日）としてフォーマットされ、再度パースできる必要があります。'
             },
             calendarCustomWeekPattern: {
                 name: 'ウィークリーノート',
@@ -996,10 +991,6 @@ export const STRINGS_JA = {
             calendarCustomYearPattern: {
                 name: '年次ノート',
                 parsingError: 'パターンは完全な年（年）としてフォーマットされ、再度パースできる必要があります。'
-            },
-            calendarCustomPromptForTitle: {
-                name: 'タイトルを入力',
-                desc: 'ノート作成時にタイトルを入力。空のタイトルも可。'
             },
             showTooltips: {
                 name: 'ツールチップを表示',

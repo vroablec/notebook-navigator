@@ -76,10 +76,6 @@ export const STRINGS_DE = {
     navigationCalendar: {
         ariaLabel: 'Kalender',
         dailyNotesNotEnabled: 'Das Kernplugin für tägliche Notizen ist nicht aktiviert.',
-        promptDailyNoteTitle: {
-            title: 'Titel der Tagesnotiz',
-            placeholder: 'Titel eingeben'
-        },
         createDailyNote: {
             title: 'Neue tägliche Notiz',
             message: 'Datei {filename} existiert nicht. Möchten Sie sie erstellen?',
@@ -979,8 +975,7 @@ export const STRINGS_DE = {
                 momentDescSuffix: '.',
                 placeholder: 'YYYY/YYYYMMDD',
                 example: 'Aktuelle Syntax: {path}',
-                parsingError: 'Das Muster muss als vollständiges Datum (Jahr, Monat, Tag) formatiert und wieder geparst werden können.',
-                titlePlaceholder: 'Notiz-Titel'
+                parsingError: 'Das Muster muss als vollständiges Datum (Jahr, Monat, Tag) formatiert und wieder geparst werden können.'
             },
             calendarCustomWeekPattern: {
                 name: 'Wöchentliche Notizen',
@@ -998,10 +993,6 @@ export const STRINGS_DE = {
             calendarCustomYearPattern: {
                 name: 'Jährliche Notizen',
                 parsingError: 'Das Muster muss als vollständiges Jahr (Jahr) formatiert und wieder geparst werden können.'
-            },
-            calendarCustomPromptForTitle: {
-                name: 'Nach Titel fragen',
-                desc: 'Beim Erstellen von Notizen nach Titel fragen. Akzeptiert leere Titel.'
             },
             showTooltips: {
                 name: 'Tooltips anzeigen',

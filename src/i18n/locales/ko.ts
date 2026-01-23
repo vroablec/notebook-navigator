@@ -76,10 +76,6 @@ export const STRINGS_KO = {
     navigationCalendar: {
         ariaLabel: '달력',
         dailyNotesNotEnabled: '데일리 노트 코어 플러그인이 활성화되어 있지 않습니다.',
-        promptDailyNoteTitle: {
-            title: '데일리 노트 제목',
-            placeholder: '제목 입력'
-        },
         createDailyNote: {
             title: '새 데일리 노트',
             message: '파일 {filename}이(가) 존재하지 않습니다. 생성하시겠습니까?',
@@ -977,8 +973,7 @@ export const STRINGS_KO = {
                 momentDescSuffix: '을 사용하여 경로 지정.',
                 placeholder: 'YYYY/YYYYMMDD',
                 example: '현재 구문: {path}',
-                parsingError: '패턴은 전체 날짜(연, 월, 일)로 포맷되고 다시 파싱될 수 있어야 합니다.',
-                titlePlaceholder: '노트 제목'
+                parsingError: '패턴은 전체 날짜(연, 월, 일)로 포맷되고 다시 파싱될 수 있어야 합니다.'
             },
             calendarCustomWeekPattern: {
                 name: '주간 노트',
@@ -995,10 +990,6 @@ export const STRINGS_KO = {
             calendarCustomYearPattern: {
                 name: '연간 노트',
                 parsingError: '패턴은 전체 연도(연도)로 포맷되고 다시 파싱될 수 있어야 합니다.'
-            },
-            calendarCustomPromptForTitle: {
-                name: '제목 입력',
-                desc: '노트 생성 시 제목 입력. 빈 제목 허용.'
             },
             showTooltips: {
                 name: '도구 설명 표시',

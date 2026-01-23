@@ -77,10 +77,6 @@ export const STRINGS_EN = {
     navigationCalendar: {
         ariaLabel: 'Calendar',
         dailyNotesNotEnabled: 'Daily notes core plugin is not enabled.',
-        promptDailyNoteTitle: {
-            title: 'Daily note title',
-            placeholder: 'Enter title'
-        },
         createDailyNote: {
             title: 'New daily note',
             message: 'File {filename} does not exist. Would you like to create it?',
@@ -977,8 +973,7 @@ export const STRINGS_EN = {
                 momentDescSuffix: '.',
                 placeholder: 'YYYY/YYYYMMDD',
                 example: 'Current syntax: {path}',
-                parsingError: 'Pattern must format and parse back to a full date (year, month, day).',
-                titlePlaceholder: 'Note title'
+                parsingError: 'Pattern must format and parse back to a full date (year, month, day).'
             },
             calendarCustomWeekPattern: {
                 name: 'Weekly notes',
@@ -995,10 +990,6 @@ export const STRINGS_EN = {
             calendarCustomYearPattern: {
                 name: 'Yearly notes',
                 parsingError: 'Pattern must format and parse back to a full year (year).'
-            },
-            calendarCustomPromptForTitle: {
-                name: 'Prompt for title',
-                desc: 'Ask for title when creating notes. Accepts empty titles.'
             },
             showTooltips: {
                 name: 'Show tooltips',

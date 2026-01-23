@@ -18,11 +18,10 @@
 
 import React, { useCallback, useEffect, useId, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
-import { Menu, Notice, TFile, TFolder } from 'obsidian';
+import { Menu, Notice, TFile } from 'obsidian';
 import { getWeek, getWeekYear } from 'date-fns';
 import { getCurrentLanguage, strings } from '../i18n';
 import { ConfirmModal } from '../modals/ConfirmModal';
-import { InputModal } from '../modals/InputModal';
 import { useServices } from '../context/ServicesContext';
 import { useSettingsState } from '../context/SettingsContext';
 import { useFileCacheOptional } from '../context/StorageContext';
@@ -39,21 +38,19 @@ import { getMomentApi, resolveMomentLocale, type MomentInstance } from '../utils
 import { getCalendarWeekConfig } from '../utils/dateFnsLocale';
 import { ServiceIcon } from './ServiceIcon';
 import { useFileOpener } from '../hooks/useFileOpener';
+import { extractFrontmatterName } from '../utils/metadataExtractor';
 import {
     buildCustomCalendarFilePathForPattern,
     buildCustomCalendarMomentPattern,
-    ensureCalendarFolderExists,
+    createCalendarMarkdownFile,
     getCalendarNoteConfig,
-    resolveExistingCustomCalendarNote,
-    sanitizeCalendarTitle,
     type CalendarNoteConfig,
-    type CalendarNoteKind,
-    type CalendarNoteIndexEntry
+    type CalendarNoteKind
 } from '../utils/calendarNotes';
 import {
     createCalendarCustomDateFormatter,
-    createCalendarCustomNotePathParser,
-    type CalendarCustomParsedNotePath,
+    ensureMarkdownFileName,
+    isCalendarCustomDatePatternValid,
     normalizeCalendarCustomRootFolder,
     normalizeCalendarVaultFolderPath,
     splitCalendarCustomPattern
@@ -76,7 +73,6 @@ interface CalendarDay {
     iso: string;
     inMonth: boolean;
     file: TFile | null;
-    title: string;
 }
 
 interface CalendarWeek {
@@ -218,51 +214,6 @@ function startOfWeek(date: MomentInstance, weekStartsOn: number): MomentInstance
     return date.clone().subtract(diff, 'day').startOf('day');
 }
 
-type CustomCalendarIndexEntry = CalendarNoteIndexEntry;
-
-/** Builds an ISO->note lookup table for files in a single folder, choosing the newest file when duplicates exist */
-function buildCustomCalendarFolderIndex(
-    folder: TFolder,
-    relativeFolderPath: string,
-    parsePath: (relativePath: string) => CalendarCustomParsedNotePath | null
-): Map<string, CustomCalendarIndexEntry> {
-    const index = new Map<string, CustomCalendarIndexEntry>();
-
-    for (const child of folder.children) {
-        if (!(child instanceof TFile) || child.extension !== 'md') {
-            continue;
-        }
-
-        const relativePath = relativeFolderPath ? `${relativeFolderPath}/${child.name}` : child.name;
-        const parsed = parsePath(relativePath);
-        if (!parsed) {
-            continue;
-        }
-
-        const mtime = child.stat?.mtime ?? 0;
-        const existing = index.get(parsed.iso);
-        if (!existing || mtime > existing.mtime) {
-            index.set(parsed.iso, { file: child, title: parsed.title, mtime });
-        }
-    }
-
-    return index;
-}
-
-/** Converts an absolute vault folder path to a path relative to the configured custom calendar root */
-function getPathRelativeToCustomCalendarRoot(folderPath: string, customRootFolder: string): string {
-    if (folderPath === '/' || folderPath === customRootFolder) {
-        return '';
-    }
-
-    if (!customRootFolder) {
-        return folderPath === '/' ? '' : folderPath;
-    }
-
-    const prefix = `${customRootFolder}/`;
-    return folderPath.startsWith(prefix) ? folderPath.slice(prefix.length) : folderPath;
-}
-
 export interface NavigationPaneCalendarProps {
     onWeekCountChange?: (count: number) => void;
     layout?: 'overlay' | 'panel';
@@ -276,26 +227,6 @@ interface CalendarHoverTooltipState {
 
 type CustomCalendarNoteKind = CalendarNoteKind;
 type CustomCalendarNoteConfig = CalendarNoteConfig;
-const MAX_CUSTOM_CALENDAR_LOOKUP_CACHE_ENTRIES = 512;
-
-function parseCalendarBasenameTitle(basename: string): { title: string; showDate: boolean } {
-    const trimmed = basename.trim();
-    if (!trimmed) {
-        return { title: '', showDate: false };
-    }
-
-    const match = /^(\d{8}|\d{4}-\d{2}-\d{2})(?:[ \t]+(.+))?$/u.exec(trimmed);
-    if (!match) {
-        return { title: trimmed, showDate: false };
-    }
-
-    const suffix = match[2]?.trim() ?? '';
-    if (suffix) {
-        return { title: suffix, showDate: true };
-    }
-
-    return { title: '', showDate: false };
-}
 
 export function NavigationPaneCalendar({ onWeekCountChange, layout = 'overlay', weeksToShowOverride }: NavigationPaneCalendarProps) {
     const { app, fileSystemOps, isMobile } = useServices();
@@ -313,6 +244,7 @@ export function NavigationPaneCalendar({ onWeekCountChange, layout = 'overlay', 
 
     const [vaultVersion, setVaultVersion] = useState(0);
     const [contentVersion, setContentVersion] = useState(0);
+    const [metadataVersion, setMetadataVersion] = useState(0);
     const visibleDailyNotePathsRef = useRef<Set<string>>(new Set());
     const hoverTooltipStateRef = useRef<CalendarHoverTooltipState | null>(null);
 
@@ -389,6 +321,26 @@ export function NavigationPaneCalendar({ onWeekCountChange, layout = 'overlay', 
     }, [db]);
 
     useEffect(() => {
+        if (!settings.useFrontmatterMetadata) {
+            return;
+        }
+
+        const offref = app.metadataCache.on('changed', file => {
+            if (!file) {
+                return;
+            }
+            if (!visibleDailyNotePathsRef.current.has(file.path)) {
+                return;
+            }
+            setMetadataVersion(v => v + 1);
+        });
+
+        return () => {
+            app.metadataCache.offref(offref);
+        };
+    }, [app.metadataCache, settings.useFrontmatterMetadata]);
+
+    useEffect(() => {
         // Obsidian exposes `window.moment` after startup; in tests (or very early) it may be unavailable.
         if (!momentApi || cursorDate) {
             return;
@@ -417,28 +369,6 @@ export function NavigationPaneCalendar({ onWeekCountChange, layout = 'overlay', 
         const requested = settings.calendarLocale === 'system-default' ? displayLocale : settings.calendarLocale;
         return resolveMomentLocale(requested, momentApi, displayLocale);
     }, [displayLocale, momentApi, settings.calendarLocale]);
-
-    const customCalendarLookupCacheScopeKey = useMemo(() => {
-        return [
-            displayLocale,
-            calendarRulesLocale,
-            settings.calendarCustomRootFolder,
-            settings.calendarCustomFilePattern,
-            settings.calendarCustomWeekPattern,
-            settings.calendarCustomMonthPattern,
-            settings.calendarCustomQuarterPattern,
-            settings.calendarCustomYearPattern
-        ].join('\u0000');
-    }, [
-        calendarRulesLocale,
-        displayLocale,
-        settings.calendarCustomFilePattern,
-        settings.calendarCustomMonthPattern,
-        settings.calendarCustomQuarterPattern,
-        settings.calendarCustomRootFolder,
-        settings.calendarCustomWeekPattern,
-        settings.calendarCustomYearPattern
-    ]);
 
     const weekConfig = useMemo(() => getCalendarWeekConfig(calendarRulesLocale), [calendarRulesLocale]);
     const weekStartsOn = weekConfig.weekStartsOn;
@@ -473,6 +403,30 @@ export function NavigationPaneCalendar({ onWeekCountChange, layout = 'overlay', 
         return getCoreDailyNoteSettings(app);
     }, [app, settings.calendarIntegrationMode, vaultVersion]);
 
+    const customCalendarDayPathBuilder = useMemo(() => {
+        const { folderPattern, filePattern } = splitCalendarCustomPattern(settings.calendarCustomFilePattern);
+        const folderFormatter = createCalendarCustomDateFormatter(folderPattern);
+        const fileFormatter = createCalendarCustomDateFormatter(filePattern);
+        const customRootFolder = normalizeCalendarCustomRootFolder(settings.calendarCustomRootFolder);
+        const momentPattern = folderPattern ? `${folderPattern}/${filePattern}` : filePattern;
+
+        const filePathForDate = (date: MomentInstance): string => {
+            const folderSuffix = folderFormatter(date);
+            const rawFolderPath = customRootFolder
+                ? folderSuffix
+                    ? `${customRootFolder}/${folderSuffix}`
+                    : customRootFolder
+                : folderSuffix;
+            const folderPath = normalizeCalendarVaultFolderPath(rawFolderPath || '/');
+
+            const formattedFilePattern = fileFormatter(date).trim();
+            const fileName = ensureMarkdownFileName(formattedFilePattern);
+            return folderPath === '/' ? fileName : `${folderPath}/${fileName}`;
+        };
+
+        return { filePathForDate, momentPattern };
+    }, [settings.calendarCustomFilePattern, settings.calendarCustomRootFolder]);
+
     const weeks = useMemo<CalendarWeek[]>(() => {
         if (!momentApi || !cursorDate) {
             return [];
@@ -482,15 +436,9 @@ export function NavigationPaneCalendar({ onWeekCountChange, layout = 'overlay', 
         void vaultVersion;
 
         const integrationMode = settings.calendarIntegrationMode;
-        const customRootFolder = normalizeCalendarCustomRootFolder(settings.calendarCustomRootFolder);
-        const { folderPattern: customFolderPattern, filePattern: customFilePattern } = splitCalendarCustomPattern(
-            settings.calendarCustomFilePattern
-        );
-        const customPattern = customFolderPattern ? `${customFolderPattern}/${customFilePattern}` : customFilePattern;
-        const customNotePathParser =
-            integrationMode === 'notebook-navigator' ? createCalendarCustomNotePathParser(momentApi, customPattern) : null;
-        const folderIndexCache = new Map<string, Map<string, CustomCalendarIndexEntry> | null>();
-        const folderFormatter = createCalendarCustomDateFormatter(customFolderPattern);
+        const canResolveCustomDayNotes =
+            integrationMode === 'notebook-navigator' &&
+            isCalendarCustomDatePatternValid(customCalendarDayPathBuilder.momentPattern, momentApi);
 
         const weeksToShow = clamp(weeksToShowSetting, 1, 6);
         const cursor = cursorDate.clone().startOf('day');
@@ -530,39 +478,16 @@ export function NavigationPaneCalendar({ onWeekCountChange, layout = 'overlay', 
                 const inMonth = date.month() === targetMonth && date.year() === targetYear;
                 const iso = formatIsoDate(date);
                 let file: TFile | null = null;
-                let title = '';
 
-                if (integrationMode === 'notebook-navigator') {
-                    const folderSuffix = folderFormatter(date);
-                    const rawFolderPath = customRootFolder
-                        ? folderSuffix
-                            ? `${customRootFolder}/${folderSuffix}`
-                            : customRootFolder
-                        : folderSuffix;
-                    const folderPath = normalizeCalendarVaultFolderPath(rawFolderPath || '/');
-                    if (customNotePathParser) {
-                        let folderIndex = folderIndexCache.get(folderPath);
-                        if (folderIndex === undefined) {
-                            const folder = folderPath === '/' ? app.vault.getRoot() : app.vault.getAbstractFileByPath(folderPath);
-                            const relativeFolderPath = getPathRelativeToCustomCalendarRoot(folderPath, customRootFolder);
-                            folderIndex =
-                                folder instanceof TFolder
-                                    ? buildCustomCalendarFolderIndex(folder, relativeFolderPath, customNotePathParser)
-                                    : null;
-                            folderIndexCache.set(folderPath, folderIndex);
-                        }
-
-                        const entry = folderIndex?.get(iso);
-                        if (entry) {
-                            file = entry.file;
-                            title = entry.title;
-                        }
-                    }
+                if (canResolveCustomDayNotes) {
+                    const filePath = customCalendarDayPathBuilder.filePathForDate(date);
+                    const existing = app.vault.getAbstractFileByPath(filePath);
+                    file = existing instanceof TFile ? existing : null;
                 } else {
                     file = dailyNoteSettings ? getDailyNoteFile(app, date, dailyNoteSettings) : null;
                 }
 
-                days.push({ date, iso, inMonth, file, title });
+                days.push({ date, iso, inMonth, file });
             }
 
             visibleWeeks.push({
@@ -579,10 +504,9 @@ export function NavigationPaneCalendar({ onWeekCountChange, layout = 'overlay', 
         dailyNoteSettings,
         momentApi,
         vaultVersion,
-        settings.calendarCustomFilePattern,
-        settings.calendarCustomRootFolder,
         settings.calendarIntegrationMode,
         weeksToShowSetting,
+        customCalendarDayPathBuilder,
         weekConfig,
         weekStartsOn
     ]);
@@ -659,6 +583,32 @@ export function NavigationPaneCalendar({ onWeekCountChange, layout = 'overlay', 
         hoverTooltip && hoverTooltip.tooltipData.showDate
             ? DateUtils.formatDate(hoverTooltip.tooltipData.dateTimestamp, settings.dateFormat)
             : '';
+
+    const frontmatterTitlesByPath = useMemo(() => {
+        void metadataVersion;
+        if (!settings.useFrontmatterMetadata) {
+            return new Map<string, string>();
+        }
+
+        const titles = new Map<string, string>();
+        for (const week of weeks) {
+            for (const day of week.days) {
+                const file = day.file;
+                if (!file) {
+                    continue;
+                }
+
+                const title = extractFrontmatterName(app, file, settings.frontmatterNameField).trim();
+                if (!title) {
+                    continue;
+                }
+
+                titles.set(file.path, title);
+            }
+        }
+
+        return titles;
+    }, [app, metadataVersion, settings.frontmatterNameField, settings.useFrontmatterMetadata, weeks]);
 
     const clearFeatureImageUrls = useCallback((resetState: boolean) => {
         const existing = featureImageUrlMapRef.current;
@@ -1005,58 +955,23 @@ export function NavigationPaneCalendar({ onWeekCountChange, layout = 'overlay', 
         [settings]
     );
 
-    const customCalendarLookupCacheRef = useRef<Map<string, CustomCalendarIndexEntry | null>>(new Map());
-
-    const getExistingCustomCalendarNoteEntry = useCallback(
-        (kind: CustomCalendarNoteKind, date: MomentInstance): CustomCalendarIndexEntry | null => {
+    const getExistingCustomCalendarNoteFile = useCallback(
+        (kind: CustomCalendarNoteKind, date: MomentInstance): TFile | null => {
             const config = getCustomCalendarNoteConfig(kind);
             const momentPattern = buildCustomCalendarMomentPattern(config.calendarCustomFilePattern, config.fallbackPattern);
             if (!config.isPatternValid(momentPattern, momentApi)) {
                 return null;
             }
-
-            const { folderPath, formattedFilePattern } = buildCustomCalendarFilePathForPattern(
+            const { filePath } = buildCustomCalendarFilePathForPattern(
                 date,
-                { calendarCustomRootFolder: settings.calendarCustomRootFolder },
+                settings,
                 config.calendarCustomFilePattern,
-                '',
                 config.fallbackPattern
             );
-
-            if (!formattedFilePattern || !folderPath) {
-                return null;
-            }
-
-            const cacheKey = `${vaultVersion}\u0000${customCalendarLookupCacheScopeKey}\u0000${kind}\u0000${folderPath}\u0000${formattedFilePattern}`;
-            const cache = customCalendarLookupCacheRef.current;
-            if (cache.has(cacheKey)) {
-                const cached = cache.get(cacheKey) ?? null;
-                if (!cached || app.vault.getAbstractFileByPath(cached.file.path) instanceof TFile) {
-                    return cached;
-                }
-                cache.delete(cacheKey);
-            }
-
-            const resolved = resolveExistingCustomCalendarNote({
-                app,
-                date,
-                settings: { calendarCustomRootFolder: settings.calendarCustomRootFolder },
-                calendarCustomFilePattern: config.calendarCustomFilePattern,
-                fallbackPattern: config.fallbackPattern,
-                allowTitleSuffixMatch: true
-            });
-
-            if (cache.size >= MAX_CUSTOM_CALENDAR_LOOKUP_CACHE_ENTRIES) {
-                const oldest = cache.keys().next();
-                if (!oldest.done) {
-                    cache.delete(oldest.value);
-                }
-            }
-            cache.set(cacheKey, resolved);
-
-            return resolved;
+            const existing = app.vault.getAbstractFileByPath(filePath);
+            return existing instanceof TFile ? existing : null;
         },
-        [app, customCalendarLookupCacheScopeKey, getCustomCalendarNoteConfig, momentApi, settings.calendarCustomRootFolder, vaultVersion]
+        [app, getCustomCalendarNoteConfig, momentApi, settings]
     );
 
     const openOrCreateCustomCalendarNote = useCallback(
@@ -1076,48 +991,24 @@ export function NavigationPaneCalendar({ onWeekCountChange, layout = 'overlay', 
 
             setHoverTooltip(null);
 
-            const createCustomNote = async (noteTitle: string) => {
-                const { folderPath, fileName, filePath } = buildCustomCalendarFilePathForPattern(
-                    date,
-                    settings,
-                    config.calendarCustomFilePattern,
-                    noteTitle,
-                    config.fallbackPattern
-                );
-                if (!filePath) {
-                    new Notice(strings.common.unknownError);
-                    return;
-                }
+            const { folderPath, fileName, filePath } = buildCustomCalendarFilePathForPattern(
+                date,
+                settings,
+                config.calendarCustomFilePattern,
+                config.fallbackPattern
+            );
 
-                const existing = app.vault.getAbstractFileByPath(filePath);
-                if (existing instanceof TFile) {
-                    openFile(existing, { active: true });
-                    collapseNavigationIfMobile();
-                    return;
-                }
+            const existing = app.vault.getAbstractFileByPath(filePath);
+            if (existing instanceof TFile) {
+                openFile(existing, { active: true });
+                collapseNavigationIfMobile();
+                return;
+            }
 
-                let parentFolder: TFolder | null = null;
-                try {
-                    parentFolder = await ensureCalendarFolderExists(app, folderPath);
-                } catch (error) {
-                    console.error('Failed to create calendar folder', error);
-                    new Notice(strings.common.unknownError);
-                    return;
-                }
-                if (!parentFolder) {
-                    new Notice(strings.common.unknownError);
-                    return;
-                }
-
-                const baseName = fileName.replace(/\.md$/iu, '').trim();
-                if (!baseName) {
-                    new Notice(strings.common.unknownError);
-                    return;
-                }
-
+            const createCustomNote = async () => {
                 let created: TFile;
                 try {
-                    created = await app.fileManager.createNewMarkdownFile(parentFolder, baseName);
+                    created = await createCalendarMarkdownFile(app, folderPath, fileName);
                 } catch (error) {
                     console.error('Failed to create calendar note', error);
                     new Notice(strings.common.unknownError);
@@ -1129,53 +1020,21 @@ export function NavigationPaneCalendar({ onWeekCountChange, layout = 'overlay', 
                 collapseNavigationIfMobile();
             };
 
-            const promptAndCreate = () => {
-                const modal = new InputModal(
+            const createFile = () => runAsyncAction(() => createCustomNote());
+
+            if (settings.calendarConfirmBeforeCreate) {
+                new ConfirmModal(
                     app,
-                    strings.settings.items.calendarCustomFilePattern.titlePlaceholder,
-                    strings.navigationCalendar.promptDailyNoteTitle.placeholder,
-                    value => {
-                        const noteTitle = sanitizeCalendarTitle(value);
-                        runAsyncAction(() => createCustomNote(noteTitle));
-                    },
-                    '',
-                    { submitButtonText: strings.navigationCalendar.createDailyNote.confirmButton }
-                );
-                modal.open();
-            };
-
-            const createWithoutPrompt = () => {
-                const { filePath } = buildCustomCalendarFilePathForPattern(
-                    date,
-                    settings,
-                    config.calendarCustomFilePattern,
-                    '',
-                    config.fallbackPattern
-                );
-                const createFile = () => runAsyncAction(() => createCustomNote(''));
-
-                if (settings.calendarConfirmBeforeCreate) {
-                    new ConfirmModal(
-                        app,
-                        strings.paneHeader.newNote,
-                        strings.navigationCalendar.createDailyNote.message.replace('{filename}', filePath),
-                        createFile,
-                        strings.navigationCalendar.createDailyNote.confirmButton,
-                        { confirmButtonClass: 'mod-cta' }
-                    ).open();
-                    return;
-                }
-
-                createFile();
-            };
-
-            if (settings.calendarCustomPromptForTitle) {
-                // Title prompt acts as the confirmation step; do not show a separate confirm dialog.
-                promptAndCreate();
+                    strings.paneHeader.newNote,
+                    strings.navigationCalendar.createDailyNote.message.replace('{filename}', filePath),
+                    createFile,
+                    strings.navigationCalendar.createDailyNote.confirmButton,
+                    { confirmButtonClass: 'mod-cta' }
+                ).open();
                 return;
             }
 
-            createWithoutPrompt();
+            createFile();
         },
         [app, collapseNavigationIfMobile, getCustomCalendarNoteConfig, momentApi, openFile, settings, setHoverTooltip]
     );
@@ -1306,7 +1165,7 @@ export function NavigationPaneCalendar({ onWeekCountChange, layout = 'overlay', 
     const quarterNotesEnabled = isCustomCalendar && settings.calendarCustomQuarterEnabled;
     const yearNotesEnabled = isCustomCalendar && settings.calendarCustomYearEnabled;
 
-    const headerPeriodNoteEntries = useMemo(() => {
+    const headerPeriodNoteFiles = useMemo(() => {
         void vaultVersion;
         if (!momentApi || !cursorDate) {
             return { month: null, quarter: null, year: null };
@@ -1314,15 +1173,15 @@ export function NavigationPaneCalendar({ onWeekCountChange, layout = 'overlay', 
 
         const date = cursorDate.clone().locale(displayLocale);
 
-        const month = monthNotesEnabled ? getExistingCustomCalendarNoteEntry('month', date) : null;
-        const year = yearNotesEnabled ? getExistingCustomCalendarNoteEntry('year', date) : null;
-        const quarter = settings.calendarShowQuarter && quarterNotesEnabled ? getExistingCustomCalendarNoteEntry('quarter', date) : null;
+        const month = monthNotesEnabled ? getExistingCustomCalendarNoteFile('month', date) : null;
+        const year = yearNotesEnabled ? getExistingCustomCalendarNoteFile('year', date) : null;
+        const quarter = settings.calendarShowQuarter && quarterNotesEnabled ? getExistingCustomCalendarNoteFile('quarter', date) : null;
 
         return { month, quarter, year };
     }, [
         cursorDate,
         displayLocale,
-        getExistingCustomCalendarNoteEntry,
+        getExistingCustomCalendarNoteFile,
         momentApi,
         monthNotesEnabled,
         quarterNotesEnabled,
@@ -1331,17 +1190,17 @@ export function NavigationPaneCalendar({ onWeekCountChange, layout = 'overlay', 
         yearNotesEnabled
     ]);
 
-    const weekNoteEntriesByKey = useMemo(() => {
+    const weekNoteFilesByKey = useMemo(() => {
         void vaultVersion;
         if (!momentApi || !cursorDate) {
-            return new Map<string, CustomCalendarIndexEntry | null>();
+            return new Map<string, TFile | null>();
         }
 
         if (!showWeekNumbers || !weekNotesEnabled) {
-            return new Map<string, CustomCalendarIndexEntry | null>();
+            return new Map<string, TFile | null>();
         }
 
-        const entries = new Map<string, CustomCalendarIndexEntry | null>();
+        const entries = new Map<string, TFile | null>();
         for (const week of weeks) {
             const weekStart = week.days[0]?.date;
             if (!weekStart) {
@@ -1349,16 +1208,16 @@ export function NavigationPaneCalendar({ onWeekCountChange, layout = 'overlay', 
             }
 
             const weekDate = weekStart.clone().locale(calendarRulesLocale);
-            const entry = getExistingCustomCalendarNoteEntry('week', weekDate);
+            const file = getExistingCustomCalendarNoteFile('week', weekDate);
 
-            entries.set(week.key, entry);
+            entries.set(week.key, file);
         }
 
         return entries;
     }, [
         calendarRulesLocale,
         cursorDate,
-        getExistingCustomCalendarNoteEntry,
+        getExistingCustomCalendarNoteFile,
         momentApi,
         showWeekNumbers,
         vaultVersion,
@@ -1432,21 +1291,21 @@ export function NavigationPaneCalendar({ onWeekCountChange, layout = 'overlay', 
                         {monthNotesEnabled ? (
                             <button
                                 type="button"
-                                className={['nn-navigation-calendar-period-button', headerPeriodNoteEntries.month ? 'has-period-note' : '']
+                                className={['nn-navigation-calendar-period-button', headerPeriodNoteFiles.month ? 'has-period-note' : '']
                                     .filter(Boolean)
                                     .join(' ')}
                                 onClick={() =>
                                     openOrCreateCustomCalendarNote(
                                         'month',
                                         cursorDate.clone().locale(displayLocale),
-                                        headerPeriodNoteEntries.month?.file ?? null
+                                        headerPeriodNoteFiles.month
                                     )
                                 }
                                 onContextMenu={event =>
                                     showCalendarNoteContextMenu(event, {
                                         kind: 'month',
                                         date: cursorDate.clone().locale(displayLocale),
-                                        existingFile: headerPeriodNoteEntries.month?.file ?? null,
+                                        existingFile: headerPeriodNoteFiles.month,
                                         canCreate: monthNotesEnabled
                                     })
                                 }
@@ -1460,7 +1319,7 @@ export function NavigationPaneCalendar({ onWeekCountChange, layout = 'overlay', 
                                     showCalendarNoteContextMenu(event, {
                                         kind: 'month',
                                         date: cursorDate.clone().locale(displayLocale),
-                                        existingFile: headerPeriodNoteEntries.month?.file ?? null,
+                                        existingFile: headerPeriodNoteFiles.month,
                                         canCreate: monthNotesEnabled
                                     })
                                 }
@@ -1472,21 +1331,21 @@ export function NavigationPaneCalendar({ onWeekCountChange, layout = 'overlay', 
                         {yearNotesEnabled ? (
                             <button
                                 type="button"
-                                className={['nn-navigation-calendar-period-button', headerPeriodNoteEntries.year ? 'has-period-note' : '']
+                                className={['nn-navigation-calendar-period-button', headerPeriodNoteFiles.year ? 'has-period-note' : '']
                                     .filter(Boolean)
                                     .join(' ')}
                                 onClick={() =>
                                     openOrCreateCustomCalendarNote(
                                         'year',
                                         cursorDate.clone().locale(displayLocale),
-                                        headerPeriodNoteEntries.year?.file ?? null
+                                        headerPeriodNoteFiles.year
                                     )
                                 }
                                 onContextMenu={event =>
                                     showCalendarNoteContextMenu(event, {
                                         kind: 'year',
                                         date: cursorDate.clone().locale(displayLocale),
-                                        existingFile: headerPeriodNoteEntries.year?.file ?? null,
+                                        existingFile: headerPeriodNoteFiles.year,
                                         canCreate: yearNotesEnabled
                                     })
                                 }
@@ -1500,7 +1359,7 @@ export function NavigationPaneCalendar({ onWeekCountChange, layout = 'overlay', 
                                     showCalendarNoteContextMenu(event, {
                                         kind: 'year',
                                         date: cursorDate.clone().locale(displayLocale),
-                                        existingFile: headerPeriodNoteEntries.year?.file ?? null,
+                                        existingFile: headerPeriodNoteFiles.year,
                                         canCreate: yearNotesEnabled
                                     })
                                 }
@@ -1516,7 +1375,7 @@ export function NavigationPaneCalendar({ onWeekCountChange, layout = 'overlay', 
                                     className={[
                                         'nn-navigation-calendar-period-button',
                                         'nn-navigation-calendar-quarter-button',
-                                        headerPeriodNoteEntries.quarter ? 'has-period-note' : ''
+                                        headerPeriodNoteFiles.quarter ? 'has-period-note' : ''
                                     ]
                                         .filter(Boolean)
                                         .join(' ')}
@@ -1524,14 +1383,14 @@ export function NavigationPaneCalendar({ onWeekCountChange, layout = 'overlay', 
                                         openOrCreateCustomCalendarNote(
                                             'quarter',
                                             cursorDate.clone().locale(displayLocale),
-                                            headerPeriodNoteEntries.quarter?.file ?? null
+                                            headerPeriodNoteFiles.quarter
                                         )
                                     }
                                     onContextMenu={event =>
                                         showCalendarNoteContextMenu(event, {
                                             kind: 'quarter',
                                             date: cursorDate.clone().locale(displayLocale),
-                                            existingFile: headerPeriodNoteEntries.quarter?.file ?? null,
+                                            existingFile: headerPeriodNoteFiles.quarter,
                                             canCreate: settings.calendarShowQuarter && quarterNotesEnabled
                                         })
                                     }
@@ -1547,7 +1406,7 @@ export function NavigationPaneCalendar({ onWeekCountChange, layout = 'overlay', 
                                         showCalendarNoteContextMenu(event, {
                                             kind: 'quarter',
                                             date: cursorDate.clone().locale(displayLocale),
-                                            existingFile: headerPeriodNoteEntries.quarter?.file ?? null,
+                                            existingFile: headerPeriodNoteFiles.quarter,
                                             canCreate: settings.calendarShowQuarter && quarterNotesEnabled
                                         })
                                     }
@@ -1609,7 +1468,7 @@ export function NavigationPaneCalendar({ onWeekCountChange, layout = 'overlay', 
                                                 className={[
                                                     'nn-navigation-calendar-weeknumber',
                                                     'nn-navigation-calendar-weeknumber-button',
-                                                    weekNoteEntriesByKey.get(week.key) ? 'has-period-note' : ''
+                                                    weekNoteFilesByKey.get(week.key) ? 'has-period-note' : ''
                                                 ]
                                                     .filter(Boolean)
                                                     .join(' ')}
@@ -1622,7 +1481,7 @@ export function NavigationPaneCalendar({ onWeekCountChange, layout = 'overlay', 
                                                     openOrCreateCustomCalendarNote(
                                                         'week',
                                                         weekStart.clone().locale(calendarRulesLocale),
-                                                        weekNoteEntriesByKey.get(week.key)?.file ?? null
+                                                        weekNoteFilesByKey.get(week.key) ?? null
                                                     );
                                                 }}
                                                 onContextMenu={event => {
@@ -1634,7 +1493,7 @@ export function NavigationPaneCalendar({ onWeekCountChange, layout = 'overlay', 
                                                     showCalendarNoteContextMenu(event, {
                                                         kind: 'week',
                                                         date: weekStart.clone().locale(calendarRulesLocale),
-                                                        existingFile: weekNoteEntriesByKey.get(week.key)?.file ?? null,
+                                                        existingFile: weekNoteFilesByKey.get(week.key) ?? null,
                                                         canCreate: weekNotesEnabled
                                                     });
                                                 }}
@@ -1692,14 +1551,13 @@ export function NavigationPaneCalendar({ onWeekCountChange, layout = 'overlay', 
 
                                     const ariaLabel = day.date.clone().locale(displayLocale).format('LL');
                                     const dateTimestamp = day.date.toDate().getTime();
-                                    const basenameTitle = day.file ? parseCalendarBasenameTitle(day.file.basename) : null;
-                                    const tooltipTitleCandidate = day.title || basenameTitle?.title || '';
-                                    const tooltipTitle =
-                                        tooltipTitleCandidate.length > 0
-                                            ? tooltipTitleCandidate
-                                            : DateUtils.formatDate(dateTimestamp, settings.dateFormat);
-                                    const showDate = Boolean(day.title || basenameTitle?.showDate);
-                                    const tooltipAriaText = tooltipTitleCandidate ? `${ariaLabel}, ${tooltipTitleCandidate}` : ariaLabel;
+                                    const frontmatterTitle = day.file ? (frontmatterTitlesByPath.get(day.file.path) ?? '') : '';
+                                    const hasFrontmatterTitle = frontmatterTitle.trim().length > 0;
+                                    const tooltipTitle = hasFrontmatterTitle
+                                        ? frontmatterTitle
+                                        : DateUtils.formatDate(dateTimestamp, settings.dateFormat);
+                                    const showDate = hasFrontmatterTitle;
+                                    const tooltipAriaText = hasFrontmatterTitle ? `${ariaLabel}, ${frontmatterTitle}` : ariaLabel;
                                     const tooltipEnabled = Boolean(day.file || featureImageUrl);
                                     const tooltipData: CalendarHoverTooltipData = {
                                         imageUrl: featureImageUrl,

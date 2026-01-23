@@ -77,10 +77,6 @@ export const STRINGS_UK = {
     navigationCalendar: {
         ariaLabel: 'Календар',
         dailyNotesNotEnabled: 'Плагін щоденних нотаток не увімкнено.',
-        promptDailyNoteTitle: {
-            title: 'Заголовок щоденної нотатки',
-            placeholder: 'Введіть заголовок'
-        },
         createDailyNote: {
             title: 'Нова щоденна нотатка',
             message: 'Файл {filename} не існує. Бажаєте створити його?',
@@ -977,8 +973,7 @@ export const STRINGS_UK = {
                 momentDescSuffix: '.',
                 placeholder: 'YYYY/YYYYMMDD',
                 example: 'Поточний синтаксис: {path}',
-                parsingError: 'Шаблон має форматуватися і знову розбиратися як повна дата (рік, місяць, день).',
-                titlePlaceholder: 'Назва нотатки'
+                parsingError: 'Шаблон має форматуватися і знову розбиратися як повна дата (рік, місяць, день).'
             },
             calendarCustomWeekPattern: {
                 name: 'Щотижневі нотатки',
@@ -995,10 +990,6 @@ export const STRINGS_UK = {
             calendarCustomYearPattern: {
                 name: 'Річні нотатки',
                 parsingError: 'Шаблон має форматуватися і знову розбиратися як повний рік (рік).'
-            },
-            calendarCustomPromptForTitle: {
-                name: 'Запитати заголовок',
-                desc: 'Запитувати заголовок при створенні нотаток. Приймає порожні заголовки.'
             },
             showTooltips: {
                 name: 'Показувати підказки',

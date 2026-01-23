@@ -77,10 +77,6 @@ export const STRINGS_RU = {
     navigationCalendar: {
         ariaLabel: 'Календарь',
         dailyNotesNotEnabled: 'Плагин ежедневных заметок не включён.',
-        promptDailyNoteTitle: {
-            title: 'Заголовок ежедневной заметки',
-            placeholder: 'Введите заголовок'
-        },
         createDailyNote: {
             title: 'Новая ежедневная заметка',
             message: 'Файл {filename} не существует. Хотите создать его?',
@@ -978,8 +974,7 @@ export const STRINGS_RU = {
                 momentDescSuffix: '.',
                 placeholder: 'YYYY/YYYYMMDD',
                 example: 'Текущий синтаксис: {path}',
-                parsingError: 'Шаблон должен форматироваться и разбираться обратно как полная дата (год, месяц, день).',
-                titlePlaceholder: 'Название заметки'
+                parsingError: 'Шаблон должен форматироваться и разбираться обратно как полная дата (год, месяц, день).'
             },
             calendarCustomWeekPattern: {
                 name: 'Еженедельные заметки',
@@ -996,10 +991,6 @@ export const STRINGS_RU = {
             calendarCustomYearPattern: {
                 name: 'Годовые заметки',
                 parsingError: 'Шаблон должен форматироваться и разбираться обратно как полный год (год).'
-            },
-            calendarCustomPromptForTitle: {
-                name: 'Запросить заголовок',
-                desc: 'Запрашивать заголовок при создании заметок. Допускает пустые заголовки.'
             },
             showTooltips: {
                 name: 'Показывать подсказки',

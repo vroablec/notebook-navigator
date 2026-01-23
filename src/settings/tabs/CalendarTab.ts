@@ -433,17 +433,6 @@ export function renderCalendarTab(context: SettingsTabContext): void {
         })
     );
 
-    new Setting(customCalendarSettingsEl)
-        .setName(strings.settings.items.calendarCustomPromptForTitle.name)
-        .setDesc(strings.settings.items.calendarCustomPromptForTitle.desc)
-        .addToggle(toggle =>
-            toggle.setValue(plugin.settings.calendarCustomPromptForTitle).onChange(async value => {
-                plugin.settings.calendarCustomPromptForTitle = value;
-                renderCalendarCustomPatternPreviews();
-                await plugin.saveSettingsAndUpdate();
-            })
-        );
-
     // Read current input values while typing; the setting values are updated via debounced callbacks.
     const getInputValue = (element: HTMLInputElement | null, fallback: string): string => element?.value ?? fallback;
 
@@ -471,9 +460,6 @@ export function renderCalendarTab(context: SettingsTabContext): void {
             return;
         }
 
-        const titleSuffix = plugin.settings.calendarCustomPromptForTitle
-            ? ` ${strings.settings.items.calendarCustomFilePattern.titlePlaceholder}`
-            : '';
         const formatExample = (patternRaw: string, fallback: string): string => {
             const { folderPattern, filePattern } = splitCalendarCustomPattern(patternRaw, fallback);
             const folderFormatter = createCalendarCustomDateFormatter(folderPattern);
@@ -484,7 +470,7 @@ export function renderCalendarTab(context: SettingsTabContext): void {
             const folderPathRelative = folderPath === '/' ? '' : folderPath;
 
             const formattedFilePattern = fileFormatter(sampleDate).trim();
-            const fileName = ensureMarkdownFileName(`${formattedFilePattern}${titleSuffix}`.trim());
+            const fileName = ensureMarkdownFileName(formattedFilePattern);
             return folderPathRelative ? `${folderPathRelative}/${fileName}` : fileName;
         };
 

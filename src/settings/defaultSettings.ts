@@ -126,7 +126,6 @@ export const DEFAULT_SETTINGS: NotebookNavigatorSettings = {
     calendarCustomQuarterPattern: DEFAULT_CALENDAR_CUSTOM_QUARTER_PATTERN,
     calendarCustomYearEnabled: false,
     calendarCustomYearPattern: DEFAULT_CALENDAR_CUSTOM_YEAR_PATTERN,
-    calendarCustomPromptForTitle: true,
 
     // Navigation pane tab - Appearance
     colorIconOnly: false,

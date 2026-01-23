@@ -77,10 +77,6 @@ export const STRINGS_FA = {
     navigationCalendar: {
         ariaLabel: 'تقویم',
         dailyNotesNotEnabled: 'افزونه یادداشت روزانه فعال نیست.',
-        promptDailyNoteTitle: {
-            title: 'عنوان یادداشت روزانه',
-            placeholder: 'عنوان را وارد کنید'
-        },
         createDailyNote: {
             title: 'یادداشت روزانه جدید',
             message: 'فایل {filename} وجود ندارد. آیا می‌خواهید آن را ایجاد کنید؟',
@@ -977,8 +973,7 @@ export const STRINGS_FA = {
                 momentDescSuffix: '.',
                 placeholder: 'YYYY/YYYYMMDD',
                 example: 'نحوه نگارش فعلی: {path}',
-                parsingError: 'الگو باید بتواند به یک تاریخ کامل (سال، ماه، روز) قالب‌بندی شود و دوباره به همان تاریخ تجزیه شود.',
-                titlePlaceholder: 'عنوان یادداشت'
+                parsingError: 'الگو باید بتواند به یک تاریخ کامل (سال، ماه، روز) قالب‌بندی شود و دوباره به همان تاریخ تجزیه شود.'
             },
             calendarCustomWeekPattern: {
                 name: 'یادداشت‌های هفتگی',
@@ -995,10 +990,6 @@ export const STRINGS_FA = {
             calendarCustomYearPattern: {
                 name: 'یادداشت‌های سالانه',
                 parsingError: 'الگو باید بتواند به یک سال کامل (سال) قالب‌بندی شود و دوباره تجزیه شود.'
-            },
-            calendarCustomPromptForTitle: {
-                name: 'درخواست عنوان',
-                desc: 'هنگام ایجاد یادداشت عنوان بخواهید. عناوین خالی پذیرفته می‌شود.'
             },
             showTooltips: {
                 name: 'نمایش راهنماها',

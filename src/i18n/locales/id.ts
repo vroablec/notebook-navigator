@@ -77,10 +77,6 @@ export const STRINGS_ID = {
     navigationCalendar: {
         ariaLabel: 'Kalender',
         dailyNotesNotEnabled: 'Plugin catatan harian tidak diaktifkan.',
-        promptDailyNoteTitle: {
-            title: 'Judul catatan harian',
-            placeholder: 'Masukkan judul'
-        },
         createDailyNote: {
             title: 'Catatan harian baru',
             message: 'File {filename} tidak ada. Apakah Anda ingin membuatnya?',
@@ -977,8 +973,7 @@ export const STRINGS_ID = {
                 momentDescSuffix: '.',
                 placeholder: 'YYYY/YYYYMMDD',
                 example: 'Sintaks saat ini: {path}',
-                parsingError: 'Pola harus dapat diformat dan diparse kembali sebagai tanggal lengkap (tahun, bulan, hari).',
-                titlePlaceholder: 'Judul catatan'
+                parsingError: 'Pola harus dapat diformat dan diparse kembali sebagai tanggal lengkap (tahun, bulan, hari).'
             },
             calendarCustomWeekPattern: {
                 name: 'Catatan mingguan',
@@ -995,10 +990,6 @@ export const STRINGS_ID = {
             calendarCustomYearPattern: {
                 name: 'Catatan tahunan',
                 parsingError: 'Pola harus dapat diformat dan diparse kembali sebagai tahun lengkap (tahun).'
-            },
-            calendarCustomPromptForTitle: {
-                name: 'Minta judul',
-                desc: 'Minta judul saat membuat catatan. Menerima judul kosong.'
             },
             showTooltips: {
                 name: 'Tampilkan tooltip',
