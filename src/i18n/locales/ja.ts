@@ -32,6 +32,7 @@ export const STRINGS_JA = {
         untagged: 'タグなし', // Label for notes without any tags (English: Untagged)
         featureImageAlt: 'アイキャッチ画像', // Alt text for thumbnail/preview images (English: Feature image)
         unknownError: '不明なエラー', // Generic fallback when an error has no message (English: Unknown error)
+        clipboardWriteError: 'クリップボードに書き込めませんでした',
         updateBannerTitle: 'Notebook Navigator の更新があります',
         updateBannerInstruction: '設定 -> コミュニティプラグイン で更新',
         updateIndicatorLabel: '新しいバージョンがあります',
@@ -160,9 +161,6 @@ export const STRINGS_JA = {
             revealInFolder: 'フォルダで表示',
             revealInFinder: 'Finderで表示',
             showInExplorer: 'システムエクスプローラーで表示',
-            copyDeepLink: 'Obsidian URL をコピー',
-            copyPath: 'ファイルシステムパスをコピー',
-            copyRelativePath: 'Vaultパスをコピー',
             renameNote: 'ノートの名前を変更',
             deleteNote: 'ノートを削除',
             deleteMultipleNotes: '{count}個のノートを削除',
@@ -200,8 +198,6 @@ export const STRINGS_JA = {
             newTldrawDrawing: '新規 Tldraw 図面',
             duplicateFolder: 'フォルダを複製',
             searchInFolder: 'フォルダ内を検索',
-            copyPath: 'ファイルシステムパスをコピー',
-            copyRelativePath: 'Vaultパスをコピー',
             createFolderNote: 'フォルダノートを作成',
             detachFolderNote: 'フォルダノートを解除',
             deleteFolderNote: 'フォルダーノートを削除',
@@ -224,6 +220,12 @@ export const STRINGS_JA = {
         navigation: {
             addSeparator: '区切り線を追加',
             removeSeparator: '区切り線を削除'
+        },
+        copyPath: {
+            title: 'パスをコピー',
+            asObsidianUrl: 'Obsidian URL として',
+            fromVaultFolder: 'Vault フォルダから',
+            fromSystemRoot: 'システムルートから'
         },
         style: {
             title: 'スタイル',
@@ -306,7 +308,6 @@ export const STRINGS_JA = {
             paletteCustom: 'カスタム',
             copyColors: '色をコピー',
             colorsCopied: 'クリップボードにコピーしました',
-            copyClipboardError: 'クリップボードに書き込めませんでした',
             pasteColors: '色を貼り付け',
             pasteClipboardError: 'クリップボードを読み取れませんでした',
             pasteInvalidFormat: '16進数の色の値が必要です',

@@ -32,6 +32,7 @@ export const STRINGS_IT = {
         untagged: 'Senza tag', // Label for notes without any tags (English: Untagged)
         featureImageAlt: 'Immagine in evidenza', // Alt text for thumbnail/preview images (English: Feature image)
         unknownError: 'Errore sconosciuto', // Generic fallback when an error has no message (English: Unknown error)
+        clipboardWriteError: 'Impossibile scrivere negli appunti',
         updateBannerTitle: 'Aggiornamento Notebook Navigator disponibile',
         updateBannerInstruction: 'Aggiorna in Impostazioni -> Plugin della community',
         updateIndicatorLabel: 'Nuova versione disponibile',
@@ -170,9 +171,6 @@ export const STRINGS_IT = {
             revealInFolder: 'Mostra nella cartella',
             revealInFinder: 'Mostra nel Finder',
             showInExplorer: 'Mostra in esplora risorse',
-            copyDeepLink: 'Copia URL Obsidian',
-            copyPath: 'Copia percorso file system',
-            copyRelativePath: 'Copia percorso vault',
             renameNote: 'Rinomina nota',
             renameFile: 'Rinomina file',
             deleteNote: 'Elimina nota',
@@ -200,8 +198,6 @@ export const STRINGS_IT = {
             newTldrawDrawing: 'Nuovo disegno Tldraw',
             duplicateFolder: 'Duplica cartella',
             searchInFolder: 'Cerca nella cartella',
-            copyPath: 'Copia percorso file system',
-            copyRelativePath: 'Copia percorso vault',
             createFolderNote: 'Crea nota cartella',
             detachFolderNote: 'Scollega nota cartella',
             deleteFolderNote: 'Elimina nota cartella',
@@ -224,6 +220,12 @@ export const STRINGS_IT = {
         navigation: {
             addSeparator: 'Aggiungi separatore',
             removeSeparator: 'Rimuovi separatore'
+        },
+        copyPath: {
+            title: 'Copia percorso',
+            asObsidianUrl: 'come URL Obsidian',
+            fromVaultFolder: 'dalla cartella vault',
+            fromSystemRoot: 'dalla radice di sistema'
         },
         style: {
             title: 'Stile',
@@ -306,7 +308,6 @@ export const STRINGS_IT = {
             paletteCustom: 'Personalizzato',
             copyColors: 'Copia colore',
             colorsCopied: 'Colore copiato negli appunti',
-            copyClipboardError: 'Impossibile scrivere negli appunti',
             pasteColors: 'Incolla colore',
             pasteClipboardError: 'Impossibile leggere gli appunti',
             pasteInvalidFormat: 'Previsto un valore colore hex',

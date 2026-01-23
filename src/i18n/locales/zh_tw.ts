@@ -32,6 +32,7 @@ export const STRINGS_ZH_TW = {
         untagged: '無標籤',
         featureImageAlt: '特色圖片',
         unknownError: '未知錯誤',
+        clipboardWriteError: '無法寫入剪貼簿',
         updateBannerTitle: 'Notebook Navigator 有可用更新',
         updateBannerInstruction: '在設定 -> 社群外掛中更新',
         updateIndicatorLabel: '有新版本可用',
@@ -160,9 +161,6 @@ export const STRINGS_ZH_TW = {
             revealInFolder: '在資料夾中定位',
             revealInFinder: '在 Finder 中顯示',
             showInExplorer: '在檔案總管中顯示',
-            copyDeepLink: '複製 Obsidian URL',
-            copyPath: '複製檔案系統路徑',
-            copyRelativePath: '複製保險庫路徑',
             renameNote: '重新命名筆記',
             deleteNote: '刪除筆記',
             deleteMultipleNotes: '刪除 {count} 個筆記',
@@ -200,8 +198,6 @@ export const STRINGS_ZH_TW = {
             newTldrawDrawing: '新建 Tldraw 繪圖',
             duplicateFolder: '複製資料夾',
             searchInFolder: '在資料夾中搜尋',
-            copyPath: '複製檔案系統路徑',
-            copyRelativePath: '複製保險庫路徑',
             createFolderNote: '建立資料夾筆記',
             detachFolderNote: '解除資料夾筆記',
             deleteFolderNote: '刪除資料夾筆記',
@@ -224,6 +220,12 @@ export const STRINGS_ZH_TW = {
         navigation: {
             addSeparator: '新增分隔線',
             removeSeparator: '移除分隔線'
+        },
+        copyPath: {
+            title: '複製路徑',
+            asObsidianUrl: '作為 Obsidian URL',
+            fromVaultFolder: '從保險庫資料夾',
+            fromSystemRoot: '從系統根目錄'
         },
         style: {
             title: '樣式',
@@ -306,7 +308,6 @@ export const STRINGS_ZH_TW = {
             paletteCustom: '自訂',
             copyColors: '複製顏色',
             colorsCopied: '顏色已複製到剪貼簿',
-            copyClipboardError: '無法寫入剪貼簿',
             pasteColors: '貼上顏色',
             pasteClipboardError: '無法讀取剪貼簿',
             pasteInvalidFormat: '需要十六進位顏色值',

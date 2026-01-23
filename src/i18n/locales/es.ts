@@ -32,6 +32,7 @@ export const STRINGS_ES = {
         untagged: 'Sin etiquetas', // Label for notes without any tags (English: Untagged)
         featureImageAlt: 'Imagen destacada', // Alt text for thumbnail/preview images (English: Feature image)
         unknownError: 'Error desconocido', // Generic fallback when an error has no message (English: Unknown error)
+        clipboardWriteError: 'No se pudo escribir en el portapapeles',
         updateBannerTitle: 'Actualización de Notebook Navigator disponible',
         updateBannerInstruction: 'Actualiza en Ajustes -> Complementos de la comunidad',
         updateIndicatorLabel: 'Nueva versión disponible',
@@ -160,9 +161,6 @@ export const STRINGS_ES = {
             revealInFolder: 'Mostrar en carpeta',
             revealInFinder: 'Mostrar en Finder',
             showInExplorer: 'Mostrar en el explorador del sistema',
-            copyDeepLink: 'Copiar URL de Obsidian',
-            copyPath: 'Copiar ruta del sistema de archivos',
-            copyRelativePath: 'Copiar ruta del vault',
             renameNote: 'Renombrar nota',
             deleteNote: 'Eliminar nota',
             deleteMultipleNotes: 'Eliminar {count} notas',
@@ -200,8 +198,6 @@ export const STRINGS_ES = {
             newTldrawDrawing: 'Nuevo dibujo de Tldraw',
             duplicateFolder: 'Duplicar carpeta',
             searchInFolder: 'Buscar en carpeta',
-            copyPath: 'Copiar ruta del sistema de archivos',
-            copyRelativePath: 'Copiar ruta del vault',
             createFolderNote: 'Crear nota de carpeta',
             detachFolderNote: 'Desvincular nota de carpeta',
             deleteFolderNote: 'Eliminar nota de carpeta',
@@ -224,6 +220,12 @@ export const STRINGS_ES = {
         navigation: {
             addSeparator: 'Agregar separador',
             removeSeparator: 'Eliminar separador'
+        },
+        copyPath: {
+            title: 'Copiar ruta',
+            asObsidianUrl: 'como URL de Obsidian',
+            fromVaultFolder: 'desde la carpeta del vault',
+            fromSystemRoot: 'desde la raíz del sistema'
         },
         style: {
             title: 'Estilo',
@@ -306,7 +308,6 @@ export const STRINGS_ES = {
             paletteCustom: 'Personalizado',
             copyColors: 'Copiar color',
             colorsCopied: 'Color copiado al portapapeles',
-            copyClipboardError: 'No se pudo escribir en el portapapeles',
             pasteColors: 'Pegar color',
             pasteClipboardError: 'No se pudo leer el portapapeles',
             pasteInvalidFormat: 'Se esperaba un valor de color hex',

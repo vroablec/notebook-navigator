@@ -31,10 +31,9 @@ import { SelectionState, SelectionAction } from '../../context/SelectionContext'
 import type { ShortcutsContextValue } from '../../context/ShortcutsContext';
 import { NotebookNavigatorSettings } from '../../settings';
 import { CommandQueueService } from '../../services/CommandQueueService';
-import { setAsyncOnClick } from './menuAsyncHelpers';
+import { addCopyPathSubmenu, setAsyncOnClick } from './menuAsyncHelpers';
 import { addShortcutRenameMenuItem } from './shortcutRenameMenuItem';
 import { openFileInContext } from '../openFileInContext';
-import { showNotice } from '../noticeUtils';
 import { confirmRemoveAllTagsFromFiles, openAddTagToFilesModal, removeTagFromFilesWithPrompt } from '../tagModalHelpers';
 import { addStyleMenu } from './styleMenuBuilder';
 import { resolveUXIconForMenu } from '../uxIcons';
@@ -356,42 +355,22 @@ export function buildFileMenu(params: FileMenuBuilderParams): void {
     // Copy actions - single selection only
     if (!shouldShowMultiOptions) {
         const adapter = app.vault.adapter;
-
-        // Copy relative path
-        menu.addItem((item: MenuItem) => {
-            setAsyncOnClick(item.setTitle(strings.contextMenu.file.copyRelativePath).setIcon('lucide-clipboard-list'), async () => {
-                await navigator.clipboard.writeText(file.path);
-                showNotice(strings.fileSystem.notifications.relativePathCopied, { variant: 'success' });
-            });
-        });
-
-        // Copy absolute path if available
-        if (adapter instanceof FileSystemAdapter) {
-            menu.addItem((item: MenuItem) => {
-                setAsyncOnClick(item.setTitle(strings.contextMenu.file.copyPath).setIcon('lucide-clipboard'), async () => {
-                    // Get full system path from the file system adapter
-                    const absolutePath = adapter.getFullPath(file.path);
-                    await navigator.clipboard.writeText(absolutePath);
-                    showNotice(strings.fileSystem.notifications.pathCopied, { variant: 'success' });
-                });
-            });
-        }
-
-        // Copy Obsidian URL
-        menu.addItem((item: MenuItem) => {
-            setAsyncOnClick(item.setTitle(strings.contextMenu.file.copyDeepLink).setIcon('lucide-link'), async () => {
+        const fileSystemAdapter = adapter instanceof FileSystemAdapter ? adapter : null;
+        const addedCopyMenu = addCopyPathSubmenu({
+            menu,
+            getObsidianUrl: () => {
                 const vaultName = app.vault.getName();
                 const encodedVault = encodeURIComponent(vaultName);
                 const encodedFile = encodeURIComponent(file.path);
-                // Construct Obsidian URL with encoded vault and file path
-                const deepLink = `obsidian://open?vault=${encodedVault}&file=${encodedFile}`;
-
-                await navigator.clipboard.writeText(deepLink);
-                showNotice(strings.fileSystem.notifications.deepLinkCopied, { variant: 'success' });
-            });
+                return `obsidian://open?vault=${encodedVault}&file=${encodedFile}`;
+            },
+            getVaultPath: () => file.path,
+            getSystemPath: fileSystemAdapter ? () => fileSystemAdapter.getFullPath(file.path) : undefined
         });
 
-        menu.addSeparator();
+        if (addedCopyMenu) {
+            menu.addSeparator();
+        }
     }
 
     // Reveal options - single selection only

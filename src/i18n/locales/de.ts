@@ -32,6 +32,7 @@ export const STRINGS_DE = {
         untagged: 'Ohne Tag', // Label for notes without any tags (English: Untagged)
         featureImageAlt: 'Vorschaubild', // Alt text for thumbnail/preview images (English: Feature image)
         unknownError: 'Unbekannter Fehler', // Generic fallback when an error has no message (English: Unknown error)
+        clipboardWriteError: 'Konnte nicht in Zwischenablage schreiben',
         updateBannerTitle: 'Notebook Navigator-Update verfügbar',
         updateBannerInstruction: 'In Einstellungen -> Community-Plugins aktualisieren',
         updateIndicatorLabel: 'Neue Version verfügbar',
@@ -160,9 +161,6 @@ export const STRINGS_DE = {
             revealInFolder: 'Im Ordner anzeigen',
             revealInFinder: 'Im Finder anzeigen',
             showInExplorer: 'Im Explorer anzeigen',
-            copyDeepLink: 'Obsidian-URL kopieren',
-            copyPath: 'Dateisystempfad kopieren',
-            copyRelativePath: 'Vault-Pfad kopieren',
             renameNote: 'Notiz umbenennen',
             deleteNote: 'Notiz löschen',
             deleteMultipleNotes: '{count} Notizen löschen',
@@ -200,8 +198,6 @@ export const STRINGS_DE = {
             newTldrawDrawing: 'Neue Tldraw-Zeichnung',
             duplicateFolder: 'Ordner duplizieren',
             searchInFolder: 'In Ordner suchen',
-            copyPath: 'Dateisystempfad kopieren',
-            copyRelativePath: 'Vault-Pfad kopieren',
             createFolderNote: 'Ordnernotiz erstellen',
             detachFolderNote: 'Ordnernotiz lösen',
             deleteFolderNote: 'Ordnernotiz löschen',
@@ -224,6 +220,12 @@ export const STRINGS_DE = {
         navigation: {
             addSeparator: 'Trennlinie hinzufügen',
             removeSeparator: 'Trennlinie entfernen'
+        },
+        copyPath: {
+            title: 'Pfad kopieren',
+            asObsidianUrl: 'als Obsidian-URL',
+            fromVaultFolder: 'vom Vault-Ordner',
+            fromSystemRoot: 'vom Systemstammverzeichnis'
         },
         style: {
             title: 'Stil',
@@ -306,7 +308,6 @@ export const STRINGS_DE = {
             paletteCustom: 'Benutzerdefiniert',
             copyColors: 'Farbe kopieren',
             colorsCopied: 'Farbe in Zwischenablage kopiert',
-            copyClipboardError: 'Konnte nicht in Zwischenablage schreiben',
             pasteColors: 'Farbe einfügen',
             pasteClipboardError: 'Zwischenablage konnte nicht gelesen werden',
             pasteInvalidFormat: 'Ein Hex-Farbwert erwartet',

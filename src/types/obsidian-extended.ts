@@ -18,6 +18,12 @@
 
 import type { App, Plugin, View, WorkspaceLeaf, TFile } from 'obsidian';
 
+declare module 'obsidian' {
+    interface MenuItem {
+        setSubmenu?: (submenu?: import('obsidian').Menu) => import('obsidian').Menu | void;
+    }
+}
+
 /** MIME type identifier for tag drag-and-drop operations */
 export const TAG_DRAG_MIME = 'application/x-notebook-navigator-tag';
 

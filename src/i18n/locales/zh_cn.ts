@@ -32,6 +32,7 @@ export const STRINGS_ZH_CN = {
         untagged: '无标签', // Label for notes without any tags (English: Untagged)
         featureImageAlt: '特色图片', // Alt text for thumbnail/preview images (English: Feature image)
         unknownError: '未知错误', // Generic fallback when an error has no message (English: Unknown error)
+        clipboardWriteError: '无法写入剪贴板',
         updateBannerTitle: 'Notebook Navigator 有可用更新',
         updateBannerInstruction: '在设置 -> 社区插件中更新',
         updateIndicatorLabel: '有新版本可用',
@@ -160,9 +161,6 @@ export const STRINGS_ZH_CN = {
             revealInFolder: '在文件夹中定位',
             revealInFinder: '在访达中显示',
             showInExplorer: '在资源管理器中显示',
-            copyDeepLink: '复制 Obsidian URL',
-            copyPath: '复制文件系统路径',
-            copyRelativePath: '复制仓库路径',
             renameNote: '重命名笔记',
             deleteNote: '删除笔记',
             deleteMultipleNotes: '删除 {count} 个笔记',
@@ -200,8 +198,6 @@ export const STRINGS_ZH_CN = {
             newTldrawDrawing: '新建 Tldraw 绘图',
             duplicateFolder: '复制文件夹',
             searchInFolder: '在文件夹中搜索',
-            copyPath: '复制文件系统路径',
-            copyRelativePath: '复制仓库路径',
             createFolderNote: '创建文件夹笔记',
             detachFolderNote: '解除文件夹笔记',
             deleteFolderNote: '删除文件夹笔记',
@@ -224,6 +220,12 @@ export const STRINGS_ZH_CN = {
         navigation: {
             addSeparator: '添加分隔符',
             removeSeparator: '移除分隔符'
+        },
+        copyPath: {
+            title: '复制路径',
+            asObsidianUrl: '作为 Obsidian URL',
+            fromVaultFolder: '从仓库文件夹',
+            fromSystemRoot: '从系统根目录'
         },
         style: {
             title: '样式',
@@ -306,7 +308,6 @@ export const STRINGS_ZH_CN = {
             paletteCustom: '自定义',
             copyColors: '复制颜色',
             colorsCopied: '颜色已复制到剪贴板',
-            copyClipboardError: '无法写入剪贴板',
             pasteColors: '粘贴颜色',
             pasteClipboardError: '无法读取剪贴板',
             pasteInvalidFormat: '需要十六进制颜色值',

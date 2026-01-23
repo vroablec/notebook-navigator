@@ -32,6 +32,7 @@ export const STRINGS_ID = {
         untagged: 'Tanpa tag',
         featureImageAlt: 'Gambar unggulan',
         unknownError: 'Kesalahan tidak diketahui',
+        clipboardWriteError: 'Tidak dapat menulis ke clipboard',
         updateBannerTitle: 'Pembaruan Notebook Navigator tersedia',
         updateBannerInstruction: 'Perbarui di Pengaturan -> Plugin komunitas',
         updateIndicatorLabel: 'Versi baru tersedia',
@@ -170,9 +171,6 @@ export const STRINGS_ID = {
             revealInFolder: 'Tampilkan di folder',
             revealInFinder: 'Tampilkan di Finder',
             showInExplorer: 'Tampilkan di explorer sistem',
-            copyDeepLink: 'Salin URL Obsidian',
-            copyPath: 'Salin path sistem file',
-            copyRelativePath: 'Salin path vault',
             renameNote: 'Ubah nama catatan',
             renameFile: 'Ubah nama file',
             deleteNote: 'Hapus catatan',
@@ -200,8 +198,6 @@ export const STRINGS_ID = {
             newTldrawDrawing: 'Gambar Tldraw baru',
             duplicateFolder: 'Duplikat folder',
             searchInFolder: 'Cari di folder',
-            copyPath: 'Salin path sistem file',
-            copyRelativePath: 'Salin path vault',
             createFolderNote: 'Buat catatan folder',
             detachFolderNote: 'Lepaskan catatan folder',
             deleteFolderNote: 'Hapus catatan folder',
@@ -224,6 +220,12 @@ export const STRINGS_ID = {
         navigation: {
             addSeparator: 'Tambah pemisah',
             removeSeparator: 'Hapus pemisah'
+        },
+        copyPath: {
+            title: 'Salin path',
+            asObsidianUrl: 'sebagai URL Obsidian',
+            fromVaultFolder: 'dari folder vault',
+            fromSystemRoot: 'dari root sistem'
         },
         style: {
             title: 'Gaya',
@@ -306,7 +308,6 @@ export const STRINGS_ID = {
             paletteCustom: 'Kustom',
             copyColors: 'Salin warna',
             colorsCopied: 'Warna disalin ke clipboard',
-            copyClipboardError: 'Tidak dapat menulis ke clipboard',
             pasteColors: 'Tempel warna',
             pasteClipboardError: 'Tidak dapat membaca clipboard',
             pasteInvalidFormat: 'Diharapkan nilai warna hex',

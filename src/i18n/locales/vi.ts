@@ -32,6 +32,7 @@ export const STRINGS_VI = {
         untagged: 'Không có thẻ', // Label for notes without any tags (English: Untagged)
         featureImageAlt: 'Ảnh nổi bật', // Alt text for thumbnail/preview images (English: Feature image)
         unknownError: 'Lỗi không xác định', // Generic fallback when an error has no message (English: Unknown error)
+        clipboardWriteError: 'Không thể ghi vào clipboard',
         updateBannerTitle: 'Có bản cập nhật Notebook Navigator',
         updateBannerInstruction: 'Cập nhật trong Cài đặt -> Plugin cộng đồng',
         updateIndicatorLabel: 'Có phiên bản mới',
@@ -170,9 +171,6 @@ export const STRINGS_VI = {
             revealInFolder: 'Hiện trong thư mục',
             revealInFinder: 'Hiện trong Finder',
             showInExplorer: 'Hiện trong trình quản lý tệp',
-            copyDeepLink: 'Sao chép URL Obsidian',
-            copyPath: 'Sao chép đường dẫn hệ thống',
-            copyRelativePath: 'Sao chép đường dẫn vault',
             renameNote: 'Đổi tên ghi chú',
             renameFile: 'Đổi tên tệp',
             deleteNote: 'Xóa ghi chú',
@@ -200,8 +198,6 @@ export const STRINGS_VI = {
             newTldrawDrawing: 'Bản vẽ Tldraw mới',
             duplicateFolder: 'Nhân bản thư mục',
             searchInFolder: 'Tìm trong thư mục',
-            copyPath: 'Sao chép đường dẫn hệ thống',
-            copyRelativePath: 'Sao chép đường dẫn vault',
             createFolderNote: 'Tạo ghi chú thư mục',
             detachFolderNote: 'Tách ghi chú thư mục',
             deleteFolderNote: 'Xóa ghi chú thư mục',
@@ -224,6 +220,12 @@ export const STRINGS_VI = {
         navigation: {
             addSeparator: 'Thêm dấu phân cách',
             removeSeparator: 'Gỡ dấu phân cách'
+        },
+        copyPath: {
+            title: 'Sao chép đường dẫn',
+            asObsidianUrl: 'dưới dạng URL Obsidian',
+            fromVaultFolder: 'từ thư mục vault',
+            fromSystemRoot: 'từ gốc hệ thống'
         },
         style: {
             title: 'Kiểu',
@@ -306,7 +308,6 @@ export const STRINGS_VI = {
             paletteCustom: 'Tùy chỉnh',
             copyColors: 'Sao chép màu',
             colorsCopied: 'Đã sao chép màu vào clipboard',
-            copyClipboardError: 'Không thể ghi vào clipboard',
             pasteColors: 'Dán màu',
             pasteClipboardError: 'Không thể đọc clipboard',
             pasteInvalidFormat: 'Yêu cầu giá trị màu hex',

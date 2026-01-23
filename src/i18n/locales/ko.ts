@@ -32,6 +32,7 @@ export const STRINGS_KO = {
         untagged: '태그 없음', // Label for notes without any tags (English: Untagged)
         featureImageAlt: '대표 이미지', // Alt text for thumbnail/preview images (English: Feature image)
         unknownError: '알 수 없는 오류', // Generic fallback when an error has no message (English: Unknown error)
+        clipboardWriteError: '클립보드에 쓸 수 없습니다',
         updateBannerTitle: 'Notebook Navigator 업데이트 사용 가능',
         updateBannerInstruction: '설정 -> 커뮤니티 플러그인에서 업데이트',
         updateIndicatorLabel: '새 버전이 있습니다',
@@ -169,9 +170,6 @@ export const STRINGS_KO = {
             revealInFolder: '폴더에서 표시',
             revealInFinder: 'Finder에서 표시',
             showInExplorer: '시스템 탐색기에서 표시',
-            copyDeepLink: 'Obsidian URL 복사',
-            copyPath: '파일 시스템 경로 복사',
-            copyRelativePath: 'Vault 경로 복사',
             renameNote: '노트 이름 변경',
             renameFile: '파일 이름 변경',
             deleteNote: '노트 삭제',
@@ -199,8 +197,6 @@ export const STRINGS_KO = {
             newTldrawDrawing: '새 Tldraw 드로잉',
             duplicateFolder: '폴더 복제',
             searchInFolder: '폴더에서 검색',
-            copyPath: '파일 시스템 경로 복사',
-            copyRelativePath: 'Vault 경로 복사',
             createFolderNote: '폴더 노트 만들기',
             detachFolderNote: '폴더 노트 해제',
             deleteFolderNote: '폴더 노트 삭제',
@@ -223,6 +219,12 @@ export const STRINGS_KO = {
         navigation: {
             addSeparator: '구분선 추가',
             removeSeparator: '구분선 제거'
+        },
+        copyPath: {
+            title: '경로 복사',
+            asObsidianUrl: 'Obsidian URL로',
+            fromVaultFolder: 'Vault 폴더에서',
+            fromSystemRoot: '시스템 루트에서'
         },
         style: {
             title: '스타일',
@@ -305,7 +307,6 @@ export const STRINGS_KO = {
             paletteCustom: '사용자 정의',
             copyColors: '색상 복사',
             colorsCopied: '클립보드에 복사됨',
-            copyClipboardError: '클립보드에 쓸 수 없습니다',
             pasteColors: '색상 붙여넣기',
             pasteClipboardError: '클립보드를 읽을 수 없습니다',
             pasteInvalidFormat: '16진수 색상 값이 필요합니다',

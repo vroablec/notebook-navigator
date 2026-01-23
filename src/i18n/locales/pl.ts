@@ -32,6 +32,7 @@ export const STRINGS_PL = {
         untagged: 'Bez tagów', // Label for notes without any tags (English: Untagged)
         featureImageAlt: 'Obraz wyróżniający', // Alt text for thumbnail/preview images (English: Feature image)
         unknownError: 'Nieznany błąd', // Generic fallback when an error has no message (English: Unknown error)
+        clipboardWriteError: 'Nie można zapisać do schowka',
         updateBannerTitle: 'Aktualizacja Notebook Navigator dostępna',
         updateBannerInstruction: 'Zaktualizuj w Ustawieniach -> Wtyczki społeczności',
         updateIndicatorLabel: 'Nowa wersja dostępna',
@@ -169,9 +170,6 @@ export const STRINGS_PL = {
             revealInFolder: 'Pokaż w folderze',
             revealInFinder: 'Pokaż w Finderze',
             showInExplorer: 'Pokaż w eksploratorze systemowym',
-            copyDeepLink: 'Kopiuj adres URL Obsidian',
-            copyPath: 'Kopiuj ścieżkę systemu plików',
-            copyRelativePath: 'Kopiuj ścieżkę skarbca',
             renameNote: 'Zmień nazwę notatki',
             renameFile: 'Zmień nazwę pliku',
             deleteNote: 'Usuń notatkę',
@@ -199,8 +197,6 @@ export const STRINGS_PL = {
             newTldrawDrawing: 'Nowy rysunek Tldraw',
             duplicateFolder: 'Duplikuj folder',
             searchInFolder: 'Szukaj w folderze',
-            copyPath: 'Kopiuj ścieżkę systemu plików',
-            copyRelativePath: 'Kopiuj ścieżkę skarbca',
             createFolderNote: 'Utwórz notatkę folderu',
             detachFolderNote: 'Odłącz notatkę folderu',
             deleteFolderNote: 'Usuń notatkę folderu',
@@ -223,6 +219,12 @@ export const STRINGS_PL = {
         navigation: {
             addSeparator: 'Dodaj separator',
             removeSeparator: 'Usuń separator'
+        },
+        copyPath: {
+            title: 'Kopiuj ścieżkę',
+            asObsidianUrl: 'jako adres URL Obsidian',
+            fromVaultFolder: 'z folderu skarbca',
+            fromSystemRoot: 'z katalogu głównego systemu'
         },
         style: {
             title: 'Styl',
@@ -307,7 +309,6 @@ export const STRINGS_PL = {
             paletteCustom: 'Własne',
             copyColors: 'Kopiuj kolor',
             colorsCopied: 'Kolor skopiowany do schowka',
-            copyClipboardError: 'Nie można zapisać do schowka',
             pasteColors: 'Wklej kolor',
             pasteClipboardError: 'Nie można odczytać schowka',
             pasteInvalidFormat: 'Oczekiwano wartości koloru hex',

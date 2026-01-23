@@ -32,6 +32,7 @@ export const STRINGS_PT = {
         untagged: 'Sem etiquetas', // Label for notes without any tags (English: Untagged)
         featureImageAlt: 'Imagem de destaque', // Alt text for thumbnail/preview images (English: Feature image)
         unknownError: 'Erro desconhecido', // Generic fallback when an error has no message (English: Unknown error)
+        clipboardWriteError: 'Não foi possível escrever na área de transferência',
         updateBannerTitle: 'Atualização do Notebook Navigator disponível',
         updateBannerInstruction: 'Atualize em Definições -> Plugins da comunidade',
         updateIndicatorLabel: 'Nova versão disponível',
@@ -170,9 +171,6 @@ export const STRINGS_PT = {
             revealInFolder: 'Revelar na pasta',
             revealInFinder: 'Revelar no Finder',
             showInExplorer: 'Mostrar no explorador do sistema',
-            copyDeepLink: 'Copiar URL do Obsidian',
-            copyPath: 'Copiar caminho do sistema de ficheiros',
-            copyRelativePath: 'Copiar caminho do cofre',
             renameNote: 'Renomear nota',
             renameFile: 'Renomear ficheiro',
             deleteNote: 'Eliminar nota',
@@ -200,8 +198,6 @@ export const STRINGS_PT = {
             newTldrawDrawing: 'Novo desenho Tldraw',
             duplicateFolder: 'Duplicar pasta',
             searchInFolder: 'Pesquisar na pasta',
-            copyPath: 'Copiar caminho do sistema de ficheiros',
-            copyRelativePath: 'Copiar caminho do cofre',
             createFolderNote: 'Criar nota de pasta',
             detachFolderNote: 'Desvincular nota de pasta',
             deleteFolderNote: 'Eliminar nota de pasta',
@@ -224,6 +220,12 @@ export const STRINGS_PT = {
         navigation: {
             addSeparator: 'Adicionar separador',
             removeSeparator: 'Remover separador'
+        },
+        copyPath: {
+            title: 'Copiar caminho',
+            asObsidianUrl: 'como URL do Obsidian',
+            fromVaultFolder: 'a partir da pasta do cofre',
+            fromSystemRoot: 'a partir da raiz do sistema'
         },
         style: {
             title: 'Estilo',
@@ -306,7 +308,6 @@ export const STRINGS_PT = {
             paletteCustom: 'Personalizado',
             copyColors: 'Copiar cor',
             colorsCopied: 'Cor copiada para a área de transferência',
-            copyClipboardError: 'Não foi possível escrever na área de transferência',
             pasteColors: 'Colar cor',
             pasteClipboardError: 'Não foi possível ler a área de transferência',
             pasteInvalidFormat: 'Esperado um valor de cor hex',

@@ -32,6 +32,7 @@ export const STRINGS_FA = {
         untagged: 'بدون برچسب',
         featureImageAlt: 'تصویر ویژه',
         unknownError: 'خطای ناشناخته',
+        clipboardWriteError: 'نمی‌توان در کلیپ‌بورد نوشت',
         updateBannerTitle: 'به‌روزرسانی Notebook Navigator موجود است',
         updateBannerInstruction: 'در تنظیمات -> افزونه‌های انجمن به‌روزرسانی کنید',
         updateIndicatorLabel: 'نسخه جدید موجود است',
@@ -170,9 +171,6 @@ export const STRINGS_FA = {
             revealInFolder: 'نمایش در پوشه',
             revealInFinder: 'نمایش در Finder',
             showInExplorer: 'نمایش در مرورگر سیستم',
-            copyDeepLink: 'کپی URL اوبسیدین',
-            copyPath: 'کپی مسیر سیستم فایل',
-            copyRelativePath: 'کپی مسیر خزانه',
             renameNote: 'تغییر نام یادداشت',
             renameFile: 'تغییر نام فایل',
             deleteNote: 'حذف یادداشت',
@@ -200,8 +198,6 @@ export const STRINGS_FA = {
             newTldrawDrawing: 'طراحی Tldraw جدید',
             duplicateFolder: 'کپی پوشه',
             searchInFolder: 'جستجو در پوشه',
-            copyPath: 'کپی مسیر سیستم فایل',
-            copyRelativePath: 'کپی مسیر خزانه',
             createFolderNote: 'ایجاد یادداشت پوشه',
             detachFolderNote: 'جدا کردن یادداشت پوشه',
             deleteFolderNote: 'حذف یادداشت پوشه',
@@ -224,6 +220,12 @@ export const STRINGS_FA = {
         navigation: {
             addSeparator: 'افزودن جداکننده',
             removeSeparator: 'حذف جداکننده'
+        },
+        copyPath: {
+            title: 'کپی مسیر',
+            asObsidianUrl: 'به‌صورت URL اوبسیدین',
+            fromVaultFolder: 'از پوشه خزانه',
+            fromSystemRoot: 'از ریشه سیستم'
         },
         style: {
             title: 'سبک',
@@ -306,7 +308,6 @@ export const STRINGS_FA = {
             paletteCustom: 'سفارشی',
             copyColors: 'کپی رنگ',
             colorsCopied: 'رنگ در کلیپ‌بورد کپی شد',
-            copyClipboardError: 'نمی‌توان در کلیپ‌بورد نوشت',
             pasteColors: 'چسباندن رنگ',
             pasteClipboardError: 'نمی‌توان کلیپ‌بورد را خواند',
             pasteInvalidFormat: 'مقدار رنگ hex مورد انتظار است',

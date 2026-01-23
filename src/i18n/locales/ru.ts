@@ -32,6 +32,7 @@ export const STRINGS_RU = {
         untagged: 'Без тегов', // Label for notes without any tags (English: Untagged)
         featureImageAlt: 'Изображение', // Alt text for thumbnail/preview images (English: Feature image)
         unknownError: 'Неизвестная ошибка', // Generic fallback when an error has no message (English: Unknown error)
+        clipboardWriteError: 'Не удалось записать в буфер обмена',
         updateBannerTitle: 'Доступно обновление Notebook Navigator',
         updateBannerInstruction: 'Обновите в Настройки -> Сторонние плагины',
         updateIndicatorLabel: 'Доступна новая версия',
@@ -170,9 +171,6 @@ export const STRINGS_RU = {
             revealInFolder: 'Показать в папке',
             revealInFinder: 'Показать в Finder',
             showInExplorer: 'Показать в проводнике',
-            copyDeepLink: 'Копировать URL Obsidian',
-            copyPath: 'Копировать путь в файловой системе',
-            copyRelativePath: 'Копировать путь в хранилище',
             renameNote: 'Переименовать заметку',
             renameFile: 'Переименовать файл',
             deleteNote: 'Удалить заметку',
@@ -200,8 +198,6 @@ export const STRINGS_RU = {
             newTldrawDrawing: 'Новый рисунок Tldraw',
             duplicateFolder: 'Дублировать папку',
             searchInFolder: 'Искать в папке',
-            copyPath: 'Копировать путь в файловой системе',
-            copyRelativePath: 'Копировать путь в хранилище',
             createFolderNote: 'Создать заметку папки',
             detachFolderNote: 'Отвязать заметку папки',
             deleteFolderNote: 'Удалить заметку папки',
@@ -224,6 +220,12 @@ export const STRINGS_RU = {
         navigation: {
             addSeparator: 'Добавить разделитель',
             removeSeparator: 'Удалить разделитель'
+        },
+        copyPath: {
+            title: 'Копировать путь',
+            asObsidianUrl: 'как URL Obsidian',
+            fromVaultFolder: 'из папки хранилища',
+            fromSystemRoot: 'из корня системы'
         },
         style: {
             title: 'Стиль',
@@ -306,7 +308,6 @@ export const STRINGS_RU = {
             paletteCustom: 'Пользовательские',
             copyColors: 'Копировать цвет',
             colorsCopied: 'Цвет скопирован в буфер обмена',
-            copyClipboardError: 'Не удалось записать в буфер обмена',
             pasteColors: 'Вставить цвет',
             pasteClipboardError: 'Не удалось прочитать буфер обмена',
             pasteInvalidFormat: 'Ожидалось hex-значение цвета',

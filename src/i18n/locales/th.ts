@@ -32,6 +32,7 @@ export const STRINGS_TH = {
         untagged: 'ไม่มีแท็ก',
         featureImageAlt: 'รูปภาพประกอบ',
         unknownError: 'ข้อผิดพลาดที่ไม่ทราบสาเหตุ',
+        clipboardWriteError: 'ไม่สามารถเขียนลงคลิปบอร์ด',
         updateBannerTitle: 'มีการอัปเดต Notebook Navigator',
         updateBannerInstruction: 'อัปเดตใน การตั้งค่า -> ปลั๊กอินชุมชน',
         updateIndicatorLabel: 'มีเวอร์ชันใหม่',
@@ -170,9 +171,6 @@ export const STRINGS_TH = {
             revealInFolder: 'แสดงในโฟลเดอร์',
             revealInFinder: 'แสดงใน Finder',
             showInExplorer: 'แสดงใน explorer ระบบ',
-            copyDeepLink: 'คัดลอก URL Obsidian',
-            copyPath: 'คัดลอกเส้นทางระบบไฟล์',
-            copyRelativePath: 'คัดลอกเส้นทางห้องนิรภัย',
             renameNote: 'เปลี่ยนชื่อโน้ต',
             renameFile: 'เปลี่ยนชื่อไฟล์',
             deleteNote: 'ลบโน้ต',
@@ -200,8 +198,6 @@ export const STRINGS_TH = {
             newTldrawDrawing: 'ภาพวาด Tldraw ใหม่',
             duplicateFolder: 'ทำซ้ำโฟลเดอร์',
             searchInFolder: 'ค้นหาในโฟลเดอร์',
-            copyPath: 'คัดลอกเส้นทางระบบไฟล์',
-            copyRelativePath: 'คัดลอกเส้นทางห้องนิรภัย',
             createFolderNote: 'สร้างโน้ตโฟลเดอร์',
             detachFolderNote: 'แยกโน้ตโฟลเดอร์',
             deleteFolderNote: 'ลบโน้ตโฟลเดอร์',
@@ -224,6 +220,12 @@ export const STRINGS_TH = {
         navigation: {
             addSeparator: 'เพิ่มตัวคั่น',
             removeSeparator: 'นำตัวคั่นออก'
+        },
+        copyPath: {
+            title: 'คัดลอกเส้นทาง',
+            asObsidianUrl: 'เป็น URL Obsidian',
+            fromVaultFolder: 'จากโฟลเดอร์ห้องนิรภัย',
+            fromSystemRoot: 'จากรากระบบ'
         },
         style: {
             title: 'สไตล์',
@@ -306,7 +308,6 @@ export const STRINGS_TH = {
             paletteCustom: 'กำหนดเอง',
             copyColors: 'คัดลอกสี',
             colorsCopied: 'คัดลอกสีไปคลิปบอร์ดแล้ว',
-            copyClipboardError: 'ไม่สามารถเขียนลงคลิปบอร์ด',
             pasteColors: 'วางสี',
             pasteClipboardError: 'ไม่สามารถอ่านคลิปบอร์ด',
             pasteInvalidFormat: 'ต้องการค่าสี hex',

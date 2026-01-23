@@ -32,6 +32,7 @@ export const STRINGS_PT_BR = {
         untagged: 'Sem tags',
         featureImageAlt: 'Imagem destacada',
         unknownError: 'Erro desconhecido',
+        clipboardWriteError: 'Não foi possível gravar na área de transferência',
         updateBannerTitle: 'Atualização do Notebook Navigator disponível',
         updateBannerInstruction: 'Atualize em Configurações -> Plugins da comunidade',
         updateIndicatorLabel: 'Nova versão disponível',
@@ -171,9 +172,6 @@ export const STRINGS_PT_BR = {
             revealInFolder: 'Revelar na pasta',
             revealInFinder: 'Revelar no Finder',
             showInExplorer: 'Mostrar no explorador de arquivos',
-            copyDeepLink: 'Copiar URL do Obsidian',
-            copyPath: 'Copiar caminho do sistema de arquivos',
-            copyRelativePath: 'Copiar caminho do cofre',
             renameNote: 'Renomear nota',
             renameFile: 'Renomear arquivo',
             deleteNote: 'Excluir nota',
@@ -201,8 +199,6 @@ export const STRINGS_PT_BR = {
             newTldrawDrawing: 'Novo desenho Tldraw',
             duplicateFolder: 'Duplicar pasta',
             searchInFolder: 'Pesquisar na pasta',
-            copyPath: 'Copiar caminho do sistema de arquivos',
-            copyRelativePath: 'Copiar caminho do cofre',
             createFolderNote: 'Criar nota de pasta',
             detachFolderNote: 'Desvincular nota de pasta',
             deleteFolderNote: 'Excluir nota de pasta',
@@ -225,6 +221,12 @@ export const STRINGS_PT_BR = {
         navigation: {
             addSeparator: 'Adicionar separador',
             removeSeparator: 'Remover separador'
+        },
+        copyPath: {
+            title: 'Copiar caminho',
+            asObsidianUrl: 'como URL do Obsidian',
+            fromVaultFolder: 'a partir da pasta do cofre',
+            fromSystemRoot: 'a partir da raiz do sistema'
         },
         style: {
             title: 'Estilo',
@@ -303,7 +305,6 @@ export const STRINGS_PT_BR = {
             paletteCustom: 'Personalizado',
             copyColors: 'Copiar cor',
             colorsCopied: 'Cor copiada para a área de transferência',
-            copyClipboardError: 'Não foi possível gravar na área de transferência',
             pasteColors: 'Colar cor',
             pasteClipboardError: 'Não foi possível ler a área de transferência',
             pasteInvalidFormat: 'Esperado um valor de cor hex',

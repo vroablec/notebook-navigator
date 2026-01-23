@@ -32,6 +32,7 @@ export const STRINGS_UK = {
         untagged: 'Без тегів', // Label for notes without any tags (English: Untagged)
         featureImageAlt: 'Головне зображення', // Alt text for thumbnail/preview images (English: Feature image)
         unknownError: 'Невідома помилка', // Generic fallback when an error has no message (English: Unknown error)
+        clipboardWriteError: 'Не вдалося записати в буфер обміну',
         updateBannerTitle: 'Доступне оновлення Notebook Navigator',
         updateBannerInstruction: 'Оновіть у Налаштування -> Плагіни спільноти',
         updateIndicatorLabel: 'Доступна нова версія',
@@ -170,9 +171,6 @@ export const STRINGS_UK = {
             revealInFolder: 'Показати в папці',
             revealInFinder: 'Показати у Finder',
             showInExplorer: 'Показати в провіднику системи',
-            copyDeepLink: 'Копіювати URL Obsidian',
-            copyPath: 'Копіювати шлях файлової системи',
-            copyRelativePath: 'Копіювати шлях сховища',
             renameNote: 'Перейменувати нотатку',
             renameFile: 'Перейменувати файл',
             deleteNote: 'Видалити нотатку',
@@ -200,8 +198,6 @@ export const STRINGS_UK = {
             newTldrawDrawing: 'Новий малюнок Tldraw',
             duplicateFolder: 'Дублювати папку',
             searchInFolder: 'Шукати в папці',
-            copyPath: 'Копіювати шлях файлової системи',
-            copyRelativePath: 'Копіювати шлях сховища',
             createFolderNote: 'Створити нотатку папки',
             detachFolderNote: "Від'єднати нотатку папки",
             deleteFolderNote: 'Видалити нотатку папки',
@@ -224,6 +220,12 @@ export const STRINGS_UK = {
         navigation: {
             addSeparator: 'Додати роздільник',
             removeSeparator: 'Вилучити роздільник'
+        },
+        copyPath: {
+            title: 'Копіювати шлях',
+            asObsidianUrl: 'як URL Obsidian',
+            fromVaultFolder: 'з папки сховища',
+            fromSystemRoot: 'з кореня системи'
         },
         style: {
             title: 'Стиль',
@@ -306,7 +308,6 @@ export const STRINGS_UK = {
             paletteCustom: 'Власні',
             copyColors: 'Копіювати колір',
             colorsCopied: 'Колір скопійовано в буфер обміну',
-            copyClipboardError: 'Не вдалося записати в буфер обміну',
             pasteColors: 'Вставити колір',
             pasteClipboardError: 'Не вдалося прочитати буфер обміну',
             pasteInvalidFormat: 'Очікується hex-значення кольору',

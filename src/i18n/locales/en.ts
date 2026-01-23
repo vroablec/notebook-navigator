@@ -32,6 +32,7 @@ export const STRINGS_EN = {
         untagged: 'Untagged', // Label for notes without any tags (English: Untagged)
         featureImageAlt: 'Feature image', // Alt text for thumbnail/preview images (English: Feature image)
         unknownError: 'Unknown error', // Generic fallback when an error has no message (English: Unknown error)
+        clipboardWriteError: 'Could not write to clipboard',
         updateBannerTitle: 'Notebook Navigator update available',
         updateBannerInstruction: 'Update in Settings -> Community plugins',
         updateIndicatorLabel: 'New version available',
@@ -170,9 +171,6 @@ export const STRINGS_EN = {
             revealInFolder: 'Reveal in folder',
             revealInFinder: 'Reveal in Finder',
             showInExplorer: 'Show in system explorer',
-            copyDeepLink: 'Copy Obsidian URL',
-            copyPath: 'Copy file system path',
-            copyRelativePath: 'Copy vault path',
             renameNote: 'Rename note',
             renameFile: 'Rename file',
             deleteNote: 'Delete note',
@@ -200,8 +198,6 @@ export const STRINGS_EN = {
             newTldrawDrawing: 'New Tldraw drawing',
             duplicateFolder: 'Duplicate folder',
             searchInFolder: 'Search in folder',
-            copyPath: 'Copy file system path',
-            copyRelativePath: 'Copy vault path',
             createFolderNote: 'Create folder note',
             detachFolderNote: 'Detach folder note',
             deleteFolderNote: 'Delete folder note',
@@ -224,6 +220,12 @@ export const STRINGS_EN = {
         navigation: {
             addSeparator: 'Add separator',
             removeSeparator: 'Remove separator'
+        },
+        copyPath: {
+            title: 'Copy path',
+            asObsidianUrl: 'as Obsidian URL',
+            fromVaultFolder: 'from vault folder',
+            fromSystemRoot: 'from system root'
         },
         style: {
             title: 'Style',
@@ -306,7 +308,6 @@ export const STRINGS_EN = {
             paletteCustom: 'Custom',
             copyColors: 'Copy color',
             colorsCopied: 'Color copied to clipboard',
-            copyClipboardError: 'Could not write to clipboard',
             pasteColors: 'Paste color',
             pasteClipboardError: 'Could not read clipboard',
             pasteInvalidFormat: 'Expected a hex color value',

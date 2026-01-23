@@ -32,6 +32,7 @@ export const STRINGS_FR = {
         untagged: 'Sans étiquette', // Label for notes without any tags (English: Untagged)
         featureImageAlt: 'Image vedette', // Alt text for thumbnail/preview images (English: Feature image)
         unknownError: 'Erreur inconnue', // Generic fallback when an error has no message (English: Unknown error)
+        clipboardWriteError: "Impossible d'écrire dans le presse-papiers",
         updateBannerTitle: 'Mise à jour Notebook Navigator disponible',
         updateBannerInstruction: 'Mettre à jour dans Paramètres -> Extensions communautaires',
         updateIndicatorLabel: 'Nouvelle version disponible',
@@ -160,9 +161,6 @@ export const STRINGS_FR = {
             revealInFolder: 'Afficher dans le dossier',
             revealInFinder: 'Afficher dans le Finder',
             showInExplorer: "Afficher dans l'explorateur système",
-            copyDeepLink: "Copier l'URL Obsidian",
-            copyPath: 'Copier le chemin du système de fichiers',
-            copyRelativePath: 'Copier le chemin du coffre',
             renameNote: 'Renommer la note',
             deleteNote: 'Supprimer la note',
             deleteMultipleNotes: 'Supprimer {count} notes',
@@ -200,8 +198,6 @@ export const STRINGS_FR = {
             newTldrawDrawing: 'Nouveau dessin Tldraw',
             duplicateFolder: 'Dupliquer le dossier',
             searchInFolder: 'Rechercher dans le dossier',
-            copyPath: 'Copier le chemin du système de fichiers',
-            copyRelativePath: 'Copier le chemin du coffre',
             createFolderNote: 'Créer une note de dossier',
             detachFolderNote: 'Détacher la note de dossier',
             deleteFolderNote: 'Supprimer la note de dossier',
@@ -224,6 +220,12 @@ export const STRINGS_FR = {
         navigation: {
             addSeparator: 'Ajouter un séparateur',
             removeSeparator: 'Supprimer le séparateur'
+        },
+        copyPath: {
+            title: 'Copier le chemin',
+            asObsidianUrl: 'en URL Obsidian',
+            fromVaultFolder: 'depuis le dossier du coffre',
+            fromSystemRoot: 'depuis la racine du système'
         },
         style: {
             title: 'Style',
@@ -306,7 +308,6 @@ export const STRINGS_FR = {
             paletteCustom: 'Personnalisé',
             copyColors: 'Copier la couleur',
             colorsCopied: 'Couleur copiée dans le presse-papiers',
-            copyClipboardError: "Impossible d'écrire dans le presse-papiers",
             pasteColors: 'Coller la couleur',
             pasteClipboardError: 'Impossible de lire le presse-papiers',
             pasteInvalidFormat: 'Une valeur de couleur hex attendue',

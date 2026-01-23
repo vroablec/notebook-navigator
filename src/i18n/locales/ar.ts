@@ -32,6 +32,7 @@ export const STRINGS_AR = {
         untagged: 'بدون وسم', // Label for notes without any tags (English: Untagged)
         featureImageAlt: 'صورة مميزة', // Alt text for thumbnail/preview images (English: Feature image)
         unknownError: 'خطأ غير معروف', // Generic fallback when an error has no message (English: Unknown error)
+        clipboardWriteError: 'تعذرت الكتابة إلى الحافظة',
         updateBannerTitle: 'تحديث متصفح الدفتر متاح',
         updateBannerInstruction: 'قم بالتحديث في الإعدادات -> إضافات المجتمع',
         updateIndicatorLabel: 'إصدار جديد متاح',
@@ -170,9 +171,6 @@ export const STRINGS_AR = {
             revealInFolder: 'الكشف في المجلد',
             revealInFinder: 'الكشف في Finder',
             showInExplorer: 'إظهار في مستكشف النظام',
-            copyDeepLink: 'نسخ رابط Obsidian',
-            copyPath: 'نسخ مسار نظام الملفات',
-            copyRelativePath: 'نسخ مسار الخزنة',
             renameNote: 'إعادة تسمية الملاحظة',
             renameFile: 'إعادة تسمية الملف',
             deleteNote: 'حذف الملاحظة',
@@ -200,8 +198,6 @@ export const STRINGS_AR = {
             newTldrawDrawing: 'رسم Tldraw جديد',
             duplicateFolder: 'تكرار المجلد',
             searchInFolder: 'البحث في المجلد',
-            copyPath: 'نسخ مسار نظام الملفات',
-            copyRelativePath: 'نسخ مسار الخزنة',
             createFolderNote: 'إنشاء ملاحظة مجلد',
             detachFolderNote: 'فصل ملاحظة المجلد',
             deleteFolderNote: 'حذف ملاحظة المجلد',
@@ -224,6 +220,12 @@ export const STRINGS_AR = {
         navigation: {
             addSeparator: 'إضافة فاصل',
             removeSeparator: 'إزالة الفاصل'
+        },
+        copyPath: {
+            title: 'نسخ المسار',
+            asObsidianUrl: 'كرابط Obsidian',
+            fromVaultFolder: 'من مجلد الخزنة',
+            fromSystemRoot: 'من جذر النظام'
         },
         style: {
             title: 'النمط',
@@ -306,7 +308,6 @@ export const STRINGS_AR = {
             paletteCustom: 'مخصص',
             copyColors: 'نسخ اللون',
             colorsCopied: 'تم نسخ اللون إلى الحافظة',
-            copyClipboardError: 'تعذرت الكتابة إلى الحافظة',
             pasteColors: 'لصق اللون',
             pasteClipboardError: 'تعذرت قراءة الحافظة',
             pasteInvalidFormat: 'متوقع قيمة لون hex',

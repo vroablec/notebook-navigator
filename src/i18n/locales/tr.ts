@@ -32,6 +32,7 @@ export const STRINGS_TR = {
         untagged: 'Etiketsiz', // Label for notes without any tags (English: Untagged)
         featureImageAlt: 'Öne çıkan görsel', // Alt text for thumbnail/preview images (English: Feature image)
         unknownError: 'Bilinmeyen hata', // Generic fallback when an error has no message (English: Unknown error)
+        clipboardWriteError: 'Panoya yazılamadı',
         updateBannerTitle: 'Notebook Navigator güncellemesi mevcut',
         updateBannerInstruction: 'Ayarlar -> Topluluk eklentileri bölümünden güncelleyin',
         updateIndicatorLabel: 'Yeni sürüm mevcut',
@@ -170,9 +171,6 @@ export const STRINGS_TR = {
             revealInFolder: 'Klasörde göster',
             revealInFinder: "Finder'da göster",
             showInExplorer: 'Sistem gezgininde göster',
-            copyDeepLink: 'Obsidian URL kopyala',
-            copyPath: 'Dosya sistemi yolunu kopyala',
-            copyRelativePath: 'Kasa yolunu kopyala',
             renameNote: 'Notu yeniden adlandır',
             renameFile: 'Dosyayı yeniden adlandır',
             deleteNote: 'Notu sil',
@@ -200,8 +198,6 @@ export const STRINGS_TR = {
             newTldrawDrawing: 'Yeni Tldraw çizimi',
             duplicateFolder: 'Klasörü çoğalt',
             searchInFolder: 'Klasörde ara',
-            copyPath: 'Dosya sistemi yolunu kopyala',
-            copyRelativePath: 'Kasa yolunu kopyala',
             createFolderNote: 'Klasör notu oluştur',
             detachFolderNote: 'Klasör notunu ayır',
             deleteFolderNote: 'Klasör notunu sil',
@@ -224,6 +220,12 @@ export const STRINGS_TR = {
         navigation: {
             addSeparator: 'Ayırıcı ekle',
             removeSeparator: 'Ayırıcıyı kaldır'
+        },
+        copyPath: {
+            title: 'Yolu kopyala',
+            asObsidianUrl: 'Obsidian URL olarak',
+            fromVaultFolder: 'kasa klasöründen',
+            fromSystemRoot: 'sistem kökünden'
         },
         style: {
             title: 'Stil',
@@ -306,7 +308,6 @@ export const STRINGS_TR = {
             paletteCustom: 'Özel',
             copyColors: 'Rengi kopyala',
             colorsCopied: 'Renk panoya kopyalandı',
-            copyClipboardError: 'Panoya yazılamadı',
             pasteColors: 'Rengi yapıştır',
             pasteClipboardError: 'Pano okunamadı',
             pasteInvalidFormat: 'Hex renk değeri bekleniyor',

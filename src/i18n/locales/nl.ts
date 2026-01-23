@@ -32,6 +32,7 @@ export const STRINGS_NL = {
         untagged: 'Zonder tags',
         featureImageAlt: 'Uitgelichte afbeelding',
         unknownError: 'Onbekende fout',
+        clipboardWriteError: 'Kon niet naar klembord schrijven',
         updateBannerTitle: 'Notebook Navigator update beschikbaar',
         updateBannerInstruction: 'Werk bij in Instellingen -> Community plugins',
         updateIndicatorLabel: 'Nieuwe versie beschikbaar',
@@ -171,9 +172,6 @@ export const STRINGS_NL = {
             revealInFolder: 'Tonen in map',
             revealInFinder: 'Tonen in Finder',
             showInExplorer: 'Tonen in systeemverkenner',
-            copyDeepLink: 'Obsidian URL kopiëren',
-            copyPath: 'Bestandssysteempad kopiëren',
-            copyRelativePath: 'Vault-pad kopiëren',
             renameNote: 'Notitie hernoemen',
             renameFile: 'Bestand hernoemen',
             deleteNote: 'Notitie verwijderen',
@@ -201,8 +199,6 @@ export const STRINGS_NL = {
             newTldrawDrawing: 'Nieuwe Tldraw-tekening',
             duplicateFolder: 'Map dupliceren',
             searchInFolder: 'Zoeken in map',
-            copyPath: 'Bestandssysteempad kopiëren',
-            copyRelativePath: 'Vault-pad kopiëren',
             createFolderNote: 'Mapnotitie maken',
             detachFolderNote: 'Mapnotitie loskoppelen',
             deleteFolderNote: 'Mapnotitie verwijderen',
@@ -225,6 +221,12 @@ export const STRINGS_NL = {
         navigation: {
             addSeparator: 'Scheidingslijn toevoegen',
             removeSeparator: 'Scheidingslijn verwijderen'
+        },
+        copyPath: {
+            title: 'Pad kopiëren',
+            asObsidianUrl: 'als Obsidian URL',
+            fromVaultFolder: 'vanuit vault-map',
+            fromSystemRoot: 'vanaf systeemroot'
         },
         style: {
             title: 'Stijl',
@@ -307,7 +309,6 @@ export const STRINGS_NL = {
             paletteCustom: 'Aangepast',
             copyColors: 'Kleur kopiëren',
             colorsCopied: 'Kleur gekopieerd naar klembord',
-            copyClipboardError: 'Kon niet naar klembord schrijven',
             pasteColors: 'Kleur plakken',
             pasteClipboardError: 'Kan klembord niet lezen',
             pasteInvalidFormat: 'Een hex kleurwaarde verwacht',
