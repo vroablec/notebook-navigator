@@ -1562,7 +1562,7 @@ export function NavigationPaneCalendar({ onWeekCountChange, layout = 'overlay', 
                     <div className="nn-navigation-calendar-nav">
                         <button
                             type="button"
-                            className="nn-navigation-calendar-nav-button"
+                            className="nn-navigation-calendar-nav-button nn-navigation-calendar-nav-prev"
                             aria-label={strings.common.previous}
                             onClick={() => handleNavigate(-1)}
                         >
@@ -1578,7 +1578,7 @@ export function NavigationPaneCalendar({ onWeekCountChange, layout = 'overlay', 
                         </button>
                         <button
                             type="button"
-                            className="nn-navigation-calendar-nav-button"
+                            className="nn-navigation-calendar-nav-button nn-navigation-calendar-nav-next"
                             aria-label={strings.common.next}
                             onClick={() => handleNavigate(1)}
                         >

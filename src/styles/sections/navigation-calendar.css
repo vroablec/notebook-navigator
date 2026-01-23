@@ -15,7 +15,7 @@
     --nn-nav-calendar-header-row-height: 28px;
     --nn-nav-calendar-header-font-size: 12px;
     --nn-nav-calendar-nav-button-size: 28px;
-    --nn-nav-calendar-nav-icon-size: 16px;
+    --nn-nav-calendar-nav-icon-size: 18px;
     --nn-nav-calendar-today-height: 28px;
     --nn-nav-calendar-today-font-size: 12px;
     --nn-nav-calendar-weekday-font-size: 11px;
@@ -164,6 +164,16 @@
     gap: 4px;
 }
 
+.nn-navigation-calendar-nav-prev {
+    width: 24px !important;
+    justify-content: flex-start !important;
+}
+
+.nn-navigation-calendar-nav-next {
+    width: 24px !important;
+    justify-content: flex-end !important;
+}
+
 .nn-navigation-calendar-nav-button {
     -webkit-appearance: none;
     appearance: none;
@@ -175,7 +185,7 @@
     border: none !important;
     border-radius: 6px;
     background: transparent !important;
-    color: var(--nn-theme-calendar-header-color);
+    color: var(--nn-theme-foreground-muted);
     cursor: pointer;
     padding: 0;
     box-shadow: none !important;
@@ -197,7 +207,7 @@
     font-size: var(--nn-nav-calendar-today-font-size);
     font-weight: 600;
     height: var(--nn-nav-calendar-today-height);
-    padding: 0 8px;
+    padding: 0 1px;
     border-radius: 6px;
     cursor: pointer;
     box-shadow: none !important;
@@ -213,7 +223,7 @@
 }
 
 .nn-navigation-calendar button.nn-navigation-calendar-nav-button {
-    color: var(--nn-theme-calendar-header-color);
+    color: var(--nn-theme-foreground-muted);
 }
 
 .nn-navigation-calendar button.nn-navigation-calendar-today {
@@ -224,6 +234,7 @@
 .nn-navigation-calendar-nav-button svg {
     width: var(--nn-nav-calendar-nav-icon-size);
     height: var(--nn-nav-calendar-nav-icon-size);
+    stroke-width: 2.5;
 }
 
 .nn-navigation-calendar-weekdays {
