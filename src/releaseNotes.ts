@@ -79,16 +79,23 @@ const RELEASE_NOTES: ReleaseNote[] = [
         date: '2026-01-24',
         showOnUpdate: true,
         new: [
-            'Public API: Added a new ==Menus API== for extending the Notebook Navigator context menus! You can now "hook" into the file and folder context menus of Notebook Navigator to add your own menu items. The new API methods are:',
-            '==registerFileMenu(callback)== for adding items to the file context menu.',
-            '==registerFolderMenu(callback)== for adding items to the folder context menu.',
-            'New setting: ==Navigation pane > Appearance > Pin banner==. Enable to keep the banner pinned to top, disable to make it scroll with the navigation tree.'
+            '==Calendar now supports weekly, monthly, quarterly, and yearly notes!== Configure custom file patterns in Settings > Calendar. Click week numbers, month names, quarter labels, or year to create or open periodic notes.',
+            'New commands: ==Open daily note==, ==Open weekly note==, ==Open monthly note==, ==Open quarterly note==, ==Open yearly note==.',
+            'New setting: ==Calendar > Placement==. Display the calendar in the left or right sidebar.',
+            'New setting: ==Calendar > Show feature image==. Display feature images for notes in the calendar.',
+            'New setting: ==Notes > Show properties on separate rows==. Display each custom property on its own line.',
+            'New command: ==Search in vault root==. Selects the vault root folder and focuses the search input.',
+            'Public API: Added a new ==Menus API== for extending context menus. Use ==registerFileMenu(callback)== and ==registerFolderMenu(callback)== to add custom menu items.',
+            'New setting: ==Navigation pane > Appearance > Pin banner==. Keep the banner pinned to top or let it scroll with the navigation tree.'
         ],
-        improved: [],
-        changed: ['Folders with folder notes no longer shows a note icon by default.'],
+        improved: ['==Copy path== now shows a submenu with options: Obsidian URL, from vault folder, from system root.'],
+        changed: [
+            'Replaced ==Property for color== setting with ==Property color map==. Define colors with a simple key=color format using a visual editor.',
+            'Folders with folder notes no longer show a note icon by default.'
+        ],
         fixed: [
             "Fixed an issue where the What's New modal never appeared after updating the plugin.",
-            'Fixed an issue where calendar cells on some devices and themes rendered with variable width.'
+            'Fixed calendar cells rendering with variable width on some devices and themes.'
         ]
     },
     {
