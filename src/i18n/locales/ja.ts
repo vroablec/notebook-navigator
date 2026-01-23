@@ -1139,6 +1139,10 @@ export const STRINGS_JA = {
                 desc: 'バッジとして表示するフロントマタープロパティのカンマ区切りリスト。リスト値のプロパティは値ごとに1つのバッジを表示します。[[wikilink]]値はクリック可能なリンクとして表示されます。',
                 placeholder: 'ステータス, タイプ, カテゴリ'
             },
+            showCustomPropertiesOnSeparateRows: {
+                name: 'プロパティを別の行に表示',
+                desc: '各プロパティを個別の行に表示します。'
+            },
             customPropertyColorMap: {
                 name: 'プロパティの色',
                 desc: 'フロントマターのプロパティをバッジの色にマッピングします。1行に1つのマッピング: プロパティ=色',

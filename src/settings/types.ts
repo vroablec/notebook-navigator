@@ -305,6 +305,7 @@ export interface NotebookNavigatorSettings {
     showFileTagsInCompactMode: boolean;
     customPropertyType: CustomPropertyType;
     customPropertyFields: string;
+    showCustomPropertiesOnSeparateRows: boolean;
     customPropertyColorMap: Record<string, string>;
     showCustomPropertyInCompactMode: boolean;
     showFileDate: boolean;

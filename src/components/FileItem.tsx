@@ -820,56 +820,87 @@ export const FileItem = React.memo(function FileItem({
             return null;
         }
 
-        const customPropertyContent = (
-            <div className="nn-file-custom-property-row">
-                {customPropertyPills.map((pill, index) => {
-                    const wikiLink = pill.wikiLink;
-                    const isLinked = Boolean(wikiLink);
-                    const className = isLinked
-                        ? 'nn-file-tag nn-file-custom-property nn-clickable-tag'
-                        : 'nn-file-tag nn-file-custom-property';
-                    const colorToken = pill.color?.trim();
-                    const resolvedColorData = colorToken && colorToken.length > 0 ? customPropertyColorData.get(colorToken) : undefined;
-                    const hasColor = Boolean(resolvedColorData?.hasColor);
-                    const hasBackground = Boolean(resolvedColorData?.hasBackground);
+        const showOnSeparateRows = appearanceSettings.customPropertyType === 'frontmatter' && settings.showCustomPropertiesOnSeparateRows;
 
-                    return (
-                        <span
-                            key={index}
-                            className={className}
-                            data-has-color={hasColor ? 'true' : undefined}
-                            data-has-background={hasBackground ? 'true' : undefined}
-                            onClick={wikiLink ? event => handleCustomPropertyWikilinkClick(event, wikiLink) : undefined}
-                            role={isLinked ? 'button' : undefined}
-                            tabIndex={isLinked ? 0 : undefined}
-                            style={resolvedColorData?.style}
-                        >
-                            {pill.label}
-                        </span>
-                    );
-                })}
-            </div>
-        );
+        const renderCustomPropertyPill = (pill: CustomPropertyPill, index: number) => {
+            const wikiLink = pill.wikiLink;
+            const isLinked = Boolean(wikiLink);
+            const className = isLinked ? 'nn-file-tag nn-file-custom-property nn-clickable-tag' : 'nn-file-tag nn-file-custom-property';
+            const colorToken = pill.color?.trim();
+            const resolvedColorData = colorToken && colorToken.length > 0 ? customPropertyColorData.get(colorToken) : undefined;
+            const hasColor = Boolean(resolvedColorData?.hasColor);
+            const hasBackground = Boolean(resolvedColorData?.hasBackground);
+
+            return (
+                <span
+                    key={index}
+                    className={className}
+                    data-has-color={hasColor ? 'true' : undefined}
+                    data-has-background={hasBackground ? 'true' : undefined}
+                    onClick={wikiLink ? event => handleCustomPropertyWikilinkClick(event, wikiLink) : undefined}
+                    role={isLinked ? 'button' : undefined}
+                    tabIndex={isLinked ? 0 : undefined}
+                    style={resolvedColorData?.style}
+                >
+                    {pill.label}
+                </span>
+            );
+        };
+
+        if (!showOnSeparateRows) {
+            const customPropertyContent = (
+                <div className="nn-file-custom-property-row">{customPropertyPills.map(renderCustomPropertyPill)}</div>
+            );
+
+            if (!shouldShowPillRowIcons) {
+                return customPropertyContent;
+            }
+
+            return (
+                <div className="nn-file-pill-row nn-file-pill-row-custom-property">
+                    <ServiceIcon
+                        iconId={customPropertyPillIconId}
+                        className="nn-file-pill-row-icon nn-file-pill-row-icon-custom-property"
+                        aria-hidden={true}
+                    />
+                    {customPropertyContent}
+                </div>
+            );
+        }
 
         if (!shouldShowPillRowIcons) {
-            return customPropertyContent;
+            return (
+                <>
+                    {customPropertyPills.map((pill, index) => (
+                        <div key={index} className="nn-file-custom-property-row">
+                            {renderCustomPropertyPill(pill, index)}
+                        </div>
+                    ))}
+                </>
+            );
         }
 
         return (
-            <div className="nn-file-pill-row nn-file-pill-row-custom-property">
-                <ServiceIcon
-                    iconId={customPropertyPillIconId}
-                    className="nn-file-pill-row-icon nn-file-pill-row-icon-custom-property"
-                    aria-hidden={true}
-                />
-                {customPropertyContent}
-            </div>
+            <>
+                {customPropertyPills.map((pill, index) => (
+                    <div key={index} className="nn-file-pill-row nn-file-pill-row-custom-property">
+                        <ServiceIcon
+                            iconId={customPropertyPillIconId}
+                            className="nn-file-pill-row-icon nn-file-pill-row-icon-custom-property"
+                            aria-hidden={true}
+                        />
+                        <div className="nn-file-custom-property-row">{renderCustomPropertyPill(pill, index)}</div>
+                    </div>
+                ))}
+            </>
         );
     }, [
         customPropertyPillIconId,
         customPropertyColorData,
         customPropertyPills,
         handleCustomPropertyWikilinkClick,
+        appearanceSettings.customPropertyType,
+        settings.showCustomPropertiesOnSeparateRows,
         shouldShowCustomProperty,
         shouldShowPillRowIcons
     ]);

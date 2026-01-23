@@ -1140,6 +1140,10 @@ export const STRINGS_DE = {
                 desc: 'Kommagetrennte Liste von Frontmatter-Eigenschaften zur Anzeige als Badges. Listen-Eigenschaften zeigen ein Badge pro Wert. [[Wikilink]]-Werte werden als anklickbare Links angezeigt.',
                 placeholder: 'status, typ, kategorie'
             },
+            showCustomPropertiesOnSeparateRows: {
+                name: 'Eigenschaften in separaten Zeilen anzeigen',
+                desc: 'Jede Eigenschaft in einer eigenen Zeile anzeigen.'
+            },
             customPropertyColorMap: {
                 name: 'Eigenschaftsfarben',
                 desc: 'Ordne Frontmatter-Eigenschaften Badge-Farben zu. Eine Zuordnung pro Zeile: Eigenschaft=Farbe',

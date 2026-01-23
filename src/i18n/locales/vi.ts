@@ -1136,6 +1136,10 @@ export const STRINGS_VI = {
                 desc: 'Danh sách thuộc tính frontmatter phân cách bằng dấu phẩy để hiển thị dưới dạng huy hiệu. Thuộc tính có giá trị danh sách hiển thị một huy hiệu cho mỗi giá trị. Giá trị ở định dạng [[wikilink]] được hiển thị dưới dạng liên kết có thể nhấp.',
                 placeholder: 'trạng thái, loại, danh mục'
             },
+            showCustomPropertiesOnSeparateRows: {
+                name: 'Hiển thị thuộc tính trên các dòng riêng',
+                desc: 'Hiển thị mỗi thuộc tính trên một dòng riêng.'
+            },
             customPropertyColorMap: {
                 name: 'Màu thuộc tính',
                 desc: 'Ánh xạ thuộc tính frontmatter thành màu huy hiệu. Một ánh xạ mỗi dòng: thuộc tính=màu',

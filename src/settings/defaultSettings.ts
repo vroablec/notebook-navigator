@@ -231,6 +231,7 @@ export const DEFAULT_SETTINGS: NotebookNavigatorSettings = {
     showFileTagsInCompactMode: false,
     customPropertyType: 'none',
     customPropertyFields: '',
+    showCustomPropertiesOnSeparateRows: true,
     customPropertyColorMap: {},
     showCustomPropertyInCompactMode: false,
     showFileDate: true,

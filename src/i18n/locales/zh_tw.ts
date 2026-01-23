@@ -1134,6 +1134,10 @@ export const STRINGS_ZH_TW = {
                 desc: '以逗號分隔的前置中繼資料屬性清單，用於顯示為標籤。清單值屬性每個值顯示一個標籤。[[wikilink]] 格式的值會顯示為可點擊連結。',
                 placeholder: 'status, type, category'
             },
+            showCustomPropertiesOnSeparateRows: {
+                name: '在個別行中顯示屬性',
+                desc: '將每個屬性顯示在個別行中。'
+            },
             customPropertyColorMap: {
                 name: '屬性顏色',
                 desc: '將前置資料屬性對應到徽章顏色。每行一個對應：屬性=顏色',

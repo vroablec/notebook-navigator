@@ -1136,6 +1136,10 @@ export const STRINGS_KO = {
                 desc: '배지로 표시할 프론트매터 속성의 쉼표로 구분된 목록. 목록 값 속성은 값당 하나의 배지를 표시합니다. [[위키링크]] 값은 클릭 가능한 링크로 표시됩니다.',
                 placeholder: '상태, 유형, 카테고리'
             },
+            showCustomPropertiesOnSeparateRows: {
+                name: '속성을 별도 행에 표시',
+                desc: '각 속성을 개별 행에 표시합니다.'
+            },
             customPropertyColorMap: {
                 name: '속성 색상',
                 desc: '프론트매터 속성을 배지 색상에 매핑합니다. 한 줄에 하나의 매핑: 속성=색상',

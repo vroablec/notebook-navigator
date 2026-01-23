@@ -1136,6 +1136,10 @@ export const STRINGS_PT_BR = {
                 desc: 'Lista de propriedades frontmatter separadas por vírgulas para exibir como emblemas. Propriedades com valores de lista exibem um emblema por valor. Valores em formato [[wikilink]] são exibidos como links clicáveis.',
                 placeholder: 'status, tipo, categoria'
             },
+            showCustomPropertiesOnSeparateRows: {
+                name: 'Mostrar propriedades em linhas separadas',
+                desc: 'Mostrar cada propriedade na sua própria linha.'
+            },
             customPropertyColorMap: {
                 name: 'Cores de propriedade',
                 desc: 'Associa propriedades de frontmatter a cores de emblema. Uma associação por linha: propriedade=cor',

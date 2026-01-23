@@ -1135,6 +1135,10 @@ export const STRINGS_EN = {
                 desc: 'Comma-separated list of frontmatter properties to display as badges. List-valued properties render one badge per value. [[wikilink]] values displayed as clickable links.',
                 placeholder: 'status, type, category'
             },
+            showCustomPropertiesOnSeparateRows: {
+                name: 'Show properties on separate rows',
+                desc: 'Display each property on its own row.'
+            },
             customPropertyColorMap: {
                 name: 'Property colors',
                 desc: 'Map frontmatter properties to badge colors. One mapping per line: property=color',

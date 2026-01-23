@@ -119,6 +119,10 @@ export function migrateLegacySyncedSettings(params: {
         settings.customPropertyFields = defaultSettings.customPropertyFields;
     }
 
+    if (typeof settings.showCustomPropertiesOnSeparateRows !== 'boolean') {
+        settings.showCustomPropertiesOnSeparateRows = defaultSettings.showCustomPropertiesOnSeparateRows;
+    }
+
     delete mutableSettings['customPropertyColorFields'];
 
     if (!isPlainObjectRecordValue(settings.customPropertyColorMap)) {

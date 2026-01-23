@@ -1140,6 +1140,10 @@ export const STRINGS_NL = {
                 desc: "Door komma's gescheiden lijst van frontmatter-eigenschappen om als badges weer te geven. Lijstwaarde-eigenschappen tonen één badge per waarde. Waarden in [[wikilink]]-formaat worden weergegeven als aanklikbare links.",
                 placeholder: 'status, type, categorie'
             },
+            showCustomPropertiesOnSeparateRows: {
+                name: 'Eigenschappen op afzonderlijke regels tonen',
+                desc: 'Toon elke eigenschap op een eigen regel.'
+            },
             customPropertyColorMap: {
                 name: 'Eigenschapkleuren',
                 desc: 'Koppel frontmatter-eigenschappen aan badge-kleuren. Eén koppeling per regel: eigenschap=kleur',

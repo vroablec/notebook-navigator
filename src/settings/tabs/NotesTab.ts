@@ -785,6 +785,18 @@ export function renderNotesTab(context: SettingsTabContext): void {
     });
     customPropertyColorMapSetting.controlEl.addClass('nn-setting-wide-input');
 
+    const showCustomPropertiesOnSeparateRowsSetting = customPropertyGroup.addSetting(setting => {
+        setting
+            .setName(strings.settings.items.showCustomPropertiesOnSeparateRows.name)
+            .setDesc(strings.settings.items.showCustomPropertiesOnSeparateRows.desc)
+            .addToggle(toggle =>
+                toggle.setValue(plugin.settings.showCustomPropertiesOnSeparateRows).onChange(async value => {
+                    plugin.settings.showCustomPropertiesOnSeparateRows = value;
+                    await plugin.saveSettingsAndUpdate();
+                })
+            );
+    });
+
     customPropertyGroup.addSetting(setting => {
         setting
             .setName(strings.settings.items.showCustomPropertyInCompactMode.name)
@@ -800,6 +812,7 @@ export function renderNotesTab(context: SettingsTabContext): void {
     updateCustomPropertyFieldsVisibility = () => {
         const isFrontmatter = plugin.settings.customPropertyType === 'frontmatter';
         setElementVisible(customPropertyFieldsSetting.settingEl, isFrontmatter);
+        setElementVisible(showCustomPropertiesOnSeparateRowsSetting.settingEl, isFrontmatter);
         setElementVisible(customPropertyColorMapSetting.settingEl, isFrontmatter);
     };
     updateCustomPropertyFieldsVisibility();

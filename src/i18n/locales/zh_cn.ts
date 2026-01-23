@@ -1135,6 +1135,10 @@ export const STRINGS_ZH_CN = {
                 desc: '以逗号分隔的前置元数据属性列表，用于显示为标签。列表值属性每个值显示一个标签。[[wikilink]] 格式的值将显示为可点击链接。',
                 placeholder: '状态, 类型, 分类'
             },
+            showCustomPropertiesOnSeparateRows: {
+                name: '在单独的行中显示属性',
+                desc: '将每个属性显示在单独的行中。'
+            },
             customPropertyColorMap: {
                 name: '属性颜色',
                 desc: '将前置元数据属性映射到徽章颜色。每行一个映射：属性=颜色',

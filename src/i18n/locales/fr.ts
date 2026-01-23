@@ -1142,6 +1142,10 @@ export const STRINGS_FR = {
                 desc: 'Liste de propriétés frontmatter séparées par des virgules à afficher sous forme de badges. Les propriétés à valeurs multiples affichent un badge par valeur. Les valeurs [[wikilink]] sont affichées comme liens cliquables.',
                 placeholder: 'statut, type, catégorie'
             },
+            showCustomPropertiesOnSeparateRows: {
+                name: 'Afficher les propriétés sur des lignes séparées',
+                desc: 'Afficher chaque propriété sur sa propre ligne.'
+            },
             customPropertyColorMap: {
                 name: 'Couleurs des propriétés',
                 desc: 'Associe des propriétés frontmatter à des couleurs de badge. Une association par ligne : propriété=couleur',

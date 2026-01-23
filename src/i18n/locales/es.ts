@@ -1139,6 +1139,10 @@ export const STRINGS_ES = {
                 desc: 'Lista separada por comas de propiedades del frontmatter para mostrar como insignias. Las propiedades con valores de lista muestran una insignia por valor. Los valores [[wikilink]] se muestran como enlaces clicables.',
                 placeholder: 'estado, tipo, categoría'
             },
+            showCustomPropertiesOnSeparateRows: {
+                name: 'Mostrar propiedades en filas separadas',
+                desc: 'Mostrar cada propiedad en su propia fila.'
+            },
             customPropertyColorMap: {
                 name: 'Colores de propiedad',
                 desc: 'Asigna propiedades de frontmatter a colores de insignia. Una asignación por línea: propiedad=color',

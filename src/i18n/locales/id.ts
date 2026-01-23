@@ -1137,6 +1137,10 @@ export const STRINGS_ID = {
                 desc: 'Daftar properti frontmatter yang dipisahkan koma untuk ditampilkan sebagai lencana. Properti bernilai daftar menampilkan satu lencana per nilai. Nilai [[wikilink]] ditampilkan sebagai tautan yang dapat diklik.',
                 placeholder: 'status, tipe, kategori'
             },
+            showCustomPropertiesOnSeparateRows: {
+                name: 'Tampilkan properti pada baris terpisah',
+                desc: 'Tampilkan setiap properti pada barisnya sendiri.'
+            },
             customPropertyColorMap: {
                 name: 'Warna properti',
                 desc: 'Petakan properti frontmatter ke warna lencana. Satu pemetaan per baris: properti=warna',

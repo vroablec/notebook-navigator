@@ -1136,6 +1136,10 @@ export const STRINGS_TR = {
                 desc: 'Rozet olarak gösterilecek virgülle ayrılmış frontmatter özellikleri listesi. Liste değerli özellikler değer başına bir rozet gösterir. [[wikilink]] formatındaki değerler tıklanabilir bağlantılar olarak gösterilir.',
                 placeholder: 'durum, tür, kategori'
             },
+            showCustomPropertiesOnSeparateRows: {
+                name: 'Özellikleri ayrı satırlarda göster',
+                desc: 'Her özelliği kendi satırında göster.'
+            },
             customPropertyColorMap: {
                 name: 'Özellik renkleri',
                 desc: 'Frontmatter özelliklerini rozet renklerine eşle. Satır başına bir eşleme: özellik=renk',

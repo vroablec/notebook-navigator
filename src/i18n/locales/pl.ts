@@ -1139,6 +1139,10 @@ export const STRINGS_PL = {
                 desc: 'Lista właściwości frontmatter oddzielonych przecinkami do wyświetlenia jako plakietki. Właściwości z wartościami listowymi wyświetlają jedną plakietkę na wartość. Wartości w formacie [[wikilink]] są wyświetlane jako klikalne linki.',
                 placeholder: 'status, typ, kategoria'
             },
+            showCustomPropertiesOnSeparateRows: {
+                name: 'Pokaż właściwości w osobnych wierszach',
+                desc: 'Wyświetl każdą właściwość w osobnym wierszu.'
+            },
             customPropertyColorMap: {
                 name: 'Kolory właściwości',
                 desc: 'Przypisz właściwości frontmatter do kolorów odznak. Jedno przypisanie na wiersz: właściwość=kolor',

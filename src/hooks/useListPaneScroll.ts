@@ -370,7 +370,27 @@ export function useListPaneScroll({
             });
 
             if (shouldShowCustomProperty) {
-                textContentHeight += heights.tagRowHeight;
+                const shouldUseSeparateRows =
+                    folderSettings.customPropertyType === 'frontmatter' && settings.showCustomPropertiesOnSeparateRows;
+                if (!shouldUseSeparateRows) {
+                    textContentHeight += heights.tagRowHeight;
+                } else {
+                    const customPropertyEntries = fileRecord?.customProperty;
+                    let customPropertyRowCount = 0;
+                    if (customPropertyEntries) {
+                        for (const entry of customPropertyEntries) {
+                            const rawValue = entry.value;
+                            if (typeof rawValue !== 'string' || rawValue.trim().length === 0) {
+                                continue;
+                            }
+                            customPropertyRowCount += 1;
+                        }
+                    }
+
+                    if (customPropertyRowCount > 0) {
+                        textContentHeight += heights.tagRowHeight * customPropertyRowCount;
+                    }
+                }
             }
 
             // Apply min-height constraint AFTER including all content (but not in compact mode)
@@ -724,6 +744,7 @@ export function useListPaneScroll({
         settings.showFeatureImage,
         settings.fileNameRows,
         settings.previewRows,
+        settings.showCustomPropertiesOnSeparateRows,
         settings.showCustomPropertyInCompactMode,
         settings.showParentFolder,
         settings.showTags,
