@@ -279,7 +279,69 @@ function getJpegDimensions(bytes: Uint8Array, view: DataView): RasterDimensions 
         (marker >= 0xc9 && marker <= 0xcb) ||
         (marker >= 0xcd && marker <= 0xcf);
 
+    const getExifOrientation = (segmentStart: number, segmentEnd: number): number | null => {
+        // APP1 Exif payload starts with "Exif\0\0" then TIFF header.
+        if (segmentEnd - segmentStart < 14) {
+            return null;
+        }
+        if (!matchesAscii(bytes, segmentStart, 'Exif') || bytes[segmentStart + 4] !== 0x00 || bytes[segmentStart + 5] !== 0x00) {
+            return null;
+        }
+
+        const tiffStart = segmentStart + 6;
+        if (tiffStart + 8 > segmentEnd) {
+            return null;
+        }
+
+        const isLittleEndian = bytes[tiffStart] === 0x49 && bytes[tiffStart + 1] === 0x49;
+        const isBigEndian = bytes[tiffStart] === 0x4d && bytes[tiffStart + 1] === 0x4d;
+        if (!isLittleEndian && !isBigEndian) {
+            return null;
+        }
+
+        const littleEndian = isLittleEndian;
+        if (view.getUint16(tiffStart + 2, littleEndian) !== 42) {
+            return null;
+        }
+
+        const ifd0Offset = view.getUint32(tiffStart + 4, littleEndian);
+        if (ifd0Offset < 8 || ifd0Offset > segmentEnd - tiffStart - 2) {
+            return null;
+        }
+        const ifd0Start = tiffStart + ifd0Offset;
+
+        const entryCount = view.getUint16(ifd0Start, littleEndian);
+        const entryStart = ifd0Start + 2;
+
+        // Each IFD entry is 12 bytes; stop if the table would overrun the segment.
+        const maxEntries = Math.floor((segmentEnd - entryStart) / 12);
+        const safeCount = Math.min(entryCount, maxEntries);
+
+        for (let i = 0; i < safeCount; i += 1) {
+            const offset = entryStart + i * 12;
+            const tag = view.getUint16(offset, littleEndian);
+            if (tag !== 0x0112) {
+                continue;
+            }
+
+            const type = view.getUint16(offset + 2, littleEndian);
+            const count = view.getUint32(offset + 4, littleEndian);
+            // Orientation is a SHORT with count 1.
+            if (type !== 3 || count !== 1) {
+                return null;
+            }
+
+            const orientation = view.getUint16(offset + 8, littleEndian);
+            return orientation >= 1 && orientation <= 8 ? orientation : null;
+        }
+
+        return null;
+    };
+
     let offset = 2;
+    let width: number | null = null;
+    let height: number | null = null;
+    let orientation: number | null = null;
     while (offset + 3 < bytes.length) {
         if (bytes[offset] !== 0xff) {
             offset += 1;
@@ -290,7 +352,7 @@ function getJpegDimensions(bytes: Uint8Array, view: DataView): RasterDimensions 
             offset += 1;
         }
         if (offset >= bytes.length) {
-            return null;
+            break;
         }
 
         const marker = bytes[offset];
@@ -304,34 +366,54 @@ function getJpegDimensions(bytes: Uint8Array, view: DataView): RasterDimensions 
         }
 
         if (offset + 1 >= bytes.length) {
-            return null;
+            break;
         }
         const segmentLength = view.getUint16(offset, false);
         if (segmentLength < 2) {
-            return null;
+            break;
         }
         const segmentEnd = offset + segmentLength;
         const segmentDataStart = offset + 2;
         if (segmentEnd > bytes.length) {
-            return null;
+            break;
         }
 
-        if (isSofMarker(marker)) {
+        if (marker === 0xe1 && orientation === null) {
+            const nextOrientation = getExifOrientation(segmentDataStart, segmentEnd);
+            if (typeof nextOrientation === 'number') {
+                orientation = nextOrientation;
+            }
+        }
+
+        if (width === null && height === null && isSofMarker(marker)) {
             if (segmentDataStart + 5 > segmentEnd) {
                 return null;
             }
-            const height = view.getUint16(segmentDataStart + 1, false);
-            const width = view.getUint16(segmentDataStart + 3, false);
-            if (width <= 0 || height <= 0) {
+            const nextHeight = view.getUint16(segmentDataStart + 1, false);
+            const nextWidth = view.getUint16(segmentDataStart + 3, false);
+            if (nextWidth <= 0 || nextHeight <= 0) {
                 return null;
             }
-            return { width, height };
+            width = nextWidth;
+            height = nextHeight;
+        }
+
+        if (width !== null && height !== null && orientation !== null) {
+            break;
         }
 
         offset = segmentEnd;
     }
 
-    return null;
+    if (width === null || height === null) {
+        return null;
+    }
+
+    if (orientation === 5 || orientation === 6 || orientation === 7 || orientation === 8) {
+        return { width: height, height: width };
+    }
+
+    return { width, height };
 }
 
 // Parses WebP dimensions from VP8, VP8L (lossless), or VP8X (extended) chunks

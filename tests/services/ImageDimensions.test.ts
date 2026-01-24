@@ -58,6 +58,73 @@ describe('getImageDimensionsFromBuffer', () => {
         expect(getImageDimensionsFromBuffer(bytes.buffer, 'image/jpeg')).toEqual({ width: 300, height: 200 });
     });
 
+    it('applies JPEG EXIF orientation', () => {
+        const bytes = new Uint8Array([
+            // SOI
+            0xff, 0xd8,
+            // APP1 (Exif) marker + length (0x0022 = 34 bytes, includes these two bytes)
+            0xff, 0xe1, 0x00, 0x22,
+            // "Exif\0\0"
+            0x45, 0x78, 0x69, 0x66, 0x00, 0x00,
+            // TIFF header (MM, 42, IFD0 offset = 8)
+            0x4d, 0x4d, 0x00, 0x2a, 0x00, 0x00, 0x00, 0x08,
+            // IFD0 entry count = 1
+            0x00, 0x01,
+            // Tag = 0x0112 (orientation), Type = 3 (SHORT), Count = 1
+            0x01, 0x12, 0x00, 0x03, 0x00, 0x00, 0x00, 0x01,
+            // Value = 6 (rotate 90) stored inline for SHORT
+            0x00, 0x06, 0x00, 0x00,
+            // Next IFD offset = 0
+            0x00, 0x00, 0x00, 0x00,
+            // SOF0 marker (width=300, height=200)
+            0xff, 0xc0, 0x00, 0x08, 0x08, 0x00, 0xc8, 0x01, 0x2c, 0x03,
+            // EOI
+            0xff, 0xd9
+        ]);
+
+        expect(getImageDimensionsFromBuffer(bytes.buffer, 'image/jpeg')).toEqual({ width: 200, height: 300 });
+    });
+
+    it('applies JPEG EXIF orientation (little endian)', () => {
+        const bytes = new Uint8Array([
+            // SOI
+            0xff, 0xd8,
+            // APP1 (Exif) marker + length (0x0022 = 34 bytes, includes these two bytes)
+            0xff, 0xe1, 0x00, 0x22,
+            // "Exif\0\0"
+            0x45, 0x78, 0x69, 0x66, 0x00, 0x00,
+            // TIFF header (II, 42, IFD0 offset = 8)
+            0x49, 0x49, 0x2a, 0x00, 0x08, 0x00, 0x00, 0x00,
+            // IFD0 entry count = 1
+            0x01, 0x00,
+            // Tag = 0x0112 (orientation), Type = 3 (SHORT), Count = 1
+            0x12, 0x01, 0x03, 0x00, 0x01, 0x00, 0x00, 0x00,
+            // Value = 8 stored inline for SHORT
+            0x08, 0x00, 0x00, 0x00,
+            // Next IFD offset = 0
+            0x00, 0x00, 0x00, 0x00,
+            // SOF0 marker (width=300, height=200)
+            0xff, 0xc0, 0x00, 0x08, 0x08, 0x00, 0xc8, 0x01, 0x2c, 0x03,
+            // EOI
+            0xff, 0xd9
+        ]);
+
+        expect(getImageDimensionsFromBuffer(bytes.buffer, 'image/jpeg')).toEqual({ width: 200, height: 300 });
+    });
+
+    it('parses JPEG SOF dimensions when trailing segments are truncated', () => {
+        const bytes = new Uint8Array([
+            // SOI
+            0xff, 0xd8,
+            // SOF0 marker (width=300, height=200)
+            0xff, 0xc0, 0x00, 0x08, 0x08, 0x00, 0xc8, 0x01, 0x2c, 0x03,
+            // APP2 marker with declared length extending past the buffer
+            0xff, 0xe2, 0x00, 0x10, 0x00
+        ]);
+
+        expect(getImageDimensionsFromBuffer(bytes.buffer, 'image/jpeg')).toEqual({ width: 300, height: 200 });
+    });
+
     it('normalizes JPEG mime type aliases', () => {
         const bytes = new Uint8Array([0xff, 0xd8, 0xff, 0xc0, 0x00, 0x08, 0x08, 0x00, 0xc8, 0x01, 0x2c, 0x03, 0xff, 0xd9]);
 

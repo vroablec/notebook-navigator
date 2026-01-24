@@ -679,6 +679,7 @@ export class FeatureImageContentProvider extends BaseContentProvider {
         let bitmap: ImageBitmap | null = null;
         try {
             bitmap = await createImageBitmap(blob, {
+                imageOrientation: 'from-image',
                 resizeWidth: targetWidth,
                 resizeHeight: targetHeight,
                 resizeQuality: 'high'
@@ -702,7 +703,7 @@ export class FeatureImageContentProvider extends BaseContentProvider {
 
         let bitmap: ImageBitmap | null = null;
         try {
-            bitmap = await createImageBitmap(blob);
+            bitmap = await createImageBitmap(blob, { imageOrientation: 'from-image' });
         } catch {
             return null;
         }
