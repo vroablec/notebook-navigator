@@ -76,28 +76,28 @@ export interface ReleaseNote {
 const RELEASE_NOTES: ReleaseNote[] = [
     {
         version: '2.2.0',
-        date: '2026-01-24',
+        date: '2026-01-25',
         showOnUpdate: true,
         new: [
             '==Calendar now supports weekly, monthly, quarterly, and yearly notes!== Configure custom file patterns in Settings > Calendar. Click week numbers, month names, quarter labels, or year to create or open periodic notes.',
-            'New commands: ==Open daily note==, ==Open weekly note==, ==Open monthly note==, ==Open quarterly note==, ==Open yearly note==.',
-            'New setting: ==Calendar > Placement==. Display the calendar in the **left** or **right sidebar**. 🎉',
-            'New setting: ==Calendar > Show feature image==. Display feature images for notes in the calendar.',
-            'New setting: ==Notes > Show properties on separate rows==. Display each custom property on its own line. 🎉',
-            'New setting: ==List pane > Keyboard navigation > Press Enter to open files==. 🎉 Open selected files on Enter. Shift+Enter and Cmd/Ctrl+Enter open in a new tab, split, or window.',
+            '==New commands==: Open daily note, Open weekly note, Open monthly note, Open quarterly note, Open yearly note.',
+            'New setting: Calendar > ==Placement==. Display the calendar in the **left** or **right sidebar**. 🎉',
+            'New setting: Calendar > ==Show feature image==. Disable to hide feature images in the calendar.',
+            'New setting: Notes > ==Show properties on separate rows==. Display each custom property on its own line. 🎉',
+            'New setting: List pane > Keyboard navigation > ==Press Enter to open files==. 🎉 Open selected files on Enter. Shift+Enter and Cmd/Ctrl+Enter open in a new tab, split, or window.',
+            'New sort options: ==List pane > Sort notes by > **File name** and **Property**==. You can now also sort files on file name or a custom property. This is the first step towards custom sorting in list pane.',
             'New command: ==Search in vault root==. Selects the vault root folder and focuses the search input.',
-            'New setting: ==Navigation pane > Appearance > Pin banner==. Keep the banner pinned to top or let it scroll with the navigation tree.',
-            'Public API: Added a new ==Menus API== for extending context menus. Use ==registerFileMenu(callback)== and ==registerFolderMenu(callback)== to add custom menu items.'
+            'New setting: Navigation pane > Appearance > ==Pin banner==. Keep the banner pinned to top or let it scroll with the navigation tree.',
+            'Public API: Added a new ==Menus API== for extending context menus. Use **registerFileMenu(callback)** and **registerFolderMenu(callback)** to add custom menu items.'
         ],
         improved: [
             '==Copy path== now shows a submenu with options: Obsidian URL, from vault folder, from system root.',
-            'Preview text now strips Obsidian block IDs like ^37066f and ^quote-of-the-day.',
-            'Feature image thumbnails now apply orientation for JPEG, AVIF, HEIC, and HEIF images.'
+            'Preview text now strips Obsidian ==block IDs== like ^37066f and ^quote-of-the-day.',
+            'Feature image thumbnails now apply ==image orientation== for JPEG, AVIF, HEIC, and HEIF images.'
         ],
         changed: [
-            'Replaced ==Property for color== setting with ==Property color map==. Define colors with a simple key=color format using a visual editor.',
-            '==Calendar > Root folder== is now stored per vault profile so you can have different periodic notes for each profile.',
-            'Moved the ==Modifier key== setting from ==General== to ==List pane > Keyboard navigation==.',
+            'Replaced ==Property for color== setting with ==Property color map==. You can now define colors with a simple **key=color** format using a visual editor.',
+            'Calendar > ==Root folder== is now stored per vault profile so you can have different periodic notes for each profile.',
             'Folders with folder notes no longer show a note icon by default.'
         ],
         fixed: [
