@@ -90,7 +90,8 @@ const RELEASE_NOTES: ReleaseNote[] = [
         ],
         improved: [
             '==Copy path== now shows a submenu with options: Obsidian URL, from vault folder, from system root.',
-            'Preview text now strips Obsidian block IDs like ^37066f and ^quote-of-the-day.'
+            'Preview text now strips Obsidian block IDs like ^37066f and ^quote-of-the-day.',
+            'Feature image thumbnails now apply orientation for JPEG, AVIF, HEIC, and HEIF images.'
         ],
         changed: [
             'Replaced ==Property for color== setting with ==Property color map==. Define colors with a simple key=color format using a visual editor.',
