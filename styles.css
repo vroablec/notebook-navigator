@@ -206,6 +206,7 @@ body {
     --nn-theme-calendar-day-has-feature-image-color: white;
     --nn-theme-calendar-day-today-color: var(--nn-theme-calendar-day-has-note-color);
     --nn-theme-calendar-day-today-bg: var(--color-red);
+    --nn-theme-calendar-day-today-accent: var(--color-red);
 
     /* -- Folder & Tag Items -- */
     --nn-theme-navitem-chevron-color: var(--nn-theme-foreground-muted);
@@ -3037,14 +3038,14 @@ body {
 }
 
 .nn-calendar-right-sidebar .nn-navigation-calendar[data-layout='panel'][data-highlight-today='true'] .nn-navigation-calendar-day.is-today {
-    border-color: var(--nn-theme-calendar-day-today-bg);
+    border-color: var(--nn-theme-calendar-day-today-accent);
 }
 
 .nn-calendar-right-sidebar
     .nn-navigation-calendar[data-layout='panel'][data-highlight-today='true']
     .nn-navigation-calendar-day.is-today
     .nn-navigation-calendar-day-number {
-    color: var(--nn-theme-calendar-day-today-bg);
+    color: var(--nn-theme-calendar-day-today-accent);
 }
 
 /* ========================================================================
@@ -7286,7 +7287,7 @@ settings:
     -
         id: nn-theme-calendar-day-today-color
         title: Day text color (today)
-        description: Text color for today's date.
+        description: Text color for today's date (overlay layout).
         type: variable-themed-color
         format: hex
         default-light: '#'
@@ -7294,7 +7295,15 @@ settings:
     -
         id: nn-theme-calendar-day-today-bg
         title: Today highlight background
-        description: Background color for the today highlight circle.
+        description: Background color for the today highlight circle (overlay layout).
+        type: variable-themed-color
+        format: hex
+        default-light: '#'
+        default-dark: '#'
+    -
+        id: nn-theme-calendar-day-today-accent
+        title: Today accent color
+        description: Border and text color for today (panel layout).
         type: variable-themed-color
         format: hex
         default-light: '#'

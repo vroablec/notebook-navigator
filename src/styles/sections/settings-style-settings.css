@@ -185,7 +185,7 @@ settings:
     -
         id: nn-theme-calendar-day-today-color
         title: Day text color (today)
-        description: Text color for today's date.
+        description: Text color for today's date (overlay layout).
         type: variable-themed-color
         format: hex
         default-light: '#'
@@ -193,7 +193,15 @@ settings:
     -
         id: nn-theme-calendar-day-today-bg
         title: Today highlight background
-        description: Background color for the today highlight circle.
+        description: Background color for the today highlight circle (overlay layout).
+        type: variable-themed-color
+        format: hex
+        default-light: '#'
+        default-dark: '#'
+    -
+        id: nn-theme-calendar-day-today-accent
+        title: Today accent color
+        description: Border and text color for today (panel layout).
         type: variable-themed-color
         format: hex
         default-light: '#'

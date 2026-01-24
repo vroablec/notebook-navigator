@@ -75,8 +75,9 @@ Most variables are colors and should resolve to a computed color (some are used 
 | `--nn-theme-calendar-day-has-note-color`    | `white`                         | Text color for dates with a daily note                  |
 | `--nn-theme-calendar-day-has-note-bg`       | `var(--text-selection)`         | Background color for dates with a daily note            |
 | `--nn-theme-calendar-day-has-feature-image-color` | `white`                  | Text color for dates with feature images                |
-| `--nn-theme-calendar-day-today-color`       | `var(--nn-theme-calendar-day-has-note-color)` | Text color for today's date                             |
-| `--nn-theme-calendar-day-today-bg`          | `var(--color-red)`            | Color for the today highlight circle and day number accent |
+| `--nn-theme-calendar-day-today-color`       | `var(--nn-theme-calendar-day-has-note-color)` | Text color for today's date (overlay layout)            |
+| `--nn-theme-calendar-day-today-bg`          | `var(--color-red)`            | Background color for the today highlight circle (overlay layout) |
+| `--nn-theme-calendar-day-today-accent`      | `var(--color-red)`            | Border and text color for today (panel layout)          |
 
 ### Navigation pane
 
@@ -288,6 +289,7 @@ body {
   --nn-theme-calendar-day-has-feature-image-color: #ffffff;
   --nn-theme-calendar-day-today-color: #ffffff;
   --nn-theme-calendar-day-today-bg: #db5050;
+  --nn-theme-calendar-day-today-accent: #db5050;
 
   /* Folder & tag items */
   --nn-theme-navitem-chevron-color: #6e6e6e;

@@ -623,14 +623,14 @@
 }
 
 .nn-calendar-right-sidebar .nn-navigation-calendar[data-layout='panel'][data-highlight-today='true'] .nn-navigation-calendar-day.is-today {
-    border-color: var(--nn-theme-calendar-day-today-bg);
+    border-color: var(--nn-theme-calendar-day-today-accent);
 }
 
 .nn-calendar-right-sidebar
     .nn-navigation-calendar[data-layout='panel'][data-highlight-today='true']
     .nn-navigation-calendar-day.is-today
     .nn-navigation-calendar-day-number {
-    color: var(--nn-theme-calendar-day-today-bg);
+    color: var(--nn-theme-calendar-day-today-accent);
 }
 
 /* ========================================================================
