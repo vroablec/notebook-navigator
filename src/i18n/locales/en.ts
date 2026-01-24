@@ -964,8 +964,8 @@ export const STRINGS_EN = {
                 }
             },
             calendarCustomRootFolder: {
-                name: 'Root folder',
-                desc: 'Base folder for calendar notes.',
+                name: 'Root folder (vault profile)',
+                desc: 'Base folder for periodic notes. Changes with the selected vault profile.',
                 placeholder: 'Personal/Diary'
             },
             calendarCustomFilePattern: {

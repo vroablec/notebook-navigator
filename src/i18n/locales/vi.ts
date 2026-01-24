@@ -965,7 +965,7 @@ export const STRINGS_VI = {
             },
             calendarCustomRootFolder: {
                 name: 'Thư mục gốc',
-                desc: 'Thư mục cơ sở cho ghi chú lịch.',
+                desc: 'Thư mục cơ sở cho ghi chú định kỳ. Thay đổi theo hồ sơ vault đã chọn.',
                 placeholder: 'Personal/Diary'
             },
             calendarCustomFilePattern: {

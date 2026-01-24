@@ -965,7 +965,7 @@ export const STRINGS_KO = {
             },
             calendarCustomRootFolder: {
                 name: '루트 폴더',
-                desc: '캘린더 노트의 기본 폴더.',
+                desc: '정기 노트의 기본 폴더. 선택한 보관소 프로필에 따라 변경됩니다.',
                 placeholder: 'Personal/Diary'
             },
             calendarCustomFilePattern: {

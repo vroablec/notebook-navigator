@@ -963,7 +963,7 @@ export const STRINGS_ZH_CN = {
             },
             calendarCustomRootFolder: {
                 name: '根文件夹',
-                desc: '日历笔记的基础文件夹。',
+                desc: '周期笔记的基础文件夹。随所选仓库配置文件更改。',
                 placeholder: 'Personal/Diary'
             },
             calendarCustomFilePattern: {

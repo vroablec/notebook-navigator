@@ -38,6 +38,7 @@ import {
     normalizeCalendarVaultFolderPath,
     splitCalendarCustomPattern
 } from '../../utils/calendarCustomNotePatterns';
+import { getActiveVaultProfile } from '../../utils/vaultProfiles';
 import { createSettingGroupFactory } from '../settingGroups';
 import { addSettingSyncModeToggle } from '../syncModeToggle';
 import { createSubSettingsContainer, setElementVisible } from '../subSettings';
@@ -61,6 +62,7 @@ function formatCalendarWeeksOption(count: number): string {
 export function renderCalendarTab(context: SettingsTabContext): void {
     const { containerEl, plugin, createDebouncedTextSetting } = context;
     const createGroup = createSettingGroupFactory(containerEl);
+    const getActiveProfile = () => getActiveVaultProfile(plugin.settings);
 
     const topGroup = createGroup(undefined);
 
@@ -231,12 +233,13 @@ export function renderCalendarTab(context: SettingsTabContext): void {
         strings.settings.items.calendarCustomRootFolder.name,
         strings.settings.items.calendarCustomRootFolder.desc,
         strings.settings.items.calendarCustomRootFolder.placeholder,
-        () => normalizeCalendarCustomRootFolder(plugin.settings.calendarCustomRootFolder),
+        () => getActiveProfile().periodicNotesFolder,
         value => {
-            plugin.settings.calendarCustomRootFolder = normalizeCalendarCustomRootFolder(value);
+            getActiveProfile().periodicNotesFolder = normalizeCalendarCustomRootFolder(value);
         }
     );
     calendarCustomRootFolderSetting.controlEl.addClass('nn-setting-wide-input');
+    const calendarCustomRootFolderInputEl = calendarCustomRootFolderSetting.controlEl.querySelector<HTMLInputElement>('input');
 
     const currentLanguage = String(getCurrentLanguage() ?? '').toLowerCase();
     const renderMomentPatternDescription = (container: HTMLElement): void => {
@@ -440,6 +443,11 @@ export function renderCalendarTab(context: SettingsTabContext): void {
     const renderCalendarIntegrationVisibility = (): void => {
         const isDailyNotes = plugin.settings.calendarIntegrationMode === 'daily-notes';
         const isCustom = plugin.settings.calendarIntegrationMode === 'notebook-navigator';
+        const activeProfile = getActiveProfile();
+
+        if (calendarCustomRootFolderInputEl && document.activeElement !== calendarCustomRootFolderInputEl) {
+            calendarCustomRootFolderInputEl.value = activeProfile.periodicNotesFolder;
+        }
 
         const setAllErrorsHidden = () => {
             setElementVisible(calendarCustomFilePatternErrorEl, false);

@@ -49,6 +49,7 @@ export const DEFAULT_SETTINGS: NotebookNavigatorSettings = {
             hiddenFileTags: [],
             hiddenFileProperties: [],
             navigationBanner: null,
+            periodicNotesFolder: '',
             shortcuts: []
         }
     ],
@@ -109,7 +110,6 @@ export const DEFAULT_SETTINGS: NotebookNavigatorSettings = {
 
     // Calendar tab - Calendar integration
     calendarIntegrationMode: 'daily-notes',
-    calendarCustomRootFolder: '',
     calendarCustomFilePattern: DEFAULT_CALENDAR_CUSTOM_FILE_PATTERN,
     calendarCustomWeekPattern: '',
     calendarCustomMonthPattern: '',

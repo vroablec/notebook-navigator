@@ -966,7 +966,7 @@ export const STRINGS_ES = {
             },
             calendarCustomRootFolder: {
                 name: 'Carpeta raíz',
-                desc: 'Carpeta base para notas del calendario.',
+                desc: 'Carpeta base para notas periódicas. Cambia con el perfil de bóveda seleccionado.',
                 placeholder: 'Personal/Diary'
             },
             calendarCustomFilePattern: {

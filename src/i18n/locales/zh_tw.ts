@@ -963,7 +963,7 @@ export const STRINGS_ZH_TW = {
             },
             calendarCustomRootFolder: {
                 name: '根資料夾',
-                desc: '行事曆筆記的基礎資料夾。',
+                desc: '週期筆記的基礎資料夾。隨所選儲存庫設定檔更改。',
                 placeholder: 'Personal/Diary'
             },
             calendarCustomFilePattern: {

@@ -965,7 +965,7 @@ export const STRINGS_FA = {
             },
             calendarCustomRootFolder: {
                 name: 'پوشه ریشه',
-                desc: 'پوشه پایه برای یادداشت‌های تقویم.',
+                desc: 'پوشه پایه برای یادداشت‌های دوره‌ای. با پروفایل صندوق انتخاب شده تغییر می‌کند.',
                 placeholder: 'Personal/Diary'
             },
             calendarCustomFilePattern: {

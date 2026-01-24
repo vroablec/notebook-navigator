@@ -965,7 +965,7 @@ export const STRINGS_UK = {
             },
             calendarCustomRootFolder: {
                 name: 'Коренева папка',
-                desc: 'Базова папка для нотаток календаря.',
+                desc: 'Базова папка для періодичних нотаток. Змінюється з вибраним профілем сховища.',
                 placeholder: 'Personal/Diary'
             },
             calendarCustomFilePattern: {

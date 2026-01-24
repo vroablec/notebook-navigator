@@ -967,7 +967,7 @@ export const STRINGS_NL = {
             },
             calendarCustomRootFolder: {
                 name: 'Hoofdmap',
-                desc: 'Basismap voor kalendernotities.',
+                desc: 'Basismap voor periodieke notities. Wijzigt met het geselecteerde kluisprofiel.',
                 placeholder: 'Personal/Diary'
             },
             calendarCustomFilePattern: {

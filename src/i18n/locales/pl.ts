@@ -967,7 +967,7 @@ export const STRINGS_PL = {
             },
             calendarCustomRootFolder: {
                 name: 'Folder główny',
-                desc: 'Folder bazowy dla notatek kalendarza.',
+                desc: 'Folder bazowy dla notatek okresowych. Zmienia się z wybranym profilem skarbca.',
                 placeholder: 'Personal/Diary'
             },
             calendarCustomFilePattern: {

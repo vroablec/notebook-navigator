@@ -965,7 +965,7 @@ export const STRINGS_TH = {
             },
             calendarCustomRootFolder: {
                 name: 'โฟลเดอร์หลัก',
-                desc: 'โฟลเดอร์ฐานสำหรับบันทึกปฏิทิน',
+                desc: 'โฟลเดอร์ฐานสำหรับบันทึกตามรอบ เปลี่ยนแปลงตามโปรไฟล์ห้องนิรภัยที่เลือก',
                 placeholder: 'Personal/Diary'
             },
             calendarCustomFilePattern: {

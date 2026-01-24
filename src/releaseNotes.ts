@@ -96,6 +96,7 @@ const RELEASE_NOTES: ReleaseNote[] = [
         ],
         changed: [
             'Replaced ==Property for color== setting with ==Property color map==. Define colors with a simple key=color format using a visual editor.',
+            '==Calendar > Root folder== is now stored per vault profile so you can have different periodic notes for each profile.',
             'Moved the ==Modifier key== setting from ==General== to ==List pane > Keyboard navigation==.',
             'Folders with folder notes no longer show a note icon by default.'
         ],

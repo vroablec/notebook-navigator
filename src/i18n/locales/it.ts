@@ -965,7 +965,7 @@ export const STRINGS_IT = {
             },
             calendarCustomRootFolder: {
                 name: 'Cartella radice',
-                desc: 'Cartella base per le note del calendario.',
+                desc: 'Cartella base per le note periodiche. Cambia con il profilo del vault selezionato.',
                 placeholder: 'Personal/Diary'
             },
             calendarCustomFilePattern: {

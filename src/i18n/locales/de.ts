@@ -967,7 +967,7 @@ export const STRINGS_DE = {
             },
             calendarCustomRootFolder: {
                 name: 'Stammordner',
-                desc: 'Basisordner für Kalendernotizen.',
+                desc: 'Basisordner für periodische Notizen. Ändert sich mit dem ausgewählten Tresorprofil.',
                 placeholder: 'Personal/Diary'
             },
             calendarCustomFilePattern: {

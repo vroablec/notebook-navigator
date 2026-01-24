@@ -132,7 +132,7 @@ export interface ToolbarVisibilitySettings {
     list: Record<ListToolbarButtonId, boolean>;
 }
 
-/** Vault profile storing hidden folder, tag, and note patterns */
+/** Vault profile storing per-profile filtering and layout preferences */
 export interface VaultProfile {
     id: string;
     name: string;
@@ -143,6 +143,7 @@ export interface VaultProfile {
     hiddenFileTags: string[];
     hiddenFileProperties: string[];
     navigationBanner: string | null;
+    periodicNotesFolder: string;
     shortcuts: ShortcutEntry[];
 }
 
@@ -208,7 +209,6 @@ export interface NotebookNavigatorSettings {
 
     // Calendar tab - Calendar integration
     calendarIntegrationMode: CalendarIntegrationMode;
-    calendarCustomRootFolder: string;
     calendarCustomFilePattern: string;
     calendarCustomWeekPattern: string;
     calendarCustomMonthPattern: string;

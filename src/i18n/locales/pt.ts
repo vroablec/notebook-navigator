@@ -965,7 +965,7 @@ export const STRINGS_PT = {
             },
             calendarCustomRootFolder: {
                 name: 'Pasta raiz',
-                desc: 'Pasta base para notas do calendário.',
+                desc: 'Pasta base para notas periódicas. Muda com o perfil do cofre selecionado.',
                 placeholder: 'Personal/Diary'
             },
             calendarCustomFilePattern: {

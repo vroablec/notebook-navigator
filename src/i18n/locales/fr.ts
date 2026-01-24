@@ -967,7 +967,7 @@ export const STRINGS_FR = {
             },
             calendarCustomRootFolder: {
                 name: 'Dossier racine',
-                desc: 'Dossier de base pour les notes du calendrier.',
+                desc: 'Dossier de base pour les notes périodiques. Change avec le profil de coffre sélectionné.',
                 placeholder: 'Personal/Diary'
             },
             calendarCustomFilePattern: {

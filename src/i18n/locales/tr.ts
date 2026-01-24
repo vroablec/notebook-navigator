@@ -965,7 +965,7 @@ export const STRINGS_TR = {
             },
             calendarCustomRootFolder: {
                 name: 'Kök klasör',
-                desc: 'Takvim notları için temel klasör.',
+                desc: 'Periyodik notlar için temel klasör. Seçili kasa profiliyle değişir.',
                 placeholder: 'Personal/Diary'
             },
             calendarCustomFilePattern: {

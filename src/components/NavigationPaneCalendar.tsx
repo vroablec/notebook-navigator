@@ -51,12 +51,12 @@ import {
     createCalendarCustomDateFormatter,
     ensureMarkdownFileName,
     isCalendarCustomDatePatternValid,
-    normalizeCalendarCustomRootFolder,
     normalizeCalendarVaultFolderPath,
     splitCalendarCustomPattern
 } from '../utils/calendarCustomNotePatterns';
 import { getTooltipPlacement } from '../utils/domUtils';
 import { resolveUXIconForMenu } from '../utils/uxIcons';
+import { getActiveVaultProfile } from '../utils/vaultProfiles';
 import type { CalendarWeeksToShow } from '../settings/types';
 
 interface CalendarHoverTooltipData {
@@ -231,6 +231,8 @@ type CustomCalendarNoteConfig = CalendarNoteConfig;
 export function NavigationPaneCalendar({ onWeekCountChange, layout = 'overlay', weeksToShowOverride }: NavigationPaneCalendarProps) {
     const { app, fileSystemOps, isMobile } = useServices();
     const settings = useSettingsState();
+    const periodicNotesFolder = getActiveVaultProfile(settings).periodicNotesFolder;
+    const customCalendarRootFolderSettings = useMemo(() => ({ calendarCustomRootFolder: periodicNotesFolder }), [periodicNotesFolder]);
     const weeksToShowSetting = weeksToShowOverride ?? settings.calendarWeeksToShow;
     const fileCache = useFileCacheOptional();
     const [dbFallback, setDbFallback] = useState(() => getDBInstanceOrNull());
@@ -407,7 +409,7 @@ export function NavigationPaneCalendar({ onWeekCountChange, layout = 'overlay', 
         const { folderPattern, filePattern } = splitCalendarCustomPattern(settings.calendarCustomFilePattern);
         const folderFormatter = createCalendarCustomDateFormatter(folderPattern);
         const fileFormatter = createCalendarCustomDateFormatter(filePattern);
-        const customRootFolder = normalizeCalendarCustomRootFolder(settings.calendarCustomRootFolder);
+        const customRootFolder = periodicNotesFolder;
         const momentPattern = folderPattern ? `${folderPattern}/${filePattern}` : filePattern;
 
         const filePathForDate = (date: MomentInstance): string => {
@@ -425,7 +427,7 @@ export function NavigationPaneCalendar({ onWeekCountChange, layout = 'overlay', 
         };
 
         return { filePathForDate, momentPattern };
-    }, [settings.calendarCustomFilePattern, settings.calendarCustomRootFolder]);
+    }, [settings.calendarCustomFilePattern, periodicNotesFolder]);
 
     const weeks = useMemo<CalendarWeek[]>(() => {
         if (!momentApi || !cursorDate) {
@@ -964,14 +966,14 @@ export function NavigationPaneCalendar({ onWeekCountChange, layout = 'overlay', 
             }
             const { filePath } = buildCustomCalendarFilePathForPattern(
                 date,
-                settings,
+                customCalendarRootFolderSettings,
                 config.calendarCustomFilePattern,
                 config.fallbackPattern
             );
             const existing = app.vault.getAbstractFileByPath(filePath);
             return existing instanceof TFile ? existing : null;
         },
-        [app, getCustomCalendarNoteConfig, momentApi, settings]
+        [app, customCalendarRootFolderSettings, getCustomCalendarNoteConfig, momentApi]
     );
 
     const openOrCreateCustomCalendarNote = useCallback(
@@ -993,7 +995,7 @@ export function NavigationPaneCalendar({ onWeekCountChange, layout = 'overlay', 
 
             const { folderPath, fileName, filePath } = buildCustomCalendarFilePathForPattern(
                 date,
-                settings,
+                customCalendarRootFolderSettings,
                 config.calendarCustomFilePattern,
                 config.fallbackPattern
             );
@@ -1036,7 +1038,16 @@ export function NavigationPaneCalendar({ onWeekCountChange, layout = 'overlay', 
 
             createFile();
         },
-        [app, collapseNavigationIfMobile, getCustomCalendarNoteConfig, momentApi, openFile, settings, setHoverTooltip]
+        [
+            app,
+            collapseNavigationIfMobile,
+            customCalendarRootFolderSettings,
+            getCustomCalendarNoteConfig,
+            momentApi,
+            openFile,
+            settings,
+            setHoverTooltip
+        ]
     );
 
     const openOrCreateDailyNote = useCallback(

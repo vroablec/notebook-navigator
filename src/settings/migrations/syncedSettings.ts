@@ -25,6 +25,7 @@ import { isPlainObjectRecordValue } from '../../utils/recordUtils';
 import { cloneShortcuts, DEFAULT_VAULT_PROFILE_ID } from '../../utils/vaultProfiles';
 import { ShortcutType, type ShortcutEntry } from '../../types/shortcuts';
 import { isCustomPropertyType } from '../types';
+import { normalizeCalendarCustomRootFolder } from '../../utils/calendarCustomNotePatterns';
 
 // Types/Interfaces
 export interface LegacyVisibilityMigration {
@@ -405,4 +406,41 @@ export function applyLegacyVisibilityMigration(params: {
     if (hasNavigationBanner) {
         targetProfile.navigationBanner = migration.navigationBanner;
     }
+}
+
+export function extractLegacyPeriodicNotesFolder(params: { settings: NotebookNavigatorSettings }): string | null {
+    const { settings } = params;
+    const settingsRecord = settings as unknown as Record<string, unknown>;
+    const rawCalendarCustomRootFolder = settingsRecord['calendarCustomRootFolder'];
+    if (Object.prototype.hasOwnProperty.call(settingsRecord, 'calendarCustomRootFolder')) {
+        delete settingsRecord['calendarCustomRootFolder'];
+    }
+
+    if (typeof rawCalendarCustomRootFolder !== 'string') {
+        return null;
+    }
+
+    const normalized = normalizeCalendarCustomRootFolder(rawCalendarCustomRootFolder);
+    return normalized.length > 0 ? normalized : null;
+}
+
+export function applyLegacyPeriodicNotesFolderMigration(params: {
+    settings: NotebookNavigatorSettings;
+    legacyPeriodicNotesFolder: string | null;
+}): void {
+    const { settings, legacyPeriodicNotesFolder } = params;
+    if (!legacyPeriodicNotesFolder) {
+        return;
+    }
+
+    if (!Array.isArray(settings.vaultProfiles) || settings.vaultProfiles.length === 0) {
+        return;
+    }
+
+    settings.vaultProfiles.forEach(profile => {
+        if (typeof profile.periodicNotesFolder === 'string' && profile.periodicNotesFolder.length > 0) {
+            return;
+        }
+        profile.periodicNotesFolder = legacyPeriodicNotesFolder;
+    });
 }

@@ -371,7 +371,7 @@ async function openFileInActiveLeaf(plugin: NotebookNavigatorPlugin, file: TFile
 
 async function createAndOpenCustomCalendarNote(plugin: NotebookNavigatorPlugin, kind: CalendarNoteKind, date: MomentInstance) {
     const config = getCalendarNoteConfig(kind, plugin.settings);
-    const settings = { calendarCustomRootFolder: plugin.settings.calendarCustomRootFolder };
+    const settings = { calendarCustomRootFolder: getActiveVaultProfile(plugin.settings).periodicNotesFolder };
 
     const { folderPath, fileName, filePath } = buildCustomCalendarFilePathForPattern(
         date,
@@ -469,7 +469,7 @@ async function openCalendarNoteForToday(plugin: NotebookNavigatorPlugin, kind: C
         return;
     }
 
-    const settings = { calendarCustomRootFolder: plugin.settings.calendarCustomRootFolder };
+    const settings = { calendarCustomRootFolder: getActiveVaultProfile(plugin.settings).periodicNotesFolder };
     const expected = buildCustomCalendarFilePathForPattern(dateForPath, settings, config.calendarCustomFilePattern, config.fallbackPattern);
     const fileEntry = plugin.app.vault.getAbstractFileByPath(expected.filePath);
     const file = fileEntry instanceof TFile ? fileEntry : null;

@@ -21,8 +21,10 @@ import { NotebookNavigatorSettings, DEFAULT_SETTINGS, NotebookNavigatorSettingTa
 import { migrateRecentColors, migrateReleaseCheckState } from './settings/migrations/localPreferences';
 import {
     applyExistingUserDefaults,
+    applyLegacyPeriodicNotesFolderMigration,
     applyLegacyShortcutsMigration,
     applyLegacyVisibilityMigration,
+    extractLegacyPeriodicNotesFolder,
     extractLegacyShortcuts,
     extractLegacyVisibilitySettings,
     migrateFolderNotePropertiesSetting,
@@ -487,9 +489,11 @@ export default class NotebookNavigatorPlugin extends Plugin implements ISettings
         // Extract legacy exclusion settings and migrate to vault profile system
         const legacyVisibility = extractLegacyVisibilitySettings({ settings: this.settings, storedData });
         const legacyShortcuts = extractLegacyShortcuts({ storedData });
+        const legacyPeriodicNotesFolder = extractLegacyPeriodicNotesFolder({ settings: this.settings });
 
-        // Initialize vault profiles and apply legacy settings to the active profile
+        // Initialize vault profiles and apply legacy profile migrations
         ensureVaultProfiles(this.settings);
+        applyLegacyPeriodicNotesFolderMigration({ settings: this.settings, legacyPeriodicNotesFolder });
         applyLegacyVisibilityMigration({ settings: this.settings, migration: legacyVisibility });
         applyLegacyShortcutsMigration({ settings: this.settings, legacyShortcuts });
         this.normalizeIconSettings(this.settings);

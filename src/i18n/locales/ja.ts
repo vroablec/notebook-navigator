@@ -966,7 +966,7 @@ export const STRINGS_JA = {
             },
             calendarCustomRootFolder: {
                 name: 'ルートフォルダ',
-                desc: 'カレンダーノートの基本フォルダ。',
+                desc: '定期ノートの基本フォルダ。選択されたボールトプロファイルで変更されます。',
                 placeholder: 'Personal/Diary'
             },
             calendarCustomFilePattern: {

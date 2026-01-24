@@ -965,7 +965,7 @@ export const STRINGS_AR = {
             },
             calendarCustomRootFolder: {
                 name: 'المجلد الجذر',
-                desc: 'المجلد الأساسي لملاحظات التقويم.',
+                desc: 'المجلد الأساسي للملاحظات الدورية. يتغير مع ملف تعريف الخزنة المحدد.',
                 placeholder: 'Personal/Diary'
             },
             calendarCustomFilePattern: {

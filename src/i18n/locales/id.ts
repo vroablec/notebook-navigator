@@ -965,7 +965,7 @@ export const STRINGS_ID = {
             },
             calendarCustomRootFolder: {
                 name: 'Folder root',
-                desc: 'Folder dasar untuk catatan kalender.',
+                desc: 'Folder dasar untuk catatan berkala. Berubah dengan profil vault yang dipilih.',
                 placeholder: 'Personal/Diary'
             },
             calendarCustomFilePattern: {
