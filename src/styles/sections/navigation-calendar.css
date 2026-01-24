@@ -637,6 +637,8 @@
    Weekend Column Background
    ======================================================================== */
 
-.nn-navigation-calendar-day.is-weekend:not(.has-daily-note):not(.has-feature-image) {
+.nn-calendar-right-sidebar
+    .nn-navigation-calendar[data-layout='panel']
+    .nn-navigation-calendar-day.is-weekend:not(.has-daily-note):not(.has-feature-image) {
     background-color: var(--nn-theme-calendar-weekend-bg) !important;
 }

@@ -3052,7 +3052,9 @@ body {
    Weekend Column Background
    ======================================================================== */
 
-.nn-navigation-calendar-day.is-weekend:not(.has-daily-note):not(.has-feature-image) {
+.nn-calendar-right-sidebar
+    .nn-navigation-calendar[data-layout='panel']
+    .nn-navigation-calendar-day.is-weekend:not(.has-daily-note):not(.has-feature-image) {
     background-color: var(--nn-theme-calendar-weekend-bg) !important;
 }
 /* Source: src/styles/sections/list-files.css */
@@ -7255,7 +7257,7 @@ settings:
     -
         id: nn-theme-calendar-weekend-bg
         title: Weekend background
-        description: Background color for weekend day columns.
+        description: Background color for weekend days (panel layout).
         type: variable-themed-color
         format: hex
         default-light: '#'

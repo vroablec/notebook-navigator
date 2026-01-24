@@ -153,7 +153,7 @@ settings:
     -
         id: nn-theme-calendar-weekend-bg
         title: Weekend background
-        description: Background color for weekend day columns.
+        description: Background color for weekend days (panel layout).
         type: variable-themed-color
         format: hex
         default-light: '#'

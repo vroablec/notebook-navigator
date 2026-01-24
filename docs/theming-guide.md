@@ -71,7 +71,7 @@ Most variables are colors and should resolve to a computed color (some are used 
 | `--nn-theme-calendar-day-in-month-color`    | `var(--nn-theme-foreground)`          | Text color for days within the current month            |
 | `--nn-theme-calendar-day-outside-month-color` | `var(--nn-theme-foreground-muted)`  | Text color for days outside the current month           |
 | `--nn-theme-calendar-hover-bg`              | `var(--background-modifier-hover)` | Hover background for calendar buttons and days          |
-| `--nn-theme-calendar-weekend-bg`            | `var(--background-secondary)`       | Background color for weekend day columns                |
+| `--nn-theme-calendar-weekend-bg`            | `var(--background-secondary)`       | Background color for weekend days (panel layout)        |
 | `--nn-theme-calendar-day-has-note-color`    | `white`                         | Text color for dates with a daily note                  |
 | `--nn-theme-calendar-day-has-note-bg`       | `var(--text-selection)`         | Background color for dates with a daily note            |
 | `--nn-theme-calendar-day-has-feature-image-color` | `white`                  | Text color for dates with feature images                |
