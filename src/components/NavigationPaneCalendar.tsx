@@ -1160,10 +1160,10 @@ export function NavigationPaneCalendar({ onWeekCountChange, layout = 'overlay', 
     const highlightToday = settings.calendarHighlightToday;
 
     const isCustomCalendar = settings.calendarIntegrationMode === 'notebook-navigator';
-    const weekNotesEnabled = isCustomCalendar && settings.calendarCustomWeekEnabled;
-    const monthNotesEnabled = isCustomCalendar && settings.calendarCustomMonthEnabled;
-    const quarterNotesEnabled = isCustomCalendar && settings.calendarCustomQuarterEnabled;
-    const yearNotesEnabled = isCustomCalendar && settings.calendarCustomYearEnabled;
+    const weekNotesEnabled = isCustomCalendar && settings.calendarCustomWeekPattern.trim() !== '';
+    const monthNotesEnabled = isCustomCalendar && settings.calendarCustomMonthPattern.trim() !== '';
+    const quarterNotesEnabled = isCustomCalendar && settings.calendarCustomQuarterPattern.trim() !== '';
+    const yearNotesEnabled = isCustomCalendar && settings.calendarCustomYearPattern.trim() !== '';
 
     const headerPeriodNoteFiles = useMemo(() => {
         void vaultVersion;

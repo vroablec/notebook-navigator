@@ -21,10 +21,6 @@ import { strings } from '../i18n';
 import type { NotebookNavigatorSettings } from '../settings/types';
 import {
     createCalendarCustomDateFormatter,
-    DEFAULT_CALENDAR_CUSTOM_MONTH_PATTERN,
-    DEFAULT_CALENDAR_CUSTOM_QUARTER_PATTERN,
-    DEFAULT_CALENDAR_CUSTOM_WEEK_PATTERN,
-    DEFAULT_CALENDAR_CUSTOM_YEAR_PATTERN,
     ensureMarkdownFileName,
     isCalendarCustomDatePatternValid,
     isCalendarCustomMonthPatternValid,
@@ -57,28 +53,28 @@ export function getCalendarNoteConfig(kind: CalendarNoteKind, settings: Notebook
         case 'week':
             return {
                 calendarCustomFilePattern: settings.calendarCustomWeekPattern,
-                fallbackPattern: DEFAULT_CALENDAR_CUSTOM_WEEK_PATTERN,
+                fallbackPattern: '',
                 isPatternValid: isCalendarCustomWeekPatternValid,
                 parsingErrorText: strings.settings.items.calendarCustomWeekPattern.parsingError
             };
         case 'month':
             return {
                 calendarCustomFilePattern: settings.calendarCustomMonthPattern,
-                fallbackPattern: DEFAULT_CALENDAR_CUSTOM_MONTH_PATTERN,
+                fallbackPattern: '',
                 isPatternValid: isCalendarCustomMonthPatternValid,
                 parsingErrorText: strings.settings.items.calendarCustomMonthPattern.parsingError
             };
         case 'quarter':
             return {
                 calendarCustomFilePattern: settings.calendarCustomQuarterPattern,
-                fallbackPattern: DEFAULT_CALENDAR_CUSTOM_QUARTER_PATTERN,
+                fallbackPattern: '',
                 isPatternValid: isCalendarCustomQuarterPatternValid,
                 parsingErrorText: strings.settings.items.calendarCustomQuarterPattern.parsingError
             };
         case 'year':
             return {
                 calendarCustomFilePattern: settings.calendarCustomYearPattern,
-                fallbackPattern: DEFAULT_CALENDAR_CUSTOM_YEAR_PATTERN,
+                fallbackPattern: '',
                 isPatternValid: isCalendarCustomYearPatternValid,
                 parsingErrorText: strings.settings.items.calendarCustomYearPattern.parsingError
             };

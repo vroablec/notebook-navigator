@@ -75,6 +75,11 @@
     font-weight: 600;
 }
 
+.nn-setting-calendar-pattern-example-text {
+    font-size: inherit;
+    font-weight: var(--font-semibold);
+}
+
 /* Sync mode toggle button (cloud/device) */
 .nn-setting-sync-toggle {
     color: var(--text-muted);

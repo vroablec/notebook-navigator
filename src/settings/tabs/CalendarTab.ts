@@ -279,11 +279,11 @@ export function renderCalendarTab(context: SettingsTabContext): void {
         descEl.empty();
         renderMomentPatternDescription(descEl);
 
-        const exampleEl = descEl.createDiv();
-        const exampleTextEl = exampleEl.createEl('strong');
+        const exampleEl = descEl.createDiv({ cls: 'nn-setting-calendar-pattern-example nn-setting-hidden' });
+        const exampleTextEl = exampleEl.createSpan({ cls: 'nn-setting-calendar-pattern-example-text' });
         const inputEl = setting.controlEl.querySelector<HTMLInputElement>('input');
 
-        return { setting, descEl, exampleTextEl, inputEl };
+        return { setting, descEl, exampleEl, exampleTextEl, inputEl };
     };
 
     const calendarCustomFilePattern = createCalendarCustomPatternSetting({
@@ -356,83 +356,6 @@ export function renderCalendarTab(context: SettingsTabContext): void {
         cls: 'setting-item-description nn-setting-hidden nn-setting-warning'
     });
 
-    const disabledMarker = strings.settings.syncMode.disabled;
-    const setPatternSettingEnabled = (params: { setting: Setting; inputEl: HTMLInputElement | null; enabled: boolean }): void => {
-        const { setting, inputEl, enabled } = params;
-        if (inputEl) {
-            inputEl.disabled = !enabled;
-        }
-
-        setting.settingEl.classList.toggle('nn-setting-disabled', !enabled);
-        if (setting.nameEl) {
-            setting.nameEl.setAttr('data-nn-setting-marker', disabledMarker);
-            if (!enabled) {
-                setting.nameEl.addClass('nn-setting-name-marker');
-            } else {
-                setting.nameEl.removeClass('nn-setting-name-marker');
-            }
-        }
-    };
-
-    const updatePatternSettingStates = (): void => {
-        setPatternSettingEnabled({
-            setting: calendarCustomWeekPattern.setting,
-            inputEl: calendarCustomWeekPattern.inputEl,
-            enabled: plugin.settings.calendarCustomWeekEnabled
-        });
-        setPatternSettingEnabled({
-            setting: calendarCustomMonthPattern.setting,
-            inputEl: calendarCustomMonthPattern.inputEl,
-            enabled: plugin.settings.calendarCustomMonthEnabled
-        });
-        setPatternSettingEnabled({
-            setting: calendarCustomQuarterPattern.setting,
-            inputEl: calendarCustomQuarterPattern.inputEl,
-            enabled: plugin.settings.calendarCustomQuarterEnabled
-        });
-        setPatternSettingEnabled({
-            setting: calendarCustomYearPattern.setting,
-            inputEl: calendarCustomYearPattern.inputEl,
-            enabled: plugin.settings.calendarCustomYearEnabled
-        });
-    };
-
-    calendarCustomWeekPattern.setting.addToggle(toggle =>
-        toggle.setValue(plugin.settings.calendarCustomWeekEnabled).onChange(async enabled => {
-            plugin.settings.calendarCustomWeekEnabled = enabled;
-            updatePatternSettingStates();
-            renderCalendarIntegrationVisibility();
-            await plugin.saveSettingsAndUpdate();
-        })
-    );
-
-    calendarCustomMonthPattern.setting.addToggle(toggle =>
-        toggle.setValue(plugin.settings.calendarCustomMonthEnabled).onChange(async enabled => {
-            plugin.settings.calendarCustomMonthEnabled = enabled;
-            updatePatternSettingStates();
-            renderCalendarIntegrationVisibility();
-            await plugin.saveSettingsAndUpdate();
-        })
-    );
-
-    calendarCustomQuarterPattern.setting.addToggle(toggle =>
-        toggle.setValue(plugin.settings.calendarCustomQuarterEnabled).onChange(async enabled => {
-            plugin.settings.calendarCustomQuarterEnabled = enabled;
-            updatePatternSettingStates();
-            renderCalendarIntegrationVisibility();
-            await plugin.saveSettingsAndUpdate();
-        })
-    );
-
-    calendarCustomYearPattern.setting.addToggle(toggle =>
-        toggle.setValue(plugin.settings.calendarCustomYearEnabled).onChange(async enabled => {
-            plugin.settings.calendarCustomYearEnabled = enabled;
-            updatePatternSettingStates();
-            renderCalendarIntegrationVisibility();
-            await plugin.saveSettingsAndUpdate();
-        })
-    );
-
     // Read current input values while typing; the setting values are updated via debounced callbacks.
     const getInputValue = (element: HTMLInputElement | null, fallback: string): string => element?.value ?? fallback;
 
@@ -440,28 +363,43 @@ export function renderCalendarTab(context: SettingsTabContext): void {
     const renderCalendarCustomPatternPreviews = (): void => {
         const momentApi = getMomentApi();
         const exampleTemplate = strings.settings.items.calendarCustomFilePattern.example;
-        const emptyExample = exampleTemplate.replace('{path}', '');
-        const setAllExamples = (text: string) => {
-            calendarCustomFilePattern.exampleTextEl.setText(text);
-            calendarCustomWeekPattern.exampleTextEl.setText(plugin.settings.calendarCustomWeekEnabled ? text : '');
-            calendarCustomMonthPattern.exampleTextEl.setText(plugin.settings.calendarCustomMonthEnabled ? text : '');
-            calendarCustomQuarterPattern.exampleTextEl.setText(plugin.settings.calendarCustomQuarterEnabled ? text : '');
-            calendarCustomYearPattern.exampleTextEl.setText(plugin.settings.calendarCustomYearEnabled ? text : '');
+
+        const previewTargets = [
+            calendarCustomFilePattern,
+            calendarCustomWeekPattern,
+            calendarCustomMonthPattern,
+            calendarCustomQuarterPattern,
+            calendarCustomYearPattern
+        ] as const;
+
+        const setExampleText = (target: { exampleEl: HTMLElement; exampleTextEl: HTMLElement }, text: string): void => {
+            target.exampleTextEl.setText(text);
+            setElementVisible(target.exampleEl, text.trim() !== '');
+        };
+
+        const clearExamples = (): void => {
+            previewTargets.forEach(target => setExampleText(target, ''));
         };
 
         if (!momentApi) {
-            setAllExamples(emptyExample);
+            clearExamples();
             return;
         }
 
         const sampleDate = momentApi('2026-01-19', 'YYYY-MM-DD', true);
         if (!sampleDate.isValid()) {
-            setAllExamples(emptyExample);
+            clearExamples();
             return;
         }
 
         const formatExample = (patternRaw: string, fallback: string): string => {
-            const { folderPattern, filePattern } = splitCalendarCustomPattern(patternRaw, fallback);
+            const normalized = normalizeCalendarCustomFilePattern(patternRaw, fallback);
+            if (!normalized) {
+                return '';
+            }
+            const slashIndex = normalized.lastIndexOf('/');
+            const folderPattern = slashIndex === -1 ? '' : normalized.slice(0, slashIndex);
+            const filePattern = slashIndex === -1 ? normalized : normalized.slice(slashIndex + 1);
             const folderFormatter = createCalendarCustomDateFormatter(folderPattern);
             const fileFormatter = createCalendarCustomDateFormatter(filePattern);
 
@@ -471,41 +409,31 @@ export function renderCalendarTab(context: SettingsTabContext): void {
 
             const formattedFilePattern = fileFormatter(sampleDate).trim();
             const fileName = ensureMarkdownFileName(formattedFilePattern);
+            if (!fileName) {
+                return '';
+            }
             return folderPathRelative ? `${folderPathRelative}/${fileName}` : fileName;
         };
 
         const dailyPatternRaw = getInputValue(calendarCustomFilePattern.inputEl, plugin.settings.calendarCustomFilePattern);
-        calendarCustomFilePattern.exampleTextEl.setText(
-            exampleTemplate.replace('{path}', formatExample(dailyPatternRaw, DEFAULT_CALENDAR_CUSTOM_FILE_PATTERN))
-        );
+        const dailyExamplePath = formatExample(dailyPatternRaw, DEFAULT_CALENDAR_CUSTOM_FILE_PATTERN);
+        setExampleText(calendarCustomFilePattern, dailyExamplePath ? exampleTemplate.replace('{path}', dailyExamplePath) : '');
 
         const weekPatternRaw = getInputValue(calendarCustomWeekPattern.inputEl, plugin.settings.calendarCustomWeekPattern);
-        calendarCustomWeekPattern.exampleTextEl.setText(
-            plugin.settings.calendarCustomWeekEnabled
-                ? exampleTemplate.replace('{path}', formatExample(weekPatternRaw, DEFAULT_CALENDAR_CUSTOM_WEEK_PATTERN))
-                : ''
-        );
+        const weekExamplePath = formatExample(weekPatternRaw, '');
+        setExampleText(calendarCustomWeekPattern, weekExamplePath ? exampleTemplate.replace('{path}', weekExamplePath) : '');
 
         const monthPatternRaw = getInputValue(calendarCustomMonthPattern.inputEl, plugin.settings.calendarCustomMonthPattern);
-        calendarCustomMonthPattern.exampleTextEl.setText(
-            plugin.settings.calendarCustomMonthEnabled
-                ? exampleTemplate.replace('{path}', formatExample(monthPatternRaw, DEFAULT_CALENDAR_CUSTOM_MONTH_PATTERN))
-                : ''
-        );
+        const monthExamplePath = formatExample(monthPatternRaw, '');
+        setExampleText(calendarCustomMonthPattern, monthExamplePath ? exampleTemplate.replace('{path}', monthExamplePath) : '');
 
         const quarterPatternRaw = getInputValue(calendarCustomQuarterPattern.inputEl, plugin.settings.calendarCustomQuarterPattern);
-        calendarCustomQuarterPattern.exampleTextEl.setText(
-            plugin.settings.calendarCustomQuarterEnabled
-                ? exampleTemplate.replace('{path}', formatExample(quarterPatternRaw, DEFAULT_CALENDAR_CUSTOM_QUARTER_PATTERN))
-                : ''
-        );
+        const quarterExamplePath = formatExample(quarterPatternRaw, '');
+        setExampleText(calendarCustomQuarterPattern, quarterExamplePath ? exampleTemplate.replace('{path}', quarterExamplePath) : '');
 
         const yearPatternRaw = getInputValue(calendarCustomYearPattern.inputEl, plugin.settings.calendarCustomYearPattern);
-        calendarCustomYearPattern.exampleTextEl.setText(
-            plugin.settings.calendarCustomYearEnabled
-                ? exampleTemplate.replace('{path}', formatExample(yearPatternRaw, DEFAULT_CALENDAR_CUSTOM_YEAR_PATTERN))
-                : ''
-        );
+        const yearExamplePath = formatExample(yearPatternRaw, '');
+        setExampleText(calendarCustomYearPattern, yearExamplePath ? exampleTemplate.replace('{path}', yearExamplePath) : '');
     };
 
     /** Updates calendar integration sub-setting visibility and validates the custom file pattern */
@@ -526,11 +454,8 @@ export function renderCalendarTab(context: SettingsTabContext): void {
 
         if (!isCustom) {
             setAllErrorsHidden();
-            updatePatternSettingStates();
             return;
         }
-
-        updatePatternSettingStates();
 
         const momentApi = getMomentApi();
 
@@ -546,40 +471,28 @@ export function renderCalendarTab(context: SettingsTabContext): void {
         setElementVisible(calendarCustomFilePatternErrorEl, showDailyError);
 
         const weekPatternRaw = getInputValue(calendarCustomWeekPattern.inputEl, plugin.settings.calendarCustomWeekPattern);
-        const weekCustomPattern = buildCustomPattern(weekPatternRaw, DEFAULT_CALENDAR_CUSTOM_WEEK_PATTERN);
-        const showWeekError =
-            plugin.settings.calendarCustomWeekEnabled &&
-            weekPatternRaw.trim() !== '' &&
-            !isCalendarCustomWeekPatternValid(weekCustomPattern, momentApi);
+        const weekCustomPattern = buildCustomPattern(weekPatternRaw, '');
+        const showWeekError = weekPatternRaw.trim() !== '' && !isCalendarCustomWeekPatternValid(weekCustomPattern, momentApi);
         calendarCustomWeekPatternErrorEl.setText(showWeekError ? strings.settings.items.calendarCustomWeekPattern.parsingError : '');
         setElementVisible(calendarCustomWeekPatternErrorEl, showWeekError);
 
         const monthPatternRaw = getInputValue(calendarCustomMonthPattern.inputEl, plugin.settings.calendarCustomMonthPattern);
-        const monthCustomPattern = buildCustomPattern(monthPatternRaw, DEFAULT_CALENDAR_CUSTOM_MONTH_PATTERN);
-        const showMonthError =
-            plugin.settings.calendarCustomMonthEnabled &&
-            monthPatternRaw.trim() !== '' &&
-            !isCalendarCustomMonthPatternValid(monthCustomPattern, momentApi);
+        const monthCustomPattern = buildCustomPattern(monthPatternRaw, '');
+        const showMonthError = monthPatternRaw.trim() !== '' && !isCalendarCustomMonthPatternValid(monthCustomPattern, momentApi);
         calendarCustomMonthPatternErrorEl.setText(showMonthError ? strings.settings.items.calendarCustomMonthPattern.parsingError : '');
         setElementVisible(calendarCustomMonthPatternErrorEl, showMonthError);
 
         const quarterPatternRaw = getInputValue(calendarCustomQuarterPattern.inputEl, plugin.settings.calendarCustomQuarterPattern);
-        const quarterCustomPattern = buildCustomPattern(quarterPatternRaw, DEFAULT_CALENDAR_CUSTOM_QUARTER_PATTERN);
-        const showQuarterError =
-            plugin.settings.calendarCustomQuarterEnabled &&
-            quarterPatternRaw.trim() !== '' &&
-            !isCalendarCustomQuarterPatternValid(quarterCustomPattern, momentApi);
+        const quarterCustomPattern = buildCustomPattern(quarterPatternRaw, '');
+        const showQuarterError = quarterPatternRaw.trim() !== '' && !isCalendarCustomQuarterPatternValid(quarterCustomPattern, momentApi);
         calendarCustomQuarterPatternErrorEl.setText(
             showQuarterError ? strings.settings.items.calendarCustomQuarterPattern.parsingError : ''
         );
         setElementVisible(calendarCustomQuarterPatternErrorEl, showQuarterError);
 
         const yearPatternRaw = getInputValue(calendarCustomYearPattern.inputEl, plugin.settings.calendarCustomYearPattern);
-        const yearCustomPattern = buildCustomPattern(yearPatternRaw, DEFAULT_CALENDAR_CUSTOM_YEAR_PATTERN);
-        const showYearError =
-            plugin.settings.calendarCustomYearEnabled &&
-            yearPatternRaw.trim() !== '' &&
-            !isCalendarCustomYearPatternValid(yearCustomPattern, momentApi);
+        const yearCustomPattern = buildCustomPattern(yearPatternRaw, '');
+        const showYearError = yearPatternRaw.trim() !== '' && !isCalendarCustomYearPatternValid(yearCustomPattern, momentApi);
         calendarCustomYearPatternErrorEl.setText(showYearError ? strings.settings.items.calendarCustomYearPattern.parsingError : '');
         setElementVisible(calendarCustomYearPatternErrorEl, showYearError);
 
