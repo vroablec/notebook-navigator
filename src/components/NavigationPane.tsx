@@ -90,7 +90,7 @@ import type { CombinedNavigationItem } from '../types/virtualization';
 import { NavigationPaneItemType, ItemType, TAGGED_TAG_ID, UNTAGGED_TAG_ID } from '../types';
 import { getSelectedPath } from '../utils/selectionUtils';
 import { TagTreeNode } from '../types/storage';
-import { getFolderNote, type FolderNoteDetectionSettings } from '../utils/folderNotes';
+import { getFolderNote, openFolderNoteFile, type FolderNoteDetectionSettings } from '../utils/folderNotes';
 import { findTagNode, getTotalNoteCount } from '../utils/tagTree';
 import { FILE_VISIBILITY, getExtensionSuffix, shouldShowExtensionSuffix } from '../utils/fileTypeUtils';
 import { getTagSearchModifierOperator, resolveCanonicalTagPath } from '../utils/tagUtils';
@@ -1185,28 +1185,6 @@ export const NavigationPane = React.memo(
             ]
         );
 
-        const openNavigationFolderNote = useCallback(
-            async ({ folder, folderNote, openInNewTab }: { folder: TFolder; folderNote: TFile; openInNewTab: boolean }) => {
-                const openFile = async () => {
-                    if (openInNewTab) {
-                        await openFileInContext({ app, commandQueue, file: folderNote, context: 'tab' });
-                        return;
-                    }
-
-                    const leaf = app.workspace.getLeaf();
-                    await leaf.openFile(folderNote);
-                };
-
-                if (commandQueue) {
-                    await commandQueue.executeOpenFolderNote(folder.path, openFile);
-                    return;
-                }
-
-                await openFile();
-            },
-            [app, commandQueue]
-        );
-
         // Handle folder name click (for folder notes)
         const handleFolderNameClick = useCallback(
             (folder: TFolder, event?: React.MouseEvent<HTMLSpanElement>) => {
@@ -1227,9 +1205,11 @@ export const NavigationPane = React.memo(
                 const shouldOpenInNewTab =
                     settings.openFolderNotesInNewTab || (!isMobile && settings.multiSelectModifier === 'optionAlt' && isCmdCtrlClick);
 
-                runAsyncAction(() => openNavigationFolderNote({ folder, folderNote, openInNewTab: shouldOpenInNewTab }));
+                runAsyncAction(() =>
+                    openFolderNoteFile({ app, commandQueue, folder, folderNote, context: shouldOpenInNewTab ? 'tab' : null })
+                );
             },
-            [settings, handleFolderClick, selectionDispatch, isMobile, openNavigationFolderNote]
+            [settings, handleFolderClick, selectionDispatch, isMobile, app, commandQueue]
         );
 
         const handleFolderNameMouseDown = useCallback(
@@ -1248,9 +1228,9 @@ export const NavigationPane = React.memo(
 
                 selectionDispatch({ type: 'SET_SELECTED_FOLDER', folder, autoSelectedFile: null });
 
-                runAsyncAction(() => openNavigationFolderNote({ folder, folderNote, openInNewTab: true }));
+                runAsyncAction(() => openFolderNoteFile({ app, commandQueue, folder, folderNote, context: 'tab' }));
             },
-            [settings, selectionDispatch, openNavigationFolderNote]
+            [settings, selectionDispatch, app, commandQueue]
         );
 
         // Handle tag toggle

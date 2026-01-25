@@ -46,6 +46,7 @@ import { useFileOpener } from './useFileOpener';
 import { matchesShortcut, KeyboardShortcutAction } from '../utils/keyboardShortcuts';
 import { runAsyncAction } from '../utils/async';
 import { openFileInContext } from '../utils/openFileInContext';
+import { isEnterKey, resolveKeyboardOpenContext } from '../utils/keyboardOpenContext';
 
 /**
  * Check if a list item is selectable (file, not header or spacer)
@@ -189,9 +190,7 @@ export function useListPaneKeyboard({
                 return -1;
             };
 
-            const isEnterKey = e.key === 'Enter' || e.code === 'Enter' || e.code === 'NumpadEnter';
-
-            if (settings.enterToOpenFiles && isEnterKey) {
+            if (settings.enterToOpenFiles && isEnterKey(e)) {
                 const selectedFile = resolvePrimarySelectedFile(app, selectionState);
                 if (!selectedFile) {
                     return;
@@ -199,18 +198,14 @@ export function useListPaneKeyboard({
 
                 e.preventDefault();
 
-                const isCmdCtrl = e.metaKey || e.ctrlKey;
-                const isShift = e.shiftKey;
-
-                if (isCmdCtrl || isShift) {
-                    const context = isCmdCtrl ? settings.cmdCtrlEnterOpenContext : settings.shiftEnterOpenContext;
-                    const resolvedContext = isMobile && context === 'window' ? 'tab' : context;
+                const context = resolveKeyboardOpenContext(e, settings);
+                if (context) {
                     runAsyncAction(() =>
                         openFileInContext({
                             app,
                             commandQueue,
                             file: selectedFile,
-                            context: resolvedContext,
+                            context,
                             active: false
                         })
                     );
