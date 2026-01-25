@@ -287,7 +287,6 @@ Callbacks run synchronously during menu construction. Add menu items synchronous
 The file callback receives the clicked file and the effective selection for this menu:
 
 - `context.addItem(...)` - Add a menu item
-- `context.addSeparator()` - Add a separator
 - `context.file` - The file the menu was opened on
 - `context.selection.mode` - `'multiple'` when multiple files are selected and the menu was opened on a selected file
 - `context.selection.files` - Snapshot of files for this menu (`'single'` uses `[file]`)
@@ -339,7 +338,6 @@ const dispose = nn?.menus?.registerFileMenu(({ addItem, selection }) => {
 The folder callback receives:
 
 - `context.addItem(...)` - Add a menu item
-- `context.addSeparator()` - Add a separator
 - `context.folder` - The folder the menu was opened on
 
 ```typescript
