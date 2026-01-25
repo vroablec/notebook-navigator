@@ -936,6 +936,16 @@ export const STRINGS_TR = {
                     systemDefault: 'Varsayılan'
                 }
             },
+            calendarWeekendDays: {
+                name: 'Hafta sonu günleri',
+                desc: 'Hafta sonu günlerini farklı bir arka plan rengiyle göster.',
+                options: {
+                    none: 'Hiçbiri',
+                    satSun: 'Cumartesi ve pazar',
+                    friSat: 'Cuma ve cumartesi',
+                    thuFri: 'Perşembe ve cuma'
+                }
+            },
             calendarWeeksToShow: {
                 name: 'Sol kenar çubuğunda gösterilecek haftalar',
                 desc: 'Sağ kenar çubuğundaki takvim her zaman tam ayı gösterir.',

@@ -936,6 +936,16 @@ export const STRINGS_KO = {
                     systemDefault: '기본값'
                 }
             },
+            calendarWeekendDays: {
+                name: '주말',
+                desc: '주말을 다른 배경색으로 표시합니다.',
+                options: {
+                    none: '없음',
+                    satSun: '토요일과 일요일',
+                    friSat: '금요일과 토요일',
+                    thuFri: '목요일과 금요일'
+                }
+            },
             calendarWeeksToShow: {
                 name: '왼쪽 사이드바에 표시할 주',
                 desc: '오른쪽 사이드바의 캘린더는 항상 전체 월을 표시합니다.',

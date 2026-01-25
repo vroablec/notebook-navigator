@@ -936,6 +936,16 @@ export const STRINGS_FA = {
                     systemDefault: 'پیش‌فرض'
                 }
             },
+            calendarWeekendDays: {
+                name: 'روزهای آخر هفته',
+                desc: 'نمایش روزهای آخر هفته با رنگ پس‌زمینه متفاوت.',
+                options: {
+                    none: 'هیچ',
+                    satSun: 'شنبه و یکشنبه',
+                    friSat: 'جمعه و شنبه',
+                    thuFri: 'پنجشنبه و جمعه'
+                }
+            },
             calendarWeeksToShow: {
                 name: 'هفته‌های نمایش در نوار کناری راست', // RTL: "left sidebar" → "right sidebar"
                 desc: 'تقویم در نوار کناری چپ همیشه ماه کامل را نمایش می‌دهد.', // RTL: "right sidebar" → "left sidebar"

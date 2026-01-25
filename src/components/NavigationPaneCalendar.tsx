@@ -57,7 +57,7 @@ import {
 import { getTooltipPlacement } from '../utils/domUtils';
 import { resolveUXIconForMenu } from '../utils/uxIcons';
 import { getActiveVaultProfile } from '../utils/vaultProfiles';
-import type { CalendarWeeksToShow } from '../settings/types';
+import type { CalendarWeeksToShow, CalendarWeekendDays } from '../settings/types';
 
 interface CalendarHoverTooltipData {
     imageUrl: string | null;
@@ -212,6 +212,20 @@ function startOfWeek(date: MomentInstance, weekStartsOn: number): MomentInstance
     const dayOfWeek = getDayOfWeek(date);
     const diff = (dayOfWeek - weekStartsOn + 7) % 7;
     return date.clone().subtract(diff, 'day').startOf('day');
+}
+
+function isWeekendDay(dayOfWeek: number, weekendDays: CalendarWeekendDays): boolean {
+    switch (weekendDays) {
+        case 'none':
+            return false;
+        case 'fri-sat':
+            return dayOfWeek === 5 || dayOfWeek === 6;
+        case 'thu-fri':
+            return dayOfWeek === 4 || dayOfWeek === 5;
+        case 'sat-sun':
+        default:
+            return dayOfWeek === 0 || dayOfWeek === 6;
+    }
 }
 
 export interface NavigationPaneCalendarProps {
@@ -1542,7 +1556,7 @@ export function NavigationPaneCalendar({ onWeekCountChange, layout = 'overlay', 
                                     const hasFeatureImageKey = featureImageKeysByIso.has(day.iso);
                                     const isToday = todayIso === day.iso;
                                     const dayOfWeek = day.date.toDate().getDay();
-                                    const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
+                                    const isWeekend = isWeekendDay(dayOfWeek, settings.calendarWeekendDays);
 
                                     const className = [
                                         'nn-navigation-calendar-day',

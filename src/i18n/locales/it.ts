@@ -936,6 +936,16 @@ export const STRINGS_IT = {
                     systemDefault: 'Predefinito'
                 }
             },
+            calendarWeekendDays: {
+                name: 'Giorni del fine settimana',
+                desc: 'Mostra i giorni del fine settimana con un colore di sfondo diverso.',
+                options: {
+                    none: 'Nessuno',
+                    satSun: 'Sabato e domenica',
+                    friSat: 'Venerdì e sabato',
+                    thuFri: 'Giovedì e venerdì'
+                }
+            },
             calendarWeeksToShow: {
                 name: 'Settimane da mostrare nella barra laterale sinistra',
                 desc: 'Il calendario nella barra laterale destra mostra sempre il mese completo.',

@@ -88,6 +88,7 @@ import {
     type CalendarPlacement,
     type CalendarWeeksToShow,
     isCalendarPlacement,
+    isCalendarWeekendDays,
     isSettingSyncMode,
     isSortOption,
     isTagSortOrder,
@@ -446,6 +447,10 @@ export default class NotebookNavigatorPlugin extends Plugin implements ISettings
 
         if (typeof this.settings.recentNotesCount !== 'number' || this.settings.recentNotesCount <= 0) {
             this.settings.recentNotesCount = DEFAULT_SETTINGS.recentNotesCount;
+        }
+
+        if (!isCalendarWeekendDays(this.settings.calendarWeekendDays)) {
+            this.settings.calendarWeekendDays = DEFAULT_SETTINGS.calendarWeekendDays;
         }
         let uiScaleMigrated = false;
         SYNC_MODE_SETTING_IDS.forEach(settingId => {

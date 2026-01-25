@@ -107,6 +107,7 @@ export const DEFAULT_SETTINGS: NotebookNavigatorSettings = {
     // Calendar tab - Calendar
     calendarPlacement: 'left-sidebar',
     calendarLocale: 'system-default',
+    calendarWeekendDays: 'sat-sun',
     calendarWeeksToShow: 1,
     calendarHighlightToday: true,
     calendarShowFeatureImage: true,

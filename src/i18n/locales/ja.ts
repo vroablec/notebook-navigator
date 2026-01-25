@@ -937,6 +937,16 @@ export const STRINGS_JA = {
                     systemDefault: 'デフォルト'
                 }
             },
+            calendarWeekendDays: {
+                name: '週末',
+                desc: '週末を異なる背景色で表示します。',
+                options: {
+                    none: 'なし',
+                    satSun: '土曜日と日曜日',
+                    friSat: '金曜日と土曜日',
+                    thuFri: '木曜日と金曜日'
+                }
+            },
             calendarWeeksToShow: {
                 name: '左サイドバーの表示週数',
                 desc: '右サイドバーのカレンダーは常に月全体を表示します。',

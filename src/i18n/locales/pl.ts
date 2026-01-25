@@ -938,6 +938,16 @@ export const STRINGS_PL = {
                     systemDefault: 'Domyślny'
                 }
             },
+            calendarWeekendDays: {
+                name: 'Dni weekendowe',
+                desc: 'Wyświetlaj dni weekendowe z innym kolorem tła.',
+                options: {
+                    none: 'Brak',
+                    satSun: 'Sobota i niedziela',
+                    friSat: 'Piątek i sobota',
+                    thuFri: 'Czwartek i piątek'
+                }
+            },
             calendarWeeksToShow: {
                 name: 'Tygodnie do wyświetlenia na lewym pasku bocznym',
                 desc: 'Kalendarz na prawym pasku bocznym zawsze wyświetla pełny miesiąc.',

@@ -936,6 +936,16 @@ export const STRINGS_EN = {
                     systemDefault: 'Default'
                 }
             },
+            calendarWeekendDays: {
+                name: 'Weekend days',
+                desc: 'Show weekend days with a different background color.',
+                options: {
+                    none: 'None',
+                    satSun: 'Saturday and Sunday',
+                    friSat: 'Friday and Saturday',
+                    thuFri: 'Thursday and Friday'
+                }
+            },
             calendarWeeksToShow: {
                 name: 'Weeks to show in left sidebar',
                 desc: 'Calendar in the right sidebar always displays the full month.',

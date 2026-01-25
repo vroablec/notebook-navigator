@@ -938,6 +938,16 @@ export const STRINGS_NL = {
                     systemDefault: 'Standaard'
                 }
             },
+            calendarWeekendDays: {
+                name: 'Weekenddagen',
+                desc: 'Toon weekenddagen met een andere achtergrondkleur.',
+                options: {
+                    none: 'Geen',
+                    satSun: 'Zaterdag en zondag',
+                    friSat: 'Vrijdag en zaterdag',
+                    thuFri: 'Donderdag en vrijdag'
+                }
+            },
             calendarWeeksToShow: {
                 name: 'Weken om te tonen in linker zijbalk',
                 desc: 'De kalender in de rechter zijbalk toont altijd de volledige maand.',

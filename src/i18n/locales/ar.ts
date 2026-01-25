@@ -936,6 +936,16 @@ export const STRINGS_AR = {
                     systemDefault: 'افتراضي'
                 }
             },
+            calendarWeekendDays: {
+                name: 'أيام عطلة نهاية الأسبوع',
+                desc: 'عرض أيام عطلة نهاية الأسبوع بلون خلفية مختلف.',
+                options: {
+                    none: 'لا شيء',
+                    satSun: 'السبت والأحد',
+                    friSat: 'الجمعة والسبت',
+                    thuFri: 'الخميس والجمعة'
+                }
+            },
             calendarWeeksToShow: {
                 name: 'الأسابيع المعروضة في الشريط الجانبي الأيمن', // RTL: "left sidebar" → "right sidebar"
                 desc: 'التقويم في الشريط الجانبي الأيسر يعرض الشهر كاملاً دائماً.', // RTL: "right sidebar" → "left sidebar"

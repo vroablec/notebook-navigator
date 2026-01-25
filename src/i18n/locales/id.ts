@@ -936,6 +936,16 @@ export const STRINGS_ID = {
                     systemDefault: 'Default'
                 }
             },
+            calendarWeekendDays: {
+                name: 'Hari akhir pekan',
+                desc: 'Tampilkan hari akhir pekan dengan warna latar belakang berbeda.',
+                options: {
+                    none: 'Tidak ada',
+                    satSun: 'Sabtu dan Minggu',
+                    friSat: 'Jumat dan Sabtu',
+                    thuFri: 'Kamis dan Jumat'
+                }
+            },
             calendarWeeksToShow: {
                 name: 'Minggu yang ditampilkan di sidebar kiri',
                 desc: 'Kalender di sidebar kanan selalu menampilkan bulan penuh.',

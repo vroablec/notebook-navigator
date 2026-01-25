@@ -934,6 +934,16 @@ export const STRINGS_ZH_CN = {
                     systemDefault: '系统默认'
                 }
             },
+            calendarWeekendDays: {
+                name: '周末',
+                desc: '用不同的背景颜色显示周末。',
+                options: {
+                    none: '无',
+                    satSun: '周六和周日',
+                    friSat: '周五和周六',
+                    thuFri: '周四和周五'
+                }
+            },
             calendarWeeksToShow: {
                 name: '左侧边栏显示周数',
                 desc: '右侧边栏的日历始终显示完整月份。',

@@ -18,7 +18,7 @@
 
 import { DropdownComponent, Setting } from 'obsidian';
 import { getCurrentLanguage, strings } from '../../i18n';
-import { isCalendarPlacement, type CalendarWeeksToShow } from '../types';
+import { isCalendarPlacement, isCalendarWeekendDays, type CalendarWeeksToShow } from '../types';
 import type { SettingsTabContext } from './SettingsTabContext';
 import {
     createCalendarCustomDateFormatter,
@@ -111,6 +111,27 @@ export function renderCalendarTab(context: SettingsTabContext): void {
                 plugin.settings.calendarLocale = value;
                 await plugin.saveSettingsAndUpdate();
             });
+        });
+
+    topGroup
+        .addSetting(setting => {
+            setting.setName(strings.settings.items.calendarWeekendDays.name).setDesc(strings.settings.items.calendarWeekendDays.desc);
+        })
+        .addDropdown((dropdown: DropdownComponent) => {
+            dropdown
+                .addOption('none', strings.settings.items.calendarWeekendDays.options.none)
+                .addOption('sat-sun', strings.settings.items.calendarWeekendDays.options.satSun)
+                .addOption('fri-sat', strings.settings.items.calendarWeekendDays.options.friSat)
+                .addOption('thu-fri', strings.settings.items.calendarWeekendDays.options.thuFri)
+                .setValue(plugin.settings.calendarWeekendDays)
+                .onChange(async value => {
+                    if (!isCalendarWeekendDays(value)) {
+                        return;
+                    }
+
+                    plugin.settings.calendarWeekendDays = value;
+                    await plugin.saveSettingsAndUpdate();
+                });
         });
 
     topGroup

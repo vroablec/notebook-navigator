@@ -121,6 +121,13 @@ export function isCalendarPlacement(value: unknown): value is CalendarPlacement 
     return value === 'left-sidebar' || value === 'right-sidebar';
 }
 
+/** Which days are highlighted as weekend days in the calendar UI. */
+export type CalendarWeekendDays = 'none' | 'sat-sun' | 'fri-sat' | 'thu-fri';
+
+export function isCalendarWeekendDays(value: unknown): value is CalendarWeekendDays {
+    return value === 'none' || value === 'sat-sun' || value === 'fri-sat' || value === 'thu-fri';
+}
+
 /** Source used for calendar notes in the navigation pane */
 export type CalendarIntegrationMode = 'daily-notes' | 'notebook-navigator';
 
@@ -227,6 +234,7 @@ export interface NotebookNavigatorSettings {
     // Calendar tab - Calendar
     calendarPlacement: CalendarPlacement;
     calendarLocale: string;
+    calendarWeekendDays: CalendarWeekendDays;
     calendarWeeksToShow: CalendarWeeksToShow;
     calendarHighlightToday: boolean;
     calendarShowFeatureImage: boolean;

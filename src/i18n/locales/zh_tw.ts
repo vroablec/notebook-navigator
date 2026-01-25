@@ -934,6 +934,16 @@ export const STRINGS_ZH_TW = {
                     systemDefault: '系統預設'
                 }
             },
+            calendarWeekendDays: {
+                name: '週末',
+                desc: '以不同背景顏色顯示週末。',
+                options: {
+                    none: '無',
+                    satSun: '週六和週日',
+                    friSat: '週五和週六',
+                    thuFri: '週四和週五'
+                }
+            },
             calendarWeeksToShow: {
                 name: '左側邊欄顯示週數',
                 desc: '右側邊欄的日曆始終顯示完整月份。',
