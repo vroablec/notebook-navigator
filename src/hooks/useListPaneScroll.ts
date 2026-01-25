@@ -247,6 +247,14 @@ export function useListPaneScroll({
             // For file items - calculate height including all components
             const file = item.type === ListPaneItemType.FILE && item.data instanceof TFile ? item.data : null;
 
+            // Visibility for tags row
+            const shouldShowFileTags = settings.showTags && settings.showFileTags && (!isCompactMode || settings.showFileTagsInCompactMode);
+            const hasTagRow = Boolean(shouldShowFileTags && item.type === ListPaneItemType.FILE && item.hasTags);
+
+            // Height optimization settings
+            const heightOptimizationEnabled = settings.optimizeNoteHeight;
+            const heightOptimizationDisabled = !settings.optimizeNoteHeight;
+
             // Get actual preview status for accurate height calculation
             let hasPreviewText = false;
             let hasOmnisearchExcerpt = false;
@@ -270,11 +278,22 @@ export function useListPaneScroll({
                 featureImageStatus
             });
 
-            // Note: Preview rows are calculated differently based on context
+            // Keep the height estimator aligned with FileItem custom property rendering.
+            // `getCustomPropertyRowCount` applies the same trimming rules and separate-row behavior.
+            const customPropertyRowCount = getCustomPropertyRowCount({
+                customPropertyType: folderSettings.customPropertyType,
+                showCustomPropertiesOnSeparateRows: settings.showCustomPropertiesOnSeparateRows,
+                showCustomPropertyInCompactMode: settings.showCustomPropertyInCompactMode,
+                isCompactMode,
+                file,
+                wordCount: fileRecord?.wordCount ?? undefined,
+                customProperty: fileRecord?.customProperty ?? undefined
+            });
 
-            // Height optimization settings
-            const heightOptimizationEnabled = settings.optimizeNoteHeight;
-            const heightOptimizationDisabled = !settings.optimizeNoteHeight;
+            const hasVisiblePillRows = hasTagRow || customPropertyRowCount > 0;
+            const shouldSuppressEmptyPreviewLines = !hasPreviewContent && hasVisiblePillRows;
+
+            // Note: Preview rows are calculated differently based on context
 
             // Layout decision variables (matching FileItem.tsx logic)
             const pinnedItemShouldUseCompactLayout = item.isPinned && heightOptimizationEnabled; // Pinned items get compact treatment only when optimizing
@@ -297,7 +316,7 @@ export function useListPaneScroll({
                 // Pinned items are treated as single row mode when optimization is enabled (unless using full height)
                 if (shouldUseSingleLineForDateAndPreview) {
                     // Date and preview share one line
-                    if (folderSettings.showPreview || folderSettings.showDate) {
+                    if (folderSettings.showDate || (folderSettings.showPreview && !shouldSuppressEmptyPreviewLines)) {
                         textContentHeight += heights.singleTextLineHeight;
                     }
 
@@ -327,14 +346,13 @@ export function useListPaneScroll({
                     } else if (shouldAlwaysReservePreviewSpace) {
                         // Has preview text OR using full height: show full layout
                         if (folderSettings.showPreview) {
-                            // When using full height, always reserve full preview rows even if empty
-                            // When optimizing, only show preview if there's content
-                            const previewRows =
-                                heightOptimizationDisabled || showFeatureImageArea
+                            const previewRows = shouldSuppressEmptyPreviewLines
+                                ? 0
+                                : heightOptimizationDisabled || showFeatureImageArea
+                                  ? folderSettings.previewRows
+                                  : hasPreviewContent
                                     ? folderSettings.previewRows
-                                    : hasPreviewContent
-                                      ? folderSettings.previewRows
-                                      : 0;
+                                    : 0;
                             if (previewRows > 0) {
                                 textContentHeight += heights.multilineTextLineHeight * previewRows;
                             }
@@ -354,23 +372,9 @@ export function useListPaneScroll({
             }
 
             // Add space for tags if file has tags and they are visible in this mode
-            const shouldShowFileTags = settings.showTags && settings.showFileTags && (!isCompactMode || settings.showFileTagsInCompactMode);
-
-            if (shouldShowFileTags && item.type === ListPaneItemType.FILE && item.hasTags) {
+            if (hasTagRow) {
                 textContentHeight += heights.tagRowHeight;
             }
-
-            // Keep the height estimator aligned with FileItem custom property rendering.
-            // `getCustomPropertyRowCount` applies the same trimming rules and separate-row behavior.
-            const customPropertyRowCount = getCustomPropertyRowCount({
-                customPropertyType: folderSettings.customPropertyType,
-                showCustomPropertiesOnSeparateRows: settings.showCustomPropertiesOnSeparateRows,
-                showCustomPropertyInCompactMode: settings.showCustomPropertyInCompactMode,
-                isCompactMode,
-                file,
-                wordCount: fileRecord?.wordCount ?? undefined,
-                customProperty: fileRecord?.customProperty ?? undefined
-            });
 
             if (customPropertyRowCount > 0) {
                 // `tagRowHeight` mirrors the combined CSS row height + margin-top gap for pill rows.

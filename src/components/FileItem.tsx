@@ -980,6 +980,9 @@ export const FileItem = React.memo(function FileItem({
     const shouldUseMultiLinePreviewLayout = !pinnedItemShouldUseCompactLayout && appearanceSettings.previewRows >= 2;
     const shouldCollapseEmptyPreviewSpace = heightOptimizationEnabled && !hasPreviewContent && !showFeatureImageArea; // Optimization: compact layout for empty preview
     const shouldAlwaysReservePreviewSpace = heightOptimizationDisabled || hasPreviewContent || showFeatureImageArea; // Show full layout when not optimizing OR has content
+    const hasVisiblePillRows = shouldShowFileTags || shouldShowCustomProperty;
+    const shouldSuppressEmptyPreviewLines = !hasPreviewContent && hasVisiblePillRows;
+    const shouldShowSingleLineSecondLine = settings.showFileDate || (settings.showFilePreview && !shouldSuppressEmptyPreviewLines);
 
     // Determine parent folder display metadata
     const parentFolderSource = file.parent;
@@ -1631,14 +1634,16 @@ export const FileItem = React.memo(function FileItem({
                                 {shouldUseSingleLineForDateAndPreview && (
                                     <>
                                         {/* Date + Preview on same line */}
-                                        <div className="nn-file-second-line">
-                                            {settings.showFileDate && <div className="nn-file-date">{displayDate}</div>}
-                                            {settings.showFilePreview && (
-                                                <div className="nn-file-preview" style={{ '--preview-rows': 1 } as React.CSSProperties}>
-                                                    {highlightedPreview}
-                                                </div>
-                                            )}
-                                        </div>
+                                        {shouldShowSingleLineSecondLine ? (
+                                            <div className="nn-file-second-line">
+                                                {settings.showFileDate && <div className="nn-file-date">{displayDate}</div>}
+                                                {settings.showFilePreview && !shouldSuppressEmptyPreviewLines && (
+                                                    <div className="nn-file-preview" style={{ '--preview-rows': 1 } as React.CSSProperties}>
+                                                        {highlightedPreview}
+                                                    </div>
+                                                )}
+                                            </div>
+                                        ) : null}
 
                                         {/* Pills */}
                                         {renderCustomProperty()}
@@ -1676,7 +1681,7 @@ export const FileItem = React.memo(function FileItem({
                                         {shouldAlwaysReservePreviewSpace && (
                                             <>
                                                 {/* Multi-row preview - show preview text spanning multiple rows */}
-                                                {settings.showFilePreview && (
+                                                {settings.showFilePreview && !shouldSuppressEmptyPreviewLines && (
                                                     <div
                                                         className="nn-file-preview"
                                                         style={{ '--preview-rows': appearanceSettings.previewRows } as React.CSSProperties}
