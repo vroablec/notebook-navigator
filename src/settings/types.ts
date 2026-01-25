@@ -183,6 +183,12 @@ export interface NotebookNavigatorSettings {
     autoRevealIgnoreRightSidebar: boolean;
     paneTransitionDuration: number;
 
+    // General tab - Keyboard navigation
+    multiSelectModifier: MultiSelectModifier;
+    enterToOpenFiles: boolean;
+    shiftEnterOpenContext: FileOpenContext;
+    cmdCtrlEnterOpenContext: FileOpenContext;
+
     // General tab - View
     startView: 'navigation' | 'files';
     interfaceIcons: Record<string, string>;
@@ -272,10 +278,6 @@ export interface NotebookNavigatorSettings {
     keepEmptyTagsProperty: boolean;
 
     // List pane tab
-    multiSelectModifier: MultiSelectModifier;
-    enterToOpenFiles: boolean;
-    shiftEnterOpenContext: FileOpenContext;
-    cmdCtrlEnterOpenContext: FileOpenContext;
     defaultListMode: ListDisplayMode;
     includeDescendantNotes: boolean;
     defaultFolderSort: SortOption;

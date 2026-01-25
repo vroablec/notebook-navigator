@@ -613,6 +613,7 @@ export const STRINGS_PT = {
                 vaultProfiles: 'Perfis do cofre',
                 filtering: 'Filtragem',
                 behavior: 'Comportamento',
+                keyboardNavigation: 'Navegação por teclado',
                 view: 'Aparência',
                 icons: 'Ícones',
                 desktopAppearance: 'Aparência no computador',
@@ -625,7 +626,6 @@ export const STRINGS_PT = {
             },
             list: {
                 display: 'Aparência',
-                keyboardNavigation: 'Navegação por teclado',
                 pinnedNotes: 'Notas fixadas'
             },
             notes: {

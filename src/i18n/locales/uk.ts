@@ -613,6 +613,7 @@ export const STRINGS_UK = {
                 vaultProfiles: 'Профілі сховища',
                 filtering: 'Фільтрація',
                 behavior: 'Поведінка',
+                keyboardNavigation: 'Навігація з клавіатури',
                 view: 'Вигляд',
                 icons: 'Іконки',
                 desktopAppearance: "Вигляд на комп'ютері",
@@ -625,7 +626,6 @@ export const STRINGS_UK = {
             },
             list: {
                 display: 'Вигляд',
-                keyboardNavigation: 'Навігація з клавіатури',
                 pinnedNotes: 'Закріплені нотатки'
             },
             notes: {

@@ -612,6 +612,7 @@ export const STRINGS_ZH_TW = {
                 vaultProfiles: '保險庫設定檔',
                 filtering: '篩選',
                 behavior: '行為',
+                keyboardNavigation: '鍵盤導覽',
                 view: '外觀',
                 icons: '圖示',
                 desktopAppearance: '桌面外觀',
@@ -624,7 +625,6 @@ export const STRINGS_ZH_TW = {
             },
             list: {
                 display: '外觀',
-                keyboardNavigation: '鍵盤導覽',
                 pinnedNotes: '釘選筆記'
             },
             notes: {

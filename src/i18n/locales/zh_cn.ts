@@ -612,6 +612,7 @@ export const STRINGS_ZH_CN = {
                 vaultProfiles: '仓库配置文件',
                 filtering: '过滤',
                 behavior: '行为',
+                keyboardNavigation: '键盘导航',
                 view: '外观',
                 icons: '图标',
                 desktopAppearance: '桌面外观',
@@ -624,7 +625,6 @@ export const STRINGS_ZH_CN = {
             },
             list: {
                 display: '外观',
-                keyboardNavigation: '键盘导航',
                 pinnedNotes: '固定笔记'
             },
             notes: {

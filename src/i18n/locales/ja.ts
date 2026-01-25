@@ -614,6 +614,7 @@ export const STRINGS_JA = {
                 vaultProfiles: '保管庫プロファイル',
                 filtering: 'フィルター',
                 behavior: '動作',
+                keyboardNavigation: 'キーボード操作',
                 view: '外観',
                 icons: 'アイコン',
                 desktopAppearance: 'デスクトップの外観',
@@ -626,7 +627,6 @@ export const STRINGS_JA = {
             },
             list: {
                 display: '外観',
-                keyboardNavigation: 'キーボード操作',
                 pinnedNotes: 'ピン留めされたノート'
             },
             notes: {

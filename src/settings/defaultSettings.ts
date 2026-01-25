@@ -62,6 +62,12 @@ export const DEFAULT_SETTINGS: NotebookNavigatorSettings = {
     autoRevealIgnoreRightSidebar: true,
     paneTransitionDuration: 150,
 
+    // General tab - Keyboard navigation
+    multiSelectModifier: 'cmdCtrl',
+    enterToOpenFiles: false,
+    shiftEnterOpenContext: 'tab',
+    cmdCtrlEnterOpenContext: 'split',
+
     // General tab - View
     startView: 'files',
     interfaceIcons: sanitizeRecord<string>(undefined),
@@ -168,10 +174,6 @@ export const DEFAULT_SETTINGS: NotebookNavigatorSettings = {
     keepEmptyTagsProperty: false,
 
     // List pane tab
-    multiSelectModifier: 'cmdCtrl',
-    enterToOpenFiles: false,
-    shiftEnterOpenContext: 'tab',
-    cmdCtrlEnterOpenContext: 'split',
     defaultListMode: 'standard',
     includeDescendantNotes: false,
     defaultFolderSort: 'modified-desc',

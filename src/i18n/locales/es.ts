@@ -614,6 +614,7 @@ export const STRINGS_ES = {
                 vaultProfiles: 'Perfiles de bóveda',
                 filtering: 'Filtrado',
                 behavior: 'Comportamiento',
+                keyboardNavigation: 'Navegación con teclado',
                 view: 'Apariencia',
                 icons: 'Iconos',
                 desktopAppearance: 'Apariencia de escritorio',
@@ -626,7 +627,6 @@ export const STRINGS_ES = {
             },
             list: {
                 display: 'Apariencia',
-                keyboardNavigation: 'Navegación con teclado',
                 pinnedNotes: 'Notas fijadas'
             },
             notes: {

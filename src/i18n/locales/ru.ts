@@ -613,6 +613,7 @@ export const STRINGS_RU = {
                 vaultProfiles: 'Профили хранилища',
                 filtering: 'Фильтрация',
                 behavior: 'Поведение',
+                keyboardNavigation: 'Навигация с клавиатуры',
                 view: 'Внешний вид',
                 icons: 'Иконки',
                 desktopAppearance: 'Внешний вид на компьютере',
@@ -625,7 +626,6 @@ export const STRINGS_RU = {
             },
             list: {
                 display: 'Внешний вид',
-                keyboardNavigation: 'Навигация с клавиатуры',
                 pinnedNotes: 'Закреплённые заметки'
             },
             notes: {

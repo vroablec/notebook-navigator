@@ -613,6 +613,7 @@ export const STRINGS_ID = {
                 vaultProfiles: 'Profil vault',
                 filtering: 'Penyaringan',
                 behavior: 'Perilaku',
+                keyboardNavigation: 'Navigasi keyboard',
                 view: 'Tampilan',
                 icons: 'Ikon',
                 desktopAppearance: 'Tampilan desktop',
@@ -625,7 +626,6 @@ export const STRINGS_ID = {
             },
             list: {
                 display: 'Tampilan',
-                keyboardNavigation: 'Navigasi keyboard',
                 pinnedNotes: 'Catatan yang disematkan'
             },
             notes: {

@@ -613,6 +613,7 @@ export const STRINGS_TH = {
                 vaultProfiles: 'โปรไฟล์ห้องนิรภัย',
                 filtering: 'การกรอง',
                 behavior: 'พฤติกรรม',
+                keyboardNavigation: 'การนำทางด้วยแป้นพิมพ์',
                 view: 'ลักษณะ',
                 icons: 'ไอคอน',
                 desktopAppearance: 'ลักษณะเดสก์ท็อป',
@@ -625,7 +626,6 @@ export const STRINGS_TH = {
             },
             list: {
                 display: 'ลักษณะ',
-                keyboardNavigation: 'การนำทางด้วยแป้นพิมพ์',
                 pinnedNotes: 'โน้ตที่ปักหมุด'
             },
             notes: {

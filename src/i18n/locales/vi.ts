@@ -613,6 +613,7 @@ export const STRINGS_VI = {
                 vaultProfiles: 'Hồ sơ vault',
                 filtering: 'Lọc',
                 behavior: 'Hành vi',
+                keyboardNavigation: 'Điều hướng bằng bàn phím',
                 view: 'Giao diện',
                 icons: 'Biểu tượng',
                 desktopAppearance: 'Giao diện máy tính',
@@ -625,7 +626,6 @@ export const STRINGS_VI = {
             },
             list: {
                 display: 'Giao diện',
-                keyboardNavigation: 'Điều hướng bằng bàn phím',
                 pinnedNotes: 'Ghi chú đã ghim'
             },
             notes: {

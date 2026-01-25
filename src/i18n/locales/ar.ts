@@ -613,6 +613,7 @@ export const STRINGS_AR = {
                 vaultProfiles: 'ملفات الخزنة',
                 filtering: 'التصفية',
                 behavior: 'السلوك',
+                keyboardNavigation: 'التنقل بلوحة المفاتيح',
                 view: 'المظهر',
                 icons: 'الأيقونات',
                 desktopAppearance: 'مظهر سطح المكتب',
@@ -625,7 +626,6 @@ export const STRINGS_AR = {
             },
             list: {
                 display: 'المظهر',
-                keyboardNavigation: 'التنقل بلوحة المفاتيح',
                 pinnedNotes: 'الملاحظات المثبتة'
             },
             notes: {

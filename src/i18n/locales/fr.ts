@@ -614,6 +614,7 @@ export const STRINGS_FR = {
                 vaultProfiles: 'Profils du coffre',
                 filtering: 'Filtrage',
                 behavior: 'Comportement',
+                keyboardNavigation: 'Navigation au clavier',
                 view: 'Apparence',
                 icons: 'Icônes',
                 desktopAppearance: 'Apparence sur ordinateur',
@@ -626,7 +627,6 @@ export const STRINGS_FR = {
             },
             list: {
                 display: 'Apparence',
-                keyboardNavigation: 'Navigation au clavier',
                 pinnedNotes: 'Notes épinglées'
             },
             notes: {

@@ -615,6 +615,7 @@ export const STRINGS_NL = {
                 vaultProfiles: 'Kluisprofielen',
                 filtering: 'Filteren',
                 behavior: 'Gedrag',
+                keyboardNavigation: 'Toetsenbordnavigatie',
                 view: 'Uiterlijk',
                 icons: 'Iconen',
                 desktopAppearance: 'Desktop-uiterlijk',
@@ -627,7 +628,6 @@ export const STRINGS_NL = {
             },
             list: {
                 display: 'Uiterlijk',
-                keyboardNavigation: 'Toetsenbordnavigatie',
                 pinnedNotes: 'Vastgezette notities'
             },
             notes: {

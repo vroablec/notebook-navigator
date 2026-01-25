@@ -613,6 +613,7 @@ export const STRINGS_KO = {
                 vaultProfiles: '보관소 프로필',
                 filtering: '필터링',
                 behavior: '동작',
+                keyboardNavigation: '키보드 탐색',
                 view: '모양',
                 icons: '아이콘',
                 desktopAppearance: '데스크톱 모양새',
@@ -625,7 +626,6 @@ export const STRINGS_KO = {
             },
             list: {
                 display: '모양',
-                keyboardNavigation: '키보드 탐색',
                 pinnedNotes: '고정된 노트'
             },
             notes: {

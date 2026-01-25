@@ -614,6 +614,7 @@ export const STRINGS_DE = {
                 vaultProfiles: 'Tresorprofile',
                 filtering: 'Filterung',
                 behavior: 'Verhalten',
+                keyboardNavigation: 'Tastaturnavigation',
                 view: 'Darstellung',
                 icons: 'Symbole',
                 desktopAppearance: 'Desktop-Darstellung',
@@ -626,7 +627,6 @@ export const STRINGS_DE = {
             },
             list: {
                 display: 'Darstellung',
-                keyboardNavigation: 'Tastaturnavigation',
                 pinnedNotes: 'Angeheftete Notizen'
             },
             notes: {

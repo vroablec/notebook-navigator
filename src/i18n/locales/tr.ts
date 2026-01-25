@@ -613,6 +613,7 @@ export const STRINGS_TR = {
                 vaultProfiles: 'Kasa profilleri',
                 filtering: 'Filtreleme',
                 behavior: 'Davranış',
+                keyboardNavigation: 'Klavye ile gezinme',
                 view: 'Görünüm',
                 icons: 'Simgeler',
                 desktopAppearance: 'Masaüstü görünümü',
@@ -625,7 +626,6 @@ export const STRINGS_TR = {
             },
             list: {
                 display: 'Görünüm',
-                keyboardNavigation: 'Klavye ile gezinme',
                 pinnedNotes: 'Sabitlenmiş notlar'
             },
             notes: {

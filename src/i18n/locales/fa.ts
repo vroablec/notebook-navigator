@@ -613,6 +613,7 @@ export const STRINGS_FA = {
                 vaultProfiles: 'پروفایل‌های خزانه',
                 filtering: 'فیلتر کردن',
                 behavior: 'رفتار',
+                keyboardNavigation: 'پیمایش با صفحه‌کلید',
                 view: 'ظاهر',
                 icons: 'آیکون‌ها',
                 desktopAppearance: 'ظاهر دسکتاپ',
@@ -625,7 +626,6 @@ export const STRINGS_FA = {
             },
             list: {
                 display: 'ظاهر',
-                keyboardNavigation: 'پیمایش با صفحه‌کلید',
                 pinnedNotes: 'یادداشت‌های سنجاق‌شده'
             },
             notes: {

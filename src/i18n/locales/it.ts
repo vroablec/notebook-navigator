@@ -613,6 +613,7 @@ export const STRINGS_IT = {
                 vaultProfiles: 'Profili vault',
                 filtering: 'Filtri',
                 behavior: 'Comportamento',
+                keyboardNavigation: 'Navigazione da tastiera',
                 view: 'Aspetto',
                 icons: 'Icone',
                 desktopAppearance: 'Aspetto desktop',
@@ -625,7 +626,6 @@ export const STRINGS_IT = {
             },
             list: {
                 display: 'Aspetto',
-                keyboardNavigation: 'Navigazione da tastiera',
                 pinnedNotes: 'Note fissate'
             },
             notes: {

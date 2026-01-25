@@ -615,6 +615,7 @@ export const STRINGS_PL = {
                 vaultProfiles: 'Profile sejfu',
                 filtering: 'Filtrowanie',
                 behavior: 'Zachowanie',
+                keyboardNavigation: 'Nawigacja klawiaturą',
                 view: 'Wygląd',
                 icons: 'Ikony',
                 desktopAppearance: 'Wygląd na komputerze',
@@ -627,7 +628,6 @@ export const STRINGS_PL = {
             },
             list: {
                 display: 'Wygląd',
-                keyboardNavigation: 'Nawigacja klawiaturą',
                 pinnedNotes: 'Przypięte notatki'
             },
             notes: {
