@@ -1181,7 +1181,7 @@ export const STRINGS_ID = {
                 desc: 'Tampilkan tag saat tanggal, pratinjau, dan gambar disembunyikan.'
             },
             customPropertyType: {
-                name: 'Tipe',
+                name: 'Tipe properti',
                 desc: 'Pilih properti kustom untuk ditampilkan di item file.',
                 options: {
                     frontmatter: 'Properti frontmatter',

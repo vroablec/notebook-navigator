@@ -1179,7 +1179,7 @@ export const STRINGS_AR = {
                 desc: 'عرض الوسوم عند إخفاء التاريخ والمعاينة والصورة.'
             },
             customPropertyType: {
-                name: 'النوع',
+                name: 'نوع الخاصية',
                 desc: 'حدد الخاصية المخصصة لعرضها في عناصر الملفات.',
                 options: {
                     frontmatter: 'خاصية الواجهة الأمامية',

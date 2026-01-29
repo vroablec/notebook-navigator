@@ -1178,7 +1178,7 @@ export const STRINGS_EN = {
                 desc: 'Display tags when date, preview, and image are hidden.'
             },
             customPropertyType: {
-                name: 'Type',
+                name: 'Property type',
                 desc: 'Select the custom property to display in file items.',
                 options: {
                     frontmatter: 'Frontmatter property',

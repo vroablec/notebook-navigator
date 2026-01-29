@@ -1184,7 +1184,7 @@ export const STRINGS_NL = {
                 desc: 'Tags weergeven wanneer datum, voorbeeld en afbeelding verborgen zijn.'
             },
             customPropertyType: {
-                name: 'Type',
+                name: 'Eigenschapstype',
                 desc: 'Selecteer de aangepaste eigenschap om weer te geven in bestandsitems.',
                 options: {
                     frontmatter: 'Frontmatter eigenschap',

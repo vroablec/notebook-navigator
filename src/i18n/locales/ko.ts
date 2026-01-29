@@ -1180,7 +1180,7 @@ export const STRINGS_KO = {
                 desc: '날짜, 미리보기, 이미지가 숨겨져 있을 때 태그를 표시합니다.'
             },
             customPropertyType: {
-                name: '유형',
+                name: '속성 유형',
                 desc: '파일 항목에 표시할 사용자 정의 속성을 선택합니다.',
                 options: {
                     frontmatter: '프론트매터 속성',

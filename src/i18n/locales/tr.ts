@@ -1180,7 +1180,7 @@ export const STRINGS_TR = {
                 desc: 'Tarih, önizleme ve görsel gizlendiğinde etiketleri görüntüle.'
             },
             customPropertyType: {
-                name: 'Tür',
+                name: 'Özellik türü',
                 desc: 'Dosya öğelerinde görüntülenecek özel özelliği seçin.',
                 options: {
                     frontmatter: 'Frontmatter özelliği',

@@ -1184,7 +1184,7 @@ export const STRINGS_DE = {
                 desc: 'Tags anzeigen, wenn Datum, Vorschau und Bild ausgeblendet sind.'
             },
             customPropertyType: {
-                name: 'Typ',
+                name: 'Eigenschaftstyp',
                 desc: 'Wählen Sie die benutzerdefinierte Eigenschaft, die in Datei-Elementen angezeigt werden soll.',
                 options: {
                     frontmatter: 'Frontmatter-Eigenschaft',

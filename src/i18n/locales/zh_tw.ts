@@ -1177,7 +1177,7 @@ export const STRINGS_ZH_TW = {
                 desc: '當日期、預覽和圖片被隱藏時顯示標籤。'
             },
             customPropertyType: {
-                name: '類型',
+                name: '屬性類型',
                 desc: '選擇要在檔案項目中顯示的自訂屬性。',
                 options: {
                     frontmatter: '前置中繼資料屬性',

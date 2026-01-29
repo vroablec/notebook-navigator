@@ -1182,7 +1182,7 @@ export const STRINGS_RU = {
                 desc: 'Отображать теги, когда дата, превью и изображение скрыты.'
             },
             customPropertyType: {
-                name: 'Тип',
+                name: 'Тип свойства',
                 desc: 'Выберите пользовательское свойство для отображения в элементах файлов.',
                 options: {
                     frontmatter: 'Свойство frontmatter',

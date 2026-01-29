@@ -1183,7 +1183,7 @@ export const STRINGS_ES = {
                 desc: 'Mostrar etiquetas cuando la fecha, vista previa e imagen están ocultas.'
             },
             customPropertyType: {
-                name: 'Tipo',
+                name: 'Tipo de propiedad',
                 desc: 'Selecciona la propiedad personalizada a mostrar en los elementos de archivo.',
                 options: {
                     frontmatter: 'Propiedad del frontmatter',

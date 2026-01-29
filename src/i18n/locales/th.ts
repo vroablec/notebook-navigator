@@ -1179,7 +1179,7 @@ export const STRINGS_TH = {
                 desc: 'แสดงแท็กเมื่อวันที่ ตัวอย่าง และรูปภาพถูกซ่อน'
             },
             customPropertyType: {
-                name: 'ประเภท',
+                name: 'ประเภทคุณสมบัติ',
                 desc: 'เลือกคุณสมบัติกำหนดเองที่จะแสดงในรายการไฟล์',
                 options: {
                     frontmatter: 'คุณสมบัติ Frontmatter',

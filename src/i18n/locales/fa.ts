@@ -1179,7 +1179,7 @@ export const STRINGS_FA = {
                 desc: 'برچسب‌ها را هنگامی که تاریخ، پیش‌نمایش و تصویر مخفی هستند نمایش دهید.'
             },
             customPropertyType: {
-                name: 'نوع',
+                name: 'نوع ویژگی',
                 desc: 'ویژگی سفارشی را برای نمایش در آیتم‌های فایل انتخاب کنید.',
                 options: {
                     frontmatter: 'ویژگی Frontmatter',

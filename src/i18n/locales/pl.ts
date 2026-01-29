@@ -1183,7 +1183,7 @@ export const STRINGS_PL = {
                 desc: 'Wyświetl tagi, gdy data, podgląd i obraz są ukryte.'
             },
             customPropertyType: {
-                name: 'Typ',
+                name: 'Typ właściwości',
                 desc: 'Wybierz właściwość niestandardową do wyświetlenia w elementach plików.',
                 options: {
                     frontmatter: 'Właściwość frontmatter',

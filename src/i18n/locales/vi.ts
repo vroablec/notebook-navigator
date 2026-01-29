@@ -1179,7 +1179,7 @@ export const STRINGS_VI = {
                 desc: 'Hiển thị thẻ khi ngày, xem trước và ảnh bị ẩn.'
             },
             customPropertyType: {
-                name: 'Loại',
+                name: 'Loại thuộc tính',
                 desc: 'Chọn thuộc tính tùy chỉnh để hiển thị trong các mục tệp.',
                 options: {
                     frontmatter: 'Thuộc tính frontmatter',

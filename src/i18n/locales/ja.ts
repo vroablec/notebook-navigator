@@ -1183,7 +1183,7 @@ export const STRINGS_JA = {
                 desc: '日付、プレビュー、画像が非表示のときにタグを表示します。'
             },
             customPropertyType: {
-                name: 'タイプ',
+                name: 'プロパティタイプ',
                 desc: 'ファイルアイテムに表示するカスタムプロパティを選択します。',
                 options: {
                     frontmatter: 'フロントマタープロパティ',

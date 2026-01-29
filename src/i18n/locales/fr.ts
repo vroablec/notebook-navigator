@@ -1186,7 +1186,7 @@ export const STRINGS_FR = {
                 desc: "Afficher les tags lorsque la date, l'aperçu et l'image sont masqués."
             },
             customPropertyType: {
-                name: 'Type',
+                name: 'Type de propriété',
                 desc: 'Sélectionnez la propriété personnalisée à afficher dans les éléments de fichier.',
                 options: {
                     frontmatter: 'Propriété frontmatter',

@@ -1178,7 +1178,7 @@ export const STRINGS_ZH_CN = {
                 desc: '当日期、预览和图像被隐藏时显示标签。'
             },
             customPropertyType: {
-                name: '类型',
+                name: '属性类型',
                 desc: '选择要在文件项中显示的自定义属性。',
                 options: {
                     frontmatter: '前置元数据属性',

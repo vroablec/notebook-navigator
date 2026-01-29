@@ -1180,7 +1180,7 @@ export const STRINGS_PT_BR = {
                 desc: 'Exibir tags quando data, visualização e imagem estão ocultas.'
             },
             customPropertyType: {
-                name: 'Tipo',
+                name: 'Tipo de propriedade',
                 desc: 'Selecione a propriedade personalizada a exibir nos itens de arquivo.',
                 options: {
                     frontmatter: 'Propriedade frontmatter',

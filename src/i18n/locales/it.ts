@@ -1183,7 +1183,7 @@ export const STRINGS_IT = {
                 desc: 'Visualizza tag quando data, anteprima e immagine sono nascosti.'
             },
             customPropertyType: {
-                name: 'Tipo',
+                name: 'Tipo di proprietà',
                 desc: 'Seleziona la proprietà personalizzata da visualizzare negli elementi file.',
                 options: {
                     frontmatter: 'Proprietà frontmatter',
