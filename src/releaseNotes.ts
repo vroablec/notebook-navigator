@@ -76,7 +76,7 @@ export interface ReleaseNote {
 const RELEASE_NOTES: ReleaseNote[] = [
     {
         version: '2.2.1',
-        date: '2026-01-28',
+        date: '2026-01-30',
         showOnUpdate: true,
         new: [
             'Calendar periodic notes can now use template files (daily, weekly, monthly, quarterly, yearly). Configure templates in Settings > Calendar.'
