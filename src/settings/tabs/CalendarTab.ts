@@ -28,6 +28,7 @@ import {
     DEFAULT_CALENDAR_CUSTOM_WEEK_PATTERN,
     DEFAULT_CALENDAR_CUSTOM_YEAR_PATTERN,
     ensureMarkdownFileName,
+    getCalendarCustomWeekAnchorDate,
     isCalendarCustomDatePatternValid,
     isCalendarCustomMonthPatternValid,
     isCalendarCustomQuarterPatternValid,
@@ -42,7 +43,7 @@ import { getActiveVaultProfile } from '../../utils/vaultProfiles';
 import { createSettingGroupFactory } from '../settingGroups';
 import { addSettingSyncModeToggle } from '../syncModeToggle';
 import { createSubSettingsContainer, setElementVisible } from '../subSettings';
-import { getMomentApi } from '../../utils/moment';
+import { getMomentApi, resolveMomentLocale, type MomentInstance } from '../../utils/moment';
 import { runAsyncAction } from '../../utils/async';
 import { CalendarTemplateModal } from '../../modals/CalendarTemplateModal';
 import { FolderPathInputSuggest } from '../../suggest/FolderPathInputSuggest';
@@ -541,13 +542,21 @@ export function renderCalendarTab(context: SettingsTabContext): void {
             return;
         }
 
+        const currentLanguage = getCurrentLanguage();
+        const fallbackLocale = momentApi.locale() || 'en';
+        const requestedDisplayLocale = (currentLanguage || fallbackLocale).replace(/_/g, '-');
+        const displayLocale = resolveMomentLocale(requestedDisplayLocale, momentApi, fallbackLocale);
+        const calendarRulesRequestedLocale =
+            plugin.settings.calendarLocale === CALENDAR_LOCALE_SYSTEM_DEFAULT ? displayLocale : plugin.settings.calendarLocale;
+        const calendarRulesLocale = resolveMomentLocale(calendarRulesRequestedLocale, momentApi, displayLocale);
+
         const sampleDate = momentApi('2026-01-19', 'YYYY-MM-DD', true);
         if (!sampleDate.isValid()) {
             clearExamples();
             return;
         }
 
-        const formatExample = (patternRaw: string, fallback: string): string => {
+        const formatExample = (patternRaw: string, fallback: string, anchorDate?: (date: MomentInstance) => MomentInstance): string => {
             const normalized = normalizeCalendarCustomFilePattern(patternRaw, fallback);
             if (!normalized) {
                 return '';
@@ -558,11 +567,12 @@ export function renderCalendarTab(context: SettingsTabContext): void {
             const folderFormatter = createCalendarCustomDateFormatter(folderPattern);
             const fileFormatter = createCalendarCustomDateFormatter(filePattern);
 
-            const folderSuffix = folderFormatter(sampleDate);
+            const dateForPath = anchorDate ? anchorDate(sampleDate.clone()) : sampleDate;
+            const folderSuffix = folderFormatter(dateForPath);
             const folderPath = normalizeCalendarVaultFolderPath(folderSuffix || '/');
             const folderPathRelative = folderPath === '/' ? '' : folderPath;
 
-            const formattedFilePattern = fileFormatter(sampleDate).trim();
+            const formattedFilePattern = fileFormatter(dateForPath).trim();
             const fileName = ensureMarkdownFileName(formattedFilePattern);
             if (!fileName) {
                 return '';
@@ -575,7 +585,11 @@ export function renderCalendarTab(context: SettingsTabContext): void {
         setExampleText(calendarCustomFilePattern, dailyExamplePath ? exampleTemplate.replace('{path}', dailyExamplePath) : '');
 
         const weekPatternRaw = getInputValue(calendarCustomWeekPattern.inputEl, plugin.settings.calendarCustomWeekPattern);
-        const weekExamplePath = formatExample(weekPatternRaw, '');
+        // Weekly patterns can include month/quarter tokens. Preview using week start so the example matches the actual
+        // note path resolution used when opening weekly notes (including ISO week patterns).
+        const weekExamplePath = formatExample(weekPatternRaw, '', date =>
+            getCalendarCustomWeekAnchorDate(date, weekPatternRaw, calendarRulesLocale)
+        );
         setExampleText(calendarCustomWeekPattern, weekExamplePath ? exampleTemplate.replace('{path}', weekExamplePath) : '');
 
         const monthPatternRaw = getInputValue(calendarCustomMonthPattern.inputEl, plugin.settings.calendarCustomMonthPattern);

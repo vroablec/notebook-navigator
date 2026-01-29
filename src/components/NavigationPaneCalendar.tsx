@@ -51,6 +51,7 @@ import {
 import {
     createCalendarCustomDateFormatter,
     ensureMarkdownFileName,
+    getCalendarCustomWeekAnchorDate,
     isCalendarCustomDatePatternValid,
     normalizeCalendarVaultFolderPath,
     splitCalendarCustomPattern
@@ -979,8 +980,9 @@ export function NavigationPaneCalendar({ onWeekCountChange, layout = 'overlay', 
             if (!config.isPatternValid(momentPattern, momentApi)) {
                 return null;
             }
+            const dateForPath = kind === 'week' ? getCalendarCustomWeekAnchorDate(date, momentPattern, calendarRulesLocale) : date;
             const { filePath } = buildCustomCalendarFilePathForPattern(
-                date,
+                dateForPath,
                 customCalendarRootFolderSettings,
                 config.calendarCustomFilePattern,
                 config.fallbackPattern
@@ -988,7 +990,7 @@ export function NavigationPaneCalendar({ onWeekCountChange, layout = 'overlay', 
             const existing = app.vault.getAbstractFileByPath(filePath);
             return existing instanceof TFile ? existing : null;
         },
-        [app, customCalendarRootFolderSettings, getCustomCalendarNoteConfig, momentApi]
+        [app, calendarRulesLocale, customCalendarRootFolderSettings, getCustomCalendarNoteConfig, momentApi]
     );
 
     const openOrCreateCustomCalendarNote = useCallback(
@@ -1008,8 +1010,10 @@ export function NavigationPaneCalendar({ onWeekCountChange, layout = 'overlay', 
 
             setHoverTooltip(null);
 
+            const dateForPath = kind === 'week' ? getCalendarCustomWeekAnchorDate(date, momentPattern, calendarRulesLocale) : date;
+
             const { folderPath, fileName, filePath } = buildCustomCalendarFilePathForPattern(
-                date,
+                dateForPath,
                 customCalendarRootFolderSettings,
                 config.calendarCustomFilePattern,
                 config.fallbackPattern
@@ -1056,6 +1060,7 @@ export function NavigationPaneCalendar({ onWeekCountChange, layout = 'overlay', 
         },
         [
             app,
+            calendarRulesLocale,
             collapseNavigationIfMobile,
             customCalendarRootFolderSettings,
             getCustomCalendarNoteConfig,

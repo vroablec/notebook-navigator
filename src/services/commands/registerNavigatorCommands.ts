@@ -37,6 +37,7 @@ import {
     getCalendarTemplatePath,
     type CalendarNoteKind
 } from '../../utils/calendarNotes';
+import { getCalendarCustomWeekAnchorDate } from '../../utils/calendarCustomNotePatterns';
 import { getFolderNote, isFolderNote, isSupportedFolderNoteExtension, type FolderNoteDetectionSettings } from '../../utils/folderNotes';
 import { isFolderInExcludedFolder, shouldExcludeFile } from '../../utils/fileFilters';
 import { getEffectiveFrontmatterExclusions, isFileHiddenBySettings } from '../../utils/exclusionUtils';
@@ -416,13 +417,6 @@ async function openCalendarNoteForToday(plugin: NotebookNavigatorPlugin, kind: C
         plugin.settings.calendarLocale === 'system-default' ? displayLocale : plugin.settings.calendarLocale;
     const calendarRulesLocale = resolveMomentLocale(calendarRulesRequestedLocale, momentApi, displayLocale);
 
-    const dateForPath =
-        kind === 'week'
-            ? date.clone().locale(calendarRulesLocale)
-            : kind === 'month' || kind === 'quarter' || kind === 'year'
-              ? date.clone().locale(displayLocale)
-              : date;
-
     if (kind === 'day' && plugin.settings.calendarIntegrationMode === 'daily-notes') {
         const dailyNoteSettings = getCoreDailyNoteSettings(plugin.app);
         if (!dailyNoteSettings) {
@@ -470,6 +464,16 @@ async function openCalendarNoteForToday(plugin: NotebookNavigatorPlugin, kind: C
         showNotice(config.parsingErrorText, { variant: 'warning' });
         return;
     }
+
+    const dateForPath =
+        kind === 'week'
+            ? // Weekly patterns can include month/quarter tokens as folder segments. Anchor to the start of the week so all
+              // days within a week resolve to the same path. For ISO week patterns (`GGGG-[W]WW`), anchor to `isoWeek` to
+              // avoid locale week-start differences (e.g. Sunday-start locales).
+              getCalendarCustomWeekAnchorDate(date, momentPattern, calendarRulesLocale)
+            : kind === 'month' || kind === 'quarter' || kind === 'year'
+              ? date.clone().locale(displayLocale)
+              : date;
 
     const settings = { calendarCustomRootFolder: getActiveVaultProfile(plugin.settings).periodicNotesFolder };
     const expected = buildCustomCalendarFilePathForPattern(dateForPath, settings, config.calendarCustomFilePattern, config.fallbackPattern);

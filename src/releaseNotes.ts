@@ -81,7 +81,7 @@ const RELEASE_NOTES: ReleaseNote[] = [
         new: [
             'Calendar periodic notes can now use template files (daily, weekly, monthly, quarterly, yearly). Configure templates in Settings > Calendar.'
         ],
-        improved: [],
+        improved: ['Weekly periodic note patterns now accept nested year/quarter/month/week folder paths.'],
         changed: [],
         fixed: []
     },
