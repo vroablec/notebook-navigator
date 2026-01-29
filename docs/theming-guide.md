@@ -1,13 +1,12 @@
 # Notebook Navigator Theming Guide
 
-Updated: January 19, 2026
+Updated: January 29, 2026
 
 ## Table of Contents
 
 - [Introduction](#introduction)
 - [CSS Variables Reference](#css-variables-reference)
   - [Theme foreground](#theme-foreground)
-  - [Pane overlay stacks](#pane-overlay-stacks)
   - [Calendar](#calendar)
   - [Navigation pane](#navigation-pane)
   - [Pane divider](#pane-divider-desktop-only)
@@ -43,8 +42,7 @@ On desktop, the background mode setting can map pane backgrounds:
 On mobile, both panes use `--nn-theme-mobile-bg`.
 
 Most variables are colors and should resolve to a computed color (some are used with `color-mix()`).
-`--nn-theme-nav-separator-background` is used as a `background` value, and `--nn-theme-pane-overlay-filter` is used as a
-`backdrop-filter` value.
+`--nn-theme-nav-separator-background` is used as a `background` value.
 
 ### Theme foreground
 
@@ -53,13 +51,6 @@ Most variables are colors and should resolve to a computed color (some are used 
 | `--nn-theme-foreground`       | `var(--text-normal)`                                                | Base foreground color    |
 | `--nn-theme-foreground-muted` | `color-mix(in srgb, var(--nn-theme-foreground) 70%, transparent)`   | Muted foreground color   |
 | `--nn-theme-foreground-faded` | `color-mix(in srgb, var(--nn-theme-foreground) 50%, transparent)`   | Faded foreground color   |
-
-### Pane overlay stacks
-
-| Variable                            | Default | Description                                                              |
-| ----------------------------------- | ------- | ------------------------------------------------------------------------ |
-| `--nn-theme-pane-overlay-opacity`   | `87`    | Opacity (0-100) for the pane overlay stacks rendered above scrolling rows |
-| `--nn-theme-pane-overlay-filter`    | `blur(3px) saturate(160%)` | Backdrop filter for the pane overlay stacks (used for `backdrop-filter`) |
 
 ### Calendar
 
@@ -155,7 +146,7 @@ Priority order: folder note styles override custom color styles, which override 
 | `--nn-theme-list-header-breadcrumb-color` | `var(--nn-theme-foreground-muted)`  | Text color for the breadcrumb path in the desktop header                           |
 | `--nn-theme-list-search-active-bg`        | `var(--text-highlight-bg)`          | Background color for the search field and match highlights when a search query is active |
 | `--nn-theme-list-search-border-color`     | `var(--background-modifier-border)` | Border and focus ring color for the search field                                   |
-| `--nn-theme-list-heading-color`           | `var(--nn-theme-foreground-muted)`  | Text color for the list pane overlay heading                                       |
+| `--nn-theme-list-heading-color`           | `var(--nn-theme-foreground-muted)`  | Text color for the list pane title area and vault title                            |
 | `--nn-theme-list-group-header-color`      | `var(--nn-theme-foreground-muted)`  | Text color for date groups and pinned section                                      |
 | `--nn-theme-list-separator-color`         | `var(--background-modifier-border)` | Divider line color between files                                                   |
 
@@ -203,7 +194,7 @@ navigation pane background. In `primary` and `secondary` background modes, both 
 | Variable                                        | Default | Description                                          |
 | ----------------------------------------------- | ------- | ---------------------------------------------------- |
 | `--nn-theme-list-header-breadcrumb-font-weight` | `600`   | Font weight for the breadcrumb in the desktop header |
-| `--nn-theme-list-heading-font-weight`           | `600`   | Font weight for the list pane overlay heading        |
+| `--nn-theme-list-heading-font-weight`           | `600`   | Font weight for the list pane title area and vault title |
 | `--nn-theme-list-group-header-font-weight`      | `600`   | Font weight for date groups and pinned section       |
 | `--nn-theme-file-name-font-weight`              | `600`   | Font weight for file names                           |
 | `--nn-theme-file-compact-name-font-weight`      | `400`   | Font weight for file names in compact mode           |
@@ -264,10 +255,6 @@ body {
   --nn-theme-foreground: #a9b7c6;
   --nn-theme-foreground-muted: #7f8b91;
   --nn-theme-foreground-faded: #6e6e6e;
-
-  /* Pane overlay stacks */
-  --nn-theme-pane-overlay-opacity: 87;
-  --nn-theme-pane-overlay-filter: blur(3px) saturate(160%);
 
   /* Navigation pane */
   --nn-theme-nav-bg: #3c3f41;
@@ -482,7 +469,6 @@ Notebook Navigator includes a Style Settings `@settings` block for most theming 
 
 Not currently exposed in the Style Settings UI:
 
-- `--nn-theme-pane-overlay-filter`
 - `--nn-theme-nav-separator-background`
 - `--nn-theme-nav-separator-height`
 - `--nn-theme-nav-separator-opacity`

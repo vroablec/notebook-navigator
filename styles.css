@@ -174,11 +174,6 @@ body {
     --nn-theme-foreground-muted: color-mix(in srgb, var(--nn-theme-foreground) 70%, transparent);
     --nn-theme-foreground-faded: color-mix(in srgb, var(--nn-theme-foreground) 50%, transparent);
 
-    /* -- Pane Overlay Stacks -- */
-    /* Overlay stacks (header/search/title) rendered above scrolling content */
-    --nn-theme-pane-overlay-opacity: 87;
-    --nn-theme-pane-overlay-filter: blur(3px) saturate(160%);
-
     /* -- Navigation Pane -- */
     --nn-theme-nav-bg: var(--background-secondary);
     --nn-theme-nav-separator-color: var(--nn-theme-foreground);
@@ -703,7 +698,8 @@ body {
     flex-direction: column;
     overflow: hidden;
     background-color: var(--nn-theme-nav-bg);
-    position: relative; /* Enables absolute positioning for overlays */
+    border-right: 1px solid var(--nn-theme-divider-border-color);
+    position: relative; /* Enables absolute positioning for resize handles */
 
     /* Performance optimization for virtualized content */
     contain: layout style;
@@ -740,6 +736,10 @@ body {
     --nn-theme-list-bg: var(--nn-theme-mobile-bg);
 }
 
+.notebook-navigator-mobile .nn-navigation-pane {
+    border-right: none;
+}
+
 .nn-split-container.nn-orientation-vertical {
     flex-direction: column;
 }
@@ -757,17 +757,11 @@ body {
     min-height: var(--nn-list-pane-min-height);
 }
 
-.nn-split-container.nn-orientation-vertical .nn-navigation-pane .nn-pane-header {
+.nn-split-container.nn-orientation-vertical .nn-navigation-pane {
     border-right: none;
 }
 
-.nn-split-container.nn-orientation-vertical .nn-navigation-pane-scroller,
-.nn-split-container.nn-orientation-vertical .nn-shortcut-pinned {
-    border-right: none;
-}
-
-.nn-split-container.nn-orientation-vertical:not(.nn-single-pane) .nn-navigation-pane-scroller,
-.nn-split-container.nn-orientation-vertical:not(.nn-single-pane) .nn-shortcut-pinned {
+.nn-split-container.nn-orientation-vertical:not(.nn-single-pane) .nn-navigation-pane {
     border-bottom: 1px solid var(--nn-theme-divider-border-color);
 }
 
@@ -1570,44 +1564,36 @@ body {
 
 /* Scroller container for both folder tree and tag list */
 
+.nn-navigation-pane-chrome {
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.nn-navigation-pane-panel {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+}
+
 .nn-navigation-pane-scroller {
     flex: 1;
-    /*
-     * Use a column flex layout so `.nn-navigation-pane-content` can expand to fill unused height.
-     * This keeps the bottom sticky overlays (`.nn-pane-bottom-toolbar`, `.nn-navigation-calendar-overlay`)
-     * anchored to the pane bottom when the navigation list is shorter than the viewport.
-     */
+    min-height: 0;
     display: flex;
     flex-direction: column;
     overflow-y: auto;
     overflow-x: hidden;
     padding: 0 var(--nn-scroller-padding);
     line-height: 1; /* Reset to 1 - we'll use fixed line-heights on individual elements */
-    border-right: 1px solid var(--nn-theme-divider-border-color);
     background-color: var(--nn-theme-nav-bg); /* Opaque background for GPU scroll layer optimization */
 
     /* Ensure scroll events work properly with virtualization */
     position: relative;
 }
 
-/* Keep the chrome stacks and bottom overlays sized to their content; let the list content fill the remainder. */
-.nn-navigation-pane-scroller > .nn-navigation-pane-overlay,
-.nn-navigation-pane-scroller > .nn-navigation-pane-content,
-.nn-navigation-pane-scroller > .nn-pane-bottom-toolbar,
-.nn-navigation-pane-scroller > .nn-navigation-calendar-overlay {
-    flex-shrink: 0;
-}
-
-.nn-navigation-pane-scroller > .nn-navigation-pane-content {
-    flex: 1 0 auto;
-}
-
 .nn-navigation-pane-content {
-    padding-bottom: calc(var(--nn-pane-bottom-toolbar-space) + var(--nn-pane-bottom-calendar-space));
-}
-
-.notebook-navigator-mobile .nn-navigation-pane-scroller {
-    border-right: none;
+    flex: 1 0 auto;
 }
 
 .nn-navigation-pane-scroller[data-banner='true'] {
@@ -1734,36 +1720,6 @@ body {
 .notebook-navigator-mobile .nn-shortcut-pinned {
     background-color: var(--nn-theme-nav-bg);
     border-bottom: none;
-    border-right: none;
-}
-
-/* Navigation pane: chrome stack (header/banner/pinned) stays above tree rows. */
-.nn-navigation-pane-scroller > .nn-navigation-pane-overlay {
-    /* Keep the chrome stack pinned while scrolling folders/tags behind it. */
-    position: sticky;
-    top: 0;
-    /* Ensure the overlay stack stays above virtual list rows and dividers. */
-    z-index: 4;
-    display: flex;
-    flex-direction: column;
-    /*
-     * Render the overlay stack as a translucent surface so tree rows can scroll behind it.
-     * The opacity is user-adjustable via Style Settings.
-     */
-    background: color-mix(in srgb, var(--nn-theme-nav-bg) calc(var(--nn-theme-pane-overlay-opacity, 87) * 1%), transparent);
-    -webkit-backdrop-filter: var(--nn-theme-pane-overlay-filter);
-    backdrop-filter: var(--nn-theme-pane-overlay-filter);
-    /* The scroller applies horizontal padding for rows; offset it so the overlay aligns to the pane edge. */
-    margin-left: calc(-1 * var(--nn-scroller-padding));
-    margin-right: calc(-1 * var(--nn-scroller-padding));
-}
-
-/* Child chrome elements stay transparent so the overlay stack paints the background once. */
-.nn-navigation-pane .nn-navigation-pane-scroller > .nn-navigation-pane-overlay .nn-pane-header,
-.nn-navigation-pane .nn-navigation-pane-scroller > .nn-navigation-pane-overlay .nn-mobile-toolbar,
-.nn-navigation-pane .nn-navigation-pane-scroller > .nn-navigation-pane-overlay .nn-shortcut-pinned,
-.nn-navigation-pane .nn-navigation-pane-scroller > .nn-navigation-pane-overlay .nn-vault-title-area {
-    background-color: transparent;
 }
 
 /* Vault title displayed below the navigation header (desktop only). */
@@ -2443,8 +2399,6 @@ body {
     --nn-nav-calendar-weeknumber-column-width: 28px;
     --nn-nav-calendar-weeknumber-padding-right: 4px;
     --nn-nav-calendar-height: 0px;
-    --nn-pane-bottom-toolbar-space: 0px;
-    --nn-pane-bottom-calendar-space: 0px;
 }
 
 .notebook-navigator-mobile .nn-navigation-pane,
@@ -2473,31 +2427,24 @@ body {
             (2 * var(--nn-nav-calendar-section-gap)) + (var(--nn-nav-calendar-week-count) * var(--nn-nav-calendar-week-row-height)) +
             ((var(--nn-nav-calendar-week-count) - 1) * var(--nn-nav-calendar-week-gap))
     );
-    --nn-pane-bottom-calendar-space: var(--nn-nav-calendar-height);
-}
-
-.nn-navigation-pane[data-calendar='true'] .nn-pane-bottom-toolbar,
-.nn-list-pane[data-calendar='true'] .nn-pane-bottom-toolbar {
-    bottom: var(--nn-nav-calendar-height);
 }
 
 .nn-navigation-calendar-overlay {
-    position: sticky;
-    bottom: 0;
-    z-index: 6;
+    flex-shrink: 0;
     box-sizing: border-box;
     height: var(--nn-nav-calendar-height);
-    margin-top: calc(-1 * var(--nn-nav-calendar-height));
-    margin-left: calc(-1 * var(--nn-scroller-padding));
-    margin-right: calc(-1 * var(--nn-scroller-padding));
     padding: var(--nn-nav-calendar-padding) calc(var(--nn-scroller-padding) + var(--nn-nav-calendar-scrollbar-gap))
         calc(var(--nn-nav-calendar-padding) + var(--nn-nav-calendar-safe-area)) var(--nn-scroller-padding);
 
-    background: color-mix(in srgb, var(--nn-theme-nav-bg) calc(var(--nn-theme-pane-overlay-opacity, 87) * 1%), transparent);
-    -webkit-backdrop-filter: var(--nn-theme-pane-overlay-filter);
-    backdrop-filter: var(--nn-theme-pane-overlay-filter);
-
     border-top: var(--nn-nav-calendar-border-width) solid var(--nn-theme-divider-border-color);
+}
+
+.nn-navigation-pane .nn-navigation-calendar-overlay {
+    background-color: var(--nn-theme-nav-bg);
+}
+
+.nn-list-pane .nn-navigation-calendar-overlay {
+    background-color: var(--nn-theme-list-bg);
 }
 
 .nn-navigation-calendar {
@@ -3064,19 +3011,23 @@ body {
    File List Styles
    ======================================================================== */
 
-.nn-list-pane {
-    --nn-pane-bottom-toolbar-space: 0px;
-    --nn-pane-bottom-calendar-space: 0px;
+/* File list container - scrollable area for files */
+.nn-list-pane-chrome {
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
 }
 
-/* File list container - scrollable area for files */
+.nn-list-pane-panel {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+}
+
 .nn-list-pane-scroller {
     flex: 1;
-    /*
-     * Use a column flex layout so `.nn-list-pane-content` can expand to fill unused height.
-     * This keeps the bottom sticky toolbar (`.nn-pane-bottom-toolbar`) anchored to the pane bottom
-     * when the file list is shorter than the viewport.
-     */
+    min-height: 0;
     display: flex;
     flex-direction: column;
     overflow-y: auto;
@@ -3085,50 +3036,13 @@ body {
     position: relative;
 }
 
-/* Keep the chrome stack and bottom toolbar sized to their content; let the list content fill the remainder. */
-.nn-list-pane-scroller > .nn-list-pane-overlay,
-.nn-list-pane-scroller > .nn-list-pane-content,
-.nn-list-pane-scroller > .nn-pane-bottom-toolbar,
-.nn-list-pane-scroller > .nn-navigation-calendar-overlay {
-    flex-shrink: 0;
-}
-
-.nn-list-pane-scroller > .nn-list-pane-content {
-    flex: 1 0 auto;
-}
-
 .nn-list-pane-content {
-    padding-bottom: calc(var(--nn-pane-bottom-toolbar-space) + var(--nn-pane-bottom-calendar-space, 0px));
+    flex: 1 0 auto;
 }
 
 .nn-list-title-area {
     background-color: var(--nn-theme-list-bg);
     padding: var(--nn-list-title-padding-block) var(--nn-scroller-padding) 8px;
-}
-
-/* List pane: chrome overlay stack (header/search/title) stays above file rows. */
-.nn-list-pane-scroller > .nn-list-pane-overlay {
-    /* Keep the chrome stack pinned while scrolling file rows behind it. */
-    position: sticky;
-    top: 0;
-    z-index: 4;
-    display: flex;
-    flex-direction: column;
-    background: color-mix(in srgb, var(--nn-theme-list-bg) calc(var(--nn-theme-pane-overlay-opacity, 87) * 1%), transparent);
-    -webkit-backdrop-filter: var(--nn-theme-pane-overlay-filter);
-    backdrop-filter: var(--nn-theme-pane-overlay-filter);
-    /* The scroller applies horizontal padding for rows; offset it so the overlay aligns to the pane edge. */
-    margin-left: calc(-1 * var(--nn-scroller-padding));
-    margin-right: calc(-1 * var(--nn-scroller-padding));
-}
-
-/* Child chrome elements stay transparent so the overlay stack paints the background once. */
-.nn-list-pane .nn-list-pane-scroller > .nn-list-pane-overlay .nn-pane-header,
-.nn-list-pane .nn-list-pane-scroller > .nn-list-pane-overlay .nn-mobile-toolbar,
-.nn-list-pane .nn-list-pane-scroller > .nn-list-pane-overlay .nn-search-bar-container,
-.nn-list-pane .nn-list-pane-scroller > .nn-list-pane-overlay .nn-search-input-wrapper,
-.nn-list-pane .nn-list-pane-scroller > .nn-list-pane-overlay .nn-list-title-area {
-    background-color: transparent;
 }
 
 .nn-list-title-content {
@@ -3840,7 +3754,7 @@ body {
    Date Group Headers
    ======================================================================== */
 
-/* Date group headers - sticky headers for grouped files */
+/* Date group headers for grouped files */
 .nn-date-group-header {
     height: var(--nn-date-header-height-subsequent-mobile, var(--nn-date-header-height-subsequent));
     box-sizing: border-box;
@@ -3983,14 +3897,6 @@ body {
     text-align: center;
     color: var(--nn-theme-foreground-muted);
     font-size: 14px;
-}
-
-/* List pane empty state lives below the sticky overlay stack (header/search/title). */
-.nn-list-pane-scroller > .nn-empty-state {
-    margin-left: calc(-1 * var(--nn-scroller-padding));
-    margin-right: calc(-1 * var(--nn-scroller-padding));
-    height: calc(100% - var(--nn-list-pane-overlay-height, 0px));
-    box-sizing: border-box;
 }
 
 /* Empty state message text */
@@ -6328,17 +6234,8 @@ body.nn-resizing {
     justify-content: space-evenly;
 }
 
-.notebook-navigator-mobile:not(.notebook-navigator-android) .nn-navigation-pane,
-.notebook-navigator-mobile:not(.notebook-navigator-android) .nn-list-pane {
-    --nn-pane-bottom-toolbar-space: calc(49px + var(--nn-mobile-safe-area-bottom));
-}
-
 .nn-pane-bottom-toolbar {
-    position: sticky;
-    bottom: 0;
-    z-index: 5;
-    margin-left: calc(-1 * var(--nn-scroller-padding));
-    margin-right: calc(-1 * var(--nn-scroller-padding));
+    flex-shrink: 0;
 }
 
 .notebook-navigator-mobile .nn-mobile-toolbar-left,
@@ -6446,12 +6343,6 @@ body.nn-resizing {
     --nn-mobile-safe-area-bottom: 0px;
 }
 
-.notebook-navigator-ios:not(.notebook-navigator-obsidian-1-11-plus-ios) .nn-navigation-pane[data-calendar='true'],
-.notebook-navigator-ios:not(.notebook-navigator-obsidian-1-11-plus-ios) .nn-list-pane[data-calendar='true'] {
-    /* The calendar overlay accounts for the safe area; keep the bottom toolbar at the fixed 49px height above it. */
-    --nn-pane-bottom-toolbar-space: 49px;
-}
-
 .notebook-navigator-ios:not(.notebook-navigator-obsidian-1-11-plus-ios)
     .nn-navigation-pane[data-calendar='true']
     .nn-pane-bottom-toolbar
@@ -6484,9 +6375,25 @@ body.nn-resizing {
     overflow: visible;
 }
 
-/* Ensure the iOS glass toolbar shadow does not render on top of the calendar overlay. */
-.notebook-navigator-obsidian-1-11-plus-ios .nn-navigation-calendar-overlay {
-    z-index: 6;
+/* iOS (Obsidian 1.11+): anchor floating toolbar to the panel (above the calendar). */
+.notebook-navigator-obsidian-1-11-plus-ios .nn-navigation-pane-panel,
+.notebook-navigator-obsidian-1-11-plus-ios .nn-list-pane-panel {
+    position: relative;
+}
+
+/* iOS (Obsidian 1.11+): bottom overlays are positioned above the scroller. */
+.notebook-navigator-obsidian-1-11-plus-ios .nn-pane-bottom-toolbar {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 5;
+}
+
+/* iOS (Obsidian 1.11+): reserve scroll space for the floating toolbar so rows can scroll under it. */
+.notebook-navigator-obsidian-1-11-plus-ios .nn-navigation-pane-scroller,
+.notebook-navigator-obsidian-1-11-plus-ios .nn-list-pane-scroller {
+    padding-bottom: var(--nn-ios-pane-bottom-overlay-height);
 }
 
 /* Navigation pane calendar safe area for Obsidian 1.11+ iOS */
@@ -6494,50 +6401,6 @@ body.nn-resizing {
 .notebook-navigator-obsidian-1-11-plus-ios .nn-list-pane {
     /* Obsidian 1.11+ already accounts for iOS safe areas in the view chrome. */
     --nn-nav-calendar-safe-area: 0px;
-}
-
-.notebook-navigator-mobile.notebook-navigator-obsidian-1-11-plus-ios .nn-navigation-pane,
-.notebook-navigator-mobile.notebook-navigator-obsidian-1-11-plus-ios .nn-list-pane {
-    --nn-pane-bottom-toolbar-space: 0px;
-}
-
-/*
- * Obsidian 1.11+ iOS: bottom toolbar and calendar overlays.
- *
- * The toolbar and calendar must stay inside the pane scroller.
- * If an overlay is moved outside the scroller, the scroller's scrollbar can render behind the overlay.
- *
- * The toolbar has a visual bottom gap so the glass pills float above the view edge.
- * Do not implement that gap by offsetting the sticky toolbar (e.g., `bottom: 12px`), because it changes the
- * sticky stack behavior and can cause the calendar overlay to slide up into the toolbar when the list hits
- * the end of its scroll range.
- */
-.notebook-navigator-obsidian-1-11-plus-ios .nn-pane-bottom-toolbar {
-    bottom: 0;
-}
-
-.notebook-navigator-obsidian-1-11-plus-ios .nn-navigation-pane[data-calendar='true'] .nn-pane-bottom-toolbar,
-.notebook-navigator-obsidian-1-11-plus-ios .nn-list-pane[data-calendar='true'] .nn-pane-bottom-toolbar {
-    bottom: var(--nn-nav-calendar-height);
-}
-
-/*
-  * Obsidian 1.11+ iOS: sticky bottom overlays inside `.nn-scale-wrapper`.
-  *
-  * WebKit resolves `position: sticky` offsets against the unscaled pane height when an ancestor is transformed.
-  * This makes bottom-sticky overlays drift upward when `--nn-ui-scale` < 1 and downward when `--nn-ui-scale` > 1.
-  * `--nn-ios-ui-scale-sticky-bottom-offset` compensates so the overlays stay anchored in the pane.
-  */
-.notebook-navigator-obsidian-1-11-plus-ios .nn-scale-wrapper[data-ui-scale] {
-    --nn-ios-ui-scale-sticky-bottom-offset: calc(100% - (100% / var(--nn-ui-scale, 1)));
-}
-
-.notebook-navigator-obsidian-1-11-plus-ios .nn-scale-wrapper[data-ui-scale] .nn-pane-bottom-toolbar {
-    bottom: calc(var(--nn-pane-bottom-calendar-space, 0px) + var(--nn-ios-ui-scale-sticky-bottom-offset));
-}
-
-.notebook-navigator-obsidian-1-11-plus-ios .nn-scale-wrapper[data-ui-scale] .nn-navigation-calendar-overlay {
-    bottom: var(--nn-ios-ui-scale-sticky-bottom-offset);
 }
 
 /* Obsidian 1.11+ iOS glass toolbar */
@@ -6589,6 +6452,9 @@ body.nn-resizing {
     --nn-ios-toolbar-height: 44px; /* 38px button + (1px padding + 2px border) * 2 */
     --nn-ios-pane-bottom-fade-height: 64px; /* Fade height behind the toolbar */
     --nn-ios-pane-bottom-fade-opacity: 0.8; /* Fade opacity behind the toolbar */
+    --nn-ios-pane-bottom-overlay-height: calc(
+        var(--nn-ios-toolbar-height) + var(--nn-ios-toolbar-bottom-offset) + var(--nn-ios-toolbar-glass-visual-overlap-top)
+    );
 }
 
 .theme-dark .notebook-navigator-obsidian-1-11-plus-ios {
@@ -7668,7 +7534,7 @@ settings:
     -
         id: nn-theme-list-heading-color
         title: List heading text color
-        description: Text color for the list pane overlay heading.
+        description: Text color for the list pane title area and vault title.
         type: variable-themed-color
         format: hex
         default-light: '#'
@@ -7676,7 +7542,7 @@ settings:
     -
         id: nn-theme-list-heading-font-weight
         title: List heading font weight
-        description: Font weight for the list pane overlay heading.
+        description: Font weight for the list pane title area and vault title.
         type: variable-number-slider
         default: 600
         min: 100
@@ -8111,22 +7977,6 @@ settings:
         format: hex
         default-light: '#'
         default-dark: '#'
-    -
-        id: nn-pane-overlay-heading
-        title: Pane overlay stacks
-        description: Customize the overlay stacks rendered above scrolling rows in both panes.
-        type: heading
-        level: 1
-        collapsed: true
-    -
-        id: nn-theme-pane-overlay-opacity
-        title: Overlay opacity
-        description: Opacity (0-100) for the pane overlay stacks rendered above scrolling rows.
-        type: variable-number-slider
-        default: 87
-        min: 0
-        max: 100
-        step: 1
     -
         id: nn-theme-pane-divider-heading
         title: Pane divider

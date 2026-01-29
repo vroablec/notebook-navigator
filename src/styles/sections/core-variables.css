@@ -147,11 +147,6 @@ body {
     --nn-theme-foreground-muted: color-mix(in srgb, var(--nn-theme-foreground) 70%, transparent);
     --nn-theme-foreground-faded: color-mix(in srgb, var(--nn-theme-foreground) 50%, transparent);
 
-    /* -- Pane Overlay Stacks -- */
-    /* Overlay stacks (header/search/title) rendered above scrolling content */
-    --nn-theme-pane-overlay-opacity: 87;
-    --nn-theme-pane-overlay-filter: blur(3px) saturate(160%);
-
     /* -- Navigation Pane -- */
     --nn-theme-nav-bg: var(--background-secondary);
     --nn-theme-nav-separator-color: var(--nn-theme-foreground);

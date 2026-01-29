@@ -15,12 +15,6 @@
     --nn-mobile-safe-area-bottom: 0px;
 }
 
-.notebook-navigator-ios:not(.notebook-navigator-obsidian-1-11-plus-ios) .nn-navigation-pane[data-calendar='true'],
-.notebook-navigator-ios:not(.notebook-navigator-obsidian-1-11-plus-ios) .nn-list-pane[data-calendar='true'] {
-    /* The calendar overlay accounts for the safe area; keep the bottom toolbar at the fixed 49px height above it. */
-    --nn-pane-bottom-toolbar-space: 49px;
-}
-
 .notebook-navigator-ios:not(.notebook-navigator-obsidian-1-11-plus-ios)
     .nn-navigation-pane[data-calendar='true']
     .nn-pane-bottom-toolbar
@@ -53,9 +47,25 @@
     overflow: visible;
 }
 
-/* Ensure the iOS glass toolbar shadow does not render on top of the calendar overlay. */
-.notebook-navigator-obsidian-1-11-plus-ios .nn-navigation-calendar-overlay {
-    z-index: 6;
+/* iOS (Obsidian 1.11+): anchor floating toolbar to the panel (above the calendar). */
+.notebook-navigator-obsidian-1-11-plus-ios .nn-navigation-pane-panel,
+.notebook-navigator-obsidian-1-11-plus-ios .nn-list-pane-panel {
+    position: relative;
+}
+
+/* iOS (Obsidian 1.11+): bottom overlays are positioned above the scroller. */
+.notebook-navigator-obsidian-1-11-plus-ios .nn-pane-bottom-toolbar {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 5;
+}
+
+/* iOS (Obsidian 1.11+): reserve scroll space for the floating toolbar so rows can scroll under it. */
+.notebook-navigator-obsidian-1-11-plus-ios .nn-navigation-pane-scroller,
+.notebook-navigator-obsidian-1-11-plus-ios .nn-list-pane-scroller {
+    padding-bottom: var(--nn-ios-pane-bottom-overlay-height);
 }
 
 /* Navigation pane calendar safe area for Obsidian 1.11+ iOS */
@@ -63,50 +73,6 @@
 .notebook-navigator-obsidian-1-11-plus-ios .nn-list-pane {
     /* Obsidian 1.11+ already accounts for iOS safe areas in the view chrome. */
     --nn-nav-calendar-safe-area: 0px;
-}
-
-.notebook-navigator-mobile.notebook-navigator-obsidian-1-11-plus-ios .nn-navigation-pane,
-.notebook-navigator-mobile.notebook-navigator-obsidian-1-11-plus-ios .nn-list-pane {
-    --nn-pane-bottom-toolbar-space: 0px;
-}
-
-/*
- * Obsidian 1.11+ iOS: bottom toolbar and calendar overlays.
- *
- * The toolbar and calendar must stay inside the pane scroller.
- * If an overlay is moved outside the scroller, the scroller's scrollbar can render behind the overlay.
- *
- * The toolbar has a visual bottom gap so the glass pills float above the view edge.
- * Do not implement that gap by offsetting the sticky toolbar (e.g., `bottom: 12px`), because it changes the
- * sticky stack behavior and can cause the calendar overlay to slide up into the toolbar when the list hits
- * the end of its scroll range.
- */
-.notebook-navigator-obsidian-1-11-plus-ios .nn-pane-bottom-toolbar {
-    bottom: 0;
-}
-
-.notebook-navigator-obsidian-1-11-plus-ios .nn-navigation-pane[data-calendar='true'] .nn-pane-bottom-toolbar,
-.notebook-navigator-obsidian-1-11-plus-ios .nn-list-pane[data-calendar='true'] .nn-pane-bottom-toolbar {
-    bottom: var(--nn-nav-calendar-height);
-}
-
-/*
-  * Obsidian 1.11+ iOS: sticky bottom overlays inside `.nn-scale-wrapper`.
-  *
-  * WebKit resolves `position: sticky` offsets against the unscaled pane height when an ancestor is transformed.
-  * This makes bottom-sticky overlays drift upward when `--nn-ui-scale` < 1 and downward when `--nn-ui-scale` > 1.
-  * `--nn-ios-ui-scale-sticky-bottom-offset` compensates so the overlays stay anchored in the pane.
-  */
-.notebook-navigator-obsidian-1-11-plus-ios .nn-scale-wrapper[data-ui-scale] {
-    --nn-ios-ui-scale-sticky-bottom-offset: calc(100% - (100% / var(--nn-ui-scale, 1)));
-}
-
-.notebook-navigator-obsidian-1-11-plus-ios .nn-scale-wrapper[data-ui-scale] .nn-pane-bottom-toolbar {
-    bottom: calc(var(--nn-pane-bottom-calendar-space, 0px) + var(--nn-ios-ui-scale-sticky-bottom-offset));
-}
-
-.notebook-navigator-obsidian-1-11-plus-ios .nn-scale-wrapper[data-ui-scale] .nn-navigation-calendar-overlay {
-    bottom: var(--nn-ios-ui-scale-sticky-bottom-offset);
 }
 
 /* Obsidian 1.11+ iOS glass toolbar */
@@ -158,6 +124,9 @@
     --nn-ios-toolbar-height: 44px; /* 38px button + (1px padding + 2px border) * 2 */
     --nn-ios-pane-bottom-fade-height: 64px; /* Fade height behind the toolbar */
     --nn-ios-pane-bottom-fade-opacity: 0.8; /* Fade opacity behind the toolbar */
+    --nn-ios-pane-bottom-overlay-height: calc(
+        var(--nn-ios-toolbar-height) + var(--nn-ios-toolbar-bottom-offset) + var(--nn-ios-toolbar-glass-visual-overlap-top)
+    );
 }
 
 .theme-dark .notebook-navigator-obsidian-1-11-plus-ios {

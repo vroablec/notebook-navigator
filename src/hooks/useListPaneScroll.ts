@@ -727,6 +727,7 @@ export function useListPaneScroll({
 
         rowVirtualizer.measure();
     }, [
+        topSpacerHeight,
         settings.showFileDate,
         settings.showFilePreview,
         settings.showFeatureImage,

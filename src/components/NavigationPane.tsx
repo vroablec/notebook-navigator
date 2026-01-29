@@ -65,7 +65,7 @@ import React, {
     useReducer,
     useLayoutEffect
 } from 'react';
-import { TFolder, TFile, Menu, Platform } from 'obsidian';
+import { TFolder, TFile, Menu, Platform, requireApiVersion } from 'obsidian';
 import { Virtualizer } from '@tanstack/react-virtual';
 import { DndContext, PointerSensor, closestCenter, type DragEndEvent, type DragStartEvent, useSensor, useSensors } from '@dnd-kit/core';
 import { SortableContext, arrayMove, useSortable, verticalListSortingStrategy } from '@dnd-kit/sortable';
@@ -87,7 +87,7 @@ import { useNavigationRootReorder } from '../hooks/useNavigationRootReorder';
 import { usePointerDrag } from '../hooks/usePointerDrag';
 import type { ListReorderHandlers } from '../types/listReorder';
 import type { CombinedNavigationItem } from '../types/virtualization';
-import { NavigationPaneItemType, ItemType, TAGGED_TAG_ID, UNTAGGED_TAG_ID } from '../types';
+import { IOS_OBSIDIAN_1_11_PLUS_GLASS_TOOLBAR_HEIGHT_PX, NavigationPaneItemType, ItemType, TAGGED_TAG_ID, UNTAGGED_TAG_ID } from '../types';
 import { getSelectedPath } from '../utils/selectionUtils';
 import { TagTreeNode } from '../types/storage';
 import { getFolderNote, openFolderNoteFile, type FolderNoteDetectionSettings } from '../utils/folderNotes';
@@ -246,18 +246,21 @@ export const NavigationPane = React.memo(
         const includeDescendantNotes = uxPreferences.includeDescendantNotes;
         const showHiddenItems = uxPreferences.showHiddenItems;
         const showCalendar = uxPreferences.showCalendar;
-        // The calendar overlay height depends on how many week rows it renders; we expose that number as a CSS var so the
-        // navigation scroller can be padded and the bottom chrome can be positioned correctly (desktop + mobile/iOS).
+        // The calendar height depends on how many week rows it renders; expose that number as a CSS var for layout sizing.
         const [calendarWeekCount, setCalendarWeekCount] = useState<number>(() => settings.calendarWeeksToShow);
-        const calendarOverlayRef = useRef<HTMLDivElement>(null);
-        // The iOS bottom toolbar is a sticky overlay inside the scroll container. Measure its rendered height so
-        // TanStack Virtual can treat it as a bottom inset when auto-revealing folders/tags.
-        const bottomToolbarRef = useRef<HTMLDivElement>(null);
         useEffect(() => {
             if (settings.calendarWeeksToShow !== 6) {
                 setCalendarWeekCount(settings.calendarWeeksToShow);
             }
         }, [settings.calendarWeeksToShow]);
+        const isFullMonthCalendar = settings.calendarWeeksToShow === 6;
+        const [calendarNavigationVersion, setCalendarNavigationVersion] = useState(0);
+        const handleCalendarNavigationAction = useCallback(() => {
+            if (!isFullMonthCalendar) {
+                return;
+            }
+            setCalendarNavigationVersion(version => version + 1);
+        }, [isFullMonthCalendar]);
         const { hiddenFolders, hiddenFileNames, hiddenFileTags, fileVisibility } = activeProfile;
         // Resolves frontmatter exclusions, returns empty array when hidden items are shown
         const effectiveFrontmatterExclusions = getEffectiveFrontmatterExclusions(settings, showHiddenItems);
@@ -316,7 +319,6 @@ export const NavigationPane = React.memo(
         const shouldShowVaultTitleInHeader = !isMobile && hasMultipleVaultProfiles && vaultTitlePreference === 'header';
         const shouldShowVaultTitleInNavigationPane = !isMobile && hasMultipleVaultProfiles && vaultTitlePreference === 'navigation';
         const navigationPaneRef = useRef<HTMLDivElement>(null);
-        const navigationOverlayRef = useRef<HTMLDivElement>(null);
         const navigationBannerRef = useRef<HTMLDivElement>(null);
         const pinnedShortcutsContainerRef = useRef<HTMLDivElement>(null);
         const [pinnedShortcutsScrollElement, setPinnedShortcutsScrollElement] = useState<HTMLDivElement | null>(null);
@@ -963,21 +965,12 @@ export const NavigationPane = React.memo(
             updatePinnedShortcutsOverflow(pinnedShortcutsScrollElement);
         }, [pinnedNavigationItems, pinnedShortcutsScrollElement, updatePinnedShortcutsOverflow]);
 
-        // The navigation pane renders a "chrome" stack above the virtualized tree:
-        // - pane header
-        // - (Android) toolbar
-        // - (optional) pinned navigation banner
-        // - pinned shortcuts/recent section
-        //
-        // When the navigation banner is not pinned, it is rendered above the tree as normal scroll content and its
-        // height must be included in the TanStack Virtual scrollMargin so item positions match scrollTop.
-        const navigationOverlayHeight = useMeasuredElementHeight(navigationOverlayRef);
+        // When the navigation banner is not pinned, it is rendered above the tree as normal scroll content.
+        // Its height must be included in the TanStack Virtual scrollMargin so item positions match scrollTop.
         const navigationBannerHeight = useMeasuredElementHeight(navigationBannerRef, {
             enabled: Boolean(navigationBannerContent) && !settings.pinNavigationBanner
         });
-        const calendarOverlayHeight = useMeasuredElementHeight(calendarOverlayRef, { enabled: shouldRenderCalendarOverlay });
-        const bottomToolbarHeight = useMeasuredElementHeight(bottomToolbarRef, { enabled: isMobile && !isAndroid });
-        const navigationScrollMargin = navigationOverlayHeight + navigationBannerHeight;
+        const navigationScrollMargin = navigationBannerHeight;
 
         // We only reserve gutter space when a banner exists because Windows scrollbars
         // change container width by ~7px when they appear. That width change used to
@@ -1051,15 +1044,24 @@ export const NavigationPane = React.memo(
             setRootReorderMode(prev => !prev);
         }, [canReorderRootItems]);
 
+        const isIosObsidian111Plus = Platform.isIosApp && requireApiVersion('1.11.0');
+        const scrollPaddingEnd = useMemo(() => {
+            if (!isIosObsidian111Plus || !isMobile || isAndroid) {
+                return 0;
+            }
+
+            // Keep in sync with `--nn-ios-pane-bottom-overlay-height` in `src/styles/sections/platform-ios-obsidian-1-11.css`.
+            // The calendar overlay is outside the scroller, so it is intentionally not included here.
+            return IOS_OBSIDIAN_1_11_PLUS_GLASS_TOOLBAR_HEIGHT_PX;
+        }, [isAndroid, isIosObsidian111Plus, isMobile]);
+
         const { rowVirtualizer, scrollContainerRef, scrollContainerRefCallback, requestScroll } = useNavigationPaneScroll({
             items,
             pathToIndex,
             isVisible,
             activeShortcutKey,
             scrollMargin: navigationScrollMargin,
-            scrollPaddingStart: navigationOverlayHeight,
-            // Reserve space for bottom overlays so scrollToIndex({ align: 'auto' }) reveals rows above the calendar and iOS toolbar.
-            scrollPaddingEnd: calendarOverlayHeight + bottomToolbarHeight
+            scrollPaddingEnd
         });
 
         /** Converts a potentially transparent background color into a solid color by compositing with the pane surface. */
@@ -1114,6 +1116,40 @@ export const NavigationPane = React.memo(
                 requestScroll(normalizedPath, { align: 'auto', itemType });
             }
         }, [selectionState, requestScroll]);
+
+        const prevCalendarOverlayVisibleRef = useRef<boolean>(shouldRenderCalendarOverlay);
+        const prevCalendarWeekCountRef = useRef<number>(calendarWeekCount);
+        const prevCalendarNavigationVersionRef = useRef<number>(calendarNavigationVersion);
+
+        useEffect(() => {
+            const wasVisible = prevCalendarOverlayVisibleRef.current;
+            const prevWeekCount = prevCalendarWeekCountRef.current;
+            const prevNavigationVersion = prevCalendarNavigationVersionRef.current;
+
+            const becameVisible = shouldRenderCalendarOverlay && !wasVisible;
+            const weekCountChanged = shouldRenderCalendarOverlay && calendarWeekCount !== prevWeekCount;
+            const navigatedInFullMonth =
+                shouldRenderCalendarOverlay && isFullMonthCalendar && calendarNavigationVersion !== prevNavigationVersion;
+
+            prevCalendarOverlayVisibleRef.current = shouldRenderCalendarOverlay;
+            prevCalendarWeekCountRef.current = calendarWeekCount;
+            prevCalendarNavigationVersionRef.current = calendarNavigationVersion;
+
+            if (!becameVisible && !weekCountChanged && !navigatedInFullMonth) {
+                return;
+            }
+
+            const scheduleScroll = () => handleTreeUpdateComplete();
+
+            if (typeof requestAnimationFrame !== 'undefined') {
+                requestAnimationFrame(() => {
+                    requestAnimationFrame(scheduleScroll);
+                });
+                return;
+            }
+
+            setTimeout(scheduleScroll, 0);
+        }, [calendarNavigationVersion, calendarWeekCount, handleTreeUpdateComplete, isFullMonthCalendar, shouldRenderCalendarOverlay]);
 
         // Handle folder toggle
         const handleFolderToggle = useCallback(
@@ -2717,6 +2753,21 @@ export const NavigationPane = React.memo(
             };
         }, [calendarWeekCount, props.style]);
 
+        const navigationToolbar = useMemo(() => {
+            return (
+                <NavigationToolbar
+                    onTreeUpdateComplete={handleTreeUpdateComplete}
+                    onToggleRootFolderReorder={handleToggleRootReorder}
+                    rootReorderActive={isRootReorderMode}
+                    rootReorderDisabled={!canReorderRootItems}
+                />
+            );
+        }, [canReorderRootItems, handleToggleRootReorder, handleTreeUpdateComplete, isRootReorderMode]);
+
+        const shouldRenderBottomToolbar = isMobile && !isAndroid;
+        const shouldRenderBottomToolbarInsidePanel = shouldRenderBottomToolbar && isIosObsidian111Plus;
+        const shouldRenderBottomToolbarOutsidePanel = shouldRenderBottomToolbar && !isIosObsidian111Plus;
+
         const navigationContent = (
             <div
                 ref={navigationPaneRef}
@@ -2726,145 +2777,134 @@ export const NavigationPane = React.memo(
                 data-shortcut-sorting={isShortcutSorting ? 'true' : undefined}
                 data-shortcuts-resizing={!isMobile && isPinnedShortcutsResizing ? 'true' : undefined}
             >
-                <div
-                    ref={scrollContainerRefCallback}
-                    className="nn-navigation-pane-scroller"
-                    // Reserve permanent gutter width when a banner is visible so the scrollbar
-                    // never changes clientWidth mid-resize (prevents RO feedback loops).
-                    data-banner={hasNavigationBannerConfigured ? 'true' : undefined}
-                    data-pane="navigation"
-                    tabIndex={-1}
-                >
-                    <div className="nn-navigation-pane-overlay" ref={navigationOverlayRef}>
-                        <NavigationPaneHeader
-                            onTreeUpdateComplete={handleTreeUpdateComplete}
-                            onToggleRootFolderReorder={handleToggleRootReorder}
-                            rootReorderActive={isRootReorderMode}
-                            rootReorderDisabled={!canReorderRootItems}
-                            showVaultTitleInHeader={shouldShowVaultTitleInHeader}
-                        />
-                        {shouldShowVaultTitleInNavigationPane ? <VaultTitleArea /> : null}
-                        {/* Android - toolbar at top */}
-                        {isMobile && isAndroid && (
-                            <NavigationToolbar
-                                onTreeUpdateComplete={handleTreeUpdateComplete}
-                                onToggleRootFolderReorder={handleToggleRootReorder}
-                                rootReorderActive={isRootReorderMode}
-                                rootReorderDisabled={!canReorderRootItems}
-                            />
-                        )}
-                        {settings.pinNavigationBanner ? navigationBannerContent : null}
-                        {shouldRenderPinnedShortcuts ? (
-                            <div
-                                className="nn-shortcut-pinned"
-                                ref={pinnedShortcutsContainerRef}
-                                role="presentation"
-                                data-scroll={pinnedShortcutsHasOverflow ? 'true' : undefined}
-                                style={pinnedShortcutsMaxHeight !== null ? { maxHeight: pinnedShortcutsMaxHeight } : undefined}
-                                onDragOver={allowEmptyShortcutDrop ? handleShortcutRootDragOver : undefined}
-                                onDrop={allowEmptyShortcutDrop ? handleShortcutRootDrop : undefined}
-                            >
-                                <div className="nn-shortcut-pinned-scroll" ref={pinnedShortcutsScrollRefCallback}>
-                                    <div className="nn-shortcut-pinned-inner">
-                                        {pinnedNavigationItems.map(pinnedItem => (
-                                            <React.Fragment key={pinnedItem.key}>{renderItem(pinnedItem)}</React.Fragment>
-                                        ))}
-                                    </div>
+                <div className="nn-navigation-pane-chrome">
+                    <NavigationPaneHeader
+                        onTreeUpdateComplete={handleTreeUpdateComplete}
+                        onToggleRootFolderReorder={handleToggleRootReorder}
+                        rootReorderActive={isRootReorderMode}
+                        rootReorderDisabled={!canReorderRootItems}
+                        showVaultTitleInHeader={shouldShowVaultTitleInHeader}
+                    />
+                    {shouldShowVaultTitleInNavigationPane ? <VaultTitleArea /> : null}
+                    {/* Android - toolbar at top */}
+                    {isMobile && isAndroid ? navigationToolbar : null}
+                    {settings.pinNavigationBanner ? navigationBannerContent : null}
+                    {shouldRenderPinnedShortcuts ? (
+                        <div
+                            className="nn-shortcut-pinned"
+                            ref={pinnedShortcutsContainerRef}
+                            role="presentation"
+                            data-scroll={pinnedShortcutsHasOverflow ? 'true' : undefined}
+                            style={pinnedShortcutsMaxHeight !== null ? { maxHeight: pinnedShortcutsMaxHeight } : undefined}
+                            onDragOver={allowEmptyShortcutDrop ? handleShortcutRootDragOver : undefined}
+                            onDrop={allowEmptyShortcutDrop ? handleShortcutRootDrop : undefined}
+                        >
+                            <div className="nn-shortcut-pinned-scroll" ref={pinnedShortcutsScrollRefCallback}>
+                                <div className="nn-shortcut-pinned-inner">
+                                    {pinnedNavigationItems.map(pinnedItem => (
+                                        <React.Fragment key={pinnedItem.key}>{renderItem(pinnedItem)}</React.Fragment>
+                                    ))}
                                 </div>
-                                <div
-                                    className="nn-shortcuts-resize-handle"
-                                    role="separator"
-                                    aria-orientation="horizontal"
-                                    aria-label="Resize pinned shortcuts"
-                                    onPointerDown={handlePinnedShortcutsResizePointerDown}
-                                />
                             </div>
-                        ) : null}
-                    </div>
-                    <div className="nn-navigation-pane-content">
-                        {!settings.pinNavigationBanner && navigationBannerContent ? (
-                            <div className="nn-navigation-pane-banner" ref={navigationBannerRef}>
-                                {navigationBannerContent}
-                            </div>
-                        ) : null}
-                        <div role={isRootReorderMode ? 'list' : 'tree'}>
-                            {isRootReorderMode ? (
-                                <NavigationRootReorderPanel
-                                    sectionItems={sectionReorderItems}
-                                    folderItems={folderReorderItems}
-                                    tagItems={tagReorderItems}
-                                    showRootFolderSection={showRootFolderSection}
-                                    showRootTagSection={showRootTagSection}
-                                    foldersSectionExpanded={foldersSectionExpanded}
-                                    tagsSectionExpanded={tagsSectionExpanded}
-                                    showRootFolderReset={settings.rootFolderOrder.length > 0}
-                                    showRootTagReset={settings.rootTagOrder.length > 0}
-                                    resetRootTagOrderLabel={resetRootTagOrderLabel}
-                                    onResetRootFolderOrder={handleResetRootFolderOrder}
-                                    onResetRootTagOrder={handleResetRootTagOrder}
-                                    onReorderSections={reorderSectionOrder}
-                                    onReorderFolders={reorderRootFolderOrder}
-                                    onReorderTags={reorderRootTagOrder}
-                                    canReorderSections={canReorderSections}
-                                    canReorderFolders={canReorderRootFolders}
-                                    canReorderTags={canReorderRootTags}
-                                    isMobile={isMobile}
-                                />
-                            ) : (
-                                items.length > 0 && (
-                                    <div
-                                        className="nn-virtual-container"
-                                        style={{
-                                            height: `${rowVirtualizer.getTotalSize()}px`
-                                        }}
-                                    >
-                                        {rowVirtualizer.getVirtualItems().map(virtualItem => {
-                                            // Safe array access
-                                            const item =
-                                                virtualItem.index >= 0 && virtualItem.index < items.length
-                                                    ? items[virtualItem.index]
-                                                    : null;
-                                            if (!item) return null;
-
-                                            return (
-                                                <div
-                                                    key={virtualItem.key}
-                                                    data-index={virtualItem.index}
-                                                    className="nn-virtual-nav-item"
-                                                    style={{
-                                                        // The navigation chrome stack lives above the virtual list inside the same scroll container.
-                                                        // TanStack Virtual scrollMargin matches the non-virtualized content height above the list,
-                                                        // so virtualItem.start includes it. The virtual container sits below that content in normal
-                                                        // flow, so subtract the scrollMargin to position rows at the correct Y within the container.
-                                                        transform: `translateY(${Math.max(0, virtualItem.start - navigationScrollMargin)}px)`
-                                                    }}
-                                                >
-                                                    {renderItem(item)}
-                                                </div>
-                                            );
-                                        })}
-                                    </div>
-                                )
-                            )}
-                        </div>
-                    </div>
-                    {/* iOS - toolbar at bottom */}
-                    {isMobile && !isAndroid && (
-                        <div className="nn-pane-bottom-toolbar" ref={bottomToolbarRef}>
-                            <NavigationToolbar
-                                onTreeUpdateComplete={handleTreeUpdateComplete}
-                                onToggleRootFolderReorder={handleToggleRootReorder}
-                                rootReorderActive={isRootReorderMode}
-                                rootReorderDisabled={!canReorderRootItems}
+                            <div
+                                className="nn-shortcuts-resize-handle"
+                                role="separator"
+                                aria-orientation="horizontal"
+                                aria-label="Resize pinned shortcuts"
+                                onPointerDown={handlePinnedShortcutsResizePointerDown}
                             />
-                        </div>
-                    )}
-                    {shouldRenderCalendarOverlay ? (
-                        <div className="nn-navigation-calendar-overlay" ref={calendarOverlayRef}>
-                            <NavigationPaneCalendar onWeekCountChange={setCalendarWeekCount} />
                         </div>
                     ) : null}
                 </div>
+                <div className="nn-navigation-pane-panel">
+                    <div
+                        ref={scrollContainerRefCallback}
+                        className="nn-navigation-pane-scroller"
+                        // Reserve permanent gutter width when a banner is visible so the scrollbar
+                        // never changes clientWidth mid-resize (prevents RO feedback loops).
+                        data-banner={hasNavigationBannerConfigured ? 'true' : undefined}
+                        data-pane="navigation"
+                        tabIndex={-1}
+                    >
+                        <div className="nn-navigation-pane-content">
+                            {!settings.pinNavigationBanner && navigationBannerContent ? (
+                                <div className="nn-navigation-pane-banner" ref={navigationBannerRef}>
+                                    {navigationBannerContent}
+                                </div>
+                            ) : null}
+                            <div role={isRootReorderMode ? 'list' : 'tree'}>
+                                {isRootReorderMode ? (
+                                    <NavigationRootReorderPanel
+                                        sectionItems={sectionReorderItems}
+                                        folderItems={folderReorderItems}
+                                        tagItems={tagReorderItems}
+                                        showRootFolderSection={showRootFolderSection}
+                                        showRootTagSection={showRootTagSection}
+                                        foldersSectionExpanded={foldersSectionExpanded}
+                                        tagsSectionExpanded={tagsSectionExpanded}
+                                        showRootFolderReset={settings.rootFolderOrder.length > 0}
+                                        showRootTagReset={settings.rootTagOrder.length > 0}
+                                        resetRootTagOrderLabel={resetRootTagOrderLabel}
+                                        onResetRootFolderOrder={handleResetRootFolderOrder}
+                                        onResetRootTagOrder={handleResetRootTagOrder}
+                                        onReorderSections={reorderSectionOrder}
+                                        onReorderFolders={reorderRootFolderOrder}
+                                        onReorderTags={reorderRootTagOrder}
+                                        canReorderSections={canReorderSections}
+                                        canReorderFolders={canReorderRootFolders}
+                                        canReorderTags={canReorderRootTags}
+                                        isMobile={isMobile}
+                                    />
+                                ) : (
+                                    items.length > 0 && (
+                                        <div
+                                            className="nn-virtual-container"
+                                            style={{
+                                                height: `${rowVirtualizer.getTotalSize()}px`
+                                            }}
+                                        >
+                                            {rowVirtualizer.getVirtualItems().map(virtualItem => {
+                                                // Safe array access
+                                                const item =
+                                                    virtualItem.index >= 0 && virtualItem.index < items.length
+                                                        ? items[virtualItem.index]
+                                                        : null;
+                                                if (!item) return null;
+
+                                                return (
+                                                    <div
+                                                        key={virtualItem.key}
+                                                        data-index={virtualItem.index}
+                                                        className="nn-virtual-nav-item"
+                                                        style={{
+                                                            // When a non-pinned banner is rendered above the virtual list inside the scroller,
+                                                            // TanStack Virtual scrollMargin includes its height. The virtual container sits below the
+                                                            // banner in normal flow, so subtract the scrollMargin to position rows correctly.
+                                                            transform: `translateY(${Math.max(0, virtualItem.start - navigationScrollMargin)}px)`
+                                                        }}
+                                                    >
+                                                        {renderItem(item)}
+                                                    </div>
+                                                );
+                                            })}
+                                        </div>
+                                    )
+                                )}
+                            </div>
+                        </div>
+                    </div>
+                    {/* iOS (Obsidian 1.11+): keep the floating toolbar inside the panel */}
+                    {shouldRenderBottomToolbarInsidePanel ? <div className="nn-pane-bottom-toolbar">{navigationToolbar}</div> : null}
+                </div>
+                {shouldRenderCalendarOverlay ? (
+                    <div className="nn-navigation-calendar-overlay">
+                        <NavigationPaneCalendar
+                            onWeekCountChange={setCalendarWeekCount}
+                            onNavigationAction={handleCalendarNavigationAction}
+                        />
+                    </div>
+                ) : null}
+                {shouldRenderBottomToolbarOutsidePanel ? <div className="nn-pane-bottom-toolbar">{navigationToolbar}</div> : null}
             </div>
         );
 

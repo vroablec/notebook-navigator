@@ -563,7 +563,7 @@ settings:
     -
         id: nn-theme-list-heading-color
         title: List heading text color
-        description: Text color for the list pane overlay heading.
+        description: Text color for the list pane title area and vault title.
         type: variable-themed-color
         format: hex
         default-light: '#'
@@ -571,7 +571,7 @@ settings:
     -
         id: nn-theme-list-heading-font-weight
         title: List heading font weight
-        description: Font weight for the list pane overlay heading.
+        description: Font weight for the list pane title area and vault title.
         type: variable-number-slider
         default: 600
         min: 100
@@ -1006,22 +1006,6 @@ settings:
         format: hex
         default-light: '#'
         default-dark: '#'
-    -
-        id: nn-pane-overlay-heading
-        title: Pane overlay stacks
-        description: Customize the overlay stacks rendered above scrolling rows in both panes.
-        type: heading
-        level: 1
-        collapsed: true
-    -
-        id: nn-theme-pane-overlay-opacity
-        title: Overlay opacity
-        description: Opacity (0-100) for the pane overlay stacks rendered above scrolling rows.
-        type: variable-number-slider
-        default: 87
-        min: 0
-        max: 100
-        step: 1
     -
         id: nn-theme-pane-divider-heading
         title: Pane divider

@@ -45,7 +45,7 @@
  */
 
 import React, { useCallback, useRef, useEffect, useImperativeHandle, forwardRef, useState, useMemo } from 'react';
-import { TFile, Platform } from 'obsidian';
+import { TFile, Platform, requireApiVersion } from 'obsidian';
 import { Virtualizer } from '@tanstack/react-virtual';
 import { useSelectionState, useSelectionDispatch, resolvePrimarySelectedFile } from '../context/SelectionContext';
 import { useServices } from '../context/ServicesContext';
@@ -60,7 +60,7 @@ import { useContextMenu } from '../hooks/useContextMenu';
 import { useFileOpener } from '../hooks/useFileOpener';
 import { strings } from '../i18n';
 import { TIMEOUTS } from '../types/obsidian-extended';
-import { ListPaneItemType, PINNED_SECTION_HEADER_KEY, UNTAGGED_TAG_ID } from '../types';
+import { IOS_OBSIDIAN_1_11_PLUS_GLASS_TOOLBAR_HEIGHT_PX, ListPaneItemType, PINNED_SECTION_HEADER_KEY, UNTAGGED_TAG_ID } from '../types';
 import { getEffectiveSortOption } from '../utils/sortUtils';
 import { FileItem } from './FileItem';
 import { ListPaneHeader } from './ListPaneHeader';
@@ -76,7 +76,6 @@ import { EMPTY_LIST_MENU_TYPE } from '../utils/contextMenu';
 import { useUXPreferenceActions, useUXPreferences } from '../context/UXPreferencesContext';
 import { normalizeTagPath } from '../utils/tagUtils';
 import { parseFilterSearchTokens, updateFilterQueryWithTag, type InclusionOperator } from '../utils/filterSearch';
-import { useMeasuredElementHeight } from '../hooks/useMeasuredElementHeight';
 import { useSurfaceColorVariables } from '../hooks/useSurfaceColorVariables';
 import { LIST_PANE_SURFACE_COLOR_MAPPINGS } from '../constants/surfaceColorMappings';
 import { runAsyncAction } from '../utils/async';
@@ -166,11 +165,6 @@ export const ListPane = React.memo(
         const shortcuts = useShortcuts();
         const { addSearchShortcut, removeSearchShortcut, searchShortcutsByName } = shortcuts;
         const listPaneRef = useRef<HTMLDivElement>(null);
-        const listOverlayRef = useRef<HTMLDivElement>(null);
-        const calendarOverlayRef = useRef<HTMLDivElement>(null);
-        // The iOS bottom toolbar is a sticky overlay inside the scroll container. Measure its rendered height so
-        // TanStack Virtual can treat it as a bottom inset when auto-revealing files.
-        const bottomToolbarRef = useRef<HTMLDivElement>(null);
         // Android uses toolbar at top, iOS at bottom
         const isAndroid = Platform.isAndroidApp;
         /** Maps semi-transparent theme color variables to computed opaque equivalents (see constants/surfaceColorMappings). */
@@ -209,14 +203,27 @@ export const ListPane = React.memo(
                 setCalendarWeekCount(settings.calendarWeeksToShow);
             }
         }, [settings.calendarWeeksToShow]);
+        const isFullMonthCalendar = settings.calendarWeeksToShow === 6;
+        const [calendarNavigationVersion, setCalendarNavigationVersion] = useState(0);
+        const handleCalendarNavigationAction = useCallback(() => {
+            if (!isFullMonthCalendar) {
+                return;
+            }
+            setCalendarNavigationVersion(version => version + 1);
+        }, [isFullMonthCalendar]);
 
         // Search state - use directly from settings for sync across devices
         const isSearchActive = uxPreferences.searchActive;
-        // The list pane chrome (header/search/title) is rendered in a sticky overlay stack inside the scroller.
-        // TanStack Virtual needs the overlay height to align scrollToIndex and visible range calculations with the start of the file rows.
-        const listOverlayHeight = useMeasuredElementHeight(listOverlayRef);
-        const bottomToolbarHeight = useMeasuredElementHeight(bottomToolbarRef, { enabled: isMobile && !isAndroid });
-        const calendarOverlayHeight = useMeasuredElementHeight(calendarOverlayRef, { enabled: shouldRenderCalendarOverlay });
+        const isIosObsidian111Plus = Platform.isIosApp && requireApiVersion('1.11.0');
+        const scrollPaddingEnd = useMemo(() => {
+            if (!isIosObsidian111Plus || !isMobile || isAndroid) {
+                return 0;
+            }
+
+            // Keep in sync with `--nn-ios-pane-bottom-overlay-height` in `src/styles/sections/platform-ios-obsidian-1-11.css`.
+            // The calendar overlay is outside the scroller, so it is intentionally not included here.
+            return IOS_OBSIDIAN_1_11_PLUS_GLASS_TOOLBAR_HEIGHT_PX;
+        }, [isAndroid, isIosObsidian111Plus, isMobile]);
         const [searchQuery, setSearchQuery] = useState('');
         // Debounced search query used for data filtering to avoid per-keystroke spikes
         const [debouncedSearchQuery, setDebouncedSearchQuery] = useState('');
@@ -433,9 +440,78 @@ export const ListPane = React.memo(
             suppressSearchTopScrollRef,
             topSpacerHeight,
             includeDescendantNotes,
-            scrollMargin: listOverlayHeight,
-            scrollPaddingEnd: bottomToolbarHeight + calendarOverlayHeight
+            scrollMargin: 0,
+            scrollPaddingEnd
         });
+
+        const prevCalendarOverlayVisibleRef = useRef<boolean>(shouldRenderCalendarOverlay);
+        const prevCalendarWeekCountRef = useRef<number>(calendarWeekCount);
+        const prevCalendarNavigationVersionRef = useRef<number>(calendarNavigationVersion);
+
+        useEffect(() => {
+            const wasVisible = prevCalendarOverlayVisibleRef.current;
+            const prevWeekCount = prevCalendarWeekCountRef.current;
+            const prevNavigationVersion = prevCalendarNavigationVersionRef.current;
+
+            const becameVisible = shouldRenderCalendarOverlay && !wasVisible;
+            const weekCountChanged = shouldRenderCalendarOverlay && calendarWeekCount !== prevWeekCount;
+            const navigatedInFullMonth =
+                shouldRenderCalendarOverlay && isFullMonthCalendar && calendarNavigationVersion !== prevNavigationVersion;
+
+            prevCalendarOverlayVisibleRef.current = shouldRenderCalendarOverlay;
+            prevCalendarWeekCountRef.current = calendarWeekCount;
+            prevCalendarNavigationVersionRef.current = calendarNavigationVersion;
+
+            if (!becameVisible && !weekCountChanged && !navigatedInFullMonth) {
+                return;
+            }
+
+            if (!selectedFile) {
+                return;
+            }
+
+            const index = filePathToIndex.get(selectedFile.path);
+            if (index === undefined) {
+                return;
+            }
+
+            const scheduleScroll = () => rowVirtualizer.scrollToIndex(index, { align: 'auto' });
+
+            if (typeof requestAnimationFrame !== 'undefined') {
+                requestAnimationFrame(() => {
+                    requestAnimationFrame(scheduleScroll);
+                });
+                return;
+            }
+
+            setTimeout(scheduleScroll, 0);
+        }, [
+            calendarNavigationVersion,
+            calendarWeekCount,
+            filePathToIndex,
+            isFullMonthCalendar,
+            rowVirtualizer,
+            selectedFile,
+            shouldRenderCalendarOverlay
+        ]);
+
+        const handleSearchToggle = useCallback(() => {
+            if (!isSearchActive) {
+                // Opening search - activate with focus
+                setShouldFocusSearch(true);
+                setIsSearchActive(true);
+                uiDispatch({ type: 'SET_FOCUSED_PANE', pane: 'search' });
+                return;
+            }
+
+            // Closing search
+            setIsSearchActive(false);
+            uiDispatch({ type: 'SET_FOCUSED_PANE', pane: 'files' });
+        }, [isSearchActive, setIsSearchActive, setShouldFocusSearch, uiDispatch]);
+
+        const listToolbar = useMemo(() => {
+            return <ListToolbar isSearchActive={isSearchActive} onSearchToggle={handleSearchToggle} />;
+        }, [handleSearchToggle, isSearchActive]);
 
         // Attach context menu to empty areas in the list pane for file creation
         useContextMenu(scrollContainerRef, selectedFolder ? { type: EMPTY_LIST_MENU_TYPE, item: selectedFolder } : null);
@@ -947,6 +1023,10 @@ export const ListPane = React.memo(
         const isEmptySelection = !selectedFolder && !selectedTag;
         const hasNoFiles = files.length === 0;
 
+        const shouldRenderBottomToolbar = isMobile && !isAndroid;
+        const shouldRenderBottomToolbarInsidePanel = shouldRenderBottomToolbar && isIosObsidian111Plus;
+        const shouldRenderBottomToolbarOutsidePanel = shouldRenderBottomToolbar && !isIosObsidian111Plus;
+
         // Single return with conditional content
         return (
             <div
@@ -956,280 +1036,226 @@ export const ListPane = React.memo(
                 data-calendar={shouldRenderCalendarOverlay ? 'true' : undefined}
             >
                 {props.resizeHandleProps && <div className="nn-resize-handle" {...props.resizeHandleProps} />}
-                <div
-                    ref={scrollContainerRefCallback}
-                    className={`nn-list-pane-scroller ${!isEmptySelection && !hasNoFiles && isCompactMode ? 'nn-compact-mode' : ''}`}
-                    // Drop zone type (folder or tag)
-                    data-drop-zone={activeFolderDropPath ? 'folder' : undefined}
-                    // Target path for the drop operation
-                    data-drop-path={activeFolderDropPath ?? undefined}
-                    // Block internal file moves to non-item areas
-                    data-allow-internal-drop={activeFolderDropPath ? 'false' : undefined}
-                    // Allow external file imports to non-item areas
-                    data-allow-external-drop={activeFolderDropPath ? 'true' : undefined}
-                    data-pane="files"
-                    role="list"
-                    tabIndex={-1}
-                    style={
-                        listOverlayHeight > 0
-                            ? ({ '--nn-list-pane-overlay-height': `${listOverlayHeight}px` } as React.CSSProperties)
-                            : undefined
-                    }
-                >
-                    <div
-                        className="nn-list-pane-overlay"
-                        ref={listOverlayRef}
-                        // Keep the list empty-area context menu scoped to the scroll content area (not header/search controls).
-                        onContextMenu={e => e.stopPropagation()}
-                    >
-                        <ListPaneHeader
-                            onHeaderClick={handleScrollToTop}
-                            isSearchActive={isSearchActive}
-                            onSearchToggle={() => {
-                                if (!isSearchActive) {
-                                    // Opening search - activate with focus
-                                    setShouldFocusSearch(true);
-                                    setIsSearchActive(true);
-                                    uiDispatch({ type: 'SET_FOCUSED_PANE', pane: 'search' });
-                                } else {
-                                    // Closing search
+                <div className="nn-list-pane-chrome">
+                    <ListPaneHeader onHeaderClick={handleScrollToTop} isSearchActive={isSearchActive} onSearchToggle={handleSearchToggle} />
+                    {/* Android - toolbar at top */}
+                    {isMobile && isAndroid ? listToolbar : null}
+                    {/* Search bar - collapsible */}
+                    <div className={`nn-search-bar-container ${isSearchActive ? 'nn-search-bar-visible' : ''}`}>
+                        {isSearchActive && (
+                            <SearchInput
+                                searchQuery={searchQuery}
+                                onSearchQueryChange={setSearchQuery}
+                                shouldFocus={shouldFocusSearch}
+                                onFocusComplete={() => setShouldFocusSearch(false)}
+                                onClose={() => {
                                     setIsSearchActive(false);
                                     uiDispatch({ type: 'SET_FOCUSED_PANE', pane: 'files' });
-                                }
-                            }}
-                        />
-                        {/* Android - toolbar at top */}
-                        {isMobile && isAndroid && (
-                            <ListToolbar
-                                isSearchActive={isSearchActive}
-                                onSearchToggle={() => {
-                                    if (!isSearchActive) {
-                                        // Opening search - activate with focus
-                                        setShouldFocusSearch(true);
-                                        setIsSearchActive(true);
-                                        uiDispatch({ type: 'SET_FOCUSED_PANE', pane: 'search' });
-                                    } else {
-                                        setIsSearchActive(false);
-                                        uiDispatch({ type: 'SET_FOCUSED_PANE', pane: 'files' });
-                                    }
                                 }}
+                                onFocusFiles={() => {
+                                    // Ensure selection exists when focusing list from search (no editor open)
+                                    ensureSelectionForCurrentFilter({ openInEditor: false });
+                                }}
+                                containerRef={props.rootContainerRef}
+                                onSaveShortcut={!activeSearchShortcut ? handleSaveSearchShortcut : undefined}
+                                onRemoveShortcut={activeSearchShortcut ? handleRemoveSearchShortcut : undefined}
+                                isShortcutSaved={Boolean(activeSearchShortcut)}
+                                isShortcutDisabled={isSavingSearchShortcut}
+                                searchProvider={searchProvider}
                             />
                         )}
-                        {/* Search bar - collapsible */}
-                        <div className={`nn-search-bar-container ${isSearchActive ? 'nn-search-bar-visible' : ''}`}>
-                            {isSearchActive && (
-                                <SearchInput
-                                    searchQuery={searchQuery}
-                                    onSearchQueryChange={setSearchQuery}
-                                    shouldFocus={shouldFocusSearch}
-                                    onFocusComplete={() => setShouldFocusSearch(false)}
-                                    onClose={() => {
-                                        setIsSearchActive(false);
-                                    }}
-                                    onFocusFiles={() => {
-                                        // Ensure selection exists when focusing list from search (no editor open)
-                                        ensureSelectionForCurrentFilter({ openInEditor: false });
-                                    }}
-                                    containerRef={props.rootContainerRef}
-                                    onSaveShortcut={!activeSearchShortcut ? handleSaveSearchShortcut : undefined}
-                                    onRemoveShortcut={activeSearchShortcut ? handleRemoveSearchShortcut : undefined}
-                                    isShortcutSaved={Boolean(activeSearchShortcut)}
-                                    isShortcutDisabled={isSavingSearchShortcut}
-                                    searchProvider={searchProvider}
-                                />
+                    </div>
+                    {shouldShowDesktopTitleArea ? <ListPaneTitleArea isVisible={shouldShowDesktopTitleArea} /> : null}
+                </div>
+                <div className="nn-list-pane-panel">
+                    <div
+                        ref={scrollContainerRefCallback}
+                        className={`nn-list-pane-scroller ${!isEmptySelection && !hasNoFiles && isCompactMode ? 'nn-compact-mode' : ''}`}
+                        // Drop zone type (folder or tag)
+                        data-drop-zone={activeFolderDropPath ? 'folder' : undefined}
+                        // Target path for the drop operation
+                        data-drop-path={activeFolderDropPath ?? undefined}
+                        // Block internal file moves to non-item areas
+                        data-allow-internal-drop={activeFolderDropPath ? 'false' : undefined}
+                        // Allow external file imports to non-item areas
+                        data-allow-external-drop={activeFolderDropPath ? 'true' : undefined}
+                        data-pane="files"
+                        role="list"
+                        tabIndex={-1}
+                    >
+                        <div className="nn-list-pane-content">
+                            {isEmptySelection ? (
+                                <div className="nn-empty-state">
+                                    <div className="nn-empty-message">{strings.listPane.emptyStateNoSelection}</div>
+                                </div>
+                            ) : hasNoFiles ? (
+                                <div className="nn-empty-state">
+                                    <div className="nn-empty-message">{strings.listPane.emptyStateNoNotes}</div>
+                                </div>
+                            ) : (
+                                listItems.length > 0 && (
+                                    <div
+                                        className="nn-virtual-container"
+                                        style={{
+                                            height: `${rowVirtualizer.getTotalSize()}px`
+                                        }}
+                                    >
+                                        {rowVirtualizer.getVirtualItems().map(virtualItem => {
+                                            const item = safeGetItem(listItems, virtualItem.index);
+                                            if (!item) return null;
+                                            // Check if file is selected
+                                            let isSelected = false;
+                                            if (item.type === ListPaneItemType.FILE && item.data instanceof TFile) {
+                                                isSelected = multiSelection.isFileSelected(item.data);
+
+                                                // During folder navigation transitions, if nothing is selected in the current list,
+                                                // maintain the last selected file's visual selection to prevent flicker
+                                                if (!isSelected && selectionState.isFolderNavigation && lastSelectedFilePathRef.current) {
+                                                    isSelected = item.data.path === lastSelectedFilePathRef.current;
+                                                }
+                                            }
+
+                                            // Check if this is the last file item
+                                            const nextItem = safeGetItem(listItems, virtualItem.index + 1);
+                                            const isLastFile =
+                                                item.type === ListPaneItemType.FILE &&
+                                                (virtualItem.index === listItems.length - 1 ||
+                                                    (nextItem &&
+                                                        (nextItem.type === ListPaneItemType.HEADER ||
+                                                            nextItem.type === ListPaneItemType.TOP_SPACER ||
+                                                            nextItem.type === ListPaneItemType.BOTTOM_SPACER)));
+
+                                            // Check if adjacent items are selected (for styling purposes)
+                                            const prevItem = safeGetItem(listItems, virtualItem.index - 1);
+                                            const hasSelectedAbove =
+                                                item.type === ListPaneItemType.FILE &&
+                                                prevItem?.type === ListPaneItemType.FILE &&
+                                                prevItem.data instanceof TFile &&
+                                                multiSelection.isFileSelected(prevItem.data);
+                                            const hasSelectedBelow =
+                                                item.type === ListPaneItemType.FILE &&
+                                                nextItem?.type === ListPaneItemType.FILE &&
+                                                nextItem.data instanceof TFile &&
+                                                multiSelection.isFileSelected(nextItem.data);
+
+                                            // Check if this is the first header (same logic as in estimateSize)
+                                            // Index 1 because TOP_SPACER is at index 0
+                                            const isFirstHeader = item.type === ListPaneItemType.HEADER && virtualItem.index === 1;
+                                            const isPinnedHeader =
+                                                item.type === ListPaneItemType.HEADER && item.key === PINNED_SECTION_HEADER_KEY;
+                                            const headerLabel =
+                                                item.type === ListPaneItemType.HEADER && typeof item.data === 'string' ? item.data : '';
+
+                                            // Find current date group for file items
+                                            let dateGroup: string | null = null;
+                                            if (item.type === ListPaneItemType.FILE) {
+                                                // Look backwards to find the most recent header
+                                                for (let i = virtualItem.index - 1; i >= 0; i--) {
+                                                    const prevItem = safeGetItem(listItems, i);
+                                                    if (prevItem && prevItem.type === ListPaneItemType.HEADER) {
+                                                        dateGroup = prevItem.data as string;
+                                                        break;
+                                                    }
+                                                }
+                                            }
+
+                                            // Compute separator visibility (class-based, not relational selectors)
+                                            // - Hide the current row's separator when this row is the last in a contiguous
+                                            //   selected block (selected && !hasSelectedBelow)
+                                            // - Also hide the current row's separator when the next row starts a selected block
+                                            //   (!selected && next is selected) to remove the line just before a selection.
+                                            const hideSeparator =
+                                                item.type === ListPaneItemType.FILE &&
+                                                ((isSelected && !hasSelectedBelow) ||
+                                                    (!isSelected &&
+                                                        nextItem?.type === ListPaneItemType.FILE &&
+                                                        nextItem.data instanceof TFile &&
+                                                        multiSelection.isFileSelected(nextItem.data)));
+
+                                            return (
+                                                <div
+                                                    key={virtualItem.key}
+                                                    // Apply a lightweight class to control separator visibility
+                                                    className={`nn-virtual-item ${
+                                                        item.type === ListPaneItemType.FILE ? 'nn-virtual-file-item' : ''
+                                                    } ${isLastFile ? 'nn-last-file' : ''} ${
+                                                        hideSeparator ? 'nn-hide-separator-selection' : ''
+                                                    }`}
+                                                    style={
+                                                        {
+                                                            top: Math.max(0, virtualItem.start),
+                                                            '--item-height': `${virtualItem.size}px`
+                                                        } as React.CSSProperties
+                                                    }
+                                                    data-index={virtualItem.index}
+                                                >
+                                                    {item.type === ListPaneItemType.HEADER ? (
+                                                        <div
+                                                            className={`nn-date-group-header ${isFirstHeader ? 'nn-first-header' : ''} ${
+                                                                isPinnedHeader ? 'nn-pinned-section-header' : ''
+                                                            }`}
+                                                        >
+                                                            {isPinnedHeader ? (
+                                                                <>
+                                                                    {settings.showPinnedIcon ? (
+                                                                        <ServiceIcon
+                                                                            iconId={pinnedSectionIcon}
+                                                                            className="nn-date-group-header-icon"
+                                                                            aria-hidden={true}
+                                                                        />
+                                                                    ) : null}
+                                                                    <span className="nn-date-group-header-text">{headerLabel}</span>
+                                                                </>
+                                                            ) : (
+                                                                <span className="nn-date-group-header-text">{headerLabel}</span>
+                                                            )}
+                                                        </div>
+                                                    ) : item.type === ListPaneItemType.TOP_SPACER ? (
+                                                        <div className="nn-list-top-spacer" style={{ height: `${topSpacerHeight}px` }} />
+                                                    ) : item.type === ListPaneItemType.BOTTOM_SPACER ? (
+                                                        <div className="nn-list-bottom-spacer" />
+                                                    ) : item.type === ListPaneItemType.FILE && item.data instanceof TFile ? (
+                                                        <FileItem
+                                                            key={item.key} // Ensures each file gets a fresh component instance, preventing stale data from previous files
+                                                            file={item.data}
+                                                            isSelected={isSelected}
+                                                            hasSelectedAbove={hasSelectedAbove}
+                                                            hasSelectedBelow={hasSelectedBelow}
+                                                            onFileClick={handleFileItemClick}
+                                                            fileIndex={item.fileIndex}
+                                                            selectionType={selectionType}
+                                                            dateGroup={dateGroup}
+                                                            sortOption={effectiveSortOption}
+                                                            parentFolder={item.parentFolder}
+                                                            isPinned={item.isPinned}
+                                                            searchQuery={searchHighlightQuery}
+                                                            searchMeta={item.searchMeta}
+                                                            // Pass hidden state for muted rendering style
+                                                            isHidden={Boolean(item.isHidden)}
+                                                            onModifySearchWithTag={modifySearchWithTag}
+                                                            fileIconSize={listMeasurements.fileIconSize}
+                                                        />
+                                                    ) : null}
+                                                </div>
+                                            );
+                                        })}
+                                    </div>
+                                )
                             )}
                         </div>
-                        {shouldShowDesktopTitleArea ? <ListPaneTitleArea isVisible={shouldShowDesktopTitleArea} /> : null}
                     </div>
-
-                    <div className="nn-list-pane-content">
-                        {isEmptySelection ? (
-                            <div className="nn-empty-state">
-                                <div className="nn-empty-message">{strings.listPane.emptyStateNoSelection}</div>
-                            </div>
-                        ) : hasNoFiles ? (
-                            <div className="nn-empty-state">
-                                <div className="nn-empty-message">{strings.listPane.emptyStateNoNotes}</div>
-                            </div>
-                        ) : (
-                            listItems.length > 0 && (
-                                <div
-                                    className="nn-virtual-container"
-                                    style={{
-                                        height: `${rowVirtualizer.getTotalSize()}px`
-                                    }}
-                                >
-                                    {rowVirtualizer.getVirtualItems().map(virtualItem => {
-                                        const item = safeGetItem(listItems, virtualItem.index);
-                                        if (!item) return null;
-                                        // Check if file is selected
-                                        let isSelected = false;
-                                        if (item.type === ListPaneItemType.FILE && item.data instanceof TFile) {
-                                            isSelected = multiSelection.isFileSelected(item.data);
-
-                                            // During folder navigation transitions, if nothing is selected in the current list,
-                                            // maintain the last selected file's visual selection to prevent flicker
-                                            if (!isSelected && selectionState.isFolderNavigation && lastSelectedFilePathRef.current) {
-                                                isSelected = item.data.path === lastSelectedFilePathRef.current;
-                                            }
-                                        }
-
-                                        // Check if this is the last file item
-                                        const nextItem = safeGetItem(listItems, virtualItem.index + 1);
-                                        const isLastFile =
-                                            item.type === ListPaneItemType.FILE &&
-                                            (virtualItem.index === listItems.length - 1 ||
-                                                (nextItem &&
-                                                    (nextItem.type === ListPaneItemType.HEADER ||
-                                                        nextItem.type === ListPaneItemType.TOP_SPACER ||
-                                                        nextItem.type === ListPaneItemType.BOTTOM_SPACER)));
-
-                                        // Check if adjacent items are selected (for styling purposes)
-                                        const prevItem = safeGetItem(listItems, virtualItem.index - 1);
-                                        const hasSelectedAbove =
-                                            item.type === ListPaneItemType.FILE &&
-                                            prevItem?.type === ListPaneItemType.FILE &&
-                                            prevItem.data instanceof TFile &&
-                                            multiSelection.isFileSelected(prevItem.data);
-                                        const hasSelectedBelow =
-                                            item.type === ListPaneItemType.FILE &&
-                                            nextItem?.type === ListPaneItemType.FILE &&
-                                            nextItem.data instanceof TFile &&
-                                            multiSelection.isFileSelected(nextItem.data);
-
-                                        // Check if this is the first header (same logic as in estimateSize)
-                                        // Index 1 because TOP_SPACER is at index 0
-                                        const isFirstHeader = item.type === ListPaneItemType.HEADER && virtualItem.index === 1;
-                                        const isPinnedHeader =
-                                            item.type === ListPaneItemType.HEADER && item.key === PINNED_SECTION_HEADER_KEY;
-                                        const headerLabel =
-                                            item.type === ListPaneItemType.HEADER && typeof item.data === 'string' ? item.data : '';
-
-                                        // Find current date group for file items
-                                        let dateGroup: string | null = null;
-                                        if (item.type === ListPaneItemType.FILE) {
-                                            // Look backwards to find the most recent header
-                                            for (let i = virtualItem.index - 1; i >= 0; i--) {
-                                                const prevItem = safeGetItem(listItems, i);
-                                                if (prevItem && prevItem.type === ListPaneItemType.HEADER) {
-                                                    dateGroup = prevItem.data as string;
-                                                    break;
-                                                }
-                                            }
-                                        }
-
-                                        // Compute separator visibility (class-based, not relational selectors)
-                                        // - Hide the current row's separator when this row is the last in a contiguous
-                                        //   selected block (selected && !hasSelectedBelow)
-                                        // - Also hide the current row's separator when the next row starts a selected block
-                                        //   (!selected && next is selected) to remove the line just before a selection.
-                                        const hideSeparator =
-                                            item.type === ListPaneItemType.FILE &&
-                                            ((isSelected && !hasSelectedBelow) ||
-                                                (!isSelected &&
-                                                    nextItem?.type === ListPaneItemType.FILE &&
-                                                    nextItem.data instanceof TFile &&
-                                                    multiSelection.isFileSelected(nextItem.data)));
-
-                                        return (
-                                            <div
-                                                key={virtualItem.key}
-                                                // Apply a lightweight class to control separator visibility
-                                                className={`nn-virtual-item ${
-                                                    item.type === ListPaneItemType.FILE ? 'nn-virtual-file-item' : ''
-                                                } ${isLastFile ? 'nn-last-file' : ''} ${
-                                                    hideSeparator ? 'nn-hide-separator-selection' : ''
-                                                }`}
-                                                style={
-                                                    {
-                                                        // TanStack Virtual includes the scrollMargin in virtualItem.start, but the virtual container
-                                                        // is rendered below the overlay stack in normal flow. Subtracting keeps items positioned
-                                                        // correctly within the virtual container while preserving scrollToIndex alignment.
-                                                        top: Math.max(0, virtualItem.start - listOverlayHeight),
-                                                        '--item-height': `${virtualItem.size}px`
-                                                    } as React.CSSProperties
-                                                }
-                                                data-index={virtualItem.index}
-                                            >
-                                                {item.type === ListPaneItemType.HEADER ? (
-                                                    <div
-                                                        className={`nn-date-group-header ${isFirstHeader ? 'nn-first-header' : ''} ${
-                                                            isPinnedHeader ? 'nn-pinned-section-header' : ''
-                                                        }`}
-                                                    >
-                                                        {isPinnedHeader ? (
-                                                            <>
-                                                                {settings.showPinnedIcon ? (
-                                                                    <ServiceIcon
-                                                                        iconId={pinnedSectionIcon}
-                                                                        className="nn-date-group-header-icon"
-                                                                        aria-hidden={true}
-                                                                    />
-                                                                ) : null}
-                                                                <span className="nn-date-group-header-text">{headerLabel}</span>
-                                                            </>
-                                                        ) : (
-                                                            <span className="nn-date-group-header-text">{headerLabel}</span>
-                                                        )}
-                                                    </div>
-                                                ) : item.type === ListPaneItemType.TOP_SPACER ? (
-                                                    <div className="nn-list-top-spacer" style={{ height: `${topSpacerHeight}px` }} />
-                                                ) : item.type === ListPaneItemType.BOTTOM_SPACER ? (
-                                                    <div className="nn-list-bottom-spacer" />
-                                                ) : item.type === ListPaneItemType.FILE && item.data instanceof TFile ? (
-                                                    <FileItem
-                                                        key={item.key} // Ensures each file gets a fresh component instance, preventing stale data from previous files
-                                                        file={item.data}
-                                                        isSelected={isSelected}
-                                                        hasSelectedAbove={hasSelectedAbove}
-                                                        hasSelectedBelow={hasSelectedBelow}
-                                                        onFileClick={handleFileItemClick}
-                                                        fileIndex={item.fileIndex}
-                                                        selectionType={selectionType}
-                                                        dateGroup={dateGroup}
-                                                        sortOption={effectiveSortOption}
-                                                        parentFolder={item.parentFolder}
-                                                        isPinned={item.isPinned}
-                                                        searchQuery={searchHighlightQuery}
-                                                        searchMeta={item.searchMeta}
-                                                        // Pass hidden state for muted rendering style
-                                                        isHidden={Boolean(item.isHidden)}
-                                                        onModifySearchWithTag={modifySearchWithTag}
-                                                        fileIconSize={listMeasurements.fileIconSize}
-                                                    />
-                                                ) : null}
-                                            </div>
-                                        );
-                                    })}
-                                </div>
-                            )
-                        )}
-                    </div>
-                    {/* iOS - toolbar at bottom */}
-                    {isMobile && !isAndroid && (
-                        <div className="nn-pane-bottom-toolbar" ref={bottomToolbarRef}>
-                            <ListToolbar
-                                isSearchActive={isSearchActive}
-                                onSearchToggle={() => {
-                                    if (!isSearchActive) {
-                                        // Opening search - activate with focus
-                                        setShouldFocusSearch(true);
-                                        setIsSearchActive(true);
-                                        uiDispatch({ type: 'SET_FOCUSED_PANE', pane: 'search' });
-                                    } else {
-                                        setIsSearchActive(false);
-                                        uiDispatch({ type: 'SET_FOCUSED_PANE', pane: 'files' });
-                                    }
-                                }}
-                            />
-                        </div>
-                    )}
-                    {shouldRenderCalendarOverlay ? (
-                        <div className="nn-navigation-calendar-overlay" ref={calendarOverlayRef}>
-                            <NavigationPaneCalendar onWeekCountChange={setCalendarWeekCount} />
-                        </div>
-                    ) : null}
+                    {/* iOS (Obsidian 1.11+): keep the floating toolbar inside the panel */}
+                    {shouldRenderBottomToolbarInsidePanel ? <div className="nn-pane-bottom-toolbar">{listToolbar}</div> : null}
                 </div>
+                {shouldRenderCalendarOverlay ? (
+                    <div className="nn-navigation-calendar-overlay">
+                        <NavigationPaneCalendar
+                            onWeekCountChange={setCalendarWeekCount}
+                            onNavigationAction={handleCalendarNavigationAction}
+                        />
+                    </div>
+                ) : null}
+                {shouldRenderBottomToolbarOutsidePanel ? <div className="nn-pane-bottom-toolbar">{listToolbar}</div> : null}
             </div>
         );
     })

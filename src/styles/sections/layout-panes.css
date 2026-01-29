@@ -12,7 +12,8 @@
     flex-direction: column;
     overflow: hidden;
     background-color: var(--nn-theme-nav-bg);
-    position: relative; /* Enables absolute positioning for overlays */
+    border-right: 1px solid var(--nn-theme-divider-border-color);
+    position: relative; /* Enables absolute positioning for resize handles */
 
     /* Performance optimization for virtualized content */
     contain: layout style;
@@ -49,6 +50,10 @@
     --nn-theme-list-bg: var(--nn-theme-mobile-bg);
 }
 
+.notebook-navigator-mobile .nn-navigation-pane {
+    border-right: none;
+}
+
 .nn-split-container.nn-orientation-vertical {
     flex-direction: column;
 }
@@ -66,17 +71,11 @@
     min-height: var(--nn-list-pane-min-height);
 }
 
-.nn-split-container.nn-orientation-vertical .nn-navigation-pane .nn-pane-header {
+.nn-split-container.nn-orientation-vertical .nn-navigation-pane {
     border-right: none;
 }
 
-.nn-split-container.nn-orientation-vertical .nn-navigation-pane-scroller,
-.nn-split-container.nn-orientation-vertical .nn-shortcut-pinned {
-    border-right: none;
-}
-
-.nn-split-container.nn-orientation-vertical:not(.nn-single-pane) .nn-navigation-pane-scroller,
-.nn-split-container.nn-orientation-vertical:not(.nn-single-pane) .nn-shortcut-pinned {
+.nn-split-container.nn-orientation-vertical:not(.nn-single-pane) .nn-navigation-pane {
     border-bottom: 1px solid var(--nn-theme-divider-border-color);
 }
 

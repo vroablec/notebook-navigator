@@ -232,6 +232,7 @@ function isWeekendDay(dayOfWeek: number, weekendDays: CalendarWeekendDays): bool
 
 export interface NavigationPaneCalendarProps {
     onWeekCountChange?: (count: number) => void;
+    onNavigationAction?: () => void;
     layout?: 'overlay' | 'panel';
     weeksToShowOverride?: CalendarWeeksToShow;
 }
@@ -244,7 +245,12 @@ interface CalendarHoverTooltipState {
 type CustomCalendarNoteKind = CalendarNoteKind;
 type CustomCalendarNoteConfig = CalendarNoteConfig;
 
-export function NavigationPaneCalendar({ onWeekCountChange, layout = 'overlay', weeksToShowOverride }: NavigationPaneCalendarProps) {
+export function NavigationPaneCalendar({
+    onWeekCountChange,
+    onNavigationAction,
+    layout = 'overlay',
+    weeksToShowOverride
+}: NavigationPaneCalendarProps) {
     const { app, fileSystemOps, isMobile } = useServices();
     const settings = useSettingsState();
     const periodicNotesFolder = getActiveVaultProfile(settings).periodicNotesFolder;
@@ -948,8 +954,9 @@ export function NavigationPaneCalendar({ onWeekCountChange, layout = 'overlay', 
             const step = weeksToShow === 6 ? delta : delta * weeksToShow;
 
             setCursorDate(prev => (prev ?? momentApi().startOf('day')).clone().add(step, unit));
+            onNavigationAction?.();
         },
-        [momentApi, weeksToShowSetting]
+        [momentApi, onNavigationAction, weeksToShowSetting]
     );
 
     const handleToday = useCallback(() => {
@@ -958,7 +965,8 @@ export function NavigationPaneCalendar({ onWeekCountChange, layout = 'overlay', 
         }
         setHoverTooltip(null);
         setCursorDate(momentApi().startOf('day'));
-    }, [momentApi]);
+        onNavigationAction?.();
+    }, [momentApi, onNavigationAction]);
 
     const collapseNavigationIfMobile = useCallback(() => {
         if (!isMobile || !app.workspace.leftSplit) {
