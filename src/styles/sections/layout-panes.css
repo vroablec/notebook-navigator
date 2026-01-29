@@ -136,6 +136,12 @@
     transition: transform var(--nn-pane-transition-duration) var(--nn-pane-transition-timing);
 }
 
+/* Disable transitions for one-frame mode changes (dual-pane -> single-pane) */
+.nn-split-container.nn-single-pane.nn-suppress-pane-transitions .nn-navigation-pane,
+.nn-split-container.nn-single-pane.nn-suppress-pane-transitions .nn-list-pane {
+    transition: none;
+}
+
 .nn-split-container.nn-single-pane.nn-pane-transitioning .nn-navigation-pane,
 .nn-split-container.nn-single-pane.nn-pane-transitioning .nn-list-pane {
     will-change: transform;

@@ -170,8 +170,10 @@ export const NotebookNavigatorComponent = React.memo(
         // Tracks tag-related search tokens for highlighting tags in navigation pane
         const [searchTagFilters, setSearchTagFilters] = useState<SearchTagFilterState>(EMPTY_SEARCH_TAG_FILTER_STATE);
         const [isPaneTransitioning, setIsPaneTransitioning] = useState(false);
+        const [suppressPaneTransitions, setSuppressPaneTransitions] = useState(false);
         const navigationPaneRef = useRef<NavigationPaneHandle>(null);
         const listPaneRef = useRef<ListPaneHandle>(null);
+        const lastDualPaneRef = useRef(uiState.dualPane);
 
         // Updates search tag filters only when values actually change to avoid unnecessary re-renders
         const handleSearchTokensChange = useCallback((next: SearchTagFilterState) => {
@@ -260,7 +262,10 @@ export const NotebookNavigatorComponent = React.memo(
         const preferredSinglePaneView = useRef<'navigation' | 'files'>(settings.startView === 'navigation' ? 'navigation' : 'files');
 
         // Switch to preferred view when entering single pane (desktop only)
-        useEffect(() => {
+        useLayoutEffect(() => {
+            const wasDualPane = lastDualPaneRef.current;
+            lastDualPaneRef.current = uiState.dualPane;
+
             if (isMobile) {
                 return;
             }
@@ -275,8 +280,20 @@ export const NotebookNavigatorComponent = React.memo(
             }
 
             hasInitializedSinglePane.current = true;
-            const preferredView = preferredSinglePaneView.current;
 
+            if (wasDualPane) {
+                setSuppressPaneTransitions(true);
+                const raf = window.requestAnimationFrame(() => {
+                    setSuppressPaneTransitions(false);
+                });
+                uiDispatch({ type: 'SET_SINGLE_PANE_VIEW', view: 'files' });
+                uiDispatch({ type: 'SET_FOCUSED_PANE', pane: 'files' });
+                return () => {
+                    window.cancelAnimationFrame(raf);
+                };
+            }
+
+            const preferredView = preferredSinglePaneView.current;
             uiDispatch({ type: 'SET_SINGLE_PANE_VIEW', view: preferredView });
             uiDispatch({ type: 'SET_FOCUSED_PANE', pane: preferredView });
         }, [isMobile, uiDispatch, uiState.dualPane]);
@@ -778,6 +795,9 @@ export const NotebookNavigatorComponent = React.memo(
         } else {
             containerClasses.push('nn-dual-pane');
             containerClasses.push(`nn-orientation-${orientation}`);
+        }
+        if (uiState.singlePane && suppressPaneTransitions) {
+            containerClasses.push('nn-suppress-pane-transitions');
         }
         if (uiState.singlePane && isPaneTransitioning) {
             containerClasses.push('nn-pane-transitioning');
