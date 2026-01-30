@@ -625,6 +625,7 @@ export const STRINGS_TR = {
                 view: 'Görünüm',
                 icons: 'Simgeler',
                 desktopAppearance: 'Masaüstü görünümü',
+                mobileAppearance: 'Mobil görünüm',
                 formatting: 'Biçimlendirme'
             },
             navigation: {
@@ -842,6 +843,10 @@ export const STRINGS_TR = {
             appearanceScale: {
                 name: 'Yakınlaştırma seviyesi',
                 desc: "Notebook Navigator'ın genel yakınlaştırma seviyesini kontrol eder."
+            },
+            useFloatingToolbars: {
+                name: "iOS/iPadOS'ta kayan araç çubuklarını kullan",
+                desc: 'Obsidian 1.11 ve sonrası için geçerlidir.'
             },
             startView: {
                 name: 'Varsayılan başlangıç görünümü',

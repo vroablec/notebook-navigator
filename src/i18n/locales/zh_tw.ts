@@ -624,6 +624,7 @@ export const STRINGS_ZH_TW = {
                 view: '外觀',
                 icons: '圖示',
                 desktopAppearance: '桌面外觀',
+                mobileAppearance: '行動裝置外觀',
                 formatting: '格式'
             },
             navigation: {
@@ -840,6 +841,10 @@ export const STRINGS_ZH_TW = {
             appearanceScale: {
                 name: '縮放級別',
                 desc: '控制 Notebook Navigator 的整體縮放級別。'
+            },
+            useFloatingToolbars: {
+                name: '在 iOS/iPadOS 上使用浮動工具列',
+                desc: '適用於 Obsidian 1.11 及更高版本。'
             },
             startView: {
                 name: '預設啟動檢視',

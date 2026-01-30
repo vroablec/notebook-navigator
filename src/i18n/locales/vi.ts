@@ -625,6 +625,7 @@ export const STRINGS_VI = {
                 view: 'Giao diện',
                 icons: 'Biểu tượng',
                 desktopAppearance: 'Giao diện máy tính',
+                mobileAppearance: 'Giao diện di động',
                 formatting: 'Định dạng'
             },
             navigation: {
@@ -842,6 +843,10 @@ export const STRINGS_VI = {
             appearanceScale: {
                 name: 'Mức thu phóng',
                 desc: 'Điều khiển mức thu phóng tổng thể của Notebook Navigator.'
+            },
+            useFloatingToolbars: {
+                name: 'Sử dụng thanh công cụ nổi trên iOS/iPadOS',
+                desc: 'Áp dụng cho Obsidian 1.11 trở lên.'
             },
             startView: {
                 name: 'Chế độ xem khởi động mặc định',

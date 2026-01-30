@@ -625,6 +625,7 @@ export const STRINGS_ID = {
                 view: 'Tampilan',
                 icons: 'Ikon',
                 desktopAppearance: 'Tampilan desktop',
+                mobileAppearance: 'Tampilan seluler',
                 formatting: 'Pemformatan'
             },
             navigation: {
@@ -842,6 +843,10 @@ export const STRINGS_ID = {
             appearanceScale: {
                 name: 'Tingkat zoom',
                 desc: 'Mengontrol tingkat zoom keseluruhan Notebook Navigator.'
+            },
+            useFloatingToolbars: {
+                name: 'Gunakan toolbar mengambang di iOS/iPadOS',
+                desc: 'Berlaku untuk Obsidian 1.11 dan yang lebih baru.'
             },
             startView: {
                 name: 'Tampilan startup default',

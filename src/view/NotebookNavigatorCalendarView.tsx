@@ -18,7 +18,7 @@
 
 import React from 'react';
 import { Root, createRoot } from 'react-dom/client';
-import { ItemView, WorkspaceLeaf } from 'obsidian';
+import { ItemView, Platform, requireApiVersion, WorkspaceLeaf } from 'obsidian';
 import { SettingsProvider } from '../context/SettingsContext';
 import { ServicesProvider } from '../context/ServicesContext';
 import { CalendarRightSidebar } from '../components/CalendarRightSidebar';
@@ -26,15 +26,35 @@ import { NOTEBOOK_NAVIGATOR_ICON_ID } from '../constants/notebookNavigatorIcon';
 import { strings } from '../i18n';
 import NotebookNavigatorPlugin from '../main';
 import { NOTEBOOK_NAVIGATOR_CALENDAR_VIEW } from '../types';
-import { setupNotebookNavigatorViewContainer, teardownNotebookNavigatorViewContainer } from './NotebookNavigatorView';
+import {
+    IOS_FLOATING_TOOLBARS_CLASS,
+    setupNotebookNavigatorViewContainer,
+    teardownNotebookNavigatorViewContainer
+} from './NotebookNavigatorView';
+
+let calendarViewInstanceCounter = 0;
 
 export class NotebookNavigatorCalendarView extends ItemView {
     private readonly plugin: NotebookNavigatorPlugin;
     private root: Root | null = null;
+    private readonly settingsUpdateListenerId: string;
+    private viewContainer: HTMLElement | null = null;
 
     constructor(leaf: WorkspaceLeaf, plugin: NotebookNavigatorPlugin) {
         super(leaf);
         this.plugin = plugin;
+        calendarViewInstanceCounter += 1;
+        this.settingsUpdateListenerId = `notebook-navigator-calendar-view-${calendarViewInstanceCounter}`;
+    }
+
+    private updatePlatformClasses(): void {
+        const container = this.viewContainer;
+        if (!container) {
+            return;
+        }
+
+        const shouldUseFloatingToolbars = Platform.isIosApp && requireApiVersion('1.11.0') && this.plugin.settings.useFloatingToolbars;
+        container.classList.toggle(IOS_FLOATING_TOOLBARS_CLASS, shouldUseFloatingToolbars);
     }
 
     getViewType() {
@@ -55,7 +75,12 @@ export class NotebookNavigatorCalendarView extends ItemView {
             return;
         }
 
-        setupNotebookNavigatorViewContainer(container);
+        this.viewContainer = container;
+        setupNotebookNavigatorViewContainer(container, { useFloatingToolbars: this.plugin.settings.useFloatingToolbars });
+        this.plugin.registerSettingsUpdateListener(this.settingsUpdateListenerId, () => {
+            this.updatePlatformClasses();
+        });
+        this.updatePlatformClasses();
 
         this.root = createRoot(container);
         this.root.render(
@@ -70,6 +95,9 @@ export class NotebookNavigatorCalendarView extends ItemView {
     }
 
     async onClose() {
+        this.plugin.unregisterSettingsUpdateListener(this.settingsUpdateListenerId);
+        this.viewContainer = null;
+
         const container = this.containerEl.children[1];
         if (!(container instanceof HTMLElement)) {
             return;

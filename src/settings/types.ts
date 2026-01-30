@@ -36,6 +36,7 @@ export const SYNC_MODE_SETTING_IDS = [
     'tagSortOrder',
     'searchProvider',
     'includeDescendantNotes',
+    'useFloatingToolbars',
     'dualPane',
     'dualPaneOrientation',
     'paneTransitionDuration',
@@ -213,6 +214,9 @@ export interface NotebookNavigatorSettings {
     desktopBackground: BackgroundMode;
     desktopScale: number;
     mobileScale: number;
+
+    // General tab - Mobile appearance
+    useFloatingToolbars: boolean;
 
     // General tab - Formatting
     dateFormat: string;

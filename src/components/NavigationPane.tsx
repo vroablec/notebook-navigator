@@ -1045,15 +1045,16 @@ export const NavigationPane = React.memo(
         }, [canReorderRootItems]);
 
         const isIosObsidian111Plus = Platform.isIosApp && requireApiVersion('1.11.0');
+        const shouldUseFloatingToolbars = isIosObsidian111Plus && settings.useFloatingToolbars;
         const scrollPaddingEnd = useMemo(() => {
-            if (!isIosObsidian111Plus || !isMobile || isAndroid) {
+            if (!shouldUseFloatingToolbars || !isMobile || isAndroid) {
                 return 0;
             }
 
             // Keep in sync with `--nn-ios-pane-bottom-overlay-height` in `src/styles/sections/platform-ios-obsidian-1-11.css`.
             // The calendar overlay is outside the scroller, so it is intentionally not included here.
             return IOS_OBSIDIAN_1_11_PLUS_GLASS_TOOLBAR_HEIGHT_PX;
-        }, [isAndroid, isIosObsidian111Plus, isMobile]);
+        }, [isAndroid, isMobile, shouldUseFloatingToolbars]);
 
         const { rowVirtualizer, scrollContainerRef, scrollContainerRefCallback, requestScroll } = useNavigationPaneScroll({
             items,
@@ -2765,8 +2766,8 @@ export const NavigationPane = React.memo(
         }, [canReorderRootItems, handleToggleRootReorder, handleTreeUpdateComplete, isRootReorderMode]);
 
         const shouldRenderBottomToolbar = isMobile && !isAndroid;
-        const shouldRenderBottomToolbarInsidePanel = shouldRenderBottomToolbar && isIosObsidian111Plus;
-        const shouldRenderBottomToolbarOutsidePanel = shouldRenderBottomToolbar && !isIosObsidian111Plus;
+        const shouldRenderBottomToolbarInsidePanel = shouldRenderBottomToolbar && shouldUseFloatingToolbars;
+        const shouldRenderBottomToolbarOutsidePanel = shouldRenderBottomToolbar && !shouldUseFloatingToolbars;
 
         const navigationContent = (
             <div

@@ -1205,6 +1205,17 @@ export default class NotebookNavigatorPlugin extends Plugin implements ISettings
     }
 
     /**
+     * Updates whether floating toolbars are used.
+     */
+    public setUseFloatingToolbars(enabled: boolean): void {
+        this.updateSettingAndMirrorToLocalStorage({
+            settingId: 'useFloatingToolbars',
+            localStorageKey: this.keys.useFloatingToolbarsKey,
+            nextValue: Boolean(enabled)
+        });
+    }
+
+    /**
      * Updates whether the navigation banner is pinned to the top of the navigation pane.
      */
     public setPinNavigationBanner(enabled: boolean): void {

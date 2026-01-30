@@ -711,6 +711,23 @@ export function renderGeneralTab(context: SettingsTabContext): void {
             );
     }
 
+    if (Platform.isMobile) {
+        const mobileAppearanceGroup = createGroup(strings.settings.groups.general.mobileAppearance);
+
+        const useFloatingToolbarsSetting = mobileAppearanceGroup.addSetting(setting => {
+            setting
+                .setName(strings.settings.items.useFloatingToolbars.name)
+                .setDesc(strings.settings.items.useFloatingToolbars.desc)
+                .addToggle(toggle =>
+                    toggle.setValue(plugin.settings.useFloatingToolbars).onChange(value => {
+                        plugin.setUseFloatingToolbars(value);
+                    })
+                );
+        });
+
+        addSettingSyncModeToggle({ setting: useFloatingToolbarsSetting, plugin, settingId: 'useFloatingToolbars' });
+    }
+
     const viewGroup = createGroup(strings.settings.groups.general.view);
 
     const uiScaleSetting = viewGroup.addSetting(setting => {

@@ -36,25 +36,25 @@
 
 /* Obsidian 1.11+ iOS: bottom padding inside the navigator viewport */
 /* Applied to the internal split container so the bottom edge doesn't touch the view chrome and the toolbar shadow can render into the padding (8px matches the top spacer). */
-.notebook-navigator-obsidian-1-11-plus-ios .nn-split-container {
+.notebook-navigator-obsidian-1-11-plus-ios.notebook-navigator-ios-floating-toolbars .nn-split-container {
     padding-bottom: 8px;
     box-sizing: border-box;
 }
 
 /* iOS (Obsidian 1.11+): allow the glass toolbar shadow to render into the split container padding */
-.notebook-navigator-obsidian-1-11-plus-ios .nn-navigation-pane,
-.notebook-navigator-obsidian-1-11-plus-ios .nn-list-pane {
+.notebook-navigator-obsidian-1-11-plus-ios.notebook-navigator-ios-floating-toolbars .nn-navigation-pane,
+.notebook-navigator-obsidian-1-11-plus-ios.notebook-navigator-ios-floating-toolbars .nn-list-pane {
     overflow: visible;
 }
 
 /* iOS (Obsidian 1.11+): anchor floating toolbar to the panel (above the calendar). */
-.notebook-navigator-obsidian-1-11-plus-ios .nn-navigation-pane-panel,
-.notebook-navigator-obsidian-1-11-plus-ios .nn-list-pane-panel {
+.notebook-navigator-obsidian-1-11-plus-ios.notebook-navigator-ios-floating-toolbars .nn-navigation-pane-panel,
+.notebook-navigator-obsidian-1-11-plus-ios.notebook-navigator-ios-floating-toolbars .nn-list-pane-panel {
     position: relative;
 }
 
 /* iOS (Obsidian 1.11+): bottom overlays are positioned above the scroller. */
-.notebook-navigator-obsidian-1-11-plus-ios .nn-pane-bottom-toolbar {
+.notebook-navigator-obsidian-1-11-plus-ios.notebook-navigator-ios-floating-toolbars .nn-pane-bottom-toolbar {
     position: absolute;
     left: 0;
     right: 0;
@@ -63,8 +63,8 @@
 }
 
 /* iOS (Obsidian 1.11+): reserve scroll space for the floating toolbar so rows can scroll under it. */
-.notebook-navigator-obsidian-1-11-plus-ios .nn-navigation-pane-scroller,
-.notebook-navigator-obsidian-1-11-plus-ios .nn-list-pane-scroller {
+.notebook-navigator-obsidian-1-11-plus-ios.notebook-navigator-ios-floating-toolbars .nn-navigation-pane-scroller,
+.notebook-navigator-obsidian-1-11-plus-ios.notebook-navigator-ios-floating-toolbars .nn-list-pane-scroller {
     padding-bottom: var(--nn-ios-pane-bottom-overlay-height);
 }
 
@@ -76,7 +76,7 @@
 }
 
 /* Obsidian 1.11+ iOS glass toolbar */
-.notebook-navigator-obsidian-1-11-plus-ios .nn-mobile-toolbar {
+.notebook-navigator-obsidian-1-11-plus-ios.notebook-navigator-ios-floating-toolbars .nn-mobile-toolbar {
     pointer-events: none;
     justify-content: space-between;
     align-items: flex-start;
@@ -98,19 +98,19 @@
     ); /* Match toolbar box height */
 }
 
-.notebook-navigator-obsidian-1-11-plus-ios .nn-mobile-toolbar-left,
-.notebook-navigator-obsidian-1-11-plus-ios .nn-mobile-toolbar-right {
+.notebook-navigator-obsidian-1-11-plus-ios.notebook-navigator-ios-floating-toolbars .nn-mobile-toolbar-left,
+.notebook-navigator-obsidian-1-11-plus-ios.notebook-navigator-ios-floating-toolbars .nn-mobile-toolbar-right {
     display: flex;
     pointer-events: auto;
     flex: 0 0 auto;
 }
 
-.notebook-navigator-obsidian-1-11-plus-ios .nn-mobile-toolbar-pill,
-.notebook-navigator-obsidian-1-11-plus-ios .nn-mobile-toolbar-circle {
+.notebook-navigator-obsidian-1-11-plus-ios.notebook-navigator-ios-floating-toolbars .nn-mobile-toolbar-pill,
+.notebook-navigator-obsidian-1-11-plus-ios.notebook-navigator-ios-floating-toolbars .nn-mobile-toolbar-circle {
     display: flex;
 }
 
-.notebook-navigator-obsidian-1-11-plus-ios {
+.notebook-navigator-obsidian-1-11-plus-ios.notebook-navigator-ios-floating-toolbars {
     --nn-theme-mobile-toolbar-button-icon-color: var(--nn-theme-foreground);
     --nn-ios-toolbar-glass-bg: color-mix(in srgb, var(--nn-theme-mobile-toolbar-glass-bg) 45%, transparent);
     --nn-ios-toolbar-glass-outline: rgba(255, 255, 255, 0.6);
@@ -129,13 +129,13 @@
     );
 }
 
-.theme-dark .notebook-navigator-obsidian-1-11-plus-ios {
+.theme-dark .notebook-navigator-obsidian-1-11-plus-ios.notebook-navigator-ios-floating-toolbars {
     --nn-ios-toolbar-glass-outline: rgba(255, 255, 255, 0.1);
     --nn-ios-toolbar-glass-shadow: 0 0 0 2px var(--nn-ios-toolbar-glass-outline), 0 16px 32px rgba(0, 0, 0, 0.3);
 }
 
-.notebook-navigator-obsidian-1-11-plus-ios .nn-mobile-toolbar-pill,
-.notebook-navigator-obsidian-1-11-plus-ios .nn-mobile-toolbar-circle {
+.notebook-navigator-obsidian-1-11-plus-ios.notebook-navigator-ios-floating-toolbars .nn-mobile-toolbar-pill,
+.notebook-navigator-obsidian-1-11-plus-ios.notebook-navigator-ios-floating-toolbars .nn-mobile-toolbar-circle {
     position: relative;
     z-index: 0;
     border-radius: 999px;
@@ -158,24 +158,24 @@
      */
 }
 
-.notebook-navigator-obsidian-1-11-plus-ios .nn-mobile-toolbar-pill > .nn-mobile-toolbar-button,
-.notebook-navigator-obsidian-1-11-plus-ios .nn-mobile-toolbar-circle > .nn-mobile-toolbar-button {
+.notebook-navigator-obsidian-1-11-plus-ios.notebook-navigator-ios-floating-toolbars .nn-mobile-toolbar-pill > .nn-mobile-toolbar-button,
+.notebook-navigator-obsidian-1-11-plus-ios.notebook-navigator-ios-floating-toolbars .nn-mobile-toolbar-circle > .nn-mobile-toolbar-button {
     position: relative;
     z-index: 1;
 }
 
-.notebook-navigator-obsidian-1-11-plus-ios .nn-mobile-toolbar-pill {
+.notebook-navigator-obsidian-1-11-plus-ios.notebook-navigator-ios-floating-toolbars .nn-mobile-toolbar-pill {
     width: auto;
     justify-content: flex-start;
     gap: 6px; /* Spacing between buttons inside the pill */
     padding: 1px 10px; /* 1px vertical + 10px horizontal pill inset */
 }
 
-.notebook-navigator-obsidian-1-11-plus-ios .nn-mobile-toolbar-circle {
+.notebook-navigator-obsidian-1-11-plus-ios.notebook-navigator-ios-floating-toolbars .nn-mobile-toolbar-circle {
     padding: 1px; /* 1px inset around the circular button */
 }
 
-.notebook-navigator-obsidian-1-11-plus-ios .nn-mobile-toolbar-button {
+.notebook-navigator-obsidian-1-11-plus-ios.notebook-navigator-ios-floating-toolbars .nn-mobile-toolbar-button {
     width: 38px; /* Button diameter inside the glass pill */
     height: 38px; /* Button diameter inside the glass pill */
     min-width: 38px; /* Prevent button shrink */
@@ -183,18 +183,18 @@
     border-radius: 999px;
 }
 
-.notebook-navigator-obsidian-1-11-plus-ios .nn-mobile-toolbar-button svg {
+.notebook-navigator-obsidian-1-11-plus-ios.notebook-navigator-ios-floating-toolbars .nn-mobile-toolbar-button svg {
     stroke-width: 2;
 }
 
-.notebook-navigator-obsidian-1-11-plus-ios .nn-navigation-pane-content,
-.notebook-navigator-obsidian-1-11-plus-ios .nn-list-pane-content {
+.notebook-navigator-obsidian-1-11-plus-ios.notebook-navigator-ios-floating-toolbars .nn-navigation-pane-content,
+.notebook-navigator-obsidian-1-11-plus-ios.notebook-navigator-ios-floating-toolbars .nn-list-pane-content {
     position: relative;
     z-index: 1;
 }
 
 /* Obsidian 1.11+ iOS: bottom fade layer */
-.notebook-navigator-obsidian-1-11-plus-ios .nn-pane-bottom-toolbar::before {
+.notebook-navigator-obsidian-1-11-plus-ios.notebook-navigator-ios-floating-toolbars .nn-pane-bottom-toolbar::before {
     content: '';
     position: absolute;
     left: 0;

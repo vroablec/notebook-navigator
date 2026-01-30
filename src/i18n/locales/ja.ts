@@ -626,6 +626,7 @@ export const STRINGS_JA = {
                 view: '外観',
                 icons: 'アイコン',
                 desktopAppearance: 'デスクトップの外観',
+                mobileAppearance: 'モバイルの外観',
                 formatting: '書式'
             },
             navigation: {
@@ -843,6 +844,10 @@ export const STRINGS_JA = {
             appearanceScale: {
                 name: 'ズームレベル',
                 desc: 'Notebook Navigator 全体のズームレベルを制御します。'
+            },
+            useFloatingToolbars: {
+                name: 'iOS/iPadOSでフローティングツールバーを使用',
+                desc: 'Obsidian 1.11以降に適用されます。'
             },
             startView: {
                 name: 'デフォルト起動ビュー',

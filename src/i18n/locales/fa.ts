@@ -625,6 +625,7 @@ export const STRINGS_FA = {
                 view: 'ظاهر',
                 icons: 'آیکون‌ها',
                 desktopAppearance: 'ظاهر دسکتاپ',
+                mobileAppearance: 'ظاهر موبایل',
                 formatting: 'قالب‌بندی'
             },
             navigation: {
@@ -842,6 +843,10 @@ export const STRINGS_FA = {
             appearanceScale: {
                 name: 'سطح زوم',
                 desc: 'سطح زوم کلی Notebook Navigator را کنترل می‌کند.'
+            },
+            useFloatingToolbars: {
+                name: 'استفاده از نوار ابزار شناور در iOS/iPadOS',
+                desc: 'برای Obsidian 1.11 و بالاتر اعمال می‌شود.'
             },
             startView: {
                 name: 'نمای پیش‌فرض شروع',

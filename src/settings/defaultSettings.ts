@@ -87,6 +87,9 @@ export const DEFAULT_SETTINGS: NotebookNavigatorSettings = {
 
     mobileScale: DEFAULT_UI_SCALE,
 
+    // General tab - Mobile appearance
+    useFloatingToolbars: true,
+
     // General tab - Formatting
     dateFormat: 'MMM d, yyyy',
     timeFormat: 'h:mm a',

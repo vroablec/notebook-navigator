@@ -627,6 +627,7 @@ export const STRINGS_NL = {
                 view: 'Uiterlijk',
                 icons: 'Iconen',
                 desktopAppearance: 'Desktop-uiterlijk',
+                mobileAppearance: 'Mobiele weergave',
                 formatting: 'Opmaak'
             },
             navigation: {
@@ -844,6 +845,10 @@ export const STRINGS_NL = {
             appearanceScale: {
                 name: 'Zoomniveau',
                 desc: 'Regelt het algemene zoomniveau van Notebook Navigator.'
+            },
+            useFloatingToolbars: {
+                name: 'Zwevende werkbalken gebruiken op iOS/iPadOS',
+                desc: 'Geldt voor Obsidian 1.11 en later.'
             },
             startView: {
                 name: 'Standaard opstartweergave',

@@ -625,6 +625,7 @@ export const STRINGS_TH = {
                 view: 'ลักษณะ',
                 icons: 'ไอคอน',
                 desktopAppearance: 'ลักษณะเดสก์ท็อป',
+                mobileAppearance: 'รูปลักษณ์บนมือถือ',
                 formatting: 'การจัดรูปแบบ'
             },
             navigation: {
@@ -842,6 +843,10 @@ export const STRINGS_TH = {
             appearanceScale: {
                 name: 'ระดับการซูม',
                 desc: 'ควบคุมระดับการซูมโดยรวมของ Notebook Navigator'
+            },
+            useFloatingToolbars: {
+                name: 'ใช้แถบเครื่องมือลอยบน iOS/iPadOS',
+                desc: 'ใช้ได้กับ Obsidian 1.11 และใหม่กว่า'
             },
             startView: {
                 name: 'มุมมองเริ่มต้นเมื่อเริ่มงาน',

@@ -253,6 +253,7 @@ export interface LocalStorageKeys {
     recentColorsKey: string;
     paneTransitionDurationKey: string;
     toolbarVisibilityKey: string;
+    useFloatingToolbarsKey: string;
     pinNavigationBannerKey: string;
     navIndentKey: string;
     navItemHeightKey: string;
@@ -300,6 +301,7 @@ export const STORAGE_KEYS: LocalStorageKeys = {
     recentColorsKey: 'notebook-navigator-recent-colors',
     paneTransitionDurationKey: 'notebook-navigator-pane-transition-duration',
     toolbarVisibilityKey: 'notebook-navigator-toolbar-visibility',
+    useFloatingToolbarsKey: 'notebook-navigator-use-floating-toolbars',
     pinNavigationBannerKey: 'notebook-navigator-pin-navigation-banner',
     navIndentKey: 'notebook-navigator-nav-indent',
     navItemHeightKey: 'notebook-navigator-nav-item-height',

@@ -313,6 +313,19 @@ export function createSyncModeRegistry(params: CreateSyncModeRegistryParams): Sy
                 resolveToolbarVisibility({ storedData, keys: params.keys, defaultSettings: params.defaultSettings }),
             sanitizeSynced: () => params.sanitizeToolbarVisibilitySetting(params.getSettings().toolbarVisibility)
         }),
+        useFloatingToolbars: createResolvedLocalStorageSettingEntry({
+            settingId: 'useFloatingToolbars',
+            loadPhase: 'preProfiles',
+            localStorageKey: params.keys.useFloatingToolbarsKey,
+            resolveDeviceLocal: () => {
+                const storedLocal = localStorage.get<unknown>(params.keys.useFloatingToolbarsKey);
+                const resolved = params.sanitizeBooleanSetting(storedLocal, params.defaultSettings.useFloatingToolbars);
+                setLocalStorage(params.keys.useFloatingToolbarsKey, resolved);
+                return { value: resolved, migrated: false };
+            },
+            sanitizeSynced: () =>
+                params.sanitizeBooleanSetting(params.getSettings().useFloatingToolbars, params.defaultSettings.useFloatingToolbars)
+        }),
         pinNavigationBanner: createResolvedLocalStorageSettingEntry({
             settingId: 'pinNavigationBanner',
             loadPhase: 'preProfiles',

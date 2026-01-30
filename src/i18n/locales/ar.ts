@@ -625,6 +625,7 @@ export const STRINGS_AR = {
                 view: 'المظهر',
                 icons: 'الأيقونات',
                 desktopAppearance: 'مظهر سطح المكتب',
+                mobileAppearance: 'مظهر الهاتف المحمول',
                 formatting: 'التنسيق'
             },
             navigation: {
@@ -842,6 +843,10 @@ export const STRINGS_AR = {
             appearanceScale: {
                 name: 'مستوى التكبير',
                 desc: 'التحكم في مستوى التكبير العام لمتصفح الدفتر.'
+            },
+            useFloatingToolbars: {
+                name: 'استخدام أشرطة الأدوات العائمة على iOS/iPadOS',
+                desc: 'ينطبق على Obsidian 1.11 والإصدارات الأحدث.'
             },
             startView: {
                 name: 'عرض البدء الافتراضي',

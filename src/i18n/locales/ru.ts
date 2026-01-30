@@ -625,6 +625,7 @@ export const STRINGS_RU = {
                 view: 'Внешний вид',
                 icons: 'Иконки',
                 desktopAppearance: 'Внешний вид на компьютере',
+                mobileAppearance: 'Мобильный вид',
                 formatting: 'Форматирование'
             },
             navigation: {
@@ -843,6 +844,10 @@ export const STRINGS_RU = {
             appearanceScale: {
                 name: 'Уровень масштабирования',
                 desc: 'Управляет общим масштабом Notebook Navigator.'
+            },
+            useFloatingToolbars: {
+                name: 'Использовать плавающие панели инструментов на iOS/iPadOS',
+                desc: 'Применяется к Obsidian 1.11 и более поздним версиям.'
             },
             startView: {
                 name: 'Начальный вид по умолчанию',

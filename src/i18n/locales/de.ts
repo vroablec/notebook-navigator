@@ -626,6 +626,7 @@ export const STRINGS_DE = {
                 view: 'Darstellung',
                 icons: 'Symbole',
                 desktopAppearance: 'Desktop-Darstellung',
+                mobileAppearance: 'Mobile Darstellung',
                 formatting: 'Formatierung'
             },
             navigation: {
@@ -844,6 +845,10 @@ export const STRINGS_DE = {
             appearanceScale: {
                 name: 'Zoomstufe',
                 desc: 'Steuert die gesamte Zoomstufe von Notebook Navigator.'
+            },
+            useFloatingToolbars: {
+                name: 'Schwebende Symbolleisten auf iOS/iPadOS verwenden',
+                desc: 'Gilt für Obsidian 1.11 und höher.'
             },
             startView: {
                 name: 'Standard-Startansicht',

@@ -626,6 +626,7 @@ export const STRINGS_ES = {
                 view: 'Apariencia',
                 icons: 'Iconos',
                 desktopAppearance: 'Apariencia de escritorio',
+                mobileAppearance: 'Apariencia móvil',
                 formatting: 'Formato'
             },
             navigation: {
@@ -843,6 +844,10 @@ export const STRINGS_ES = {
             appearanceScale: {
                 name: 'Nivel de zoom',
                 desc: 'Controla el nivel de zoom general de Notebook Navigator.'
+            },
+            useFloatingToolbars: {
+                name: 'Usar barras de herramientas flotantes en iOS/iPadOS',
+                desc: 'Aplica a Obsidian 1.11 y posteriores.'
             },
             startView: {
                 name: 'Vista de inicio predeterminada',

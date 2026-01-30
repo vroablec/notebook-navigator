@@ -627,6 +627,7 @@ export const STRINGS_PL = {
                 view: 'Wygląd',
                 icons: 'Ikony',
                 desktopAppearance: 'Wygląd na komputerze',
+                mobileAppearance: 'Wygląd mobilny',
                 formatting: 'Formatowanie'
             },
             navigation: {
@@ -844,6 +845,10 @@ export const STRINGS_PL = {
             appearanceScale: {
                 name: 'Poziom powiększenia',
                 desc: 'Kontroluje ogólny poziom powiększenia w Notebook Navigator.'
+            },
+            useFloatingToolbars: {
+                name: 'Używaj pływających pasków narzędzi na iOS/iPadOS',
+                desc: 'Dotyczy Obsidian 1.11 i nowszych.'
             },
             startView: {
                 name: 'Domyślny widok startowy',

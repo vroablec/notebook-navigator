@@ -625,6 +625,7 @@ export const STRINGS_KO = {
                 view: '모양',
                 icons: '아이콘',
                 desktopAppearance: '데스크톱 모양새',
+                mobileAppearance: '모바일 모양',
                 formatting: '서식'
             },
             navigation: {
@@ -842,6 +843,10 @@ export const STRINGS_KO = {
             appearanceScale: {
                 name: '확대 수준',
                 desc: 'Notebook Navigator의 전체 확대 수준을 제어합니다.'
+            },
+            useFloatingToolbars: {
+                name: 'iOS/iPadOS에서 플로팅 툴바 사용',
+                desc: 'Obsidian 1.11 이상에 적용됩니다.'
             },
             startView: {
                 name: '기본 시작 보기',
