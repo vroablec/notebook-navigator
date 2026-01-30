@@ -1331,7 +1331,11 @@ export function NavigationPaneCalendar({
                         {monthNotesEnabled ? (
                             <button
                                 type="button"
-                                className={['nn-navigation-calendar-period-button', headerPeriodNoteFiles.month ? 'has-period-note' : '']
+                                className={[
+                                    'nn-navigation-calendar-period-button',
+                                    'nn-navigation-calendar-period-month',
+                                    headerPeriodNoteFiles.month ? 'has-period-note' : ''
+                                ]
                                     .filter(Boolean)
                                     .join(' ')}
                                 onClick={() =>
@@ -1354,7 +1358,7 @@ export function NavigationPaneCalendar({
                             </button>
                         ) : (
                             <span
-                                className="nn-navigation-calendar-period-label"
+                                className="nn-navigation-calendar-period-label nn-navigation-calendar-period-month"
                                 onContextMenu={event =>
                                     showCalendarNoteContextMenu(event, {
                                         kind: 'month',
@@ -1371,7 +1375,11 @@ export function NavigationPaneCalendar({
                         {yearNotesEnabled ? (
                             <button
                                 type="button"
-                                className={['nn-navigation-calendar-period-button', headerPeriodNoteFiles.year ? 'has-period-note' : '']
+                                className={[
+                                    'nn-navigation-calendar-period-button',
+                                    'nn-navigation-calendar-period-year',
+                                    headerPeriodNoteFiles.year ? 'has-period-note' : ''
+                                ]
                                     .filter(Boolean)
                                     .join(' ')}
                                 onClick={() =>
@@ -1394,7 +1402,7 @@ export function NavigationPaneCalendar({
                             </button>
                         ) : (
                             <span
-                                className="nn-navigation-calendar-period-label"
+                                className="nn-navigation-calendar-period-label nn-navigation-calendar-period-year"
                                 onContextMenu={event =>
                                     showCalendarNoteContextMenu(event, {
                                         kind: 'year',
