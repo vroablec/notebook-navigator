@@ -967,8 +967,21 @@ export default class NotebookNavigatorPlugin extends Plugin implements ISettings
                     new WelcomeModal(this.app).open();
                 }
 
-                // Check for version updates
-                await this.checkForVersionUpdate({ isFirstLaunch });
+                // Check for version updates after a short delay.
+                // Obsidian Sync can update the plugin settings shortly after startup, so defer the check to avoid using cached settings.
+                const versionUpdateGracePeriodMs = 3000;
+                if (typeof window === 'undefined') {
+                    await this.checkForVersionUpdate({ isFirstLaunch });
+                } else {
+                    window.setTimeout(() => {
+                        runAsyncAction(async () => {
+                            if (this.isUnloading) {
+                                return;
+                            }
+                            await this.checkForVersionUpdate({ isFirstLaunch });
+                        });
+                    }, versionUpdateGracePeriodMs);
+                }
 
                 // Trigger Style Settings plugin to parse our settings
                 this.app.workspace.trigger('parse-style-settings');
