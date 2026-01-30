@@ -85,7 +85,8 @@ const RELEASE_NOTES: ReleaseNote[] = [
         ],
         improved: [
             'Weekly periodic note patterns now accept nested year/quarter/month/week folder paths.',
-            'Greatly improved keyboard performance in list pane when scrolling through large lists by holding the UP or DOWN key.'
+            'Greatly improved keyboard performance in list pane when scrolling through large lists by holding the UP or DOWN key.',
+            'Folders and tags now show tooltips for truncated names on desktop devices, similar to how shortcuts and recent files works.'
         ],
         changed: [
             'Due to issues with React native, scrollbar positioning and multiple themes, the UI panels are no longer shown with transparency in front of the list scrollers.'
