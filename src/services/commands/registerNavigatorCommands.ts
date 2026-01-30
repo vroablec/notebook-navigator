@@ -364,7 +364,7 @@ async function openFileInActiveLeaf(plugin: NotebookNavigatorPlugin, file: TFile
     };
 
     if (plugin.commandQueue) {
-        await plugin.commandQueue.executeOpenActiveFile(file, openFile);
+        await plugin.commandQueue.executeOpenActiveFile(file, openFile, { active: true });
         return;
     }
 
