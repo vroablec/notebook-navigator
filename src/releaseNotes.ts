@@ -89,12 +89,12 @@ const RELEASE_NOTES: ReleaseNote[] = [
             'Folders and tags now show tooltips for truncated names on desktop devices, similar to how shortcuts and recent files works.'
         ],
         changed: [
-            'Due to issues with React native, scrollbar positioning and multiple themes, the UI panels are no longer shown with transparency in front of the list scrollers.'
+            'Due to issues with React native, scrollbar positioning and multiple themes, **the UI panels are no longer shown with transparency** in front of the list scrollers.'
         ],
         fixed: [
             'Fixed an issue where some customized user icons were not applying consistently to all UI elements.',
-            'Increased image size limit on mobile devices for feature image thumbnails from 15 MB to 50 MB.',
-            'Right sidebar now properly sets background color to --background-primary on desktop for theme support.'
+            'Increased image size limit on mobile devices for feature image thumbnails from 15 MB to 50 MB (matches desktop).',
+            'Right sidebar calendar now properly sets background color to **--background-primary** on desktop for theme support.'
         ]
     },
     {
