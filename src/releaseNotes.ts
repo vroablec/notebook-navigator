@@ -85,7 +85,9 @@ const RELEASE_NOTES: ReleaseNote[] = [
         changed: [
             'Due to issues with React native, scrollbars and multiple themes, UI panels are no longer shown with transparency in front of the list scrollers.'
         ],
-        fixed: ['Fixed some customized user icons were not applying consistently to all UI elements.']
+        fixed: [
+            'Fixed an issue where some customized user icons were not applying consistently to all UI elements.',
+            'Increased image size limit on mobile devices for feature image thumbnails from 15 MB to 50 MB.']
     },
     {
         version: '2.2.0',
