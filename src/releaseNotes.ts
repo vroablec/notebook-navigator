@@ -87,7 +87,7 @@ const RELEASE_NOTES: ReleaseNote[] = [
             'Greatly improved keyboard performance in list pane when scrolling through large lists by holding the UP or DOWN key.'
         ],
         changed: [
-            'Due to issues with React native, scrollbars and multiple themes, UI panels are no longer shown with transparency in front of the list scrollers.'
+            'Due to issues with React native, scrollbar positioning and multiple themes, the UI panels are no longer shown with transparency in front of the list scrollers.'
         ],
         fixed: [
             'Fixed an issue where some customized user icons were not applying consistently to all UI elements.',
