@@ -144,6 +144,7 @@ export const DEFAULT_SETTINGS: NotebookNavigatorSettings = {
             newFolder: true
         },
         list: {
+            back: true,
             search: true,
             descendants: true,
             sort: true,

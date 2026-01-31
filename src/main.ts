@@ -1245,7 +1245,11 @@ export default class NotebookNavigatorPlugin extends Plugin implements ISettings
      */
     public persistToolbarVisibility(): void {
         localStorage.set(this.keys.toolbarVisibilityKey, this.settings.toolbarVisibility);
-        this.persistSyncModeSettingUpdate('toolbarVisibility');
+        this.notifySettingsUpdate();
+        if (this.isLocal('toolbarVisibility')) {
+            return;
+        }
+        runAsyncAction(() => this.saveSettings());
     }
 
     /**
@@ -1996,16 +2000,20 @@ export default class NotebookNavigatorPlugin extends Plugin implements ISettings
         }
     }
 
+    private async saveSettings(): Promise<void> {
+        ensureVaultProfiles(this.settings);
+        this.refreshMatcherCachesIfNeeded();
+        const dataToPersist = this.getPersistableSettings();
+        await this.saveData(dataToPersist);
+    }
+
     /**
      * Saves current plugin settings to Obsidian's data storage and notifies listeners
      * Persists user preferences between sessions and triggers UI updates
      * Called whenever settings are modified
      */
     async saveSettingsAndUpdate() {
-        ensureVaultProfiles(this.settings);
-        this.refreshMatcherCachesIfNeeded();
-        const dataToPersist = this.getPersistableSettings();
-        await this.saveData(dataToPersist);
+        await this.saveSettings();
         // Notify all listeners that settings have been updated
         this.onSettingsUpdate();
     }

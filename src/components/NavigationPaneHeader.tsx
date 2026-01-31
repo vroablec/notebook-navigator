@@ -121,6 +121,19 @@ export function NavigationPaneHeader({
         return <div className="nn-pane-header nn-pane-header-simple">{profileTrigger}</div>;
     }
 
+    const shouldRenderDesktopHeader =
+        Boolean(profileTrigger) ||
+        showToggleDualPaneButton ||
+        showExpandCollapseButton ||
+        showHiddenItemsButton ||
+        showCalendarButton ||
+        showRootReorderButton ||
+        showNewFolderButton;
+
+    if (!shouldRenderDesktopHeader) {
+        return null;
+    }
+
     return (
         <div className="nn-pane-header">
             <div className="nn-header-actions nn-header-actions--space-between">

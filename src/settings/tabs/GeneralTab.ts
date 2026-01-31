@@ -965,27 +965,27 @@ export function renderGeneralTab(context: SettingsTabContext): void {
     timeFormatSetting.controlEl.addClass('nn-setting-wide-input');
 }
 
-interface ToolbarButtonConfig<T extends string> {
+type ToolbarButtonConfig<T extends string> = {
     id: T;
-    uxIconId: UXIconId;
     label: string;
-}
+} & ({ iconType: 'ux'; iconId: UXIconId } | { iconType: 'raw'; iconId: string });
 
 const NAVIGATION_TOOLBAR_BUTTONS: ToolbarButtonConfig<NavigationToolbarButtonId>[] = [
-    { id: 'toggleDualPane', uxIconId: 'nav-show-dual-pane', label: strings.paneHeader.showDualPane },
-    { id: 'expandCollapse', uxIconId: 'nav-expand-all', label: strings.paneHeader.expandAllFolders },
-    { id: 'hiddenItems', uxIconId: 'nav-hidden-items', label: strings.paneHeader.showExcludedItems },
-    { id: 'calendar', uxIconId: 'nav-calendar', label: strings.paneHeader.showCalendar },
-    { id: 'rootReorder', uxIconId: 'nav-root-reorder', label: strings.paneHeader.reorderRootFolders },
-    { id: 'newFolder', uxIconId: 'nav-new-folder', label: strings.paneHeader.newFolder }
+    { id: 'toggleDualPane', iconType: 'ux', iconId: 'nav-show-dual-pane', label: strings.paneHeader.showDualPane },
+    { id: 'expandCollapse', iconType: 'ux', iconId: 'nav-expand-all', label: strings.paneHeader.expandAllFolders },
+    { id: 'hiddenItems', iconType: 'ux', iconId: 'nav-hidden-items', label: strings.paneHeader.showExcludedItems },
+    { id: 'calendar', iconType: 'ux', iconId: 'nav-calendar', label: strings.paneHeader.showCalendar },
+    { id: 'rootReorder', iconType: 'ux', iconId: 'nav-root-reorder', label: strings.paneHeader.reorderRootFolders },
+    { id: 'newFolder', iconType: 'ux', iconId: 'nav-new-folder', label: strings.paneHeader.newFolder }
 ];
 
 const LIST_TOOLBAR_BUTTONS: ToolbarButtonConfig<ListToolbarButtonId>[] = [
-    { id: 'search', uxIconId: 'list-search', label: strings.paneHeader.search },
-    { id: 'descendants', uxIconId: 'list-descendants', label: strings.settings.items.includeDescendantNotes.name },
-    { id: 'sort', uxIconId: 'list-sort-ascending', label: strings.paneHeader.changeSortOrder },
-    { id: 'appearance', uxIconId: 'list-appearance', label: strings.paneHeader.changeAppearance },
-    { id: 'newNote', uxIconId: 'list-new-note', label: strings.paneHeader.newNote }
+    { id: 'back', iconType: 'raw', iconId: Platform.isAndroidApp ? 'arrow-left' : 'chevron-left', label: strings.paneHeader.showFolders },
+    { id: 'search', iconType: 'ux', iconId: 'list-search', label: strings.paneHeader.search },
+    { id: 'descendants', iconType: 'ux', iconId: 'list-descendants', label: strings.settings.items.includeDescendantNotes.name },
+    { id: 'sort', iconType: 'ux', iconId: 'list-sort-ascending', label: strings.paneHeader.changeSortOrder },
+    { id: 'appearance', iconType: 'ux', iconId: 'list-appearance', label: strings.paneHeader.changeAppearance },
+    { id: 'newNote', iconType: 'ux', iconId: 'list-new-note', label: strings.paneHeader.newNote }
 ];
 
 function renderToolbarVisibilitySetting(
@@ -1055,7 +1055,7 @@ function createToolbarButtonGroup<T extends string>({
         buttonEl.setAttr('title', button.label);
 
         const iconEl = buttonEl.createSpan({ cls: 'nn-toolbar-visibility-icon' });
-        const resolvedIconId = resolveUXIcon(interfaceIcons, button.uxIconId);
+        const resolvedIconId = button.iconType === 'ux' ? resolveUXIcon(interfaceIcons, button.iconId) : button.iconId;
         getIconService().renderIcon(iconEl, resolvedIconId);
 
         const applyState = () => {
