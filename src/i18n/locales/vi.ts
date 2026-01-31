@@ -1301,6 +1301,14 @@ export const STRINGS_VI = {
                 name: 'Kế thừa màu thư mục',
                 desc: 'Thư mục con kế thừa màu từ thư mục cha.'
             },
+            folderSortOrder: {
+                name: 'Thứ tự sắp xếp thư mục',
+                desc: 'Nhấp chuột phải vào thư mục bất kỳ để thiết lập thứ tự sắp xếp khác cho các mục con.',
+                options: {
+                    alphaAsc: 'A đến Z',
+                    alphaDesc: 'Z đến A'
+                }
+            },
             showNoteCount: {
                 name: 'Hiện số lượng ghi chú',
                 desc: 'Hiển thị số lượng ghi chú bên cạnh mỗi thư mục và thẻ.'
@@ -1361,12 +1369,13 @@ export const STRINGS_VI = {
             },
             tagSortOrder: {
                 name: 'Thứ tự sắp xếp thẻ',
-                desc: 'Chọn cách sắp xếp thẻ trong ngăn điều hướng.',
+                desc: 'Nhấp chuột phải vào thẻ bất kỳ để thiết lập thứ tự sắp xếp khác cho các mục con.',
                 options: {
                     alphaAsc: 'A đến Z',
                     alphaDesc: 'Z đến A',
-                    frequencyAsc: 'Tần suất (thấp đến cao)',
-                    frequencyDesc: 'Tần suất (cao đến thấp)'
+                    frequency: 'Tần suất',
+                    lowToHigh: 'thấp đến cao',
+                    highToLow: 'cao đến thấp'
                 }
             },
             showAllTagsFolder: {

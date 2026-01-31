@@ -1299,6 +1299,14 @@ export const STRINGS_ZH_TW = {
                 name: '繼承資料夾顏色',
                 desc: '子資料夾從父資料夾繼承顏色。'
             },
+            folderSortOrder: {
+                name: '資料夾排序方式',
+                desc: '右鍵點擊任意資料夾，可為其子項目設定不同的排序方式。',
+                options: {
+                    alphaAsc: 'A 到 Z',
+                    alphaDesc: 'Z 到 A'
+                }
+            },
             showNoteCount: {
                 name: '顯示筆記數',
                 desc: '在每個資料夾和標籤旁顯示筆記數量。'
@@ -1359,12 +1367,13 @@ export const STRINGS_ZH_TW = {
             },
             tagSortOrder: {
                 name: '標籤排序方式',
-                desc: '選擇導覽窗格中的標籤排序順序。',
+                desc: '右鍵點擊任意標籤，可為其子項目設定不同的排序方式。',
                 options: {
                     alphaAsc: 'A 到 Z',
                     alphaDesc: 'Z 到 A',
-                    frequencyAsc: '頻率（從低到高）',
-                    frequencyDesc: '頻率（從高到低）'
+                    frequency: '頻率',
+                    lowToHigh: '從低到高',
+                    highToLow: '從高到低'
                 }
             },
             showAllTagsFolder: {

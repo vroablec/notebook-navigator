@@ -1302,6 +1302,14 @@ export const STRINGS_TR = {
                 name: 'Klasör renklerini devral',
                 desc: 'Alt klasörler üst klasörlerden renk devralır.'
             },
+            folderSortOrder: {
+                name: 'Klasör sıralama düzeni',
+                desc: 'Alt öğeleri için farklı bir sıralama düzeni ayarlamak üzere herhangi bir klasöre sağ tıklayın.',
+                options: {
+                    alphaAsc: "A'dan Z'ye",
+                    alphaDesc: "Z'den A'ya"
+                }
+            },
             showNoteCount: {
                 name: 'Not sayısını göster',
                 desc: 'Her klasör ve etiketin yanında not sayısını görüntüle.'
@@ -1362,12 +1370,13 @@ export const STRINGS_TR = {
             },
             tagSortOrder: {
                 name: 'Etiket sıralama düzeni',
-                desc: 'Etiketlerin gezinme bölmesinde nasıl sıralanacağını seçin.',
+                desc: 'Alt öğeleri için farklı bir sıralama düzeni ayarlamak üzere herhangi bir etikete sağ tıklayın.',
                 options: {
                     alphaAsc: "A'dan Z'ye",
                     alphaDesc: "Z'den A'ya",
-                    frequencyAsc: 'Sıklık (düşükten yükseğe)',
-                    frequencyDesc: 'Sıklık (yüksekten düşüğe)'
+                    frequency: 'Sıklık',
+                    lowToHigh: 'düşükten yükseğe',
+                    highToLow: 'yüksekten düşüğe'
                 }
             },
             showAllTagsFolder: {

@@ -87,8 +87,10 @@ import type { FolderAppearance } from './hooks/useListPaneAppearance';
 import {
     type CalendarPlacement,
     type CalendarWeeksToShow,
+    type AlphaSortOrder,
     isCalendarPlacement,
     isCalendarWeekendDays,
+    isAlphaSortOrder,
     isSettingSyncMode,
     isSortOption,
     isTagSortOrder,
@@ -319,6 +321,7 @@ export default class NotebookNavigatorPlugin extends Plugin implements ISettings
             sanitizeBooleanSetting: (value, fallback) => this.sanitizeBooleanSetting(value, fallback),
             sanitizeDualPaneOrientationSetting: value => this.sanitizeDualPaneOrientationSetting(value),
             sanitizeTagSortOrderSetting: value => this.sanitizeTagSortOrderSetting(value),
+            sanitizeFolderSortOrderSetting: value => this.sanitizeFolderSortOrderSetting(value),
             sanitizeSearchProviderSetting: value => this.sanitizeSearchProviderSetting(value),
             sanitizePaneTransitionDurationSetting: value => this.sanitizePaneTransitionDurationSetting(value),
             sanitizeToolbarVisibilitySetting: value => this.sanitizeToolbarVisibilitySetting(value),
@@ -452,6 +455,11 @@ export default class NotebookNavigatorPlugin extends Plugin implements ISettings
         if (!isCalendarWeekendDays(this.settings.calendarWeekendDays)) {
             this.settings.calendarWeekendDays = DEFAULT_SETTINGS.calendarWeekendDays;
         }
+
+        if (!isAlphaSortOrder(this.settings.folderSortOrder)) {
+            this.settings.folderSortOrder = DEFAULT_SETTINGS.folderSortOrder;
+        }
+
         let uiScaleMigrated = false;
         SYNC_MODE_SETTING_IDS.forEach(settingId => {
             const entry = syncModeRegistry[settingId];
@@ -589,6 +597,10 @@ export default class NotebookNavigatorPlugin extends Plugin implements ISettings
 
     private sanitizeTagSortOrderSetting(value: unknown): TagSortOrder {
         return typeof value === 'string' && isTagSortOrder(value) ? value : DEFAULT_SETTINGS.tagSortOrder;
+    }
+
+    private sanitizeFolderSortOrderSetting(value: unknown): AlphaSortOrder {
+        return typeof value === 'string' && isAlphaSortOrder(value) ? value : DEFAULT_SETTINGS.folderSortOrder;
     }
 
     private sanitizeSearchProviderSetting(value: unknown): 'internal' | 'omnisearch' {
@@ -1100,6 +1112,13 @@ export default class NotebookNavigatorPlugin extends Plugin implements ISettings
     }
 
     /**
+     * Returns the current folder sort order preference.
+     */
+    public getFolderSortOrder(): AlphaSortOrder {
+        return this.settings.folderSortOrder;
+    }
+
+    /**
      * Updates the tag sort order preference and persists to local storage.
      */
     public setTagSortOrder(order: TagSortOrder): void {
@@ -1109,6 +1128,18 @@ export default class NotebookNavigatorPlugin extends Plugin implements ISettings
         this.settings.tagSortOrder = order;
         localStorage.set(this.keys.tagSortOrderKey, order);
         this.persistSyncModeSettingUpdate('tagSortOrder');
+    }
+
+    /**
+     * Updates the folder sort order preference and persists to local storage.
+     */
+    public setFolderSortOrder(order: AlphaSortOrder): void {
+        if (!isAlphaSortOrder(order) || this.settings.folderSortOrder === order) {
+            return;
+        }
+        this.settings.folderSortOrder = order;
+        localStorage.set(this.keys.folderSortOrderKey, order);
+        this.persistSyncModeSettingUpdate('folderSortOrder');
     }
 
     /**
@@ -1721,6 +1752,9 @@ export default class NotebookNavigatorPlugin extends Plugin implements ISettings
         // Type-specific sanitizers that validate values match expected types
         const sanitizeStringMap = (record?: Record<string, string>): Record<string, string> => sanitizeRecord(record, isStringRecordValue);
         const sanitizeSortMap = (record?: Record<string, SortOption>): Record<string, SortOption> => sanitizeRecord(record, isSortOption);
+        const sanitizeAlphaSortOrderMap = (
+            record?: Record<string, 'alpha-asc' | 'alpha-desc'>
+        ): Record<string, 'alpha-asc' | 'alpha-desc'> => sanitizeRecord(record, isAlphaSortOrder);
         const isAppearanceValue = (value: unknown): value is FolderAppearance => isPlainObjectRecordValue(value);
         const sanitizeAppearanceMap = (record?: Record<string, FolderAppearance>): Record<string, FolderAppearance> =>
             sanitizeRecord(record, isAppearanceValue);
@@ -1737,6 +1771,8 @@ export default class NotebookNavigatorPlugin extends Plugin implements ISettings
         this.settings.tagBackgroundColors = sanitizeStringMap(this.settings.tagBackgroundColors);
         this.settings.folderSortOverrides = sanitizeSortMap(this.settings.folderSortOverrides);
         this.settings.tagSortOverrides = sanitizeSortMap(this.settings.tagSortOverrides);
+        this.settings.folderTreeSortOverrides = sanitizeAlphaSortOrderMap(this.settings.folderTreeSortOverrides);
+        this.settings.tagTreeSortOverrides = sanitizeAlphaSortOrderMap(this.settings.tagTreeSortOverrides);
         this.settings.folderAppearances = sanitizeAppearanceMap(this.settings.folderAppearances);
         this.settings.tagAppearances = sanitizeAppearanceMap(this.settings.tagAppearances);
         this.settings.navigationSeparators = sanitizeBooleanMap(this.settings.navigationSeparators);

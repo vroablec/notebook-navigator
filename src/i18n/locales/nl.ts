@@ -1306,6 +1306,14 @@ export const STRINGS_NL = {
                 name: 'Mapkleuren overerven',
                 desc: 'Submappen erven kleur van bovenliggende mappen.'
             },
+            folderSortOrder: {
+                name: 'Map sorteervolgorde',
+                desc: 'Klik met de rechtermuisknop op een map om een andere sorteervolgorde in te stellen voor de onderliggende items.',
+                options: {
+                    alphaAsc: 'A tot Z',
+                    alphaDesc: 'Z tot A'
+                }
+            },
             showNoteCount: {
                 name: 'Notitietelling tonen',
                 desc: 'Het aantal notities naast elke map en tag weergeven.'
@@ -1366,12 +1374,13 @@ export const STRINGS_NL = {
             },
             tagSortOrder: {
                 name: 'Tag sorteervolgorde',
-                desc: 'Kies hoe tags worden geordend in het navigatiepaneel.',
+                desc: 'Klik met de rechtermuisknop op een tag om een andere sorteervolgorde in te stellen voor de onderliggende items.',
                 options: {
                     alphaAsc: 'A tot Z',
                     alphaDesc: 'Z tot A',
-                    frequencyAsc: 'Frequentie (laag naar hoog)',
-                    frequencyDesc: 'Frequentie (hoog naar laag)'
+                    frequency: 'Frequentie',
+                    lowToHigh: 'laag naar hoog',
+                    highToLow: 'hoog naar laag'
                 }
             },
             showAllTagsFolder: {

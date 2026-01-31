@@ -1308,6 +1308,14 @@ export const STRINGS_FR = {
                 name: 'Hériter des couleurs de dossier',
                 desc: 'Les sous-dossiers héritent de la couleur des dossiers parents.'
             },
+            folderSortOrder: {
+                name: 'Ordre de tri des dossiers',
+                desc: 'Faites un clic droit sur un dossier pour définir un ordre de tri différent pour ses éléments enfants.',
+                options: {
+                    alphaAsc: 'A à Z',
+                    alphaDesc: 'Z à A'
+                }
+            },
             showNoteCount: {
                 name: 'Afficher le nombre de notes',
                 desc: 'Afficher le nombre de notes à côté de chaque dossier et étiquette.'
@@ -1368,12 +1376,13 @@ export const STRINGS_FR = {
             },
             tagSortOrder: {
                 name: 'Ordre de tri des étiquettes',
-                desc: 'Définir comment les étiquettes sont triées dans le panneau de navigation.',
+                desc: 'Faites un clic droit sur une étiquette pour définir un ordre de tri différent pour ses éléments enfants.',
                 options: {
                     alphaAsc: 'A à Z',
                     alphaDesc: 'Z à A',
-                    frequencyAsc: 'Fréquence (faible vers élevée)',
-                    frequencyDesc: 'Fréquence (élevée vers faible)'
+                    frequency: 'Fréquence',
+                    lowToHigh: 'faible vers élevée',
+                    highToLow: 'élevée vers faible'
                 }
             },
             showAllTagsFolder: {

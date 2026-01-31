@@ -1305,6 +1305,14 @@ export const STRINGS_PL = {
                 name: 'Dziedzicz kolory folderów',
                 desc: 'Podfoldery dziedziczą kolor z folderów nadrzędnych.'
             },
+            folderSortOrder: {
+                name: 'Kolejność sortowania folderów',
+                desc: 'Kliknij prawym przyciskiem myszy na folder, aby ustawić inną kolejność sortowania dla jego elementów podrzędnych.',
+                options: {
+                    alphaAsc: 'A do Z',
+                    alphaDesc: 'Z do A'
+                }
+            },
             showNoteCount: {
                 name: 'Pokaż liczbę notatek',
                 desc: 'Wyświetl liczbę notatek obok każdego folderu i tagu.'
@@ -1365,12 +1373,13 @@ export const STRINGS_PL = {
             },
             tagSortOrder: {
                 name: 'Kolejność sortowania tagów',
-                desc: 'Wybierz sposób sortowania tagów w panelu nawigacji.',
+                desc: 'Kliknij prawym przyciskiem myszy na tag, aby ustawić inną kolejność sortowania dla jego elementów podrzędnych.',
                 options: {
                     alphaAsc: 'A do Z',
                     alphaDesc: 'Z do A',
-                    frequencyAsc: 'Częstotliwość (rosnąco)',
-                    frequencyDesc: 'Częstotliwość (malejąco)'
+                    frequency: 'Częstotliwość',
+                    lowToHigh: 'rosnąco',
+                    highToLow: 'malejąco'
                 }
             },
             showAllTagsFolder: {

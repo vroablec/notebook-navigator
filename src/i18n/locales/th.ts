@@ -1301,6 +1301,14 @@ export const STRINGS_TH = {
                 name: 'สืบทอดสีโฟลเดอร์',
                 desc: 'โฟลเดอร์ลูกสืบทอดสีจากโฟลเดอร์หลัก'
             },
+            folderSortOrder: {
+                name: 'ลำดับการเรียงโฟลเดอร์',
+                desc: 'คลิกขวาที่โฟลเดอร์ใดก็ได้เพื่อตั้งค่าลำดับการเรียงที่แตกต่างสำหรับรายการย่อย',
+                options: {
+                    alphaAsc: 'ก ถึง ฮ',
+                    alphaDesc: 'ฮ ถึง ก'
+                }
+            },
             showNoteCount: {
                 name: 'แสดงจำนวนโน้ต',
                 desc: 'แสดงจำนวนโน้ตข้างแต่ละโฟลเดอร์และแท็ก'
@@ -1361,12 +1369,13 @@ export const STRINGS_TH = {
             },
             tagSortOrder: {
                 name: 'ลำดับการเรียงแท็ก',
-                desc: 'เลือกวิธีเรียงแท็กในแผงนำทาง',
+                desc: 'คลิกขวาที่แท็กใดก็ได้เพื่อตั้งค่าลำดับการเรียงที่แตกต่างสำหรับรายการย่อย',
                 options: {
                     alphaAsc: 'ก ถึง ฮ',
                     alphaDesc: 'ฮ ถึง ก',
-                    frequencyAsc: 'ความถี่ (ต่ำไปสูง)',
-                    frequencyDesc: 'ความถี่ (สูงไปต่ำ)'
+                    frequency: 'ความถี่',
+                    lowToHigh: 'ต่ำไปสูง',
+                    highToLow: 'สูงไปต่ำ'
                 }
             },
             showAllTagsFolder: {

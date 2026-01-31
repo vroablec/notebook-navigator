@@ -1302,6 +1302,14 @@ export const STRINGS_KO = {
                 name: '폴더 색상 상속',
                 desc: '하위 폴더가 상위 폴더에서 색상을 상속합니다.'
             },
+            folderSortOrder: {
+                name: '폴더 정렬 순서',
+                desc: '폴더를 마우스 오른쪽 버튼으로 클릭하여 하위 항목의 정렬 순서를 개별적으로 설정할 수 있습니다.',
+                options: {
+                    alphaAsc: 'A부터 Z까지',
+                    alphaDesc: 'Z부터 A까지'
+                }
+            },
             showNoteCount: {
                 name: '노트 수 표시',
                 desc: '각 폴더와 태그 옆에 노트 수를 표시합니다.'
@@ -1362,12 +1370,13 @@ export const STRINGS_KO = {
             },
             tagSortOrder: {
                 name: '태그 정렬 순서',
-                desc: '탐색 창에서 태그를 정렬하는 방식을 선택합니다.',
+                desc: '태그를 마우스 오른쪽 버튼으로 클릭하여 하위 항목의 정렬 순서를 개별적으로 설정할 수 있습니다.',
                 options: {
                     alphaAsc: 'A부터 Z까지',
                     alphaDesc: 'Z부터 A까지',
-                    frequencyAsc: '빈도 (낮음 → 높음)',
-                    frequencyDesc: '빈도 (높음 → 낮음)'
+                    frequency: '빈도',
+                    lowToHigh: '낮음 → 높음',
+                    highToLow: '높음 → 낮음'
                 }
             },
             showAllTagsFolder: {

@@ -17,7 +17,7 @@
  */
 
 import { App } from 'obsidian';
-import { NotebookNavigatorSettings, SortOption } from '../../settings';
+import { NotebookNavigatorSettings, SortOption, type AlphaSortOrder } from '../../settings';
 import { ItemType } from '../../types';
 import { ISettingsProvider } from '../../interfaces/ISettingsProvider';
 import { FolderAppearance, TagAppearance } from '../../hooks/useListPaneAppearance';
@@ -35,6 +35,7 @@ type MetadataFields = {
     folderColors: Record<string, string>;
     folderBackgroundColors: Record<string, string>;
     folderSortOverrides: Record<string, SortOption>;
+    folderTreeSortOverrides: Record<string, AlphaSortOrder>;
     folderAppearances: Record<string, FolderAppearance>;
     fileIcons: Record<string, string>;
     fileColors: Record<string, string>;
@@ -42,6 +43,7 @@ type MetadataFields = {
     tagIcons: Record<string, string>;
     tagBackgroundColors: Record<string, string>;
     tagSortOverrides: Record<string, SortOption>;
+    tagTreeSortOverrides: Record<string, AlphaSortOrder>;
     tagAppearances: Record<string, TagAppearance>;
 };
 
@@ -402,6 +404,84 @@ export abstract class BaseMetadataService {
             return this.settingsProvider.settings.folderSortOverrides?.[path];
         }
         return this.settingsProvider.settings.tagSortOverrides?.[path];
+    }
+
+    // ========== Generic Child Sort Order Overrides (Navigation Tree) ==========
+
+    /**
+     * Sets a custom alphabetical sort order for an entity's children in the navigation pane.
+     * @param entityType - Type of entity ('folder' or 'tag')
+     * @param path - Path of the entity
+     * @param sortOrder - Alphabetical order to apply
+     */
+    protected async setEntityChildSortOrderOverride(
+        entityType: typeof ItemType.FOLDER | typeof ItemType.TAG,
+        path: string,
+        sortOrder: AlphaSortOrder
+    ) {
+        await this.saveAndUpdate(settings => {
+            if (entityType === ItemType.FOLDER) {
+                const overrides = ensureRecord(settings.folderTreeSortOverrides);
+                const next = sanitizeRecord(overrides);
+                next[path] = sortOrder;
+                settings.folderTreeSortOverrides = next;
+            } else {
+                const overrides = ensureRecord(settings.tagTreeSortOverrides);
+                const next = sanitizeRecord(overrides);
+                next[path] = sortOrder;
+                settings.tagTreeSortOverrides = next;
+            }
+        });
+    }
+
+    /**
+     * Removes the custom child sort order from an entity.
+     * @param entityType - Type of entity ('folder' or 'tag')
+     * @param path - Path of the entity
+     */
+    protected async removeEntityChildSortOrderOverride(entityType: typeof ItemType.FOLDER | typeof ItemType.TAG, path: string) {
+        if (entityType === ItemType.FOLDER) {
+            const current = this.settingsProvider.settings.folderTreeSortOverrides;
+            if (!current || !Object.prototype.hasOwnProperty.call(current, path)) {
+                return;
+            }
+            await this.saveAndUpdate(settings => {
+                const overrides = ensureRecord(settings.folderTreeSortOverrides);
+                const next = sanitizeRecord(overrides);
+                delete next[path];
+                settings.folderTreeSortOverrides = next;
+            });
+            return;
+        }
+
+        const current = this.settingsProvider.settings.tagTreeSortOverrides;
+        if (!current || !Object.prototype.hasOwnProperty.call(current, path)) {
+            return;
+        }
+        await this.saveAndUpdate(settings => {
+            const overrides = ensureRecord(settings.tagTreeSortOverrides);
+            const next = sanitizeRecord(overrides);
+            delete next[path];
+            settings.tagTreeSortOverrides = next;
+        });
+    }
+
+    /**
+     * Gets the child sort order override for an entity.
+     * @param entityType - Type of entity ('folder' or 'tag')
+     * @param path - Path of the entity
+     * @returns The alphabetical sort order override or undefined
+     */
+    protected getEntityChildSortOrderOverride(
+        entityType: typeof ItemType.FOLDER | typeof ItemType.TAG,
+        path: string
+    ): AlphaSortOrder | undefined {
+        if (entityType === ItemType.FOLDER) {
+            const record = this.settingsProvider.settings.folderTreeSortOverrides;
+            return record && Object.prototype.hasOwnProperty.call(record, path) ? record[path] : undefined;
+        }
+        const record = this.settingsProvider.settings.tagTreeSortOverrides;
+        return record && Object.prototype.hasOwnProperty.call(record, path) ? record[path] : undefined;
     }
 
     // ========== Generic Metadata Cleanup Utilities ==========

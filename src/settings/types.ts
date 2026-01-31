@@ -33,6 +33,7 @@ export function isSettingSyncMode(value: unknown): value is SettingSyncMode {
 /** Identifiers for settings that can be switched between synced and local storage. */
 export const SYNC_MODE_SETTING_IDS = [
     'vaultProfile',
+    'folderSortOrder',
     'tagSortOrder',
     'searchProvider',
     'includeDescendantNotes',
@@ -84,6 +85,13 @@ export const SORT_OPTIONS: SortOption[] = [
 /** Type guard for validating sort option values */
 export function isSortOption(value: unknown): value is SortOption {
     return typeof value === 'string' && SORT_OPTIONS.includes(value as SortOption);
+}
+
+/** Alphabetical ordering options used by navigation trees. */
+export type AlphaSortOrder = 'alpha-asc' | 'alpha-desc';
+
+export function isAlphaSortOrder(value: unknown): value is AlphaSortOrder {
+    return value === 'alpha-asc' || value === 'alpha-desc';
 }
 
 /** Available orderings for tags in the navigation pane */
@@ -280,6 +288,7 @@ export interface NotebookNavigatorSettings {
     showFolderIcons: boolean;
     showRootFolder: boolean;
     inheritFolderColors: boolean;
+    folderSortOrder: AlphaSortOrder;
     inheritTagColors: boolean;
     enableFolderNotes: boolean;
     folderNoteType: FolderNoteCreationPreference;
@@ -379,11 +388,13 @@ export interface NotebookNavigatorSettings {
     folderColors: Record<string, string>;
     folderBackgroundColors: Record<string, string>;
     folderSortOverrides: Record<string, SortOption>;
+    folderTreeSortOverrides: Record<string, AlphaSortOrder>;
     folderAppearances: Record<string, FolderAppearance>;
     tagIcons: Record<string, string>;
     tagColors: Record<string, string>;
     tagBackgroundColors: Record<string, string>;
     tagSortOverrides: Record<string, SortOption>;
+    tagTreeSortOverrides: Record<string, AlphaSortOrder>;
     tagAppearances: Record<string, TagAppearance>;
     navigationSeparators: Record<string, boolean>;
     userColors: string[];

@@ -26,7 +26,7 @@ import { cleanupExclusionPatterns, isFolderInExcludedFolder } from '../../utils/
 import { ItemType } from '../../types';
 import { resetHiddenToggleIfNoSources } from '../../utils/exclusionUtils';
 import { runAsyncAction } from '../async';
-import { addCopyPathSubmenu, setAsyncOnClick } from './menuAsyncHelpers';
+import { addCopyPathSubmenu, setAsyncOnClick, tryCreateSubmenu } from './menuAsyncHelpers';
 import { addShortcutRenameMenuItem } from './shortcutRenameMenuItem';
 import { resolveUXIconForMenu } from '../uxIcons';
 import { getActiveVaultProfile, getHiddenFolderPatternMatch, normalizeHiddenFolderPath } from '../../utils/vaultProfiles';
@@ -252,6 +252,58 @@ export function buildFolderMenu(params: FolderMenuBuilderParams): void {
             modal.open();
         });
     });
+
+    // Child folder sort order
+    if (typeof MenuItem.prototype.setSubmenu === 'function') {
+        menu.addItem((item: MenuItem) => {
+            const currentOverride = metadataService.getFolderChildSortOrderOverride(folder.path);
+            const effectiveOrder = currentOverride ?? settings.folderSortOrder;
+            const sortIcon = currentOverride
+                ? effectiveOrder === 'alpha-desc'
+                    ? 'lucide-sort-desc'
+                    : 'lucide-sort-asc'
+                : 'lucide-sliders-horizontal';
+
+            const sortOrderSubmenu = tryCreateSubmenu(item);
+            if (!sortOrderSubmenu) {
+                item.setTitle(strings.paneHeader.changeSortOrder).setIcon(sortIcon).setDisabled(true);
+                return;
+            }
+
+            const globalDefaultLabel =
+                settings.folderSortOrder === 'alpha-desc'
+                    ? strings.settings.items.folderSortOrder.options.alphaDesc
+                    : strings.settings.items.folderSortOrder.options.alphaAsc;
+
+            item.setTitle(strings.paneHeader.changeSortOrder).setIcon(sortIcon);
+
+            sortOrderSubmenu.addItem(subItem => {
+                subItem.setTitle(`${strings.folderAppearance.defaultLabel} (${globalDefaultLabel})`).setChecked(!currentOverride);
+                setAsyncOnClick(subItem, async () => {
+                    await metadataService.removeFolderChildSortOrderOverride(folder.path);
+                    app.workspace.requestSaveLayout();
+                });
+            });
+
+            sortOrderSubmenu.addSeparator();
+
+            sortOrderSubmenu.addItem(subItem => {
+                subItem.setTitle(strings.settings.items.folderSortOrder.options.alphaAsc).setChecked(currentOverride === 'alpha-asc');
+                setAsyncOnClick(subItem, async () => {
+                    await metadataService.setFolderChildSortOrderOverride(folder.path, 'alpha-asc');
+                    app.workspace.requestSaveLayout();
+                });
+            });
+
+            sortOrderSubmenu.addItem(subItem => {
+                subItem.setTitle(strings.settings.items.folderSortOrder.options.alphaDesc).setChecked(currentOverride === 'alpha-desc');
+                setAsyncOnClick(subItem, async () => {
+                    await metadataService.setFolderChildSortOrderOverride(folder.path, 'alpha-desc');
+                    app.workspace.requestSaveLayout();
+                });
+            });
+        });
+    }
 
     const folderSeparatorTarget = { type: 'folder', path: folder.path } as const;
     const hasSeparator = metadataService.hasNavigationSeparator(folderSeparatorTarget);

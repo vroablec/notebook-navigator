@@ -1305,6 +1305,14 @@ export const STRINGS_ES = {
                 name: 'Heredar colores de carpeta',
                 desc: 'Las subcarpetas heredan el color de las carpetas principales.'
             },
+            folderSortOrder: {
+                name: 'Orden de carpetas',
+                desc: 'Haz clic derecho en cualquier carpeta para establecer un orden diferente para sus elementos secundarios.',
+                options: {
+                    alphaAsc: 'A a Z',
+                    alphaDesc: 'Z a A'
+                }
+            },
             showNoteCount: {
                 name: 'Mostrar conteo de notas',
                 desc: 'Muestra el número de notas junto a cada carpeta y etiqueta.'
@@ -1365,12 +1373,13 @@ export const STRINGS_ES = {
             },
             tagSortOrder: {
                 name: 'Orden de etiquetas',
-                desc: 'Elige cómo se ordenan las etiquetas en el panel de navegación.',
+                desc: 'Haz clic derecho en cualquier etiqueta para establecer un orden diferente para sus elementos secundarios.',
                 options: {
                     alphaAsc: 'A a Z',
                     alphaDesc: 'Z a A',
-                    frequencyAsc: 'Frecuencia (baja a alta)',
-                    frequencyDesc: 'Frecuencia (alta a baja)'
+                    frequency: 'Frecuencia',
+                    lowToHigh: 'baja a alta',
+                    highToLow: 'alta a baja'
                 }
             },
             showAllTagsFolder: {

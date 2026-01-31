@@ -1303,6 +1303,14 @@ export const STRINGS_ID = {
                 name: 'Warisi warna folder',
                 desc: 'Folder anak mewarisi warna dari folder induk.'
             },
+            folderSortOrder: {
+                name: 'Urutan folder',
+                desc: 'Klik kanan pada folder mana pun untuk mengatur urutan pengurutan berbeda untuk isinya.',
+                options: {
+                    alphaAsc: 'A ke Z',
+                    alphaDesc: 'Z ke A'
+                }
+            },
             showNoteCount: {
                 name: 'Tampilkan jumlah catatan',
                 desc: 'Tampilkan jumlah catatan di sebelah setiap folder dan tag.'
@@ -1363,12 +1371,13 @@ export const STRINGS_ID = {
             },
             tagSortOrder: {
                 name: 'Urutan tag',
-                desc: 'Pilih cara tag diurutkan di panel navigasi.',
+                desc: 'Klik kanan pada tag mana pun untuk mengatur urutan pengurutan berbeda untuk isinya.',
                 options: {
                     alphaAsc: 'A ke Z',
                     alphaDesc: 'Z ke A',
-                    frequencyAsc: 'Frekuensi (rendah ke tinggi)',
-                    frequencyDesc: 'Frekuensi (tinggi ke rendah)'
+                    frequency: 'Frekuensi',
+                    lowToHigh: 'rendah ke tinggi',
+                    highToLow: 'tinggi ke rendah'
                 }
             },
             showAllTagsFolder: {

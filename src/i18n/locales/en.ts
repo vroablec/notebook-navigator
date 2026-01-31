@@ -1299,6 +1299,14 @@ export const STRINGS_EN = {
                 name: 'Inherit folder colors',
                 desc: 'Child folders inherit color from parent folders.'
             },
+            folderSortOrder: {
+                name: 'Folder sort order',
+                desc: 'Right-click any folder to set a different sort order for its children.',
+                options: {
+                    alphaAsc: 'A to Z',
+                    alphaDesc: 'Z to A'
+                }
+            },
             showNoteCount: {
                 name: 'Show note count',
                 desc: 'Display the number of notes next to each folder and tag.'
@@ -1359,12 +1367,13 @@ export const STRINGS_EN = {
             },
             tagSortOrder: {
                 name: 'Tag sort order',
-                desc: 'Choose how tags are ordered in the navigation pane.',
+                desc: 'Right-click any tag to set a different sort order for its children.',
                 options: {
                     alphaAsc: 'A to Z',
                     alphaDesc: 'Z to A',
-                    frequencyAsc: 'Frequency (low to high)',
-                    frequencyDesc: 'Frequency (high to low)'
+                    frequency: 'Frequency',
+                    lowToHigh: 'low to high',
+                    highToLow: 'high to low'
                 }
             },
             showAllTagsFolder: {

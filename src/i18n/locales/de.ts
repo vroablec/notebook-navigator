@@ -1305,6 +1305,14 @@ export const STRINGS_DE = {
                 name: 'Ordnerfarben vererben',
                 desc: 'Unterordner erben die Farbe von übergeordneten Ordnern.'
             },
+            folderSortOrder: {
+                name: 'Ordner-Sortierreihenfolge',
+                desc: 'Klicken Sie mit der rechten Maustaste auf einen Ordner, um eine andere Sortierreihenfolge für dessen Unterordner festzulegen.',
+                options: {
+                    alphaAsc: 'A bis Z',
+                    alphaDesc: 'Z bis A'
+                }
+            },
             showNoteCount: {
                 name: 'Notizenzahl anzeigen',
                 desc: 'Die Anzahl der Notizen neben jedem Ordner und Tag anzeigen.'
@@ -1365,12 +1373,13 @@ export const STRINGS_DE = {
             },
             tagSortOrder: {
                 name: 'Tag-Sortierreihenfolge',
-                desc: 'Lege fest, wie Tags im Navigationsbereich sortiert werden.',
+                desc: 'Klicken Sie mit der rechten Maustaste auf ein Tag, um eine andere Sortierreihenfolge für dessen Unterelemente festzulegen.',
                 options: {
                     alphaAsc: 'A bis Z',
                     alphaDesc: 'Z bis A',
-                    frequencyAsc: 'Häufigkeit (niedrig bis hoch)',
-                    frequencyDesc: 'Häufigkeit (hoch bis niedrig)'
+                    frequency: 'Häufigkeit',
+                    lowToHigh: 'niedrig bis hoch',
+                    highToLow: 'hoch bis niedrig'
                 }
             },
             showAllTagsFolder: {

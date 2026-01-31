@@ -24,6 +24,7 @@ import {
     resolveCalendarWeeksToShow,
     resolveCompactItemHeight,
     resolveCompactItemHeightScaleText,
+    resolveFolderSortOrder,
     resolveNavIndent,
     resolveNavItemHeight,
     resolveNavItemHeightScaleText,
@@ -63,6 +64,7 @@ interface CreateSyncModeRegistryParams {
     sanitizeBooleanSetting: (value: unknown, fallback: boolean) => boolean;
     sanitizeDualPaneOrientationSetting: (value: unknown) => DualPaneOrientation;
     sanitizeTagSortOrderSetting: (value: unknown) => NotebookNavigatorSettings['tagSortOrder'];
+    sanitizeFolderSortOrderSetting: (value: unknown) => NotebookNavigatorSettings['folderSortOrder'];
     sanitizeSearchProviderSetting: (value: unknown) => NotebookNavigatorSettings['searchProvider'];
     sanitizePaneTransitionDurationSetting: (value: unknown) => number;
     sanitizeToolbarVisibilitySetting: (value: unknown) => NotebookNavigatorSettings['toolbarVisibility'];
@@ -238,6 +240,16 @@ export function createSyncModeRegistry(params: CreateSyncModeRegistryParams): Sy
                 return { migrated: false };
             },
             mirrorToLocalStorage: mirrorFromSettings(params.keys.vaultProfileKey, () => params.getSettings().vaultProfile)
+        }),
+        folderSortOrder: createResolvedLocalStorageSettingEntry({
+            settingId: 'folderSortOrder',
+            loadPhase: 'preProfiles',
+            localStorageKey: params.keys.folderSortOrderKey,
+            resolveDeviceLocal: storedData => ({
+                value: resolveFolderSortOrder({ storedData, keys: params.keys, defaultSettings: params.defaultSettings }),
+                migrated: false
+            }),
+            sanitizeSynced: () => params.sanitizeFolderSortOrderSetting(params.getSettings().folderSortOrder)
         }),
         tagSortOrder: createResolvedLocalStorageSettingEntry({
             settingId: 'tagSortOrder',

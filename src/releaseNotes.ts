@@ -79,7 +79,10 @@ const RELEASE_NOTES: ReleaseNote[] = [
         date: '2026-01-31',
         showOnUpdate: false,
         info: 'The new tooltips introduced in 2.2.1 caused performance issues in large vaults so I removed them and pushed a quick update. To compensate I added custom folder and tag sorting so you can now sort each folder or tag individually in the navigation pane.',
-        new: [],
+        new: [
+            'New setting: ==Folders & tags > Folder sort order==. You can now set default sort order for folders in navigation pane.',
+            'You can now right-click items to change ==sort order for folders and tags in the navigation pane==! So if you have a folder with child folders with dates, you can now show the latest date on top in the navigation pane.'
+        ],
         improved: [
             'Further optimizations to keyboard navigation performance when holding down UP, DOWN, PAGE UP, or PAGE DOWN keys. It now debounces updates to improve performance even more.'
         ],

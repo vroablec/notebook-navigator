@@ -23,7 +23,15 @@ import { MAX_RECENT_COLORS } from '../../constants/colorPalette';
 import { localStorage } from '../../utils/localStorage';
 import { isRecord } from '../../utils/typeGuards';
 import { DEFAULT_UI_SCALE, sanitizeUIScale } from '../../utils/uiScale';
-import { isCalendarPlacement, isTagSortOrder, type CalendarPlacement, type CalendarWeeksToShow, type TagSortOrder } from '../types';
+import {
+    isAlphaSortOrder,
+    isCalendarPlacement,
+    isTagSortOrder,
+    type AlphaSortOrder,
+    type CalendarPlacement,
+    type CalendarWeeksToShow,
+    type TagSortOrder
+} from '../types';
 
 type ToolbarVisibilitySnapshot = NotebookNavigatorSettings['toolbarVisibility'];
 
@@ -549,6 +557,36 @@ export function resolveTagSortOrder(params: {
     // Seed local storage with a valid default value.
     localStorage.set(keys.tagSortOrderKey, defaultSettings.tagSortOrder);
     return defaultSettings.tagSortOrder;
+}
+
+/**
+ * Resolves the effective folder sort order preference with local overrides.
+ */
+export function resolveFolderSortOrder(params: {
+    storedData: Record<string, unknown> | null;
+    keys: LocalStorageKeys;
+    defaultSettings: NotebookNavigatorSettings;
+}): AlphaSortOrder {
+    const { storedData, keys, defaultSettings } = params;
+
+    const storedLocal = localStorage.get<unknown>(keys.folderSortOrderKey);
+    const storedLocalValue = typeof storedLocal === 'string' ? storedLocal : null;
+    if (storedLocalValue && isAlphaSortOrder(storedLocalValue)) {
+        // Local storage takes precedence for per-device preferences.
+        return storedLocalValue;
+    }
+
+    const storedSetting = storedData?.['folderSortOrder'];
+    const storedSettingValue = typeof storedSetting === 'string' ? storedSetting : null;
+    if (storedSettingValue && isAlphaSortOrder(storedSettingValue)) {
+        // Mirror the synced value into local storage when switching to local.
+        localStorage.set(keys.folderSortOrderKey, storedSettingValue);
+        return storedSettingValue;
+    }
+
+    // Seed local storage with a valid default value.
+    localStorage.set(keys.folderSortOrderKey, defaultSettings.folderSortOrder);
+    return defaultSettings.folderSortOrder;
 }
 
 /**

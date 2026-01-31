@@ -1300,6 +1300,14 @@ export const STRINGS_ZH_CN = {
                 name: '继承文件夹颜色',
                 desc: '子文件夹从父文件夹继承颜色。'
             },
+            folderSortOrder: {
+                name: '文件夹排序方式',
+                desc: '右键点击任意文件夹，可为其子项设置不同的排序方式。',
+                options: {
+                    alphaAsc: 'A 到 Z',
+                    alphaDesc: 'Z 到 A'
+                }
+            },
             showNoteCount: {
                 name: '显示笔记数',
                 desc: '在每个文件夹和标签旁显示笔记数量。'
@@ -1360,12 +1368,13 @@ export const STRINGS_ZH_CN = {
             },
             tagSortOrder: {
                 name: '标签排序方式',
-                desc: '选择导航窗格中的标签排序顺序。',
+                desc: '右键点击任意标签，可为其子项设置不同的排序方式。',
                 options: {
                     alphaAsc: 'A 到 Z',
                     alphaDesc: 'Z 到 A',
-                    frequencyAsc: '频率（从低到高）',
-                    frequencyDesc: '频率（从高到低）'
+                    frequency: '频率',
+                    lowToHigh: '从低到高',
+                    highToLow: '从高到低'
                 }
             },
             showAllTagsFolder: {

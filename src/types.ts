@@ -249,6 +249,7 @@ export interface LocalStorageKeys {
     releaseCheckTimestampKey: string;
     latestKnownReleaseKey: string;
     searchProviderKey: string;
+    folderSortOrderKey: string;
     tagSortOrderKey: string;
     recentColorsKey: string;
     paneTransitionDurationKey: string;
@@ -297,6 +298,7 @@ export const STORAGE_KEYS: LocalStorageKeys = {
     releaseCheckTimestampKey: 'notebook-navigator-release-check-timestamp',
     latestKnownReleaseKey: 'notebook-navigator-latest-known-release',
     searchProviderKey: 'notebook-navigator-search-provider',
+    folderSortOrderKey: 'notebook-navigator-folder-sort-order',
     tagSortOrderKey: 'notebook-navigator-tag-sort-order',
     recentColorsKey: 'notebook-navigator-recent-colors',
     paneTransitionDurationKey: 'notebook-navigator-pane-transition-duration',

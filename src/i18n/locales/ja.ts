@@ -1305,6 +1305,14 @@ export const STRINGS_JA = {
                 name: 'フォルダの色を継承',
                 desc: 'サブフォルダが親フォルダから色を継承します。'
             },
+            folderSortOrder: {
+                name: 'フォルダの並び順',
+                desc: 'フォルダを右クリックして、その子要素の並び順を個別に設定できます。',
+                options: {
+                    alphaAsc: 'A から Z',
+                    alphaDesc: 'Z から A'
+                }
+            },
             showNoteCount: {
                 name: 'ノート数を表示',
                 desc: '各フォルダとタグの横にノート数を表示します。'
@@ -1365,12 +1373,13 @@ export const STRINGS_JA = {
             },
             tagSortOrder: {
                 name: 'タグの並び順',
-                desc: 'ナビゲーションペインでタグを並べ替える方法を設定します。',
+                desc: 'タグを右クリックして、その子要素の並び順を個別に設定できます。',
                 options: {
                     alphaAsc: 'A から Z',
                     alphaDesc: 'Z から A',
-                    frequencyAsc: '頻度（低→高）',
-                    frequencyDesc: '頻度（高→低）'
+                    frequency: '頻度',
+                    lowToHigh: '低→高',
+                    highToLow: '高→低'
                 }
             },
             showAllTagsFolder: {

@@ -1302,6 +1302,14 @@ export const STRINGS_PT_BR = {
                 name: 'Herdar cores de pastas',
                 desc: 'Pastas filhas herdam cor das pastas pai.'
             },
+            folderSortOrder: {
+                name: 'Ordem de classificação de pastas',
+                desc: 'Clique com o botão direito em qualquer pasta para definir uma ordem de classificação diferente para seus subitens.',
+                options: {
+                    alphaAsc: 'A a Z',
+                    alphaDesc: 'Z a A'
+                }
+            },
             showNoteCount: {
                 name: 'Mostrar contagem de notas',
                 desc: 'Exibir o número de notas ao lado de cada pasta e tag.'
@@ -1362,12 +1370,13 @@ export const STRINGS_PT_BR = {
             },
             tagSortOrder: {
                 name: 'Ordem de classificação de tags',
-                desc: 'Escolha como as tags são ordenadas no painel de navegação.',
+                desc: 'Clique com o botão direito em qualquer tag para definir uma ordem de classificação diferente para seus subitens.',
                 options: {
                     alphaAsc: 'A a Z',
                     alphaDesc: 'Z a A',
-                    frequencyAsc: 'Frequência (baixa para alta)',
-                    frequencyDesc: 'Frequência (alta para baixa)'
+                    frequency: 'Frequência',
+                    lowToHigh: 'baixa para alta',
+                    highToLow: 'alta para baixa'
                 }
             },
             showAllTagsFolder: {

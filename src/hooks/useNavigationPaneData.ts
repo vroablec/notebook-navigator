@@ -516,9 +516,18 @@ export function useNavigationPaneData({
      */
     const folderItems = useMemo(() => {
         return flattenFolderTree(rootFolders, expansionState.expandedFolders, hiddenFolders, 0, new Set(), {
-            rootOrderMap: rootFolderOrderMap
+            rootOrderMap: rootFolderOrderMap,
+            defaultSortOrder: settings.folderSortOrder,
+            childSortOrderOverrides: settings.folderTreeSortOverrides
         });
-    }, [rootFolders, expansionState.expandedFolders, hiddenFolders, rootFolderOrderMap]);
+    }, [
+        rootFolders,
+        expansionState.expandedFolders,
+        hiddenFolders,
+        rootFolderOrderMap,
+        settings.folderSortOrder,
+        settings.folderTreeSortOverrides
+    ]);
 
     /**
      * Build tag items with a single tag tree
@@ -676,7 +685,8 @@ export function useNavigationPaneData({
         const appendTagNode = (node: TagTreeNode, level: number) => {
             const tagEntries = flattenTagTree([node], expansionState.expandedTags, level, {
                 hiddenMatcher: matcherForMarking,
-                comparator: effectiveComparator
+                comparator: effectiveComparator,
+                childSortOrderOverrides: settings.tagTreeSortOverrides
             });
             items.push(...tagEntries);
         };
@@ -739,6 +749,7 @@ export function useNavigationPaneData({
         untaggedCount,
         settings.showNoteCount,
         settings.rootTagOrder,
+        settings.tagTreeSortOverrides,
         expansionState.expandedTags,
         expansionState.expandedVirtualFolders,
         tagComparator,
