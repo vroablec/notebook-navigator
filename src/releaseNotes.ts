@@ -81,12 +81,12 @@ const RELEASE_NOTES: ReleaseNote[] = [
         info: 'The new tooltips introduced in 2.2.1 caused performance issues in large vaults so they were removed in this update. To compensate I added folder and tag sort overrides so you can now sort each folder or tag individually using A to Z or Z to A in the navigation pane!',
         new: [
             'New setting: ==Folders & tags > Folder sort order==. You can now set default sort order for folders in navigation pane (A to Z, or Z to A).',
-            'You can now right-click to change ==sort order for folders and tags in the navigation pane==! So if you have a folder with child folders with date as names, you can now show the latest date on top in the navigation pane.',
-            'If you hide all toolbar buttons in navigation pane and do not show vault title in header, the toolbar area is now hidden to save space.',
-            'Same with the list pane - if you hide all toolbar buttons and do not show folder name in header, this toolbar area is also hidden to save space.'
+            'You can now right-click to change ==sort order for folders and tags in the navigation pane==! So if you have a folder with child folders with date as names, you can now show the latest date on top in the navigation pane.'
         ],
         improved: [
-            'Further optimizations to keyboard navigation performance when holding down UP, DOWN, PAGE UP, or PAGE DOWN keys in the list pane. Notebook Navigator now debounces visual updates to improve performance even more, try it and let me know if you like it!'
+            'Further optimizations to keyboard navigation performance when holding down UP, DOWN, PAGE UP, or PAGE DOWN keys in the list pane. Notebook Navigator now debounces visual updates to improve performance even more, try it and let me know if you like it!',
+            'If you hide all toolbar buttons in navigation pane and do not show vault title in header, the toolbar area is now hidden to save space.',
+            'Same with the list pane - if you hide all toolbar buttons and do not show folder name in header, this toolbar area is also hidden to save space.'
         ],
         changed: [],
         fixed: [
