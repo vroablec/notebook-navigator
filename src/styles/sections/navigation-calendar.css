@@ -578,8 +578,8 @@
 
 .nn-calendar-right-sidebar .nn-navigation-calendar[data-layout='panel'] .nn-navigation-calendar-weeknumber {
     height: auto;
-    align-items: flex-end;
-    padding-bottom: 4px;
+    align-items: var(--nn-calendar-right-sidebar-date-placement, flex-end);
+    padding-block: 4px;
 }
 
 .nn-calendar-right-sidebar .nn-navigation-calendar[data-layout='panel'] .nn-navigation-calendar-day {
