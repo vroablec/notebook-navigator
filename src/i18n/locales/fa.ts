@@ -264,6 +264,7 @@ export const STRINGS_FA = {
             showingResultsInfo: 'نمایش ۵۰ از {count} نتیجه. بیشتر تایپ کنید تا محدودتر شود.',
             emojiInstructions: 'ایموجی را تایپ یا پیست کنید تا به عنوان آیکون استفاده شود',
             removeIcon: 'حذف آیکون',
+            removeFromRecents: 'حذف از آیکون‌های اخیر',
             allTabLabel: 'همه'
         },
         fileIconRuleEditor: {

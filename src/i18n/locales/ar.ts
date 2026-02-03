@@ -264,6 +264,7 @@ export const STRINGS_AR = {
             showingResultsInfo: 'عرض 50 من {count} نتيجة. اكتب المزيد للتضييق.',
             emojiInstructions: 'اكتب أو الصق أي رمز تعبيري لاستخدامه كأيقونة',
             removeIcon: 'إزالة الأيقونة',
+            removeFromRecents: 'إزالة من الأيقونات الأخيرة',
             allTabLabel: 'الكل'
         },
         fileIconRuleEditor: {

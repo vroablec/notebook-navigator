@@ -264,6 +264,7 @@ export const STRINGS_TH = {
             showingResultsInfo: 'แสดง 50 จาก {count} ผลลัพธ์ พิมพ์เพิ่มเพื่อจำกัด',
             emojiInstructions: 'พิมพ์หรือวางอีโมจิเพื่อใช้เป็นไอคอน',
             removeIcon: 'นำไอคอนออก',
+            removeFromRecents: 'นำออกจากรายการล่าสุด',
             allTabLabel: 'ทั้งหมด'
         },
         fileIconRuleEditor: {

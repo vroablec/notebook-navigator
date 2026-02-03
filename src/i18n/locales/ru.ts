@@ -264,6 +264,7 @@ export const STRINGS_RU = {
             showingResultsInfo: 'Показано 50 из {count} результатов. Введите больше для уточнения.',
             emojiInstructions: 'Введите или вставьте любой эмодзи, чтобы использовать его как иконку',
             removeIcon: 'Удалить иконку',
+            removeFromRecents: 'Удалить из недавних',
             allTabLabel: 'Все'
         },
         fileIconRuleEditor: {

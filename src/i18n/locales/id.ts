@@ -264,6 +264,7 @@ export const STRINGS_ID = {
             showingResultsInfo: 'Menampilkan 50 dari {count} hasil. Ketik lebih lanjut untuk mempersempit.',
             emojiInstructions: 'Ketik atau tempel emoji untuk menggunakannya sebagai ikon',
             removeIcon: 'Hapus ikon',
+            removeFromRecents: 'Hapus dari ikon terbaru',
             allTabLabel: 'Semua'
         },
         fileIconRuleEditor: {

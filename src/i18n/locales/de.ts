@@ -264,6 +264,7 @@ export const STRINGS_DE = {
             showingResultsInfo: 'Zeige 50 von {count} Ergebnissen. Geben Sie mehr ein, um die Suche einzugrenzen.',
             emojiInstructions: 'Geben Sie ein Emoji ein oder fügen Sie es ein, um es als Symbol zu verwenden',
             removeIcon: 'Icon entfernen',
+            removeFromRecents: 'Aus zuletzt verwendet entfernen',
             allTabLabel: 'Alle'
         },
         fileIconRuleEditor: {

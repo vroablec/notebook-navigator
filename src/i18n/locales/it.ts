@@ -264,6 +264,7 @@ export const STRINGS_IT = {
             showingResultsInfo: 'Mostrati 50 di {count} risultati. Digita di più per restringere.',
             emojiInstructions: 'Digita o incolla qualsiasi emoji per usarla come icona',
             removeIcon: 'Rimuovi icona',
+            removeFromRecents: 'Rimuovi dai recenti',
             allTabLabel: 'Tutte'
         },
         fileIconRuleEditor: {

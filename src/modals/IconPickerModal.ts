@@ -533,8 +533,8 @@ export class IconPickerModal extends Modal {
             cls: 'nn-icon-recent-remove-button',
             attr: {
                 type: 'button',
-                'aria-label': strings.modals.iconPicker.removeIcon,
-                title: strings.modals.iconPicker.removeIcon,
+                'aria-label': strings.modals.iconPicker.removeFromRecents,
+                title: strings.modals.iconPicker.removeFromRecents,
                 'data-recent-icon-id': iconId
             }
         });

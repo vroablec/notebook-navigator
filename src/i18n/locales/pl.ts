@@ -265,6 +265,7 @@ export const STRINGS_PL = {
             showingResultsInfo: 'Pokazuję 50 z {count} wyników. Wpisz więcej aby zawęzić.',
             emojiInstructions: 'Wpisz lub wklej dowolną emotkę aby użyć jej jako ikony',
             removeIcon: 'Usuń ikonę',
+            removeFromRecents: 'Usuń z ostatnich',
             allTabLabel: 'Wszystkie'
         },
         fileIconRuleEditor: {

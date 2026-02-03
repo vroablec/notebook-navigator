@@ -264,6 +264,7 @@ export const STRINGS_UK = {
             showingResultsInfo: 'Показано 50 з {count} результатів. Введіть більше для уточнення.',
             emojiInstructions: 'Введіть або вставте будь-який емодзі для використання як іконки',
             removeIcon: 'Вилучити іконку',
+            removeFromRecents: 'Видалити з нещодавніх',
             allTabLabel: 'Всі'
         },
         fileIconRuleEditor: {

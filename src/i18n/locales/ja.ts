@@ -264,6 +264,7 @@ export const STRINGS_JA = {
             showingResultsInfo: '{count}件中50件を表示中。絞り込むには続けて入力してください。',
             emojiInstructions: '絵文字を入力または貼り付けてアイコンとして使用',
             removeIcon: 'アイコンを削除',
+            removeFromRecents: '最近使用したアイコンから削除',
             allTabLabel: 'すべて'
         },
         fileIconRuleEditor: {

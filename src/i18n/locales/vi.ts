@@ -264,6 +264,7 @@ export const STRINGS_VI = {
             showingResultsInfo: 'Hiển thị 50 trong {count} kết quả. Nhập thêm để thu hẹp.',
             emojiInstructions: 'Nhập hoặc dán bất kỳ emoji nào để dùng làm biểu tượng',
             removeIcon: 'Gỡ biểu tượng',
+            removeFromRecents: 'Xóa khỏi biểu tượng gần đây',
             allTabLabel: 'Tất cả'
         },
         fileIconRuleEditor: {

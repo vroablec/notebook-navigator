@@ -264,6 +264,7 @@ export const STRINGS_TR = {
             showingResultsInfo: '{count} sonuçtan 50 tanesi gösteriliyor. Daraltmak için daha fazla yazın.',
             emojiInstructions: 'Simge olarak kullanmak için herhangi bir emoji yazın veya yapıştırın',
             removeIcon: 'Simgeyi kaldır',
+            removeFromRecents: 'Son kullanılanlardan kaldır',
             allTabLabel: 'Tümü'
         },
         fileIconRuleEditor: {

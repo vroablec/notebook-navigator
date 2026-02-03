@@ -265,6 +265,7 @@ export const STRINGS_NL = {
             showingResultsInfo: '50 van {count} resultaten weergegeven. Typ meer om te verfijnen.',
             emojiInstructions: 'Typ of plak een emoji om deze als pictogram te gebruiken',
             removeIcon: 'Pictogram verwijderen',
+            removeFromRecents: 'Verwijderen uit recent',
             allTabLabel: 'Alle'
         },
         fileIconRuleEditor: {

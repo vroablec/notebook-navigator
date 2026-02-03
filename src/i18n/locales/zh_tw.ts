@@ -264,6 +264,7 @@ export const STRINGS_ZH_TW = {
             showingResultsInfo: '顯示 {count} 個結果中的 50 個。輸入更多內容以縮小範圍。',
             emojiInstructions: '輸入或貼上任何表情符號作為圖示使用',
             removeIcon: '移除圖示',
+            removeFromRecents: '從最近使用中移除',
             allTabLabel: '全部'
         },
         fileIconRuleEditor: {
