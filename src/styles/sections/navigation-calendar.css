@@ -5,7 +5,8 @@
    ======================================================================== */
 
 .nn-navigation-pane,
-.nn-list-pane {
+.nn-list-pane,
+.nn-single-pane-calendar {
     /* CSS vars are used to compute the overlay height and to coordinate scroller padding + mobile toolbar positioning. */
     --nn-nav-calendar-week-count: 6;
     --nn-nav-calendar-scrollbar-gap: var(--scrollbar-size, 12px);
@@ -31,7 +32,8 @@
 }
 
 .notebook-navigator-mobile .nn-navigation-pane,
-.notebook-navigator-mobile .nn-list-pane {
+.notebook-navigator-mobile .nn-list-pane,
+.notebook-navigator-mobile .nn-single-pane-calendar {
     --nn-nav-calendar-safe-area: var(--nn-mobile-safe-area-bottom);
     --nn-nav-calendar-scrollbar-gap: 0px;
     --nn-nav-calendar-border-width: 0px;
@@ -56,6 +58,15 @@
             (2 * var(--nn-nav-calendar-section-gap)) + (var(--nn-nav-calendar-week-count) * var(--nn-nav-calendar-week-row-height)) +
             ((var(--nn-nav-calendar-week-count) - 1) * var(--nn-nav-calendar-week-gap))
     );
+}
+
+.nn-single-pane-calendar {
+    flex-shrink: 0;
+    box-sizing: border-box;
+    padding: var(--nn-nav-calendar-padding) calc(var(--nn-scroller-padding) + var(--nn-nav-calendar-scrollbar-gap))
+        calc(var(--nn-nav-calendar-padding) + var(--nn-nav-calendar-safe-area)) var(--nn-scroller-padding);
+    border-top: var(--nn-nav-calendar-border-width) solid var(--nn-theme-divider-border-color);
+    background-color: var(--nn-theme-nav-bg);
 }
 
 .nn-navigation-calendar-overlay {

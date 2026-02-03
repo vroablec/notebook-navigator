@@ -253,14 +253,6 @@ export const NavigationPane = React.memo(
                 setCalendarWeekCount(settings.calendarWeeksToShow);
             }
         }, [settings.calendarWeeksToShow]);
-        const isFullMonthCalendar = settings.calendarWeeksToShow === 6;
-        const [calendarNavigationVersion, setCalendarNavigationVersion] = useState(0);
-        const handleCalendarNavigationAction = useCallback(() => {
-            if (!isFullMonthCalendar) {
-                return;
-            }
-            setCalendarNavigationVersion(version => version + 1);
-        }, [isFullMonthCalendar]);
         const { hiddenFolders, hiddenFileNames, hiddenFileTags, fileVisibility } = activeProfile;
         // Resolves frontmatter exclusions, returns empty array when hidden items are shown
         const effectiveFrontmatterExclusions = getEffectiveFrontmatterExclusions(settings, showHiddenItems);
@@ -284,7 +276,8 @@ export const NavigationPane = React.memo(
         const uiDispatch = useUIDispatch();
         const isVerticalDualPane = !uiState.singlePane && settings.dualPaneOrientation === 'vertical';
         const calendarPlacement = settings.calendarPlacement;
-        const shouldRenderCalendarOverlay = calendarPlacement === 'left-sidebar' && showCalendar && !isVerticalDualPane;
+        const shouldRenderCalendarOverlay =
+            !uiState.singlePane && calendarPlacement === 'left-sidebar' && showCalendar && !isVerticalDualPane;
         const shortcuts = useShortcuts();
         const {
             shortcuts: shortcutsList,
@@ -1120,23 +1113,18 @@ export const NavigationPane = React.memo(
 
         const prevCalendarOverlayVisibleRef = useRef<boolean>(shouldRenderCalendarOverlay);
         const prevCalendarWeekCountRef = useRef<number>(calendarWeekCount);
-        const prevCalendarNavigationVersionRef = useRef<number>(calendarNavigationVersion);
 
         useEffect(() => {
             const wasVisible = prevCalendarOverlayVisibleRef.current;
             const prevWeekCount = prevCalendarWeekCountRef.current;
-            const prevNavigationVersion = prevCalendarNavigationVersionRef.current;
 
             const becameVisible = shouldRenderCalendarOverlay && !wasVisible;
             const weekCountChanged = shouldRenderCalendarOverlay && calendarWeekCount !== prevWeekCount;
-            const navigatedInFullMonth =
-                shouldRenderCalendarOverlay && isFullMonthCalendar && calendarNavigationVersion !== prevNavigationVersion;
 
             prevCalendarOverlayVisibleRef.current = shouldRenderCalendarOverlay;
             prevCalendarWeekCountRef.current = calendarWeekCount;
-            prevCalendarNavigationVersionRef.current = calendarNavigationVersion;
 
-            if (!becameVisible && !weekCountChanged && !navigatedInFullMonth) {
+            if (!becameVisible && !weekCountChanged) {
                 return;
             }
 
@@ -1150,7 +1138,7 @@ export const NavigationPane = React.memo(
             }
 
             setTimeout(scheduleScroll, 0);
-        }, [calendarNavigationVersion, calendarWeekCount, handleTreeUpdateComplete, isFullMonthCalendar, shouldRenderCalendarOverlay]);
+        }, [calendarWeekCount, handleTreeUpdateComplete, shouldRenderCalendarOverlay]);
 
         // Handle folder toggle
         const handleFolderToggle = useCallback(
@@ -2899,10 +2887,7 @@ export const NavigationPane = React.memo(
                 </div>
                 {shouldRenderCalendarOverlay ? (
                     <div className="nn-navigation-calendar-overlay">
-                        <NavigationPaneCalendar
-                            onWeekCountChange={setCalendarWeekCount}
-                            onNavigationAction={handleCalendarNavigationAction}
-                        />
+                        <NavigationPaneCalendar onWeekCountChange={setCalendarWeekCount} />
                     </div>
                 ) : null}
                 {shouldRenderBottomToolbarOutsidePanel ? <div className="nn-pane-bottom-toolbar">{navigationToolbar}</div> : null}
