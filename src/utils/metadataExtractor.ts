@@ -21,7 +21,7 @@ import { NotebookNavigatorSettings } from '../settings';
 import { METADATA_SENTINEL } from '../storage/IndexedDBStorage';
 import { DateUtils } from './dateUtils';
 import { getCachedCommaSeparatedList } from './commaSeparatedListUtils';
-import { deserializeIconFromFrontmatter } from './iconizeFormat';
+import { deserializeIconFromFrontmatterCompat } from './iconizeFormat';
 import { isRecord } from './typeGuards';
 
 /**
@@ -134,7 +134,7 @@ export function extractMetadataFromCache(metadata: CachedMetadata | null, settin
                 return undefined;
             }
 
-            const parsed = deserializeIconFromFrontmatter(trimmed);
+            const parsed = deserializeIconFromFrontmatterCompat(trimmed);
             return parsed ?? undefined;
         };
 

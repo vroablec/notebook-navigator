@@ -16,22 +16,25 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { App, Modal } from 'obsidian';
+import { App, Modal, TFile } from 'obsidian';
 import * as emojilib from 'emojilib';
 import { strings } from '../i18n';
 import { getIconService, IconDefinition, IconProvider, RECENT_ICONS_PER_PROVIDER_LIMIT } from '../services/icons';
 import { getProviderCatalogUrl } from '../services/icons/providerCatalogLinks';
+import { isVaultIconFile } from '../services/icons/providers/VaultIconProvider';
 import { MetadataService } from '../services/MetadataService';
 import { ItemType } from '../types';
 import { TIMEOUTS } from '../types/obsidian-extended';
 import { ISettingsProvider } from '../interfaces/ISettingsProvider';
 import { runAsyncAction } from '../utils/async';
 import { addAsyncEventListener } from '../utils/domEventListeners';
+import { isRecord } from '../utils/typeGuards';
 
 // Constants
 const GRID_COLUMNS = 5;
 const MAX_SEARCH_RESULTS = 50;
 const ALL_PROVIDERS_TAB_ID = 'all';
+const VAULT_PROVIDER_ID = 'vault';
 
 /** Result returned by external icon selection handlers */
 interface IconSelectionHandlerResult {
@@ -56,8 +59,7 @@ function isStringArray(value: unknown): value is string[] {
 }
 
 /**
- * Enhanced icon picker modal that supports multiple icon providers
- * Features tabs for different providers (Lucide, Emoji, etc.)
+ * Icon picker modal with tabs for icon providers.
  */
 export class IconPickerModal extends Modal {
     private currentProvider: string = ALL_PROVIDERS_TAB_ID;
@@ -117,6 +119,7 @@ export class IconPickerModal extends Modal {
         const { contentEl } = this;
         contentEl.empty();
         this.modalEl.addClass('nn-icon-picker-modal');
+        this.cleanupVaultRecentIcons();
 
         // Header showing the folder/tag name
         const header = contentEl.createDiv('nn-icon-picker-header');
@@ -245,8 +248,9 @@ export class IconPickerModal extends Modal {
      * @returns Sorted array with pinned providers first, then alphabetically
      */
     private sortProvidersForDisplay(providers: IconProvider[]): IconProvider[] {
-        // Define providers that should appear first in the UI
-        const pinnedOrder = ['emoji', 'lucide'];
+        // Providers pinned to the start of the tab row.
+        // Tab order: All, Vault, Emoji, Lucide, then remaining providers.
+        const pinnedOrder = [VAULT_PROVIDER_ID, 'emoji', 'lucide'];
         return providers.sort((a, b) => {
             const aPinnedIndex = pinnedOrder.indexOf(a.id);
             const bPinnedIndex = pinnedOrder.indexOf(b.id);
@@ -269,6 +273,62 @@ export class IconPickerModal extends Modal {
             // Neither provider is pinned - sort alphabetically by name
             return a.name.localeCompare(b.name);
         });
+    }
+
+    /**
+     * Removes missing or invalid vault icon entries from the recent icon list.
+     */
+    private cleanupVaultRecentIcons(): void {
+        const recentIconsMap = this.settingsProvider.getRecentIcons();
+        const recentVaultIconsValue = recentIconsMap[VAULT_PROVIDER_ID];
+        const recentVaultIcons = Array.isArray(recentVaultIconsValue) ? recentVaultIconsValue : [];
+        const hasInvalidType = recentVaultIconsValue !== undefined && !Array.isArray(recentVaultIconsValue);
+
+        if (recentVaultIcons.length === 0 && !hasInvalidType) {
+            return;
+        }
+
+        if (hasInvalidType) {
+            delete recentIconsMap[VAULT_PROVIDER_ID];
+            this.settingsProvider.setRecentIcons(recentIconsMap);
+            return;
+        }
+
+        const validIcons: string[] = [];
+        let didChange = false;
+
+        recentVaultIcons.forEach(iconId => {
+            if (typeof iconId !== 'string') {
+                didChange = true;
+                return;
+            }
+
+            const parsed = this.iconService.parseIconId(iconId);
+            if (parsed.provider !== VAULT_PROVIDER_ID) {
+                didChange = true;
+                return;
+            }
+
+            const file = this.app.vault.getAbstractFileByPath(parsed.identifier);
+            if (file instanceof TFile && isVaultIconFile(file)) {
+                validIcons.push(iconId);
+                return;
+            }
+
+            didChange = true;
+        });
+
+        if (!didChange) {
+            return;
+        }
+
+        if (validIcons.length === 0) {
+            delete recentIconsMap[VAULT_PROVIDER_ID];
+        } else {
+            recentIconsMap[VAULT_PROVIDER_ID] = validIcons;
+        }
+
+        this.settingsProvider.setRecentIcons(recentIconsMap);
     }
 
     private resolveInitialProvider(providers: IconProvider[]): string {
@@ -294,6 +354,25 @@ export class IconPickerModal extends Modal {
         return ALL_PROVIDERS_TAB_ID;
     }
 
+    private searchAllProvidersExcludingVault(query: string): IconDefinition[] {
+        // Excludes vault icons from the "All" tab search.
+        const results: IconDefinition[] = [];
+        this.iconService.getAllProviders().forEach(provider => {
+            if (provider.id === VAULT_PROVIDER_ID) {
+                return;
+            }
+
+            const providerResults = provider.search(query);
+            results.push(
+                ...providerResults.map(icon => ({
+                    ...icon,
+                    id: this.iconService.formatIconId(provider.id, icon.id)
+                }))
+            );
+        });
+        return results;
+    }
+
     private updateResults() {
         this.resultsContainer.empty();
 
@@ -315,7 +394,9 @@ export class IconPickerModal extends Modal {
             return;
         }
 
-        const results = isAllProvider ? this.iconService.search(searchTerm) : this.iconService.search(searchTerm, this.currentProvider);
+        const results = isAllProvider
+            ? this.searchAllProvidersExcludingVault(searchTerm)
+            : this.iconService.search(searchTerm, this.currentProvider);
 
         if (results.length > 0 && (isAllProvider || provider)) {
             const grid = this.resultsContainer.createDiv('nn-icon-grid');
@@ -365,7 +446,8 @@ export class IconPickerModal extends Modal {
             if (provider.id === 'emoji') {
                 let displayName = '';
                 // Look up emoji keywords from emojilib with type safety
-                const emojiEntries = Object.entries(emojilib as Record<string, unknown>);
+                const emojiLibValue: unknown = emojilib;
+                const emojiEntries = isRecord(emojiLibValue) ? Object.entries(emojiLibValue) : [];
                 for (const [emoji, keywords] of emojiEntries) {
                     if (emoji === parsed.identifier && isStringArray(keywords)) {
                         displayName = keywords[0] ?? '';
@@ -587,7 +669,7 @@ export class IconPickerModal extends Modal {
     private setupKeyboardNavigation() {
         // Shift+Tab -> focus search input or provider tabs based on current focus
         this.scope.register(['Shift'], 'Tab', evt => {
-            const currentFocused = document.activeElement as HTMLElement | null;
+            const currentFocused = document.activeElement instanceof HTMLElement ? document.activeElement : null;
 
             // Prevent default tab cycling when on provider tabs
             if (currentFocused?.classList.contains('nn-icon-provider-tab')) {
@@ -615,7 +697,8 @@ export class IconPickerModal extends Modal {
 
         // Tab -> focus first icon if not in grid
         this.scope.register([], 'Tab', evt => {
-            const currentFocused = document.activeElement as HTMLElement;
+            const activeElement = document.activeElement;
+            const currentFocused = activeElement instanceof HTMLElement ? activeElement : null;
             if (currentFocused?.classList.contains('nn-icon-provider-tab')) {
                 evt.preventDefault();
                 this.searchInput.focus();
@@ -637,7 +720,7 @@ export class IconPickerModal extends Modal {
         this.scope.register([], 'ArrowDown', evt => this.handleArrowKey(evt, 0, 1));
 
         this.scope.register([], 'Enter', evt => {
-            const currentFocused = document.activeElement as HTMLElement | null;
+            const currentFocused = document.activeElement instanceof HTMLElement ? document.activeElement : null;
             if (currentFocused === this.searchInput) {
                 evt.preventDefault();
                 window.setTimeout(() => {
@@ -663,7 +746,11 @@ export class IconPickerModal extends Modal {
      * @param deltaY - Vertical movement (-1 for up, 1 for down)
      */
     private handleArrowKey(evt: KeyboardEvent, deltaX: number, deltaY: number) {
-        const currentFocused = document.activeElement as HTMLElement;
+        const activeElement = document.activeElement;
+        if (!(activeElement instanceof HTMLElement)) {
+            return;
+        }
+        const currentFocused = activeElement;
         // Handle horizontal navigation between provider tabs
         if (currentFocused?.classList.contains('nn-icon-provider-tab')) {
             if (deltaX === 0) {

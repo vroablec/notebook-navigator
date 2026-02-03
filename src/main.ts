@@ -49,6 +49,7 @@ import { CommandQueueService } from './services/CommandQueueService';
 import { OmnisearchService } from './services/OmnisearchService';
 import { FileSystemOperations } from './services/FileSystemService';
 import { getIconService } from './services/icons';
+import { VaultIconProvider } from './services/icons/providers/VaultIconProvider';
 import { RecentNotesService } from './services/RecentNotesService';
 import RecentDataManager from './services/recent/RecentDataManager';
 import { ExternalIconProviderController } from './services/icons/external/ExternalIconProviderController';
@@ -919,6 +920,7 @@ export default class NotebookNavigatorPlugin extends Plugin implements ISettings
         this.releaseCheckService = new ReleaseCheckService(this);
 
         const iconService = getIconService();
+        iconService.registerProvider(new VaultIconProvider(this.app));
         this.externalIconController = new ExternalIconProviderController(this.app, iconService, this);
         const iconController = this.externalIconController;
         if (iconController) {

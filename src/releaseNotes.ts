@@ -75,6 +75,14 @@ export interface ReleaseNote {
  */
 const RELEASE_NOTES: ReleaseNote[] = [
     {
+        version: '2.2.4',
+        date: '2026-02-09',
+        showOnUpdate: true,
+        new: ['==Vault icons==. You can now use SVG images from your vault for icons. Just pick the new "Vault" tab in the icon picker.'],
+        changed: [
+        ]
+    },
+    {
         version: '2.2.3',
         date: '2026-02-01',
         showOnUpdate: false,
