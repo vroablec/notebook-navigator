@@ -25,7 +25,13 @@ import type { FolderAppearance, TagAppearance } from '../hooks/useListPaneAppear
 import type { NotebookNavigatorSettings } from './types';
 import { SYNC_MODE_SETTING_IDS, type SettingSyncMode } from './types';
 import { sanitizeRecord } from '../utils/recordUtils';
-import { DEFAULT_CALENDAR_CUSTOM_FILE_PATTERN } from '../utils/calendarCustomNotePatterns';
+import {
+    DEFAULT_CALENDAR_CUSTOM_FILE_PATTERN,
+    DEFAULT_CALENDAR_CUSTOM_MONTH_PATTERN,
+    DEFAULT_CALENDAR_CUSTOM_QUARTER_PATTERN,
+    DEFAULT_CALENDAR_CUSTOM_WEEK_PATTERN,
+    DEFAULT_CALENDAR_CUSTOM_YEAR_PATTERN
+} from '../utils/calendarCustomNotePatterns';
 
 const defaultSettingsSync = sanitizeRecord<SettingSyncMode>(undefined);
 SYNC_MODE_SETTING_IDS.forEach(settingId => {
@@ -121,10 +127,10 @@ export const DEFAULT_SETTINGS: NotebookNavigatorSettings = {
     // Calendar tab - Calendar integration
     calendarIntegrationMode: 'notebook-navigator',
     calendarCustomFilePattern: DEFAULT_CALENDAR_CUSTOM_FILE_PATTERN,
-    calendarCustomWeekPattern: '',
-    calendarCustomMonthPattern: '',
-    calendarCustomQuarterPattern: '',
-    calendarCustomYearPattern: '',
+    calendarCustomWeekPattern: DEFAULT_CALENDAR_CUSTOM_WEEK_PATTERN,
+    calendarCustomMonthPattern: DEFAULT_CALENDAR_CUSTOM_MONTH_PATTERN,
+    calendarCustomQuarterPattern: DEFAULT_CALENDAR_CUSTOM_QUARTER_PATTERN,
+    calendarCustomYearPattern: DEFAULT_CALENDAR_CUSTOM_YEAR_PATTERN,
     calendarTemplateFolder: '',
     calendarCustomFileTemplate: null,
     calendarCustomWeekTemplate: null,
