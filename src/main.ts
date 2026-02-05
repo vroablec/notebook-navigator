@@ -932,6 +932,9 @@ export default class NotebookNavigatorPlugin extends Plugin implements ISettings
             this
         );
         this.omnisearchService = new OmnisearchService(this.app);
+        if (this.settings.searchProvider === 'omnisearch' && !this.omnisearchService.isAvailable()) {
+            this.setSearchProvider('internal');
+        }
         this.api = new NotebookNavigatorAPI(this, this.app);
         this.releaseCheckService = new ReleaseCheckService(this);
 
@@ -1236,7 +1239,8 @@ export default class NotebookNavigatorPlugin extends Plugin implements ISettings
      * Updates the search provider preference and persists to local storage.
      */
     public setSearchProvider(provider: 'internal' | 'omnisearch'): void {
-        const normalized = provider === 'omnisearch' ? 'omnisearch' : 'internal';
+        const isOmnisearchAvailable = this.omnisearchService?.isAvailable() ?? false;
+        const normalized = provider === 'omnisearch' && isOmnisearchAvailable ? 'omnisearch' : 'internal';
         this.updateSettingAndMirrorToLocalStorage({
             settingId: 'searchProvider',
             localStorageKey: this.keys.searchProviderKey,

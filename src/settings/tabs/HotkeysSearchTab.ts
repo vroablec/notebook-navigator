@@ -16,6 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import type { DropdownComponent } from 'obsidian';
 import { strings } from '../../i18n';
 import type { SearchProvider } from '../../types/search';
 import type { SettingsTabContext } from './SettingsTabContext';
@@ -28,26 +29,46 @@ export function renderHotkeysSearchTab(context: SettingsTabContext): void {
 
     const createGroup = createSettingGroupFactory(containerEl);
     const searchGroup = createGroup(strings.settings.sections.search);
+    const isOmnisearchAvailable = plugin.omnisearchService?.isAvailable() ?? false;
+
+    if (plugin.getSearchProvider() === 'omnisearch' && !isOmnisearchAvailable) {
+        plugin.setSearchProvider('internal');
+    }
+
+    const searchProviderDesc = document.createDocumentFragment();
+    searchProviderDesc.append(document.createTextNode(strings.settings.items.searchProvider.desc));
+    if (!isOmnisearchAvailable) {
+        searchProviderDesc.append(document.createElement('br'));
+        const warningEl = document.createElement('strong');
+        warningEl.classList.add('nn-setting-warning');
+        warningEl.textContent = strings.settings.items.searchProvider.info.omnisearch.warningNotInstalled;
+        searchProviderDesc.append(warningEl);
+    }
 
     const isSearchProvider = (value: string): value is SearchProvider => {
         return value === 'internal' || value === 'omnisearch';
     };
 
+    let searchProviderDropdown: DropdownComponent | null = null;
+
     const searchProviderSetting = searchGroup.addSetting(setting => {
         setting
             .setName(strings.settings.items.searchProvider.name)
-            .setDesc(strings.settings.items.searchProvider.desc)
+            .setDesc(searchProviderDesc)
             .addDropdown(dropdown => {
                 const currentProvider = plugin.getSearchProvider();
+                searchProviderDropdown = dropdown;
                 dropdown
                     .addOption('internal', strings.settings.items.searchProvider.options.internal)
                     .addOption('omnisearch', strings.settings.items.searchProvider.options.omnisearch)
                     .setValue(currentProvider)
+                    .setDisabled(!isOmnisearchAvailable)
                     .onChange(value => {
                         if (!isSearchProvider(value)) {
                             return;
                         }
                         plugin.setSearchProvider(value);
+                        dropdown.setValue(plugin.getSearchProvider());
                         updateSearchInfo();
                     });
             });
@@ -60,15 +81,15 @@ export function renderHotkeysSearchTab(context: SettingsTabContext): void {
 
     /** Updates the search provider information display */
     const updateSearchInfo = () => {
-        const provider = plugin.getSearchProvider();
         const hasOmnisearch = plugin.omnisearchService?.isAvailable() ?? false;
+        const provider = plugin.getSearchProvider();
+        if (provider === 'omnisearch' && !hasOmnisearch) {
+            plugin.setSearchProvider('internal');
+            searchProviderDropdown?.setValue('internal');
+        }
 
         searchInfoEl.empty();
-
-        if (provider === 'omnisearch' && !hasOmnisearch) {
-            searchInfoEl.createEl('strong', { text: strings.settings.items.searchProvider.info.omnisearch.warningNotInstalled });
-            searchInfoEl.createEl('br');
-        }
+        searchProviderDropdown?.setDisabled(!hasOmnisearch);
 
         const infoDiv = searchInfoEl.createDiv();
 
