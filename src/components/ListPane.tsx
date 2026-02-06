@@ -84,6 +84,7 @@ import { getListPaneMeasurements } from '../utils/listPaneMeasurements';
 import { ServiceIcon } from './ServiceIcon';
 import { resolveUXIcon } from '../utils/uxIcons';
 import { showNotice } from '../utils/noticeUtils';
+import { isKeyboardEventContextBlocked } from '../utils/domUtils';
 
 type CSSPropertiesWithVars = React.CSSProperties & Record<`--${string}`, string | number>;
 
@@ -121,6 +122,17 @@ export interface ListPaneHandle {
     modifySearchWithTag: (tag: string, operator: InclusionOperator) => void;
     toggleSearch: () => void;
     executeSearchShortcut: (params: ExecuteSearchShortcutParams) => Promise<void>;
+}
+
+interface EnsureSelectionOptions {
+    openInEditor?: boolean;
+    clearIfEmpty?: boolean;
+    selectFallback?: boolean;
+    debounceOpen?: boolean;
+}
+
+interface EnsureSelectionResult {
+    selectionStateChanged: boolean;
 }
 
 interface ListPaneProps {
@@ -361,15 +373,24 @@ export const ListPane = React.memo(
          * - `keyboardOpenRequestIdRef` invalidates older scheduled opens when selection changes.
          *
          * The debouncer uses `resetTimer: true` so repeated keydown events keep pushing the open out
-         * until the user stops navigating. `commitKeyboardSelectionOpen` cancels the timer and opens
+         * until the user stops navigating. `commitPendingKeyboardSelectionOpen` cancels the timer and opens
          * immediately on keyup.
          *
          * Safety: if selection changes from any other path (e.g. auto-reveal), cancel pending opens
          * so a stale debounced open cannot override the current selection.
          */
+        // True while a debounced keyboard open is waiting to run.
         const keyboardOpenPendingRef = useRef(false);
+        // Monotonic token used to invalidate older debounced open requests.
         const keyboardOpenRequestIdRef = useRef(0);
+        // File currently targeted by keyboard-driven debounced open.
         const keyboardOpenFileRef = useRef<TFile | null>(null);
+        // Tracks whether the current folder/tag change originated from a physical navigation key.
+        const navigationPhysicalKeyOpenRef = useRef(false);
+        // Stores the latest commit callback so DOM event listeners can call current logic without re-subscribing.
+        const commitPendingKeyboardSelectionOpenRef = useRef<() => void>(() => {});
+        // Mirrors focused pane for container-level key listeners.
+        const focusedPaneRef = useRef(uiState.focusedPane);
 
         const debouncedOpenFileInWorkspace = useMemo(() => {
             return debounce(
@@ -391,6 +412,16 @@ export const ListPane = React.memo(
             return () => {
                 debouncedOpenFileInWorkspace.cancel();
             };
+        }, [debouncedOpenFileInWorkspace]);
+
+        const clearPendingKeyboardOpen = useCallback(() => {
+            // Increment request id so any older scheduled callback becomes a no-op.
+            keyboardOpenRequestIdRef.current += 1;
+            // Reset pending state and file target.
+            keyboardOpenPendingRef.current = false;
+            keyboardOpenFileRef.current = null;
+            // Cancel timer so no delayed open executes after state has moved on.
+            debouncedOpenFileInWorkspace.cancel();
         }, [debouncedOpenFileInWorkspace]);
 
         // Keep track of the last selected file path to maintain visual selection during transitions
@@ -421,30 +452,29 @@ export const ListPane = React.memo(
                 }
 
                 if (options?.suppressOpen) {
-                    keyboardOpenRequestIdRef.current += 1;
-                    keyboardOpenPendingRef.current = false;
-                    keyboardOpenFileRef.current = null;
-                    debouncedOpenFileInWorkspace.cancel();
+                    // Selection can change without opening editor (for example, new-tab shortcuts).
+                    // Cancel pending keyboard opens so this selection does not trigger an unexpected open later.
+                    clearPendingKeyboardOpen();
                     return;
                 }
 
                 // Open file in the active leaf without moving focus
                 if (options?.debounceOpen) {
+                    // New selection means new request token; older debounced callbacks are invalidated.
                     keyboardOpenRequestIdRef.current += 1;
                     const requestId = keyboardOpenRequestIdRef.current;
+                    // Mark pending state for keyup commit path.
                     keyboardOpenPendingRef.current = true;
                     keyboardOpenFileRef.current = file;
                     debouncedOpenFileInWorkspace(file, requestId);
                     return;
                 }
 
-                keyboardOpenRequestIdRef.current += 1;
-                keyboardOpenPendingRef.current = false;
-                keyboardOpenFileRef.current = null;
-                debouncedOpenFileInWorkspace.cancel();
+                // Non-debounced selection should clear any pending keyboard timer first.
+                clearPendingKeyboardOpen();
                 openFileInWorkspace(file);
             },
-            [selectionDispatch, openFileInWorkspace, debouncedOpenFileInWorkspace]
+            [selectionDispatch, openFileInWorkspace, clearPendingKeyboardOpen, debouncedOpenFileInWorkspace]
         );
 
         const scheduleKeyboardOpen = useCallback(
@@ -464,6 +494,7 @@ export const ListPane = React.memo(
 
         const scheduleKeyboardSelectionOpen = useCallback(() => {
             if (settings.enterToOpenFiles) {
+                // Enter-to-open mode does not preview files while navigating.
                 return;
             }
 
@@ -472,6 +503,7 @@ export const ListPane = React.memo(
             const primarySelectedFile = resolvePrimarySelectedFile(app, selectionState);
             const fileToOpen = primarySelectedFile ?? keyboardOpenFileRef.current;
             if (!fileToOpen) {
+                // Nothing selected and no pending fallback target.
                 return;
             }
 
@@ -481,6 +513,7 @@ export const ListPane = React.memo(
         const scheduleKeyboardSelectionOpenForFile = useCallback(
             (file: TFile) => {
                 if (settings.enterToOpenFiles) {
+                    // Enter-to-open mode disables navigation-preview opens.
                     return;
                 }
 
@@ -491,26 +524,27 @@ export const ListPane = React.memo(
             [settings.enterToOpenFiles, scheduleKeyboardOpen]
         );
 
-        const commitKeyboardSelectionOpen = useCallback(() => {
+        const commitPendingKeyboardSelectionOpen = useCallback(() => {
             if (settings.enterToOpenFiles) {
+                // Explicit Enter key is the only open action in this mode.
                 return;
             }
 
             if (!keyboardOpenPendingRef.current) {
+                // No pending request means there is nothing to commit on keyup.
                 return;
             }
 
             const selectedFileToOpen = keyboardOpenFileRef.current ?? resolvePrimarySelectedFile(app, selectionState);
             if (!selectedFileToOpen) {
+                // Pending state exists but target file was cleared.
                 return;
             }
 
-            keyboardOpenRequestIdRef.current += 1;
-            keyboardOpenPendingRef.current = false;
-            keyboardOpenFileRef.current = null;
-            debouncedOpenFileInWorkspace.cancel();
+            // Clear timer/request state before opening to avoid duplicate opens.
+            clearPendingKeyboardOpen();
             openFileInWorkspace(selectedFileToOpen);
-        }, [app, selectionState, settings.enterToOpenFiles, debouncedOpenFileInWorkspace, openFileInWorkspace]);
+        }, [app, selectionState, settings.enterToOpenFiles, clearPendingKeyboardOpen, openFileInWorkspace]);
 
         const primarySelectedFilePathForKeyboardOpen = useMemo(() => {
             if (selectionState.selectedFile) {
@@ -521,6 +555,11 @@ export const ListPane = React.memo(
         }, [selectionState.selectedFile, selectionState.selectedFiles]);
 
         useEffect(() => {
+            // Keep a stable ref to latest callback for external key listeners.
+            commitPendingKeyboardSelectionOpenRef.current = commitPendingKeyboardSelectionOpen;
+        }, [commitPendingKeyboardSelectionOpen]);
+
+        useEffect(() => {
             if (!keyboardOpenPendingRef.current) {
                 return;
             }
@@ -529,12 +568,117 @@ export const ListPane = React.memo(
             if (!pendingFilePath || pendingFilePath !== primarySelectedFilePathForKeyboardOpen) {
                 // Selection changed while a debounced open was pending.
                 // Invalidate and cancel so we don't open a file that is no longer selected.
-                keyboardOpenRequestIdRef.current += 1;
-                keyboardOpenPendingRef.current = false;
-                keyboardOpenFileRef.current = null;
-                debouncedOpenFileInWorkspace.cancel();
+                clearPendingKeyboardOpen();
             }
-        }, [primarySelectedFilePathForKeyboardOpen, debouncedOpenFileInWorkspace]);
+        }, [primarySelectedFilePathForKeyboardOpen, clearPendingKeyboardOpen]);
+
+        useEffect(() => {
+            if (!settings.enterToOpenFiles || !keyboardOpenPendingRef.current) {
+                return;
+            }
+
+            // Enter-to-open disables automatic keyboard commit paths.
+            clearPendingKeyboardOpen();
+        }, [settings.enterToOpenFiles, clearPendingKeyboardOpen]);
+
+        useEffect(() => {
+            focusedPaneRef.current = uiState.focusedPane;
+            if (uiState.focusedPane !== 'navigation') {
+                // Leaving navigation pane invalidates "physical navigation key" context.
+                navigationPhysicalKeyOpenRef.current = false;
+            }
+        }, [uiState.focusedPane]);
+
+        useEffect(() => {
+            const resetPhysicalNavigationKeyState = () => {
+                // If window loses focus, keyup may never arrive. Reset physical-key tracking.
+                navigationPhysicalKeyOpenRef.current = false;
+            };
+
+            window.addEventListener('blur', resetPhysicalNavigationKeyState);
+            return () => {
+                window.removeEventListener('blur', resetPhysicalNavigationKeyState);
+            };
+        }, []);
+
+        useEffect(() => {
+            const container = props.rootContainerRef.current;
+            if (!container) {
+                return;
+            }
+
+            const isPhysicalNavigationKey = (event: KeyboardEvent) => {
+                // These keys can trigger folder/tag traversal and first-file auto-select.
+                return event.key === 'ArrowUp' || event.key === 'ArrowDown' || event.key === 'PageUp' || event.key === 'PageDown';
+            };
+
+            const hasDisallowedModifiers = (event: KeyboardEvent) => {
+                // Ctrl/Meta/Alt variants represent command shortcuts, not plain navigation traversal.
+                return event.ctrlKey || event.metaKey || event.altKey;
+            };
+
+            const handleNavigationKeyDown = (event: KeyboardEvent) => {
+                if (focusedPaneRef.current !== 'navigation') {
+                    // Ignore events when navigation pane is not active.
+                    navigationPhysicalKeyOpenRef.current = false;
+                    return;
+                }
+
+                if (isKeyboardEventContextBlocked(event)) {
+                    // Ignore typing/modal contexts and clear stale physical-key state.
+                    navigationPhysicalKeyOpenRef.current = false;
+                    return;
+                }
+
+                if (hasDisallowedModifiers(event)) {
+                    // Modified shortcuts should not mark folder auto-open flow as physical navigation.
+                    navigationPhysicalKeyOpenRef.current = false;
+                    return;
+                }
+
+                // Store whether this keydown is one of the physical traversal keys.
+                navigationPhysicalKeyOpenRef.current = isPhysicalNavigationKey(event);
+            };
+
+            const handleNavigationKeyUp = (event: KeyboardEvent) => {
+                if (focusedPaneRef.current !== 'navigation') {
+                    // Ignore events when navigation pane is not active.
+                    navigationPhysicalKeyOpenRef.current = false;
+                    return;
+                }
+
+                if (isKeyboardEventContextBlocked(event)) {
+                    // Ignore typing/modal contexts and clear stale physical-key state.
+                    navigationPhysicalKeyOpenRef.current = false;
+                    return;
+                }
+
+                if (hasDisallowedModifiers(event)) {
+                    // Modified shortcuts should not commit keyboard preview opens.
+                    navigationPhysicalKeyOpenRef.current = false;
+                    return;
+                }
+
+                if (!isPhysicalNavigationKey(event)) {
+                    // Only Arrow/Page keyup commits pending preview-open state.
+                    navigationPhysicalKeyOpenRef.current = false;
+                    return;
+                }
+
+                // Commit the final auto-selected file after keyboard folder/tag navigation settles.
+                commitPendingKeyboardSelectionOpenRef.current();
+                navigationPhysicalKeyOpenRef.current = false;
+            };
+
+            // Capture keydown so keyboard-origin metadata is available before pane handlers update selection.
+            container.addEventListener('keydown', handleNavigationKeyDown, true);
+            // Keyup is used to commit pending file-open request when navigation settles.
+            container.addEventListener('keyup', handleNavigationKeyUp);
+            return () => {
+                container.removeEventListener('keydown', handleNavigationKeyDown, true);
+                container.removeEventListener('keyup', handleNavigationKeyUp);
+            };
+        }, [props.rootContainerRef]);
 
         // Track render count
         const renderCountRef = useRef(0);
@@ -654,10 +798,15 @@ export const ListPane = React.memo(
 
         // Ensure the list has a valid selection for the current filter
         const ensureSelectionForCurrentFilter = useCallback(
-            (options?: { openInEditor?: boolean; clearIfEmpty?: boolean; selectFallback?: boolean }) => {
+            (options?: EnsureSelectionOptions): EnsureSelectionResult => {
+                // openInEditor means "open selection as part of sync"; enterToOpenFiles can disable that.
                 const openInEditor = options?.openInEditor ?? false;
                 const shouldOpenInEditor = openInEditor && !settings.enterToOpenFiles;
+                // debounceOpen applies only when openInEditor is active.
+                const debounceOpen = options?.debounceOpen ?? false;
+                // clearIfEmpty allows caller to clear selection when filtered list has no files.
                 const clearIfEmpty = options?.clearIfEmpty ?? false;
+                // selectFallback allows choosing first file when current selection is missing/invalid.
                 const selectFallback = options?.selectFallback ?? true;
                 const hasNoSelection = !selectedFile;
                 const selectedFileInList = selectedFile ? filePathToIndex.has(selectedFile.path) : false;
@@ -665,14 +814,47 @@ export const ListPane = React.memo(
 
                 if (needsSelection) {
                     if (selectFallback && orderedFiles.length > 0) {
+                        // Use first visible file as deterministic fallback selection.
                         const firstFile = orderedFiles[0];
-                        selectFileFromList(firstFile, { suppressOpen: !shouldOpenInEditor });
-                    } else if (!selectFallback && clearIfEmpty && orderedFiles.length === 0) {
-                        selectionDispatch({ type: 'SET_SELECTED_FILE', file: null });
+                        selectFileFromList(firstFile, {
+                            suppressOpen: !shouldOpenInEditor,
+                            debounceOpen: shouldOpenInEditor && debounceOpen
+                        });
+                        return { selectionStateChanged: true };
                     }
+
+                    if (!selectFallback && clearIfEmpty && orderedFiles.length === 0) {
+                        // Caller requested explicit clear when no filtered files are available.
+                        selectionDispatch({ type: 'SET_SELECTED_FILE', file: null });
+                        return { selectionStateChanged: true };
+                    }
+
+                    // No selectable fallback and no explicit clear requested.
+                    return { selectionStateChanged: false };
                 }
+
+                if (shouldOpenInEditor && selectedFile && selectedFileInList) {
+                    if (debounceOpen) {
+                        // Schedule open for keyup/timer commit path.
+                        scheduleKeyboardOpen(selectedFile);
+                        return { selectionStateChanged: false };
+                    }
+                    // Open immediately when debounce is not requested.
+                    openFileInWorkspace(selectedFile);
+                }
+
+                return { selectionStateChanged: false };
             },
-            [selectedFile, orderedFiles, filePathToIndex, selectionDispatch, selectFileFromList, settings.enterToOpenFiles]
+            [
+                selectedFile,
+                orderedFiles,
+                filePathToIndex,
+                selectionDispatch,
+                selectFileFromList,
+                settings.enterToOpenFiles,
+                scheduleKeyboardOpen,
+                openFileInWorkspace
+            ]
         );
 
         /**
@@ -966,15 +1148,34 @@ export const ListPane = React.memo(
                 return;
             }
 
+            // Debounce only when folder/tag auto-select came from physical navigation keys.
+            const shouldDebounceFolderAutoOpen = isFolderChangeWithAutoSelect && navigationPhysicalKeyOpenRef.current;
+            // Tracks whether helper updated selection state in this effect pass.
+            let selectionStateChangedBySearchSync = false;
+            // Tracks whether search-specific folder auto-select branch ran.
+            let handledSearchFolderAutoSelect = false;
+
             // If search is active and auto-select is enabled, we need to select the first filtered file
             if (isSearchActive && settings.autoSelectFirstFileOnFocusChange && !isMobile && isFolderChangeWithAutoSelect) {
                 // Ensure selection respects current filter and optionally clear selection if none
-                ensureSelectionForCurrentFilter({ openInEditor: true, clearIfEmpty: true });
-                isUserSelectionRef.current = false;
-                return;
+                const ensureResult = ensureSelectionForCurrentFilter({
+                    openInEditor: true,
+                    clearIfEmpty: true,
+                    debounceOpen: shouldDebounceFolderAutoOpen
+                });
+                selectionStateChangedBySearchSync = ensureResult.selectionStateChanged;
+                // Prevent generic open branch from re-running in same effect pass.
+                handledSearchFolderAutoSelect = true;
             }
 
-            if (selectedFile && !isUserSelectionRef.current && settings.autoSelectFirstFileOnFocusChange && !isMobile) {
+            if (
+                !handledSearchFolderAutoSelect &&
+                !selectionStateChangedBySearchSync &&
+                selectedFile &&
+                !isUserSelectionRef.current &&
+                settings.autoSelectFirstFileOnFocusChange &&
+                !isMobile
+            ) {
                 // Check if we're actively navigating the navigator
                 const navigatorEl = document.querySelector('.nn-split-container');
                 const hasNavigatorFocus = navigatorEl && navigatorEl.contains(document.activeElement);
@@ -982,10 +1183,26 @@ export const ListPane = React.memo(
                 // Open the file if we're not actively using the navigator OR if this is a folder change with auto-select
                 if (!hasNavigatorFocus || isFolderChangeWithAutoSelect) {
                     if (!settings.enterToOpenFiles) {
-                        openFileInWorkspace(selectedFile);
+                        if (shouldDebounceFolderAutoOpen) {
+                            // During key traversal, delay open so rapid navigation does not reopen every intermediate file.
+                            scheduleKeyboardOpen(selectedFile);
+                        } else {
+                            // Non-physical or already-settled navigation opens immediately.
+                            openFileInWorkspace(selectedFile);
+                        }
                     }
                 }
             }
+
+            if (isFolderChangeWithAutoSelect) {
+                // If selection state did not change as part of folder/tag sync, clear the flag explicitly.
+                if (!selectionStateChangedBySearchSync) {
+                    selectionDispatch({ type: 'SET_FOLDER_CHANGE_WITH_AUTO_SELECT', isFolderChangeWithAutoSelect: false });
+                }
+                // Auto-select scope is completed for this interaction.
+                navigationPhysicalKeyOpenRef.current = false;
+            }
+
             // Reset the flag after processing
             isUserSelectionRef.current = false;
         }, [
@@ -1000,6 +1217,7 @@ export const ListPane = React.memo(
             isSearchActive,
             files,
             ensureSelectionForCurrentFilter,
+            scheduleKeyboardOpen,
             openFileInWorkspace
         ]);
 
@@ -1157,7 +1375,7 @@ export const ListPane = React.memo(
                 }),
             onScheduleKeyboardOpen: scheduleKeyboardSelectionOpen,
             onScheduleKeyboardOpenForFile: scheduleKeyboardSelectionOpenForFile,
-            onCommitKeyboardOpen: commitKeyboardSelectionOpen
+            onCommitKeyboardOpen: commitPendingKeyboardSelectionOpen
         });
 
         // Determine if we're showing empty state

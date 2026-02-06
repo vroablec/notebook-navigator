@@ -37,9 +37,37 @@ export function getPathFromDataAttribute(element: HTMLElement | null, attribute:
  * @param e - The keyboard event
  * @returns True if typing in an input field, false otherwise
  */
-export function isTypingInInput(e: KeyboardEvent): boolean {
-    const target = e.target as HTMLElement;
-    return target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.contentEditable === 'true';
+function isTypingInInput(e: KeyboardEvent): boolean {
+    const target = e.target;
+    if (!(target instanceof HTMLElement)) {
+        // Events from non-HTMLElement targets are treated as non-typing contexts.
+        return false;
+    }
+    // Input/textarea/contenteditable elements own text-entry keyboard behavior.
+    return target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable;
+}
+
+/**
+ * Checks whether keyboard handling should be ignored for this event context.
+ * Blocks shortcuts while typing or when a modal currently has focus.
+ *
+ * @param e - The keyboard event
+ * @returns True when pane keyboard handlers should ignore the event
+ */
+export function isKeyboardEventContextBlocked(e: KeyboardEvent): boolean {
+    if (isTypingInInput(e)) {
+        // Never run pane keyboard shortcuts while typing in editable controls.
+        return true;
+    }
+
+    if (typeof document === 'undefined') {
+        // Non-DOM environments cannot have modal focus; treat as unblocked.
+        return false;
+    }
+
+    const activeElement = document.activeElement;
+    // Obsidian modals should receive keyboard input without pane interception.
+    return activeElement instanceof HTMLElement && activeElement.closest('.modal-container') !== null;
 }
 
 export function getTooltipPlacement(): 'left' | 'right' {

@@ -75,6 +75,7 @@ export type SelectionAction =
     | { type: 'UPDATE_CURRENT_FILE'; file: TFile } // Update current file without changing selection
     | { type: 'TOGGLE_WITH_CURSOR'; file: TFile; anchorIndex?: number } // Toggle selection and update cursor
     | { type: 'SET_KEYBOARD_NAVIGATION'; isKeyboardNavigation: boolean } // Set keyboard navigation flag
+    | { type: 'SET_FOLDER_CHANGE_WITH_AUTO_SELECT'; isFolderChangeWithAutoSelect: boolean } // Set folder auto-select flag
     | { type: 'UPDATE_FILE_PATH'; oldPath: string; newPath: string } // Update file path after rename
     | { type: 'SET_FOLDER_NAVIGATION'; isFolderNavigation: boolean }; // Set folder navigation flag
 
@@ -468,6 +469,14 @@ function selectionReducer(state: SelectionState, action: SelectionAction, app?: 
             return {
                 ...state,
                 isKeyboardNavigation: action.isKeyboardNavigation
+            };
+        }
+
+        case 'SET_FOLDER_CHANGE_WITH_AUTO_SELECT': {
+            return {
+                ...state,
+                // Tracks whether latest folder/tag change included reducer-level auto file selection.
+                isFolderChangeWithAutoSelect: action.isFolderChangeWithAutoSelect
             };
         }
 
