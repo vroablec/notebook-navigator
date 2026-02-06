@@ -36,7 +36,7 @@ import { getDBInstanceOrNull } from '../storage/fileOperations';
 import { extractMetadata } from '../utils/metadataExtractor';
 import { METADATA_SENTINEL } from '../storage/IndexedDBStorage';
 import { getFileDisplayName as getDisplayName } from './fileNameUtils';
-import { isFolderNote } from './folderNotes';
+import { getFolderNote, getFolderNoteDetectionSettings } from './folderNotes';
 import { createHiddenTagVisibility, normalizeTagPathValue } from './tagPrefixMatcher';
 import { isRecord } from './typeGuards';
 import {
@@ -262,14 +262,20 @@ export function getFilesForFolder(
 
     // Filter out folder notes if enabled and set to hide
     if (settings.enableFolderNotes && settings.hideFolderNoteInList) {
+        const detectionSettings = getFolderNoteDetectionSettings(settings);
+        const folderNotePathByFolderPath = new Map<string, string | null>();
         allFiles = allFiles.filter(file => {
-            if (file.parent && file.parent instanceof TFolder) {
-                return !isFolderNote(file, file.parent, {
-                    enableFolderNotes: true,
-                    folderNoteName: settings.folderNoteName
-                });
+            const parent = file.parent;
+            if (!(parent instanceof TFolder)) {
+                return true;
             }
-            return true;
+
+            if (!folderNotePathByFolderPath.has(parent.path)) {
+                const folderNote = getFolderNote(parent, detectionSettings);
+                folderNotePathByFolderPath.set(parent.path, folderNote ? folderNote.path : null);
+            }
+
+            return folderNotePathByFolderPath.get(parent.path) !== file.path;
         });
     }
 

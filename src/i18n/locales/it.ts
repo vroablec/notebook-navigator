@@ -1461,6 +1461,10 @@ export const STRINGS_IT = {
                 desc: 'Nome della nota cartella senza estensione. Lascia vuoto per usare lo stesso nome della cartella.',
                 placeholder: 'index'
             },
+            folderNoteNamePattern: {
+                name: 'Modello nome nota cartella',
+                desc: 'Modello di nome per le note cartella senza estensione. Usa {{folder}} per inserire il nome della cartella. Se impostato, il nome della nota cartella non si applica.'
+            },
             folderNoteTemplate: {
                 name: 'Modello nota cartella',
                 desc: 'File modello per le nuove note cartella Markdown. Impostare la posizione della cartella modelli in Generale > Modelli.'

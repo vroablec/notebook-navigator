@@ -21,7 +21,7 @@ import { ItemType } from '../../types';
 import { isFolderShortcut } from '../../types/shortcuts';
 import { BaseMetadataService } from './BaseMetadataService';
 import type { CleanupValidators } from '../MetadataService';
-import { getFolderNote, type FolderNoteDetectionSettings } from '../../utils/folderNotes';
+import { getFolderNote, getFolderNoteDetectionSettings } from '../../utils/folderNotes';
 import { getDBInstance } from '../../storage/fileOperations';
 import { normalizeCanonicalIconId } from '../../utils/iconizeFormat';
 
@@ -353,10 +353,7 @@ export class FolderMetadataService extends BaseMetadataService {
             return null;
         }
 
-        const detectionSettings: FolderNoteDetectionSettings = {
-            enableFolderNotes: settings.enableFolderNotes,
-            folderNoteName: settings.folderNoteName
-        };
+        const detectionSettings = getFolderNoteDetectionSettings(settings);
 
         const folderNote = getFolderNote(folder, detectionSettings);
         if (!folderNote) {

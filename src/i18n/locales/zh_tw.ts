@@ -1457,6 +1457,10 @@ export const STRINGS_ZH_TW = {
                 desc: '資料夾筆記的名稱。留空以使用與資料夾相同的名稱。',
                 placeholder: 'index'
             },
+            folderNoteNamePattern: {
+                name: '資料夾筆記名稱模式',
+                desc: '不含副檔名的資料夾筆記名稱模式。使用 {{folder}} 插入資料夾名稱。設定後，資料夾筆記名稱不適用。'
+            },
             folderNoteTemplate: {
                 name: '資料夾筆記範本',
                 desc: '新建 Markdown 資料夾筆記的範本檔案。在一般 > 範本中設定範本資料夾位置。'

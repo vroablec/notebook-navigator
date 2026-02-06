@@ -1459,6 +1459,10 @@ export const STRINGS_TR = {
                 desc: 'Uzantısız klasör notu adı. Klasörle aynı adı kullanmak için boş bırakın.',
                 placeholder: 'index'
             },
+            folderNoteNamePattern: {
+                name: 'Klasör notu ad deseni',
+                desc: 'Uzantısız klasör notu ad deseni. Klasör adını eklemek için {{folder}} kullanın. Ayarlandığında, klasör notu adı geçerli olmaz.'
+            },
             folderNoteTemplate: {
                 name: 'Klasör notu şablonu',
                 desc: 'Yeni Markdown klasör notları için şablon dosyası. Şablon klasörü konumunu Genel > Şablonlar bölümünden ayarlayın.'

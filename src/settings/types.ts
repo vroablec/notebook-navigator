@@ -301,6 +301,7 @@ export interface NotebookNavigatorSettings {
     enableFolderNotes: boolean;
     folderNoteType: FolderNoteCreationPreference;
     folderNoteName: string;
+    folderNoteNamePattern: string;
     folderNoteTemplate: string | null;
     openFolderNotesInNewTab: boolean;
     hideFolderNoteInList: boolean;

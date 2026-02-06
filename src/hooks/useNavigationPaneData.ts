@@ -71,7 +71,7 @@ import { getCachedFileTags } from '../utils/tagUtils';
 import { isFolderShortcut, isNoteShortcut, isSearchShortcut, isTagShortcut } from '../types/shortcuts';
 import { useRootFolderOrder } from './useRootFolderOrder';
 import { useRootTagOrder } from './useRootTagOrder';
-import type { FolderNoteDetectionSettings } from '../utils/folderNotes';
+import { getFolderNoteDetectionSettings } from '../utils/folderNotes';
 import { getDBInstance, getDBInstanceOrNull } from '../storage/fileOperations';
 import { naturalCompare } from '../utils/sortUtils';
 import type { NoteCountInfo } from '../types/noteCounts';
@@ -1678,10 +1678,7 @@ export function useNavigationPaneData({
         const excludedFolderPatterns = hiddenFolders;
         const hiddenFileTagVisibility = showHiddenItems ? null : createHiddenTagVisibility(hiddenFileTags, false);
         const db = hiddenFileTagVisibility && hiddenFileTagVisibility.hasHiddenRules ? getDBInstanceOrNull() : null;
-        const folderNoteSettings: FolderNoteDetectionSettings = {
-            enableFolderNotes: settings.enableFolderNotes,
-            folderNoteName: settings.folderNoteName
-        };
+        const folderNoteSettings = getFolderNoteDetectionSettings(settings);
         const includeDescendants = includeDescendantNotes;
         const showHiddenFolders = showHiddenItems;
         const countOptions = {
@@ -1722,6 +1719,7 @@ export function useNavigationPaneData({
         fileVisibility,
         settings.enableFolderNotes,
         settings.folderNoteName,
+        settings.folderNoteNamePattern,
         settings.hideFolderNoteInList,
         app,
         isVisible,

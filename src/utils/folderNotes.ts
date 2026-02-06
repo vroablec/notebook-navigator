@@ -20,6 +20,7 @@ import { App, type PaneType, TFile, TFolder, normalizePath } from 'obsidian';
 import { strings } from '../i18n';
 import { FolderNoteType, FOLDER_NOTE_TYPE_EXTENSIONS, FolderNoteCreationPreference } from '../types/folderNote';
 import { createDatabaseContent, createMarkdownFileFromTemplate } from './fileCreationUtils';
+import { type FolderNoteNameSettings, resolveFolderNoteName } from './folderNoteName';
 import { isExcalidrawFile, stripExcalidrawSuffix } from './fileNameUtils';
 import { CommandQueueService } from '../services/CommandQueueService';
 import { promptForFolderNoteType } from '../modals/FolderNoteTypeModal';
@@ -38,18 +39,27 @@ interface OpenFolderNoteFileParams {
 /**
  * Settings required for detecting folder notes
  */
-export interface FolderNoteDetectionSettings {
+export interface FolderNoteDetectionSettings extends FolderNoteNameSettings {
     enableFolderNotes: boolean;
-    folderNoteName: string;
 }
 
 /**
  * Settings required for creating folder notes
  */
-export interface FolderNoteCreationSettings {
+export interface FolderNoteCreationSettings extends FolderNoteNameSettings {
     folderNoteType: FolderNoteCreationPreference;
-    folderNoteName: string;
     folderNoteTemplate: string | null;
+}
+
+/**
+ * Extracts folder note detection settings from a larger settings object.
+ */
+export function getFolderNoteDetectionSettings(settings: FolderNoteDetectionSettings): FolderNoteDetectionSettings {
+    return {
+        enableFolderNotes: settings.enableFolderNotes,
+        folderNoteName: settings.folderNoteName,
+        folderNoteNamePattern: settings.folderNoteNamePattern
+    };
 }
 
 /** Set of file extensions that are valid for folder notes */
@@ -75,7 +85,7 @@ export function getFolderNote(folder: TFolder, settings: FolderNoteDetectionSett
         return null;
     }
 
-    const expectedName = settings.folderNoteName || folder.name;
+    const expectedName = resolveFolderNoteName(folder.name, settings);
     let excalidrawCandidate: TFile | null = null;
 
     for (const child of folder.children) {
@@ -158,7 +168,7 @@ export function isFolderNote(file: TFile, folder: TFolder, settings: FolderNoteD
         return false;
     }
 
-    const expectedName = settings.folderNoteName || folder.name;
+    const expectedName = resolveFolderNoteName(folder.name, settings);
     if (file.basename === expectedName) {
         return true;
     }
@@ -186,10 +196,14 @@ export async function createFolderNote(
     settings: FolderNoteCreationSettings,
     commandQueue?: CommandQueueService | null
 ): Promise<TFile | null> {
-    const existingNote = getFolderNote(folder, {
-        enableFolderNotes: true,
-        folderNoteName: settings.folderNoteName
-    });
+    const existingNote = getFolderNote(
+        folder,
+        getFolderNoteDetectionSettings({
+            enableFolderNotes: true,
+            folderNoteName: settings.folderNoteName,
+            folderNoteNamePattern: settings.folderNoteNamePattern
+        })
+    );
 
     if (existingNote) {
         showNotice(strings.fileSystem.errors.folderNoteAlreadyExists, { variant: 'warning' });
@@ -208,7 +222,7 @@ export async function createFolderNote(
     }
 
     const extension = FOLDER_NOTE_TYPE_EXTENSIONS[selectedType];
-    const baseName = settings.folderNoteName || folder.name;
+    const baseName = resolveFolderNoteName(folder.name, settings);
     const noteFileName = `${baseName}.${extension}`;
     const notePath = normalizePath(`${folder.path}/${noteFileName}`);
 

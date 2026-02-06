@@ -1462,6 +1462,10 @@ export const STRINGS_PL = {
                 desc: 'Nazwa notatki folderu bez rozszerzenia. Zostaw puste aby użyć takiej samej nazwy jak folder.',
                 placeholder: 'index'
             },
+            folderNoteNamePattern: {
+                name: 'Wzór nazwy notatki folderu',
+                desc: 'Wzór nazwy notatek folderów bez rozszerzenia. Użyj {{folder}}, aby wstawić nazwę folderu. Po ustawieniu nazwa notatki folderu nie obowiązuje.'
+            },
             folderNoteTemplate: {
                 name: 'Szablon notatki folderu',
                 desc: 'Plik szablonu dla nowych notatek folderów Markdown. Ustaw lokalizację folderu szablonów w Ogólne > Szablony.'

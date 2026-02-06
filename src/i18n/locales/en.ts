@@ -1456,6 +1456,10 @@ export const STRINGS_EN = {
                 desc: 'Name of the folder note without extension. Leave empty to use the same name as the folder.',
                 placeholder: 'index'
             },
+            folderNoteNamePattern: {
+                name: 'Folder note name pattern',
+                desc: 'Name pattern for folder notes without extension. Use {{folder}} to insert the folder name. When set, Folder note name does not apply.'
+            },
             folderNoteTemplate: {
                 name: 'Folder note template',
                 desc: 'Template file for new markdown folder notes. Set template folder location in General > Templates.'

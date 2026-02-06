@@ -181,6 +181,7 @@ export function buildFolderCreationMenu(params: FolderMenuBuilderParams): void {
                         {
                             folderNoteType: settings.folderNoteType,
                             folderNoteName: settings.folderNoteName,
+                            folderNoteNamePattern: settings.folderNoteNamePattern,
                             folderNoteTemplate: settings.folderNoteTemplate
                         },
                         services.commandQueue

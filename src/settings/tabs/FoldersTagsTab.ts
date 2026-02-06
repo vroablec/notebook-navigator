@@ -25,6 +25,7 @@ import { createSettingGroupFactory } from '../settingGroups';
 import { addSettingSyncModeToggle } from '../syncModeToggle';
 import { setElementVisible, wireToggleSettingWithSubSettings } from '../subSettings';
 import { FilePathInputSuggest } from '../../suggest/FilePathInputSuggest';
+import { FOLDER_NOTE_NAME_PATTERN_PLACEHOLDER } from '../../utils/folderNoteName';
 import { normalizeOptionalVaultFilePath } from '../../utils/pathUtils';
 
 /** Renders the folders and tags settings tab */
@@ -192,6 +193,17 @@ export function renderFoldersTagsTab(context: SettingsTabContext): void {
         () => plugin.settings.folderNoteName,
         value => {
             plugin.settings.folderNoteName = value;
+        }
+    );
+
+    context.createDebouncedTextSetting(
+        folderNotesSettingsEl,
+        strings.settings.items.folderNoteNamePattern.name,
+        strings.settings.items.folderNoteNamePattern.desc,
+        FOLDER_NOTE_NAME_PATTERN_PLACEHOLDER,
+        () => plugin.settings.folderNoteNamePattern,
+        value => {
+            plugin.settings.folderNoteNamePattern = value;
         }
     );
 

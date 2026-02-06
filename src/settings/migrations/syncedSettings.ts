@@ -26,6 +26,7 @@ import { cloneShortcuts, DEFAULT_VAULT_PROFILE_ID } from '../../utils/vaultProfi
 import { ShortcutType, type ShortcutEntry } from '../../types/shortcuts';
 import { isCustomPropertyType } from '../types';
 import { normalizeCalendarCustomRootFolder } from '../../utils/calendarCustomNotePatterns';
+import { normalizeFolderNoteNamePattern } from '../../utils/folderNoteName';
 import { normalizeOptionalVaultFilePath } from '../../utils/pathUtils';
 
 // Types/Interfaces
@@ -222,6 +223,11 @@ export function migrateFolderNoteTemplateSetting(params: {
     const templateSetting = settings.folderNoteTemplate;
     const normalizedTemplatePath = normalizeOptionalVaultFilePath(templateSetting);
     settings.folderNoteTemplate = normalizedTemplatePath ?? defaultSettings.folderNoteTemplate;
+    if (typeof settings.folderNoteNamePattern !== 'string') {
+        settings.folderNoteNamePattern = defaultSettings.folderNoteNamePattern;
+    } else {
+        settings.folderNoteNamePattern = normalizeFolderNoteNamePattern(settings.folderNoteNamePattern);
+    }
 
     if (Object.prototype.hasOwnProperty.call(settingsRecord, 'folderNoteProperties')) {
         delete settingsRecord['folderNoteProperties'];

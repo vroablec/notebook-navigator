@@ -39,7 +39,8 @@ import {
     stripForbiddenNameCharactersWindows,
     stripLeadingPeriods
 } from '../utils/fileNameUtils';
-import { getFolderNote, isFolderNote, isSupportedFolderNoteExtension } from '../utils/folderNotes';
+import { resolveFolderNoteName, shouldRenameFolderNoteWithFolderName } from '../utils/folderNoteName';
+import { getFolderNote, getFolderNoteDetectionSettings, isFolderNote, isSupportedFolderNoteExtension } from '../utils/folderNotes';
 import { updateSelectionAfterFileOperation, findNextFileAfterRemoval } from '../utils/selectionUtils';
 import { executeCommand, isPluginInstalled } from '../utils/typeGuards';
 import { getErrorMessage } from '../utils/errorUtils';
@@ -440,10 +441,7 @@ export class FileSystemOperations {
             return file.basename;
         }
 
-        const detectionSettings = {
-            enableFolderNotes: settings.enableFolderNotes,
-            folderNoteName: settings.folderNoteName
-        };
+        const detectionSettings = getFolderNoteDetectionSettings(settings);
 
         if (!isFolderNote(file, parent, detectionSettings)) {
             return file.basename;
@@ -540,20 +538,23 @@ export class FileSystemOperations {
 
                 try {
                     const previousFolderPath = folder.path;
-                    const useDefaultFolderNote = Boolean(settings?.enableFolderNotes && !settings.folderNoteName);
+                    const folderNoteNamingSettings =
+                        settings?.enableFolderNotes && shouldRenameFolderNoteWithFolderName(settings) ? settings : null;
 
                     let folderNote: TFile | null = null;
-                    if (useDefaultFolderNote && settings) {
-                        folderNote = getFolderNote(folder, settings);
+                    let renamedFolderNoteFileName: string | null = null;
+                    if (folderNoteNamingSettings) {
+                        folderNote = getFolderNote(folder, folderNoteNamingSettings);
                     }
 
-                    if (folderNote) {
-                        const newNoteName = this.getFolderNoteFileName(filteredName, folderNote);
+                    if (folderNote && folderNoteNamingSettings) {
+                        const newFolderNoteBaseName = resolveFolderNoteName(filteredName, folderNoteNamingSettings);
+                        renamedFolderNoteFileName = this.getFolderNoteFileName(newFolderNoteBaseName, folderNote);
                         const folderBase = folder.path === '/' ? '' : `${folder.path}/`;
-                        const conflictPath = normalizePath(`${folderBase}${newNoteName}`);
+                        const conflictPath = normalizePath(`${folderBase}${renamedFolderNoteFileName}`);
                         const conflict = this.app.vault.getFileByPath(conflictPath);
                         if (conflict) {
-                            showNotice(strings.fileSystem.errors.renameFolderNoteConflict.replace('{name}', newNoteName), {
+                            showNotice(strings.fileSystem.errors.renameFolderNoteConflict.replace('{name}', renamedFolderNoteFileName), {
                                 variant: 'warning'
                             });
                             return;
@@ -568,10 +569,9 @@ export class FileSystemOperations {
                     await this.app.fileManager.renameFile(folder, newFolderPath);
                     await this.syncHiddenFolderPathChange(previousFolderPath, newFolderPath);
 
-                    // Rename the folder note to match the new folder name when using default naming
-                    if (folderNote) {
-                        const newNoteName = this.getFolderNoteFileName(filteredName, folderNote);
-                        const newNotePath = normalizePath(`${newFolderPath}/${newNoteName}`);
+                    // Rename folder note when naming is tied to the folder name.
+                    if (folderNote && renamedFolderNoteFileName !== null) {
+                        const newNotePath = normalizePath(`${newFolderPath}/${renamedFolderNoteFileName}`);
                         await this.app.fileManager.renameFile(folderNote, newNotePath);
                     }
                 } catch (error) {
@@ -1121,10 +1121,7 @@ export class FileSystemOperations {
             return;
         }
 
-        const detectionSettings = {
-            enableFolderNotes: settings.enableFolderNotes,
-            folderNoteName: settings.folderNoteName
-        };
+        const detectionSettings = getFolderNoteDetectionSettings(settings);
 
         if (isFolderNote(file, parent, detectionSettings)) {
             showNotice(strings.fileSystem.errors.folderNoteAlreadyLinked, { variant: 'warning' });
@@ -1145,7 +1142,7 @@ export class FileSystemOperations {
         }
 
         const isExcalidraw = isExcalidrawFile(file);
-        let targetBaseName = settings.folderNoteName || parent.name;
+        let targetBaseName = resolveFolderNoteName(parent.name, settings);
         if (isExcalidraw) {
             // Strip .excalidraw from the base name for folder note naming.
             targetBaseName = stripExcalidrawSuffix(targetBaseName);
@@ -1195,10 +1192,7 @@ export class FileSystemOperations {
             return;
         }
 
-        const detectionSettings = {
-            enableFolderNotes: settings.enableFolderNotes,
-            folderNoteName: settings.folderNoteName
-        };
+        const detectionSettings = getFolderNoteDetectionSettings(settings);
 
         // Check if file is already acting as a folder note
         if (isFolderNote(file, parent, detectionSettings)) {
@@ -1236,7 +1230,7 @@ export class FileSystemOperations {
         }
 
         // Determine final filename based on folder note settings
-        let finalBaseName = settings.folderNoteName ? settings.folderNoteName : folderName;
+        let finalBaseName = resolveFolderNoteName(folderName, settings);
         if (isExcalidraw) {
             // Strip .excalidraw from the base name for folder note naming.
             finalBaseName = stripExcalidrawSuffix(finalBaseName);

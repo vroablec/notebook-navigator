@@ -1461,6 +1461,10 @@ export const STRINGS_DE = {
                 desc: 'Name der Ordnernotiz. Leer lassen, um denselben Namen wie der Ordner zu verwenden.',
                 placeholder: 'Leer lassen für Ordnernamen'
             },
+            folderNoteNamePattern: {
+                name: 'Namensmuster der Ordnernotiz',
+                desc: 'Namensmuster für Ordnernotizen ohne Erweiterung. Verwende {{folder}}, um den Ordnernamen einzufügen. Wenn gesetzt, gilt der Ordnernotizname nicht.'
+            },
             folderNoteTemplate: {
                 name: 'Ordnernotiz-Vorlage',
                 desc: 'Vorlagendatei für neue Markdown-Ordnernotizen. Vorlagenordner unter Allgemein > Vorlagen festlegen.'

@@ -90,7 +90,7 @@ import type { CombinedNavigationItem } from '../types/virtualization';
 import { IOS_OBSIDIAN_1_11_PLUS_GLASS_TOOLBAR_HEIGHT_PX, NavigationPaneItemType, ItemType, TAGGED_TAG_ID, UNTAGGED_TAG_ID } from '../types';
 import { getSelectedPath } from '../utils/selectionUtils';
 import { TagTreeNode } from '../types/storage';
-import { getFolderNote, openFolderNoteFile, type FolderNoteDetectionSettings } from '../utils/folderNotes';
+import { getFolderNote, getFolderNoteDetectionSettings, openFolderNoteFile } from '../utils/folderNotes';
 import { findTagNode, getTotalNoteCount } from '../utils/tagTree';
 import { FILE_VISIBILITY, getExtensionSuffix, shouldShowExtensionSuffix } from '../utils/fileTypeUtils';
 import { getTagSearchModifierOperator, resolveCanonicalTagPath } from '../utils/tagUtils';
@@ -1925,10 +1925,11 @@ export const NavigationPane = React.memo(
                 }
 
                 // Extract folder note settings for the note count calculation
-                const folderNoteSettings: FolderNoteDetectionSettings = {
+                const folderNoteSettings = getFolderNoteDetectionSettings({
                     enableFolderNotes: settings.enableFolderNotes,
-                    folderNoteName: settings.folderNoteName
-                };
+                    folderNoteName: settings.folderNoteName,
+                    folderNoteNamePattern: settings.folderNoteNamePattern
+                });
 
                 return calculateFolderNoteCounts(folder, {
                     app,
@@ -1958,6 +1959,7 @@ export const NavigationPane = React.memo(
                 settings.hideFolderNoteInList,
                 settings.enableFolderNotes,
                 settings.folderNoteName,
+                settings.folderNoteNamePattern,
                 folderCountFileNameMatcher
             ]
         );

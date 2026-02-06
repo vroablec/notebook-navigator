@@ -1458,6 +1458,10 @@ export const STRINGS_ZH_CN = {
                 desc: '文件夹笔记的名称。留空以使用与文件夹相同的名称。',
                 placeholder: '留空以使用文件夹名称'
             },
+            folderNoteNamePattern: {
+                name: '文件夹笔记名称模式',
+                desc: '不含扩展名的文件夹笔记名称模式。使用 {{folder}} 插入文件夹名称。设置后，文件夹笔记名称不适用。'
+            },
             folderNoteTemplate: {
                 name: '文件夹笔记模板',
                 desc: '新建 Markdown 文件夹笔记的模板文件。在常规 > 模板中设置模板文件夹位置。'

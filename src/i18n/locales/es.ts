@@ -1462,6 +1462,10 @@ export const STRINGS_ES = {
                 desc: 'Nombre de la nota de carpeta. Dejar vacío para usar el mismo nombre que la carpeta.',
                 placeholder: 'Dejar vacío para el nombre de la carpeta'
             },
+            folderNoteNamePattern: {
+                name: 'Patrón de nombre de nota de carpeta',
+                desc: 'Patrón de nombre para notas de carpeta sin extensión. Usa {{folder}} para insertar el nombre de la carpeta. Cuando se establece, el nombre de nota de carpeta no se aplica.'
+            },
             folderNoteTemplate: {
                 name: 'Plantilla de nota de carpeta',
                 desc: 'Archivo de plantilla para nuevas notas de carpeta en Markdown. Establecer ubicación de carpeta de plantillas en General > Plantillas.'

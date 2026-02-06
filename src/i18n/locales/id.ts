@@ -1460,6 +1460,10 @@ export const STRINGS_ID = {
                 desc: 'Nama catatan folder tanpa ekstensi. Biarkan kosong untuk menggunakan nama yang sama dengan folder.',
                 placeholder: 'index'
             },
+            folderNoteNamePattern: {
+                name: 'Pola nama catatan folder',
+                desc: 'Pola nama untuk catatan folder tanpa ekstensi. Gunakan {{folder}} untuk menyisipkan nama folder. Jika diatur, nama catatan folder tidak berlaku.'
+            },
             folderNoteTemplate: {
                 name: 'Templat catatan folder',
                 desc: 'File templat untuk catatan folder markdown baru. Atur lokasi folder templat di Umum > Templat.'

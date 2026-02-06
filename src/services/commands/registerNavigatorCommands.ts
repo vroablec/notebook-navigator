@@ -38,7 +38,7 @@ import {
     type CalendarNoteKind
 } from '../../utils/calendarNotes';
 import { getCalendarCustomWeekAnchorDate } from '../../utils/calendarCustomNotePatterns';
-import { getFolderNote, isFolderNote, isSupportedFolderNoteExtension, type FolderNoteDetectionSettings } from '../../utils/folderNotes';
+import { getFolderNote, getFolderNoteDetectionSettings, isFolderNote, isSupportedFolderNoteExtension } from '../../utils/folderNotes';
 import { isFolderInExcludedFolder, shouldExcludeFile } from '../../utils/fileFilters';
 import { getEffectiveFrontmatterExclusions, isFileHiddenBySettings } from '../../utils/exclusionUtils';
 import { runAsyncAction } from '../../utils/async';
@@ -214,13 +214,6 @@ async function selectAdjacentFileWithoutNavigatorView(plugin: NotebookNavigatorP
     }
 
     return true;
-}
-
-function getFolderNoteDetectionSettings(plugin: NotebookNavigatorPlugin): FolderNoteDetectionSettings {
-    return {
-        enableFolderNotes: plugin.settings.enableFolderNotes,
-        folderNoteName: plugin.settings.folderNoteName
-    };
 }
 
 const OPEN_ALL_FILES_WARNING_THRESHOLD = 15;
@@ -965,7 +958,7 @@ export default function registerNavigatorCommands(plugin: NotebookNavigatorPlugi
                 return true;
             }
 
-            const folderNote = getFolderNote(selectedFolder, getFolderNoteDetectionSettings(plugin));
+            const folderNote = getFolderNote(selectedFolder, getFolderNoteDetectionSettings(plugin.settings));
 
             if (!folderNote) {
                 showNotice(strings.fileSystem.errors.folderNoteNotFound, { variant: 'warning' });
@@ -996,7 +989,7 @@ export default function registerNavigatorCommands(plugin: NotebookNavigatorPlugi
             }
 
             runAsyncAction(async () => {
-                const folderNoteSettings = getFolderNoteDetectionSettings(plugin);
+                const folderNoteSettings = getFolderNoteDetectionSettings(plugin.settings);
 
                 const { showHiddenItems } = plugin.getUXPreferences();
                 const effectiveExcludedFiles = getEffectiveFrontmatterExclusions(plugin.settings, showHiddenItems);

@@ -1459,6 +1459,10 @@ export const STRINGS_PT_BR = {
                 desc: 'Nome da nota de pasta sem extensão. Deixe em branco para usar o mesmo nome da pasta.',
                 placeholder: 'índice'
             },
+            folderNoteNamePattern: {
+                name: 'Padrão de nome da nota de pasta',
+                desc: 'Padrão de nome para notas de pasta sem extensão. Use {{folder}} para inserir o nome da pasta. Quando definido, o nome da nota de pasta não se aplica.'
+            },
             folderNoteTemplate: {
                 name: 'Modelo de nota de pasta',
                 desc: 'Arquivo de modelo para novas notas de pasta Markdown. Definir localização da pasta de modelos em Geral > Modelos.'

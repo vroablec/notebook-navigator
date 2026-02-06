@@ -1458,6 +1458,10 @@ export const STRINGS_KO = {
                 desc: '확장자 없는 폴더 노트의 이름입니다. 폴더와 같은 이름을 사용하려면 비워 두세요.',
                 placeholder: 'index'
             },
+            folderNoteNamePattern: {
+                name: '폴더 노트 이름 패턴',
+                desc: '확장자 없는 폴더 노트 이름 패턴. {{folder}}을 사용하여 폴더 이름을 삽입합니다. 설정하면 폴더 노트 이름이 적용되지 않습니다.'
+            },
             folderNoteTemplate: {
                 name: '폴더 노트 템플릿',
                 desc: '새 마크다운 폴더 노트용 템플릿 파일. 템플릿 폴더 위치는 일반 > 템플릿에서 설정하세요.'

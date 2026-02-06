@@ -1463,6 +1463,10 @@ export const STRINGS_NL = {
                 desc: 'Naam van de mapnotitie zonder extensie. Laat leeg om dezelfde naam als de map te gebruiken.',
                 placeholder: 'index'
             },
+            folderNoteNamePattern: {
+                name: 'Naampatroon mapnotitie',
+                desc: 'Naampatroon voor mapnotities zonder extensie. Gebruik {{folder}} om de mapnaam in te voegen. Indien ingesteld, is de mapnotitiesnaam niet van toepassing.'
+            },
             folderNoteTemplate: {
                 name: 'Mapnotitiesjabloon',
                 desc: 'Sjabloonbestand voor nieuwe Markdown-mapnotities. Stel de sjabloonmaplocatie in bij Algemeen > Sjablonen.'
