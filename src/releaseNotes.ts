@@ -76,7 +76,7 @@ export interface ReleaseNote {
 const RELEASE_NOTES: ReleaseNote[] = [
     {
         version: '2.3.0',
-        date: '2026-02-09',
+        date: '2026-02-08',
         showOnUpdate: true,
         new: [
             '==Vault icons==. You can now use SVG images from your vault for icons. Just pick the new "Vault" tab in the icon picker.',
@@ -91,6 +91,9 @@ const RELEASE_NOTES: ReleaseNote[] = [
         changed: [
             'Format settings now use **Moment format**. Existing formats migrate automatically where possible.',
             'Removed the settings tab Settings > "Search & hotkeys". The search setting is now local and toggled in the list pane.'
+        ],
+        fixed: [
+            'The setting Folders & tags > “Auto-select first note” did not work correctly and was fixed. Also improved performance significantly by debouncing file open commands just like in list pane, so scrolling through folders and tags should now be blazingly fast.'
         ]
     },
     {
