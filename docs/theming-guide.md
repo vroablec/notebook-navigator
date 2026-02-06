@@ -127,7 +127,7 @@ Priority order: folder note styles override custom color styles, which override 
 | `--nn-theme-navitem-custom-color-name-font-weight`      | `600`       | Font weight for folders/tags with custom colors (overrides default)           |
 | `--nn-theme-navitem-custom-color-file-name-font-weight` | `600`       | Font weight for file names with custom colors (overrides default file weight) |
 | `--nn-theme-navitem-folder-note-name-font-weight`       | `400`       | Font weight for folders with notes (overrides all others)                     |
-| `--nn-theme-navitem-folder-note-name-decoration`        | `none`      | Text decoration for folders with notes (none, underline, underline dotted)    |
+| `--nn-theme-navitem-folder-note-name-decoration`        | `underline` | Text decoration for folders with notes (none, underline, underline dotted)    |
 | `--nn-theme-navitem-folder-note-name-hover-decoration`  | `underline` | Text decoration when hovering folders with notes                              |
 
 ### Pane divider (desktop only)
@@ -314,7 +314,7 @@ body {
   --nn-theme-navitem-custom-color-name-font-weight: 600;
   --nn-theme-navitem-custom-color-file-name-font-weight: 600;
   --nn-theme-navitem-folder-note-name-font-weight: 600;
-  --nn-theme-navitem-folder-note-name-decoration: none;
+  --nn-theme-navitem-folder-note-name-decoration: underline;
   --nn-theme-navitem-folder-note-name-hover-decoration: underline;
   --nn-theme-navitem-count-font-weight: 400;
 

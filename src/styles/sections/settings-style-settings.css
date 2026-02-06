@@ -501,7 +501,7 @@ settings:
         title: Folder note decoration
         description: Text decoration for folders with notes.
         type: variable-select
-        default: none
+        default: underline
         options:
           -
             label: None
