@@ -99,6 +99,7 @@ export const DEFAULT_SETTINGS: NotebookNavigatorSettings = {
     // General tab - Formatting
     dateFormat: 'MMM D, YYYY',
     timeFormat: 'h:mm a',
+    calendarTemplateFolder: '',
 
     // Navigation pane tab - Behavior
     pinRecentNotesWithShortcuts: false,
@@ -132,7 +133,6 @@ export const DEFAULT_SETTINGS: NotebookNavigatorSettings = {
     calendarCustomMonthPattern: DEFAULT_CALENDAR_CUSTOM_MONTH_PATTERN,
     calendarCustomQuarterPattern: DEFAULT_CALENDAR_CUSTOM_QUARTER_PATTERN,
     calendarCustomYearPattern: DEFAULT_CALENDAR_CUSTOM_YEAR_PATTERN,
-    calendarTemplateFolder: '',
     calendarCustomFileTemplate: null,
     calendarCustomWeekTemplate: null,
     calendarCustomMonthTemplate: null,

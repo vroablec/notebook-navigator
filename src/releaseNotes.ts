@@ -82,6 +82,7 @@ const RELEASE_NOTES: ReleaseNote[] = [
             '==Vault icons==. You can now use SVG images from your vault for icons. Just pick the new "Vault" tab in the icon picker.',
             '==Date filters in search==! You can now filter notes by date using the "@" symbol. Some examples: @today, @2026W02, @2026-Q1, @13/02/2026, or ranges like @2026-01-01..2026-02-07. You can specifically choose created date with @c:, modified date with @m:, or exclude date matches with !@.',
             '==Quickly switch between filter search and Omnisearch==! Quickly switch between filter search and Omnisearch by pressing the search icon or pressing UP/DOWN when the search input is focused.',
+            'New setting: ==Folders & tags > Folder note template==. You can now set a template file for folder notes. **Important! This is a breaking change** - the old setting "Folder note properties" was used to set frontmatter properties for folder notes, and it is now removed. If you were using that setting, you can migrate by creating a template file with the desired frontmatter properties and setting that as the new "Folder note template".',
             'New setting: ==Calendar > Single pane placement==. You can now choose to show the left sidebar calendar in the navigation pane (default) or below both panes.'
         ],
         improved: [

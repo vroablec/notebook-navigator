@@ -236,6 +236,7 @@ export interface NotebookNavigatorSettings {
     // General tab - Formatting
     dateFormat: string;
     timeFormat: string;
+    calendarTemplateFolder: string;
 
     // Navigation pane tab - Behavior
     pinRecentNotesWithShortcuts: boolean;
@@ -269,7 +270,6 @@ export interface NotebookNavigatorSettings {
     calendarCustomMonthPattern: string;
     calendarCustomQuarterPattern: string;
     calendarCustomYearPattern: string;
-    calendarTemplateFolder: string;
     calendarCustomFileTemplate: string | null;
     calendarCustomWeekTemplate: string | null;
     calendarCustomMonthTemplate: string | null;
