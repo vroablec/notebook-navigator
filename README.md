@@ -36,83 +36,7 @@ The video has subtitles in 21 languages.
 
 <br>
 
-## 3 Features
-
-### 3.1 Interface
-
-- **Dual-pane layout** - Navigation pane (folders/tags) and list pane (files)
-- **Single-pane mode** - Navigation and list views with animated transitions
-- **Resizable panes** - Horizontal or vertical split orientation
-- **Independent UI zoom** - Scale Notebook Navigator without changing Obsidian zoom
-- **Startup view** - Navigation-first or list-first
-- **Multi-language support** - 21 languages with RTL layout support
-- **Interface icon set** - Customizable UI icons across the plugin
-
-### 3.2 Navigation
-
-- **Vault profiles** - Multiple filtered views with per-profile hidden folders/tags/notes, file visibility, banner, and shortcuts
-- **Shortcuts** - Notes, folders, tags, and saved searches with pinning and reordering
-- **Recent notes/files** - Recent items section stored per vault profile, optionally pinned with shortcuts
-- **Calendar** - Daily notes calendar with day selection, feature image previews, and vertical split support
-- **Folder tree** - Expand/collapse navigation with manual root folder ordering
-- **Tag tree** - Hierarchical tags with configurable root tag ordering
-- **Auto-reveal active file** - Folder expansion and scroll-to-selection
-- **Keyboard and commands** - Configurable hotkeys, next/previous file commands, open shortcut 1–9 commands
-
-### 3.3 Organization
-
-- **Pin notes** - Keep important notes at the top of folders and tags
-- **Folder notes** - Set/detach folder notes, pin folder notes, open in new tab option
-- **Tag operations** - Add/remove/clear tags, rename/delete tags, drag-and-drop tag hierarchy
-- **Custom sort and grouping** - Override sort/group settings per folder or tag
-- **Per-folder/tag appearances** - Title rows, preview rows, compact mode, descendants toggle
-- **Hidden content** - Hidden folders/tags/notes/files with patterns, frontmatter properties, and tag-based filtering per vault profile
-- **Color and icon system** - Folder/tag/file colors, icon packs, emoji/Lucide icons, frontmatter read/write, icon mapping by file name and file type category
-- **Name warnings** - Warn about forbidden filesystem characters and characters that break Obsidian links when naming files and folders
-
-### 3.4 File display
-
-- **Note previews** - 1–5 preview lines with optional HTML stripping
-- **Thumbnails** - Featured images plus auto-generated thumbnails stored in the metadata cache
-- **External images** - Optional downloads for external images and YouTube thumbnails
-- **Date grouping** - Group notes by Today, Yesterday, Previous 7 days, Previous 30 days, months, and years when sorted by date
-- **Frontmatter support** - Read note names and timestamps from frontmatter fields
-- **Note metadata** - Show modification date and tags in the file list
-- **Custom properties** - Display frontmatter properties or word count in file list with per-folder/tag overrides and custom colors
-- **Parent folder display** - Optional parent folder name and icon in file list
-- **Compact mode** - Compact display when preview, date, and images are disabled
-- **Clickable tags** - Tags in file list navigate directly to that tag
-
-### 3.5 Productivity
-
-- **Search** - Filename and tag filtering with AND/OR/exclusions, tag multi-selection, fuzzy tag search
-- **Omnisearch integration** - Full-text search via [Omnisearch](https://github.com/scambier/obsidian-omnisearch)
-- **Drag and drop** - File moves, tagging, shortcut assignment, tag tree reparenting, spring-loaded folders
-- **Context menus** - Create notes/folders/canvases/bases/drawings and run file/tag actions
-- **Drawings** - Create Excalidraw and Tldraw drawings from navigation and list pane menus
-- **Templates** - New note from template commands with the Templater plugin
-- **File operations** - Create, rename, duplicate, move, trash files and folders
-- **Filtering** - Folder/tag/note/file exclusions with patterns and frontmatter properties
-
-### 3.6 Advanced theming support on GitHub
-
-- **Style Settings integration** - Full support for the [Style Settings](https://github.com/mgmeyers/obsidian-style-settings) plugin
-- **CSS variables** - `--nn-theme-*` variables for colors, backgrounds, separators, and mobile surface tokens
-- **Light/dark mode support** - Separate theming for light and dark modes
-- **[Complete theming guide](docs/theming-guide.md)** - Detailed documentation with examples
-
-### 3.7 Developer API on GitHub
-
-- **Public API for JavaScript/TypeScript** - API for plugins and scripts to interact with Notebook Navigator
-- **Metadata control** - Set folder/tag colors, icons, and manage pinned notes programmatically
-- **Navigation & selection** - Navigate to files, folders, and tags, and query current selections
-- **Event subscriptions** - Subscribe to Notebook Navigator events
-- **Full type definitions** - Complete TypeScript support
-- **[Complete API documentation](docs/api-reference.md)** - Detailed reference with examples
-
-<br>
-
-## 4 Documentation
+## 3 Documentation
 
 - [**API Reference**](docs/api-reference.md) - Public API documentation. Covers metadata management, navigation control and event subscriptions for JavaScript/TypeScript developers.
 
@@ -136,7 +60,7 @@ The video has subtitles in 21 languages.
 
 <br>
 
-## 5 Keyboard shortcuts
+## 4 Keyboard shortcuts
 
 | Key                                         | Action                                                                                                                                      |
 | ------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -156,15 +80,15 @@ The video has subtitles in 21 languages.
 | Shift+Home/End                              | Select from current position to first/last item                                                                                             |
 | Shift+↑/↓                                   | Extend selection up/down                                                                                                                    |
 
-**Note:** All keyboard shortcuts can be customized. See [section 7 - Custom hotkeys](#7-custom-hotkeys) for details on adding VIM-style navigation (h,j,k,l), alternate keys, and modifier combinations.
+**Note:** All keyboard shortcuts can be customized. See [section 6 - Custom hotkeys](#6-custom-hotkeys) for details on adding VIM-style navigation (h,j,k,l), alternate keys, and modifier combinations.
 
 <br>
 
-## 6 Search
+## 5 Search
 
 Notebook Navigator has two search modes: filter search and Omnisearch. Switch between them using the up/down arrow keys or by clicking the search icon. Combine file names, tags, and dates in one query (e.g., `meeting #work @thisweek`).
 
-### 6.1 Filter search
+### 5.1 Filter search
 
 Filters files by name and tags within the current folder and subfolders. Default search mode.
 
@@ -202,7 +126,7 @@ Filters files by name and tags within the current folder and subfolders. Default
 
 The default date field follows the current sort order. When sorting by name, the date field is configured in Settings → Notes → Date → When sorting by name.
 
-### 6.2 Omnisearch
+### 5.2 Omnisearch
 
 Full-text search across the vault, filtered to the current folder, subfolders, or selected tags. Requires the [Omnisearch](https://github.com/scambier/obsidian-omnisearch) plugin. If Omnisearch is not installed, search falls back to filter search.
 
@@ -217,7 +141,7 @@ Note previews show Omnisearch result excerpts instead of the default preview tex
 
 <br>
 
-## 7 Custom hotkeys
+## 6 Custom hotkeys
 
 Edit `.obsidian/plugins/notebook-navigator/data.json` to customize Notebook Navigator hotkeys. Open the file and locate the `keyboardShortcuts` section. Each entry maps an action to one or more key bindings:
 
@@ -227,7 +151,7 @@ Edit `.obsidian/plugins/notebook-navigator/data.json` to customize Notebook Navi
 
 Add multiple bindings per action to support alternate keys, like the `ArrowUp` and `K` example above. Combine modifiers in one entry by listing each value, for example `"modifiers": ["Mod", "Shift"]`. Keyboard sequences such as `gg` or `dd` are not supported. Reload Obsidian after editing the file.
 
-### 7.1 Modifiers
+### 6.1 Modifiers
 
 | Modifier | Key                                       |
 | -------- | ----------------------------------------- |
@@ -236,7 +160,7 @@ Add multiple bindings per action to support alternate keys, like the `ArrowUp` a
 | `Shift`  | Shift                                     |
 | `Ctrl`   | Control (prefer `Mod` for cross-platform) |
 
-### 7.2 Available actions
+### 6.2 Available actions
 
 | Action                            | Default key(s)       |
 | --------------------------------- | -------------------- |
@@ -263,7 +187,7 @@ Add multiple bindings per action to support alternate keys, like the `ArrowUp` a
 
 <br>
 
-## 8 Commands
+## 7 Commands
 
 Set custom hotkeys for these commands in Obsidian's Hotkeys settings:
 
@@ -327,7 +251,7 @@ Set custom hotkeys for these commands in Obsidian's Hotkeys settings:
 
 - `Notebook Navigator: Rebuild cache` Rebuilds the local Notebook Navigator cache. Use this if you experience missing tags, incorrect previews or missing feature images
 
-### 8.1 Command IDs
+### 7.1 Command IDs
 
 | Command ID                                  | Command name                                                                                         |
 | ------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
@@ -382,6 +306,82 @@ Set custom hotkeys for these commands in Obsidian's Hotkeys settings:
 
 <br>
 
+## 8 Features
+
+### 8.1 Interface
+
+- **Dual-pane layout** - Navigation pane (folders/tags) and list pane (files)
+- **Single-pane mode** - Navigation and list views with animated transitions
+- **Resizable panes** - Horizontal or vertical split orientation
+- **Independent UI zoom** - Scale Notebook Navigator without changing Obsidian zoom
+- **Startup view** - Navigation-first or list-first
+- **Multi-language support** - 21 languages with RTL layout support
+- **Interface icon set** - Customizable UI icons across the plugin
+
+### 8.2 Navigation
+
+- **Vault profiles** - Multiple filtered views with per-profile hidden folders/tags/notes, file visibility, banner, and shortcuts
+- **Shortcuts** - Notes, folders, tags, and saved searches with pinning and reordering
+- **Recent notes/files** - Recent items section stored per vault profile, optionally pinned with shortcuts
+- **Calendar** - Daily notes calendar with day selection, feature image previews, and vertical split support
+- **Folder tree** - Expand/collapse navigation with manual root folder ordering
+- **Tag tree** - Hierarchical tags with configurable root tag ordering
+- **Auto-reveal active file** - Folder expansion and scroll-to-selection
+- **Keyboard and commands** - Configurable hotkeys, next/previous file commands, open shortcut 1–9 commands
+
+### 8.3 Organization
+
+- **Pin notes** - Keep important notes at the top of folders and tags
+- **Folder notes** - Set/detach folder notes, pin folder notes, open in new tab option
+- **Tag operations** - Add/remove/clear tags, rename/delete tags, drag-and-drop tag hierarchy
+- **Custom sort and grouping** - Override sort/group settings per folder or tag
+- **Per-folder/tag appearances** - Title rows, preview rows, compact mode, descendants toggle
+- **Hidden content** - Hidden folders/tags/notes/files with patterns, frontmatter properties, and tag-based filtering per vault profile
+- **Color and icon system** - Folder/tag/file colors, icon packs, emoji/Lucide icons, frontmatter read/write, icon mapping by file name and file type category
+- **Name warnings** - Warn about forbidden filesystem characters and characters that break Obsidian links when naming files and folders
+
+### 8.4 File display
+
+- **Note previews** - 1–5 preview lines with optional HTML stripping
+- **Thumbnails** - Featured images plus auto-generated thumbnails stored in the metadata cache
+- **External images** - Optional downloads for external images and YouTube thumbnails
+- **Date grouping** - Group notes by Today, Yesterday, Previous 7 days, Previous 30 days, months, and years when sorted by date
+- **Frontmatter support** - Read note names and timestamps from frontmatter fields
+- **Note metadata** - Show modification date and tags in the file list
+- **Custom properties** - Display frontmatter properties or word count in file list with per-folder/tag overrides and custom colors
+- **Parent folder display** - Optional parent folder name and icon in file list
+- **Compact mode** - Compact display when preview, date, and images are disabled
+- **Clickable tags** - Tags in file list navigate directly to that tag
+
+### 8.5 Productivity
+
+- **Search** - Filename and tag filtering with AND/OR/exclusions, tag multi-selection, fuzzy tag search
+- **Omnisearch integration** - Full-text search via [Omnisearch](https://github.com/scambier/obsidian-omnisearch)
+- **Drag and drop** - File moves, tagging, shortcut assignment, tag tree reparenting, spring-loaded folders
+- **Context menus** - Create notes/folders/canvases/bases/drawings and run file/tag actions
+- **Drawings** - Create Excalidraw and Tldraw drawings from navigation and list pane menus
+- **Templates** - New note from template commands with the Templater plugin
+- **File operations** - Create, rename, duplicate, move, trash files and folders
+- **Filtering** - Folder/tag/note/file exclusions with patterns and frontmatter properties
+
+### 8.6 Advanced theming support on GitHub
+
+- **Style Settings integration** - Full support for the [Style Settings](https://github.com/mgmeyers/obsidian-style-settings) plugin
+- **CSS variables** - `--nn-theme-*` variables for colors, backgrounds, separators, and mobile surface tokens
+- **Light/dark mode support** - Separate theming for light and dark modes
+- **[Complete theming guide](docs/theming-guide.md)** - Detailed documentation with examples
+
+### 8.7 Developer API on GitHub
+
+- **Public API for JavaScript/TypeScript** - API for plugins and scripts to interact with Notebook Navigator
+- **Metadata control** - Set folder/tag colors, icons, and manage pinned notes programmatically
+- **Navigation & selection** - Navigate to files, folders, and tags, and query current selections
+- **Event subscriptions** - Subscribe to Notebook Navigator events
+- **Full type definitions** - Complete TypeScript support
+- **[Complete API documentation](docs/api-reference.md)** - Detailed reference with examples
+
+<br>
+
 ## 9 Network Usage Disclosure
 
 Notebook Navigator runs locally, but some features make HTTP requests from Obsidian.
@@ -403,7 +403,7 @@ Notebook Navigator runs locally, but some features make HTTP requests from Obsid
 
 - **Feature images (Optional):** Controlled by the "Download external images" setting. Downloads remote images and YouTube thumbnails for feature images and stores them locally in IndexedDB.
 - **Welcome modal (First launch):** Loads a static thumbnail from `https://raw.githubusercontent.com/johansan/notebook-navigator/main/images/youtube-thumbnail.jpg`.
-- **What’s new modal (On update / when opened):** Loads YouTube thumbnails from `https://img.youtube.com/vi/<id>/...` for release notes that include a YouTube link.
+- **What's new modal (On update / when opened):** Loads YouTube thumbnails from `https://img.youtube.com/vi/<id>/...` for release notes that include a YouTube link.
 
 ### 9.4 Privacy and data handling
 
