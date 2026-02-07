@@ -47,16 +47,18 @@ import React, { useRef, useEffect, useCallback, useMemo } from 'react';
 import type { DragEvent } from 'react';
 import { useSettingsState } from '../context/SettingsContext';
 import { getIconService, useIconServiceVersion } from '../services/icons';
-import { RECENT_NOTES_VIRTUAL_FOLDER_ID, SHORTCUTS_VIRTUAL_FOLDER_ID, VirtualFolder } from '../types';
+import { RECENT_NOTES_VIRTUAL_FOLDER_ID, SHORTCUTS_VIRTUAL_FOLDER_ID, VirtualFolder, type CSSPropertiesWithVars } from '../types';
 import { useUXPreferences } from '../context/UXPreferencesContext';
 import type { NoteCountInfo } from '../types/noteCounts';
 import { buildNoteCountDisplay } from '../utils/noteCountFormatting';
 import { buildSearchMatchContentClass } from '../utils/searchHighlight';
 import { resolveUXIcon } from '../utils/uxIcons';
+import { IndentGuideColumns } from './IndentGuideColumns';
 
 interface VirtualFolderItemProps {
     virtualFolder: VirtualFolder; // Static data structure from NavigationPane
     level: number; // Nesting level for indentation
+    indentGuideLevels?: number[]; // Levels of expanded ancestors whose connector lines should be rendered on this row
     isExpanded: boolean; // From ExpansionContext via NavigationPane
     hasChildren: boolean; // Computed by NavigationPane from tag tree
     onToggle: () => void; // Expansion toggle handler
@@ -97,6 +99,7 @@ interface VirtualFolderItemProps {
 export const VirtualFolderComponent = React.memo(function VirtualFolderComponent({
     virtualFolder,
     level,
+    indentGuideLevels,
     isExpanded,
     hasChildren,
     onSelect,
@@ -229,6 +232,8 @@ export const VirtualFolderComponent = React.memo(function VirtualFolderComponent
         }
     }, [virtualFolder.icon, shouldShowIcon, iconVersion]);
 
+    const virtualFolderStyle: CSSPropertiesWithVars = { '--level': level };
+
     return (
         <div
             ref={folderRef}
@@ -241,7 +246,7 @@ export const VirtualFolderComponent = React.memo(function VirtualFolderComponent
             data-allow-internal-drop={dropConfig?.allowInternalDrop === false ? 'false' : undefined}
             data-allow-external-drop={dropConfig?.allowExternalDrop === false ? 'false' : undefined}
             data-level={level}
-            style={{ '--level': level } as React.CSSProperties}
+            style={virtualFolderStyle}
             role="treeitem"
             aria-expanded={hasChildren ? isExpanded : undefined}
             aria-selected={onSelect ? isSelected : undefined}
@@ -252,6 +257,7 @@ export const VirtualFolderComponent = React.memo(function VirtualFolderComponent
             onContextMenu={onContextMenu}
         >
             <div className={contentClassName} onClick={handleContentClick} onDoubleClick={handleDoubleClick}>
+                <IndentGuideColumns levels={indentGuideLevels} />
                 <div
                     className={`nn-navitem-chevron ${hasChildren ? 'nn-navitem-chevron--has-children' : 'nn-navitem-chevron--no-children'}`}
                     ref={chevronRef}

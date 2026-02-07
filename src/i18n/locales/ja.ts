@@ -1398,6 +1398,10 @@ export const STRINGS_JA = {
                 name: '行高に合わせて文字サイズを調整',
                 desc: '行高を下げたときにナビゲーションの文字サイズを小さくします。'
             },
+            showIndentGuides: {
+                name: 'インデントガイドを表示',
+                desc: 'ネストされたフォルダーとタグのインデントガイドを表示します。'
+            },
             navRootSpacing: {
                 name: 'ルート要素の間隔',
                 desc: '最上位のフォルダとタグの間隔。'

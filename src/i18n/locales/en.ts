@@ -1393,6 +1393,10 @@ export const STRINGS_EN = {
                 name: 'Scale text with item height',
                 desc: 'Reduce navigation text size when item height is decreased.'
             },
+            showIndentGuides: {
+                name: 'Show indent guides',
+                desc: 'Display indent guides for nested folders and tags.'
+            },
             navRootSpacing: {
                 name: 'Root item spacing',
                 desc: 'Spacing between root-level folders and tags.'

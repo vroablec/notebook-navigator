@@ -85,6 +85,7 @@ const RELEASE_NOTES: ReleaseNote[] = [
             '==Quickly switch between filter search and Omnisearch==! Quickly switch between filter search and Omnisearch by pressing the search icon or pressing UP/DOWN when the search input is focused.',
             'New setting: ==Folders & tags > Folder note name pattern==. You can now add prefixes and suffixes to folder note names, like _foldername to make them appear on top of alphabetically sorted lists.',
             'New setting: ==Folders & tags > Folder note template==. You can now set a template file for folder notes. **Important! This is a breaking change** - the old setting "Folder note properties" was used to set frontmatter properties for folder notes, and it is now removed. If you were using that setting, you can migrate by creating a template file with the desired frontmatter properties and setting that as the new "Folder note template".',
+            'New setting: ==Navigation pane > Show indent guides==. You can now show vertical indent guides in the navigation pane to better visualize the folder and tag hierarchy.',
             'New setting: ==Calendar > Single pane placement==. You can now choose to show the left sidebar calendar in the navigation pane (default) or below both panes.'
         ],
         improved: [

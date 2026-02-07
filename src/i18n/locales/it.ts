@@ -1398,6 +1398,10 @@ export const STRINGS_IT = {
                 name: 'Scala testo con altezza elemento',
                 desc: "Riduci dimensione testo navigazione quando l'altezza elemento è ridotta."
             },
+            showIndentGuides: {
+                name: 'Mostra guide di indentazione',
+                desc: 'Mostra guide di indentazione per cartelle e tag nidificati.'
+            },
             navRootSpacing: {
                 name: 'Spaziatura elementi root',
                 desc: 'Spaziatura tra cartelle e tag di livello root.'

@@ -1397,6 +1397,10 @@ export const STRINGS_PT_BR = {
                 name: 'Dimensionar texto com altura do item',
                 desc: 'Reduzir o tamanho do texto de navegação quando a altura do item é diminuída.'
             },
+            showIndentGuides: {
+                name: 'Mostrar guias de recuo',
+                desc: 'Exibir guias de recuo para pastas e tags aninhadas.'
+            },
             navRootSpacing: {
                 name: 'Espaçamento de item raiz',
                 desc: 'Espaçamento entre pastas e tags de nível raiz.'

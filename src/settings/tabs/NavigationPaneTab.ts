@@ -247,6 +247,18 @@ export function renderNavigationPaneTab(context: SettingsTabContext): void {
             })
         );
 
+    appearanceGroup.addSetting(setting => {
+        setting
+            .setName(strings.settings.items.showIndentGuides.name)
+            .setDesc(strings.settings.items.showIndentGuides.desc)
+            .addToggle(toggle =>
+                toggle.setValue(plugin.settings.showIndentGuides).onChange(async value => {
+                    plugin.settings.showIndentGuides = value;
+                    await plugin.saveSettingsAndUpdate();
+                })
+            );
+    });
+
     let rootSpacingSlider: SliderComponent;
     appearanceGroup.addSetting(setting => {
         setting

@@ -57,8 +57,7 @@
     pointer-events: none;
 }
 
-.nn-navitem.nn-selected > .nn-navitem-content,
-.nn-navitem.nn-selected > .nn-navitem-content > * {
+.nn-navitem.nn-selected > .nn-navitem-content {
     position: relative;
     z-index: 2;
 }

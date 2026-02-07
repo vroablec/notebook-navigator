@@ -1400,6 +1400,10 @@ export const STRINGS_PT = {
                 name: 'Escalar texto com altura do item',
                 desc: 'Reduzir o tamanho do texto de navegação quando a altura do item é diminuída.'
             },
+            showIndentGuides: {
+                name: 'Mostrar guias de indentação',
+                desc: 'Apresentar guias de indentação para pastas e etiquetas aninhadas.'
+            },
             navRootSpacing: {
                 name: 'Espaçamento de itens raiz',
                 desc: 'Espaçamento entre pastas e etiquetas de nível raiz.'

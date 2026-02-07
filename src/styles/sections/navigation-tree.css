@@ -57,8 +57,7 @@
     pointer-events: none;
 }
 
-.nn-navitem.nn-has-custom-background > .nn-navitem-content,
-.nn-navitem.nn-has-custom-background > .nn-navitem-content > * {
+.nn-navitem.nn-has-custom-background > .nn-navitem-content {
     position: relative;
     z-index: 2;
 }
@@ -102,6 +101,34 @@
     flex: 1;
     min-width: 0; /* Critical: allows flex children to shrink below their min-content width */
     box-sizing: border-box;
+}
+
+/* Indent guide columns shown on rows inside expanded subtrees */
+.nn-navitem-indent-guide {
+    --nn-indent-guide-line-width: 0.5px;
+    --nn-indent-guide-padding-inline-start: var(--nn-nav-item-padding-horizontal);
+    --nn-indent-guide-chevron-slot-width: var(--nn-nav-icon-size);
+    --nn-indent-guide-chevron-center-origin: calc(
+        var(--nn-indent-guide-padding-inline-start) + (var(--nn-indent-guide-chevron-slot-width) / 2)
+    );
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    inset-inline-start: calc(
+        (var(--nn-indent-guide-level, 0) - var(--level, 0)) * var(--nn-setting-nav-indent) + var(--nn-indent-guide-chevron-center-origin)
+    );
+    width: var(--nn-indent-guide-line-width);
+    transform: translateX(-50%);
+    background-color: var(--nn-theme-foreground-faint);
+    pointer-events: none;
+    z-index: 0;
+}
+
+.mod-rtl .nn-navitem-indent-guide {
+    inset-inline-start: auto;
+    inset-inline-end: calc(
+        (var(--level, 0) - var(--nn-indent-guide-level, 0)) * var(--nn-setting-nav-indent) + var(--nn-indent-guide-chevron-center-origin)
+    );
 }
 
 .nn-navitem-content--search-include,
@@ -156,7 +183,7 @@
 }
 
 /* Ensure content appears above hover background */
-.nn-desktop .nn-navitem:hover > .nn-navitem-content > * {
+.nn-desktop .nn-navitem:hover > .nn-navitem-content {
     position: relative;
     z-index: 2;
 }

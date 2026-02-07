@@ -173,6 +173,7 @@ body {
     --nn-theme-foreground: var(--text-normal);
     --nn-theme-foreground-muted: color-mix(in srgb, var(--nn-theme-foreground) 70%, transparent);
     --nn-theme-foreground-faded: color-mix(in srgb, var(--nn-theme-foreground) 50%, transparent);
+    --nn-theme-foreground-faint: color-mix(in srgb, var(--nn-theme-foreground) 20%, transparent);
 
     /* -- Navigation Pane -- */
     --nn-theme-nav-bg: var(--background-secondary);
@@ -1906,8 +1907,7 @@ body {
     pointer-events: none;
 }
 
-.nn-navitem.nn-has-custom-background > .nn-navitem-content,
-.nn-navitem.nn-has-custom-background > .nn-navitem-content > * {
+.nn-navitem.nn-has-custom-background > .nn-navitem-content {
     position: relative;
     z-index: 2;
 }
@@ -1951,6 +1951,34 @@ body {
     flex: 1;
     min-width: 0; /* Critical: allows flex children to shrink below their min-content width */
     box-sizing: border-box;
+}
+
+/* Indent guide columns shown on rows inside expanded subtrees */
+.nn-navitem-indent-guide {
+    --nn-indent-guide-line-width: 0.5px;
+    --nn-indent-guide-padding-inline-start: var(--nn-nav-item-padding-horizontal);
+    --nn-indent-guide-chevron-slot-width: var(--nn-nav-icon-size);
+    --nn-indent-guide-chevron-center-origin: calc(
+        var(--nn-indent-guide-padding-inline-start) + (var(--nn-indent-guide-chevron-slot-width) / 2)
+    );
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    inset-inline-start: calc(
+        (var(--nn-indent-guide-level, 0) - var(--level, 0)) * var(--nn-setting-nav-indent) + var(--nn-indent-guide-chevron-center-origin)
+    );
+    width: var(--nn-indent-guide-line-width);
+    transform: translateX(-50%);
+    background-color: var(--nn-theme-foreground-faint);
+    pointer-events: none;
+    z-index: 0;
+}
+
+.mod-rtl .nn-navitem-indent-guide {
+    inset-inline-start: auto;
+    inset-inline-end: calc(
+        (var(--level, 0) - var(--nn-indent-guide-level, 0)) * var(--nn-setting-nav-indent) + var(--nn-indent-guide-chevron-center-origin)
+    );
 }
 
 .nn-navitem-content--search-include,
@@ -2005,7 +2033,7 @@ body {
 }
 
 /* Ensure content appears above hover background */
-.nn-desktop .nn-navitem:hover > .nn-navitem-content > * {
+.nn-desktop .nn-navitem:hover > .nn-navitem-content {
     position: relative;
     z-index: 2;
 }
@@ -4052,8 +4080,7 @@ body {
     pointer-events: none;
 }
 
-.nn-navitem.nn-selected > .nn-navitem-content,
-.nn-navitem.nn-selected > .nn-navitem-content > * {
+.nn-navitem.nn-selected > .nn-navitem-content {
     position: relative;
     z-index: 2;
 }
@@ -6387,8 +6414,11 @@ body.nn-resizing {
     padding: var(--nn-setting-nav-padding-vertical-mobile) var(--nn-nav-item-padding-horizontal);
     padding-inline-start: 4px;
     height: 100%;
-    display: flex;
-    align-items: center;
+}
+
+.notebook-navigator-mobile .nn-navitem-indent-guide {
+    --nn-indent-guide-padding-inline-start: 4px;
+    --nn-indent-guide-chevron-slot-width: 32px;
 }
 
 .notebook-navigator-mobile .nn-root-reorder-remove {
@@ -7203,6 +7233,14 @@ settings:
         id: nn-theme-foreground-faded
         title: Faded foreground
         description: Faded foreground color.
+        type: variable-themed-color
+        format: hex
+        default-light: '#'
+        default-dark: '#'
+    -
+        id: nn-theme-foreground-faint
+        title: Faint foreground
+        description: Faint foreground color.
         type: variable-themed-color
         format: hex
         default-light: '#'

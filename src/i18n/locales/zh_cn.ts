@@ -1395,6 +1395,10 @@ export const STRINGS_ZH_CN = {
                 name: '随行高调整文字大小',
                 desc: '降低行高时减小导航文字大小。'
             },
+            showIndentGuides: {
+                name: '显示缩进参考线',
+                desc: '显示嵌套文件夹和标签的缩进参考线。'
+            },
             navRootSpacing: {
                 name: '根级项目间距',
                 desc: '根级文件夹和标签之间的间距。'

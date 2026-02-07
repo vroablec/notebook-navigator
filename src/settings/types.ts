@@ -282,6 +282,7 @@ export interface NotebookNavigatorSettings {
     pinNavigationBanner: boolean;
     showNoteCount: boolean;
     separateNoteCounts: boolean;
+    showIndentGuides: boolean;
     rootLevelSpacing: number;
     navIndent: number;
     navItemHeight: number;

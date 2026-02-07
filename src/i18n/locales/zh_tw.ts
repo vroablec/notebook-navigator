@@ -1394,6 +1394,10 @@ export const STRINGS_ZH_TW = {
                 name: '隨行高調整文字大小',
                 desc: '降低行高時減小導覽文字大小。'
             },
+            showIndentGuides: {
+                name: '顯示縮排參考線',
+                desc: '顯示巢狀資料夾和標籤的縮排參考線。'
+            },
             navRootSpacing: {
                 name: '根級項目間距',
                 desc: '根級資料夾和標籤之間的間距。'

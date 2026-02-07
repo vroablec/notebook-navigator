@@ -1396,6 +1396,10 @@ export const STRINGS_KO = {
                 name: '항목 높이에 따라 글자 크기 조정',
                 desc: '항목 높이를 줄이면 탐색 글자 크기를 작게 합니다.'
             },
+            showIndentGuides: {
+                name: '들여쓰기 안내선 표시',
+                desc: '중첩된 폴더와 태그의 들여쓰기 안내선을 표시합니다.'
+            },
             navRootSpacing: {
                 name: '루트 항목 간격',
                 desc: '최상위 폴더와 태그 사이의 간격.'

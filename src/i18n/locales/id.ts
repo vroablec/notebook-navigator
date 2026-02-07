@@ -1397,6 +1397,10 @@ export const STRINGS_ID = {
                 name: 'Skalakan teks dengan tinggi item',
                 desc: 'Kurangi ukuran teks navigasi saat tinggi item dikurangi.'
             },
+            showIndentGuides: {
+                name: 'Tampilkan panduan indentasi',
+                desc: 'Tampilkan panduan indentasi untuk folder dan tag bersarang.'
+            },
             navRootSpacing: {
                 name: 'Spasi item root',
                 desc: 'Spasi antara folder dan tag tingkat root.'

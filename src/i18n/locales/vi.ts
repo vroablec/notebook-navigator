@@ -1396,6 +1396,10 @@ export const STRINGS_VI = {
                 name: 'Co chữ theo chiều cao mục',
                 desc: 'Giảm cỡ chữ điều hướng khi giảm chiều cao mục.'
             },
+            showIndentGuides: {
+                name: 'Hiển thị đường dẫn thụt lề',
+                desc: 'Hiển thị đường dẫn thụt lề cho các thư mục và thẻ lồng nhau.'
+            },
             navRootSpacing: {
                 name: 'Khoảng cách mục gốc',
                 desc: 'Khoảng cách giữa các thư mục và thẻ cấp gốc.'

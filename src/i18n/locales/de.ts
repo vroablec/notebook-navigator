@@ -1399,6 +1399,10 @@ export const STRINGS_DE = {
                 name: 'Text mit Zeilenhöhe skalieren',
                 desc: 'Verkleinert die Navigationsschrift, wenn die Zeilenhöhe reduziert wird.'
             },
+            showIndentGuides: {
+                name: 'Einrückungslinien anzeigen',
+                desc: 'Einrückungslinien für verschachtelte Ordner und Tags anzeigen.'
+            },
             navRootSpacing: {
                 name: 'Abstand für Wurzelelemente',
                 desc: 'Abstand zwischen Ordnern und Tags auf der obersten Ebene.'

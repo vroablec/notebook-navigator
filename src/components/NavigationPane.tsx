@@ -87,7 +87,14 @@ import { useNavigationRootReorder } from '../hooks/useNavigationRootReorder';
 import { usePointerDrag } from '../hooks/usePointerDrag';
 import type { ListReorderHandlers } from '../types/listReorder';
 import type { CombinedNavigationItem } from '../types/virtualization';
-import { IOS_OBSIDIAN_1_11_PLUS_GLASS_TOOLBAR_HEIGHT_PX, NavigationPaneItemType, ItemType, TAGGED_TAG_ID, UNTAGGED_TAG_ID } from '../types';
+import {
+    IOS_OBSIDIAN_1_11_PLUS_GLASS_TOOLBAR_HEIGHT_PX,
+    NavigationPaneItemType,
+    ItemType,
+    TAGGED_TAG_ID,
+    UNTAGGED_TAG_ID,
+    type CSSPropertiesWithVars
+} from '../types';
 import { getSelectedPath } from '../utils/selectionUtils';
 import { TagTreeNode } from '../types/storage';
 import { getFolderNote, getFolderNoteDetectionSettings, openFolderNoteFile } from '../utils/folderNotes';
@@ -101,7 +108,7 @@ import { NavigationPaneCalendar } from './NavigationPaneCalendar';
 import { TagTreeItem } from './TagTreeItem';
 import { VaultTitleArea } from './VaultTitleArea';
 import { VirtualFolderComponent } from './VirtualFolderItem';
-import { getNavigationIndex, normalizeNavigationPath } from '../utils/navigationIndex';
+import { buildIndentGuideLevelsMap, getNavigationIndex, normalizeNavigationPath } from '../utils/navigationIndex';
 import {
     STORAGE_KEYS,
     SHORTCUTS_VIRTUAL_FOLDER_ID,
@@ -185,11 +192,10 @@ interface NavigationPaneProps {
     onModifySearchWithTag: (tag: string, operator: InclusionOperator) => void;
 }
 
-type CSSPropertiesWithVars = React.CSSProperties & Record<`--${string}`, string | number>;
-
 // Default note count object used when counts are disabled or unavailable
 const ZERO_NOTE_COUNT: NoteCountInfo = { current: 0, descendants: 0, total: 0 };
 const EMPTY_TAG_TOKENS: string[] = [];
+const EMPTY_INDENT_GUIDE_MAP = new Map<string, number[]>();
 
 interface SortableShortcutItemProps extends React.ComponentProps<typeof ShortcutItem> {
     sortableId: string;
@@ -933,6 +939,11 @@ export const NavigationPane = React.memo(
             pinShortcuts: shouldPinShortcuts,
             sectionOrder
         });
+
+        const indentGuideLevelsByKey = useMemo(
+            () => (settings.showIndentGuides ? buildIndentGuideLevelsMap(items) : EMPTY_INDENT_GUIDE_MAP),
+            [items, settings.showIndentGuides]
+        );
 
         // Extract shortcut items to display in pinned area when pinning is enabled
         const pinnedNavigationItems = useMemo(() => {
@@ -2344,6 +2355,7 @@ export const NavigationPane = React.memo(
                     case NavigationPaneItemType.FOLDER: {
                         const folderPath = item.data.path;
                         const countInfo = folderCounts.get(folderPath);
+                        const indentGuideLevels = indentGuideLevelsByKey.get(item.key);
                         // Hide separator actions for the first inline folder when shortcuts are pinned
                         // This prevents users from adding/removing separators on the first item after pinned shortcuts
                         const shouldHideFolderSeparatorActions =
@@ -2353,6 +2365,7 @@ export const NavigationPane = React.memo(
                             <FolderItem
                                 folder={item.data}
                                 level={item.level}
+                                indentGuideLevels={indentGuideLevels}
                                 isExpanded={expansionState.expandedFolders.has(item.data.path)}
                                 isSelected={
                                     selectionState.selectionType === ItemType.FOLDER && selectionState.selectedFolder?.path === folderPath
@@ -2394,6 +2407,7 @@ export const NavigationPane = React.memo(
 
                     case NavigationPaneItemType.VIRTUAL_FOLDER: {
                         const virtualFolder = item.data;
+                        const indentGuideLevels = indentGuideLevelsByKey.get(item.key);
                         const isShortcutsGroup = virtualFolder.id === SHORTCUTS_VIRTUAL_FOLDER_ID;
                         const isRecentNotesGroup = virtualFolder.id === RECENT_NOTES_VIRTUAL_FOLDER_ID;
                         // `hasChildren` is computed when building the navigation items so it reflects actual renderable children
@@ -2467,6 +2481,7 @@ export const NavigationPane = React.memo(
                             <VirtualFolderComponent
                                 virtualFolder={virtualFolder}
                                 level={item.level}
+                                indentGuideLevels={indentGuideLevels}
                                 isExpanded={isExpanded}
                                 hasChildren={hasChildren}
                                 isSelected={Boolean(isSelected)}
@@ -2510,6 +2525,7 @@ export const NavigationPane = React.memo(
                     case NavigationPaneItemType.TAG:
                     case NavigationPaneItemType.UNTAGGED: {
                         const tagNode = item.data;
+                        const indentGuideLevels = indentGuideLevelsByKey.get(item.key);
                         let searchMatch: 'include' | 'exclude' | undefined;
                         if (tagNode.path === UNTAGGED_TAG_ID) {
                             if (highlightIncludeUntagged) {
@@ -2526,6 +2542,7 @@ export const NavigationPane = React.memo(
                             <TagTreeItem
                                 tagNode={tagNode}
                                 level={item.level ?? 0}
+                                indentGuideLevels={indentGuideLevels}
                                 isExpanded={expansionState.expandedTags.has(tagNode.path)}
                                 isSelected={selectionState.selectionType === ItemType.TAG && selectionState.selectedTag === tagNode.path}
                                 isHidden={'isHidden' in item ? item.isHidden : false}
@@ -2646,6 +2663,7 @@ export const NavigationPane = React.memo(
                 highlightRequireTagged,
                 highlightExcludeTagged,
                 highlightIncludeUntagged,
+                indentGuideLevelsByKey,
                 getSolidBackground,
                 vaultChangeVersion
             ]

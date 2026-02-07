@@ -51,6 +51,7 @@ Most variables are colors and should resolve to a computed color (some are used 
 | `--nn-theme-foreground`       | `var(--text-normal)`                                                | Base foreground color    |
 | `--nn-theme-foreground-muted` | `color-mix(in srgb, var(--nn-theme-foreground) 70%, transparent)`   | Muted foreground color   |
 | `--nn-theme-foreground-faded` | `color-mix(in srgb, var(--nn-theme-foreground) 50%, transparent)`   | Faded foreground color   |
+| `--nn-theme-foreground-faint` | `color-mix(in srgb, var(--nn-theme-foreground) 20%, transparent)`   | Faint foreground color   |
 
 ### Calendar
 
@@ -255,6 +256,7 @@ body {
   --nn-theme-foreground: #a9b7c6;
   --nn-theme-foreground-muted: #7f8b91;
   --nn-theme-foreground-faded: #6e6e6e;
+  --nn-theme-foreground-faint: #4f565a;
 
   /* Navigation pane */
   --nn-theme-nav-bg: #3c3f41;

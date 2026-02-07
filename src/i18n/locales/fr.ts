@@ -1402,6 +1402,10 @@ export const STRINGS_FR = {
                 name: 'Adapter le texte à la hauteur de ligne',
                 desc: 'Réduit le texte de navigation lorsque la hauteur de ligne est diminuée.'
             },
+            showIndentGuides: {
+                name: "Afficher les guides d'indentation",
+                desc: "Afficher les guides d'indentation pour les dossiers et étiquettes imbriqués."
+            },
             navRootSpacing: {
                 name: 'Espacement des éléments racine',
                 desc: 'Espacement entre les dossiers et étiquettes de niveau racine.'

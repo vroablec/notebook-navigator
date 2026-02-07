@@ -1400,6 +1400,10 @@ export const STRINGS_NL = {
                 name: 'Tekst schalen met itemhoogte',
                 desc: 'Navigatietekstgrootte verminderen wanneer itemhoogte wordt verminderd.'
             },
+            showIndentGuides: {
+                name: 'Inspringlijnen tonen',
+                desc: 'Inspringlijnen weergeven voor geneste mappen en tags.'
+            },
             navRootSpacing: {
                 name: 'Hoofditem-afstand',
                 desc: 'Afstand tussen mappen en tags op hoofdniveau.'

@@ -37,8 +37,11 @@
     padding: var(--nn-setting-nav-padding-vertical-mobile) var(--nn-nav-item-padding-horizontal);
     padding-inline-start: 4px;
     height: 100%;
-    display: flex;
-    align-items: center;
+}
+
+.notebook-navigator-mobile .nn-navitem-indent-guide {
+    --nn-indent-guide-padding-inline-start: 4px;
+    --nn-indent-guide-chevron-slot-width: 32px;
 }
 
 .notebook-navigator-mobile .nn-root-reorder-remove {

@@ -57,20 +57,22 @@ import { useUXPreferences } from '../context/UXPreferencesContext';
 import { useContextMenu, hideNavigatorContextMenu } from '../hooks/useContextMenu';
 import { strings } from '../i18n';
 import { getIconService, useIconServiceVersion } from '../services/icons';
-import { ItemType } from '../types';
 import { getTooltipPlacement } from '../utils/domUtils';
 import { getFolderNote } from '../utils/folderNotes';
 import { hasSubfolders, shouldExcludeFolder, shouldExcludeFile } from '../utils/fileFilters';
 import { getEffectiveFrontmatterExclusions } from '../utils/exclusionUtils';
 import { shouldDisplayFile } from '../utils/fileTypeUtils';
+import { IndentGuideColumns } from './IndentGuideColumns';
 import type { NoteCountInfo } from '../types/noteCounts';
 import { buildNoteCountDisplay } from '../utils/noteCountFormatting';
 import { useActiveProfile } from '../context/SettingsContext';
 import { resolveUXIcon } from '../utils/uxIcons';
+import { ItemType, type CSSPropertiesWithVars } from '../types';
 
 interface FolderItemProps {
     folder: TFolder;
     level: number;
+    indentGuideLevels?: number[];
     isExpanded: boolean;
     isSelected: boolean;
     isExcluded?: boolean;
@@ -106,6 +108,7 @@ interface FolderItemProps {
 export const FolderItem = React.memo(function FolderItem({
     folder,
     level,
+    indentGuideLevels,
     isExpanded,
     isSelected,
     isExcluded,
@@ -333,7 +336,7 @@ export const FolderItem = React.memo(function FolderItem({
         }
     }, [iconVersion, isExpanded, settings.interfaceIcons]);
 
-    // Add this useEffect for the folder icon
+    // Update folder icon
     useEffect(() => {
         if (iconRef.current && shouldShowFolderIcon) {
             const iconService = getIconService();
@@ -368,6 +371,10 @@ export const FolderItem = React.memo(function FolderItem({
     useContextMenu(folderRef, folderMenuConfig);
 
     const isDraggable = !isMobile && !isRootFolder;
+    const folderStyle: CSSPropertiesWithVars = {
+        '--level': level,
+        ...(customBackground ? { '--nn-navitem-custom-bg-color': customBackground } : {})
+    };
 
     return (
         <div
@@ -393,17 +400,13 @@ export const FolderItem = React.memo(function FolderItem({
             data-level={level}
             onClick={onClick}
             onDoubleClick={handleDoubleClick}
-            style={
-                {
-                    '--level': level,
-                    ...(customBackground ? { '--nn-navitem-custom-bg-color': customBackground } : {})
-                } as React.CSSProperties
-            }
+            style={folderStyle}
             role="treeitem"
             aria-expanded={hasChildren ? isExpanded : undefined}
             aria-level={level + 1}
         >
             <div className="nn-navitem-content">
+                <IndentGuideColumns levels={indentGuideLevels} />
                 <div
                     className={`nn-navitem-chevron ${hasChildren ? 'nn-navitem-chevron--has-children' : 'nn-navitem-chevron--no-children'}`}
                     ref={chevronRef}

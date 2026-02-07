@@ -1397,6 +1397,10 @@ export const STRINGS_TR = {
                 name: 'Metni öğe yüksekliğiyle ölçekle',
                 desc: 'Öğe yüksekliği azaltıldığında gezinme metni boyutunu küçült.'
             },
+            showIndentGuides: {
+                name: 'Girinti kılavuzlarını göster',
+                desc: 'İç içe klasörler ve etiketler için girinti kılavuzlarını göster.'
+            },
             navRootSpacing: {
                 name: 'Kök öğe aralığı',
                 desc: 'Kök seviyesi klasörler ve etiketler arasındaki boşluk.'

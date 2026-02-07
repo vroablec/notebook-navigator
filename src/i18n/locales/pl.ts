@@ -1399,6 +1399,10 @@ export const STRINGS_PL = {
                 name: 'Skaluj tekst z wysokością elementu',
                 desc: 'Zmniejsza tekst nawigacji, gdy wysokość elementu jest obniżona.'
             },
+            showIndentGuides: {
+                name: 'Pokaż linie wcięć',
+                desc: 'Wyświetl linie wcięć dla zagnieżdżonych folderów i tagów.'
+            },
             navRootSpacing: {
                 name: 'Odstęp elementów głównych',
                 desc: 'Odstęp między folderami i tagami na poziomie głównym.'

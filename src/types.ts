@@ -17,6 +17,7 @@
  */
 
 import { App, WorkspaceLeaf } from 'obsidian';
+import type { CSSProperties } from 'react';
 
 /**
  * Shared types and constants for Notebook Navigator
@@ -52,6 +53,8 @@ export const TAGGED_TAG_ID = '__tagged__';
  * Used for keyboard navigation between folder tree and file list
  */
 export type FocusedPane = 'navigation' | 'files';
+
+export type CSSPropertiesWithVars = CSSProperties & Record<`--${string}`, string | number>;
 
 /**
  * Enum for all item types in the navigator

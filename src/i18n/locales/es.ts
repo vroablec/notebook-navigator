@@ -1400,6 +1400,10 @@ export const STRINGS_ES = {
                 name: 'Escalar texto con la altura de línea',
                 desc: 'Reduce el texto de navegación cuando la altura de línea se disminuye.'
             },
+            showIndentGuides: {
+                name: 'Mostrar guías de sangría',
+                desc: 'Mostrar guías de sangría para carpetas y etiquetas anidadas.'
+            },
             navRootSpacing: {
                 name: 'Espaciado de elementos raíz',
                 desc: 'Espaciado entre carpetas y etiquetas de nivel superior.'

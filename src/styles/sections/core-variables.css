@@ -146,6 +146,7 @@ body {
     --nn-theme-foreground: var(--text-normal);
     --nn-theme-foreground-muted: color-mix(in srgb, var(--nn-theme-foreground) 70%, transparent);
     --nn-theme-foreground-faded: color-mix(in srgb, var(--nn-theme-foreground) 50%, transparent);
+    --nn-theme-foreground-faint: color-mix(in srgb, var(--nn-theme-foreground) 20%, transparent);
 
     /* -- Navigation Pane -- */
     --nn-theme-nav-bg: var(--background-secondary);

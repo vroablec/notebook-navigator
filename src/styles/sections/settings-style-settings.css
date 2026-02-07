@@ -43,6 +43,14 @@ settings:
         default-light: '#'
         default-dark: '#'
     -
+        id: nn-theme-foreground-faint
+        title: Faint foreground
+        description: Faint foreground color.
+        type: variable-themed-color
+        format: hex
+        default-light: '#'
+        default-dark: '#'
+    -
         id: nn-header-heading
         title: Headers
         description: Customize pane header appearance.

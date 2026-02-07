@@ -60,7 +60,13 @@ import { useContextMenu } from '../hooks/useContextMenu';
 import { useFileOpener } from '../hooks/useFileOpener';
 import { strings } from '../i18n';
 import { TIMEOUTS } from '../types/obsidian-extended';
-import { IOS_OBSIDIAN_1_11_PLUS_GLASS_TOOLBAR_HEIGHT_PX, ListPaneItemType, PINNED_SECTION_HEADER_KEY, UNTAGGED_TAG_ID } from '../types';
+import {
+    IOS_OBSIDIAN_1_11_PLUS_GLASS_TOOLBAR_HEIGHT_PX,
+    ListPaneItemType,
+    PINNED_SECTION_HEADER_KEY,
+    UNTAGGED_TAG_ID,
+    type CSSPropertiesWithVars
+} from '../types';
 import { getEffectiveSortOption } from '../utils/sortUtils';
 import { FileItem } from './FileItem';
 import { ListPaneHeader } from './ListPaneHeader';
@@ -85,8 +91,6 @@ import { ServiceIcon } from './ServiceIcon';
 import { resolveUXIcon } from '../utils/uxIcons';
 import { showNotice } from '../utils/noticeUtils';
 import { isKeyboardEventContextBlocked } from '../utils/domUtils';
-
-type CSSPropertiesWithVars = React.CSSProperties & Record<`--${string}`, string | number>;
 
 /**
  * Renders the list pane displaying files from the selected folder.
