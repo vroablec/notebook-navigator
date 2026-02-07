@@ -43,13 +43,13 @@ import {
     createCalendarMarkdownFile,
     getCalendarNoteConfig,
     getCalendarTemplatePath,
+    resolveCalendarCustomNotePathDate,
     type CalendarNoteConfig,
     type CalendarNoteKind
 } from '../utils/calendarNotes';
 import {
     createCalendarCustomDateFormatter,
     ensureMarkdownFileName,
-    getCalendarCustomWeekAnchorDate,
     isCalendarCustomDatePatternValid,
     normalizeCalendarVaultFolderPath,
     splitCalendarCustomPattern
@@ -439,7 +439,8 @@ export function NavigationPaneCalendar({
         const momentPattern = folderPattern ? `${folderPattern}/${filePattern}` : filePattern;
 
         const filePathForDate = (date: MomentInstance): string => {
-            const folderSuffix = folderFormatter(date);
+            const localized = date.clone().locale(displayLocale);
+            const folderSuffix = folderFormatter(localized);
             const rawFolderPath = customRootFolder
                 ? folderSuffix
                     ? `${customRootFolder}/${folderSuffix}`
@@ -447,13 +448,13 @@ export function NavigationPaneCalendar({
                 : folderSuffix;
             const folderPath = normalizeCalendarVaultFolderPath(rawFolderPath || '/');
 
-            const formattedFilePattern = fileFormatter(date).trim();
+            const formattedFilePattern = fileFormatter(localized).trim();
             const fileName = ensureMarkdownFileName(formattedFilePattern);
             return folderPath === '/' ? fileName : `${folderPath}/${fileName}`;
         };
 
         return { filePathForDate, momentPattern };
-    }, [settings.calendarCustomFilePattern, periodicNotesFolder]);
+    }, [displayLocale, settings.calendarCustomFilePattern, periodicNotesFolder]);
 
     const weeks = useMemo<CalendarWeek[]>(() => {
         if (!momentApi || !cursorDate) {
@@ -993,7 +994,7 @@ export function NavigationPaneCalendar({
             if (!config.isPatternValid(momentPattern, momentApi)) {
                 return null;
             }
-            const dateForPath = kind === 'week' ? getCalendarCustomWeekAnchorDate(date, momentPattern, calendarRulesLocale) : date;
+            const dateForPath = resolveCalendarCustomNotePathDate(kind, date, momentPattern, displayLocale);
             const { filePath } = buildCustomCalendarFilePathForPattern(
                 dateForPath,
                 customCalendarRootFolderSettings,
@@ -1003,7 +1004,7 @@ export function NavigationPaneCalendar({
             const existing = app.vault.getAbstractFileByPath(filePath);
             return existing instanceof TFile ? existing : null;
         },
-        [app, calendarRulesLocale, customCalendarRootFolderSettings, getCustomCalendarNoteConfig, momentApi]
+        [app, customCalendarRootFolderSettings, displayLocale, getCustomCalendarNoteConfig, momentApi]
     );
 
     const openOrCreateCustomCalendarNote = useCallback(
@@ -1023,7 +1024,7 @@ export function NavigationPaneCalendar({
 
             setHoverTooltip(null);
 
-            const dateForPath = kind === 'week' ? getCalendarCustomWeekAnchorDate(date, momentPattern, calendarRulesLocale) : date;
+            const dateForPath = resolveCalendarCustomNotePathDate(kind, date, momentPattern, displayLocale);
 
             const { folderPath, fileName, filePath } = buildCustomCalendarFilePathForPattern(
                 dateForPath,
@@ -1073,9 +1074,9 @@ export function NavigationPaneCalendar({
         },
         [
             app,
-            calendarRulesLocale,
             collapseNavigationIfMobile,
             customCalendarRootFolderSettings,
+            displayLocale,
             getCustomCalendarNoteConfig,
             momentApi,
             openFile,
@@ -1252,23 +1253,14 @@ export function NavigationPaneCalendar({
                 continue;
             }
 
-            const weekDate = weekStart.clone().locale(calendarRulesLocale);
+            const weekDate = weekStart.clone().locale(displayLocale);
             const file = getExistingCustomCalendarNoteFile('week', weekDate);
 
             entries.set(week.key, file);
         }
 
         return entries;
-    }, [
-        calendarRulesLocale,
-        cursorDate,
-        getExistingCustomCalendarNoteFile,
-        momentApi,
-        showWeekNumbers,
-        vaultVersion,
-        weekNotesEnabled,
-        weeks
-    ]);
+    }, [cursorDate, displayLocale, getExistingCustomCalendarNoteFile, momentApi, showWeekNumbers, vaultVersion, weekNotesEnabled, weeks]);
 
     if (!momentApi || !cursorDate) {
         return null;
@@ -1533,7 +1525,7 @@ export function NavigationPaneCalendar({
 
                                                     openOrCreateCustomCalendarNote(
                                                         'week',
-                                                        weekStart.clone().locale(calendarRulesLocale),
+                                                        weekStart.clone().locale(displayLocale),
                                                         weekNoteFilesByKey.get(week.key) ?? null
                                                     );
                                                 }}
@@ -1545,7 +1537,7 @@ export function NavigationPaneCalendar({
 
                                                     showCalendarNoteContextMenu(event, {
                                                         kind: 'week',
-                                                        date: weekStart.clone().locale(calendarRulesLocale),
+                                                        date: weekStart.clone().locale(displayLocale),
                                                         existingFile: weekNoteFilesByKey.get(week.key) ?? null,
                                                         canCreate: weekNotesEnabled
                                                     });
@@ -1565,7 +1557,7 @@ export function NavigationPaneCalendar({
 
                                                     showCalendarNoteContextMenu(event, {
                                                         kind: 'week',
-                                                        date: weekStart.clone().locale(calendarRulesLocale),
+                                                        date: weekStart.clone().locale(displayLocale),
                                                         existingFile: null,
                                                         canCreate: weekNotesEnabled
                                                     });

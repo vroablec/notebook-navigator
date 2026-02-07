@@ -29,7 +29,6 @@ import {
     DEFAULT_CALENDAR_CUSTOM_WEEK_PATTERN,
     DEFAULT_CALENDAR_CUSTOM_YEAR_PATTERN,
     ensureMarkdownFileName,
-    getCalendarCustomWeekAnchorDate,
     isCalendarCustomDatePatternValid,
     isCalendarCustomMonthPatternValid,
     isCalendarCustomQuarterPatternValid,
@@ -40,11 +39,12 @@ import {
     normalizeCalendarVaultFolderPath,
     splitCalendarCustomPattern
 } from '../../utils/calendarCustomNotePatterns';
+import { resolveCalendarCustomNotePathDate, type CalendarNoteKind } from '../../utils/calendarNotes';
 import { getActiveVaultProfile } from '../../utils/vaultProfiles';
 import { createSettingGroupFactory } from '../settingGroups';
 import { addSettingSyncModeToggle } from '../syncModeToggle';
 import { createSubSettingsContainer, setElementVisible } from '../subSettings';
-import { getMomentApi, resolveMomentLocale, type MomentInstance } from '../../utils/moment';
+import { getMomentApi, resolveMomentLocale } from '../../utils/moment';
 import { runAsyncAction } from '../../utils/async';
 import { CalendarTemplateModal } from '../../modals/CalendarTemplateModal';
 import { createInlineExternalLinkText } from './externalLink';
@@ -543,9 +543,6 @@ export function renderCalendarTab(context: SettingsTabContext): void {
         const fallbackLocale = momentApi.locale() || 'en';
         const requestedDisplayLocale = (currentLanguage || fallbackLocale).replace(/_/g, '-');
         const displayLocale = resolveMomentLocale(requestedDisplayLocale, momentApi, fallbackLocale);
-        const calendarRulesRequestedLocale =
-            plugin.settings.calendarLocale === CALENDAR_LOCALE_SYSTEM_DEFAULT ? displayLocale : plugin.settings.calendarLocale;
-        const calendarRulesLocale = resolveMomentLocale(calendarRulesRequestedLocale, momentApi, displayLocale);
 
         const sampleDate = momentApi('2026-01-19', 'YYYY-MM-DD', true);
         if (!sampleDate.isValid()) {
@@ -553,7 +550,7 @@ export function renderCalendarTab(context: SettingsTabContext): void {
             return;
         }
 
-        const formatExample = (patternRaw: string, fallback: string, anchorDate?: (date: MomentInstance) => MomentInstance): string => {
+        const formatExample = (kind: CalendarNoteKind, patternRaw: string, fallback: string): string => {
             const normalized = normalizeCalendarCustomFilePattern(patternRaw, fallback);
             if (!normalized) {
                 return '';
@@ -564,7 +561,8 @@ export function renderCalendarTab(context: SettingsTabContext): void {
             const folderFormatter = createCalendarCustomDateFormatter(folderPattern);
             const fileFormatter = createCalendarCustomDateFormatter(filePattern);
 
-            const dateForPath = anchorDate ? anchorDate(sampleDate.clone()) : sampleDate;
+            const momentPattern = folderPattern ? `${folderPattern}/${filePattern}` : filePattern;
+            const dateForPath = resolveCalendarCustomNotePathDate(kind, sampleDate, momentPattern, displayLocale);
             const folderSuffix = folderFormatter(dateForPath);
             const folderPath = normalizeCalendarVaultFolderPath(folderSuffix || '/');
             const folderPathRelative = folderPath === '/' ? '' : folderPath;
@@ -578,27 +576,23 @@ export function renderCalendarTab(context: SettingsTabContext): void {
         };
 
         const dailyPatternRaw = getInputValue(calendarCustomFilePattern.inputEl, plugin.settings.calendarCustomFilePattern);
-        const dailyExamplePath = formatExample(dailyPatternRaw, DEFAULT_CALENDAR_CUSTOM_FILE_PATTERN);
+        const dailyExamplePath = formatExample('day', dailyPatternRaw, DEFAULT_CALENDAR_CUSTOM_FILE_PATTERN);
         setExampleText(calendarCustomFilePattern, dailyExamplePath ? exampleTemplate.replace('{path}', dailyExamplePath) : '');
 
         const weekPatternRaw = getInputValue(calendarCustomWeekPattern.inputEl, plugin.settings.calendarCustomWeekPattern);
-        // Weekly patterns can include month/quarter tokens. Preview using week start so the example matches the actual
-        // note path resolution used when opening weekly notes (including ISO week patterns).
-        const weekExamplePath = formatExample(weekPatternRaw, '', date =>
-            getCalendarCustomWeekAnchorDate(date, weekPatternRaw, calendarRulesLocale)
-        );
+        const weekExamplePath = formatExample('week', weekPatternRaw, '');
         setExampleText(calendarCustomWeekPattern, weekExamplePath ? exampleTemplate.replace('{path}', weekExamplePath) : '');
 
         const monthPatternRaw = getInputValue(calendarCustomMonthPattern.inputEl, plugin.settings.calendarCustomMonthPattern);
-        const monthExamplePath = formatExample(monthPatternRaw, '');
+        const monthExamplePath = formatExample('month', monthPatternRaw, '');
         setExampleText(calendarCustomMonthPattern, monthExamplePath ? exampleTemplate.replace('{path}', monthExamplePath) : '');
 
         const quarterPatternRaw = getInputValue(calendarCustomQuarterPattern.inputEl, plugin.settings.calendarCustomQuarterPattern);
-        const quarterExamplePath = formatExample(quarterPatternRaw, '');
+        const quarterExamplePath = formatExample('quarter', quarterPatternRaw, '');
         setExampleText(calendarCustomQuarterPattern, quarterExamplePath ? exampleTemplate.replace('{path}', quarterExamplePath) : '');
 
         const yearPatternRaw = getInputValue(calendarCustomYearPattern.inputEl, plugin.settings.calendarCustomYearPattern);
-        const yearExamplePath = formatExample(yearPatternRaw, '');
+        const yearExamplePath = formatExample('year', yearPatternRaw, '');
         setExampleText(calendarCustomYearPattern, yearExamplePath ? exampleTemplate.replace('{path}', yearExamplePath) : '');
     };
 

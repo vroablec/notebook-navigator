@@ -28,10 +28,10 @@ export const DEFAULT_CALENDAR_CUSTOM_YEAR_PATTERN = 'YYYY';
 
 export type CalendarCustomWeekAnchorUnit = 'week' | 'isoWeek';
 
-export function getCalendarCustomWeekAnchorDate(date: MomentInstance, pattern: string, calendarRulesLocale?: string): MomentInstance {
+export function getCalendarCustomWeekAnchorDate(date: MomentInstance, pattern: string, locale?: string): MomentInstance {
     const unit = getCalendarCustomWeekAnchorUnit(pattern);
     const cloned = date.clone();
-    const localized = calendarRulesLocale ? cloned.locale(calendarRulesLocale) : cloned;
+    const localized = locale ? cloned.locale(locale) : cloned;
     return localized.startOf(unit);
 }
 

@@ -22,6 +22,7 @@ import type { NotebookNavigatorSettings } from '../settings/types';
 import {
     createCalendarCustomDateFormatter,
     ensureMarkdownFileName,
+    getCalendarCustomWeekAnchorDate,
     isCalendarCustomDatePatternValid,
     isCalendarCustomMonthPatternValid,
     isCalendarCustomQuarterPatternValid,
@@ -101,6 +102,18 @@ export function getCalendarTemplatePath(kind: CalendarNoteKind, settings: Notebo
 export function buildCustomCalendarMomentPattern(calendarCustomFilePattern: string, fallbackPattern?: string): string {
     const { folderPattern, filePattern } = splitCalendarCustomPattern(calendarCustomFilePattern, fallbackPattern);
     return folderPattern ? `${folderPattern}/${filePattern}` : filePattern;
+}
+
+export function resolveCalendarCustomNotePathDate(
+    kind: CalendarNoteKind,
+    date: MomentInstance,
+    momentPattern: string,
+    displayLocale: string
+): MomentInstance {
+    if (kind === 'week') {
+        return getCalendarCustomWeekAnchorDate(date, momentPattern, displayLocale);
+    }
+    return date.clone().locale(displayLocale);
 }
 
 export function buildCustomCalendarFilePathForPattern(
