@@ -90,6 +90,7 @@ const RELEASE_NOTES: ReleaseNote[] = [
             'New command: ==Toggle compact mode==. Quickly toggle between default and compact mode in list pane. Bind it to a hot key or a button with the Commander plugin.'
         ],
         improved: [
+            'Many improvements to calendar display. Days with notes now show as dots, and overall look and feel is much improved.',
             'You can now remove icons from the recently used icons list.',
             'Omnisearch now scopes searches to the selected folder when possible. In folder view, notes from the selected folder and its subfolders are less likely to be pushed out by matches from other parts of the vault.'
         ],
