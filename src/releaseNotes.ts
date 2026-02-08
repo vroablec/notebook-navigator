@@ -79,6 +79,7 @@ const RELEASE_NOTES: ReleaseNote[] = [
         date: '2026-02-08',
         showOnUpdate: true,
         new: [
+            '==Tasks==! New setting: Notes > Show icon for notes with unfinished tasks. Enable to show an icon in listpane for notes with unfinished tasks. Default enabled. Tasks now will also show in the calendar for daily notes with unfinished tasks. You can set a custom color for the task icon in Style settings.',
             '==Vault icons==. You can now use SVG images from your vault for icons. Just pick the new "Vault" tab in the icon picker.',
             '==Date filters in search==! You can now filter notes by date using the "@" symbol. Some examples: @today, @2026W02, @2026-Q1, @13/02/2026, or ranges like @2026-01-01..2026-02-07. You can specifically choose created date with @c:, modified date with @m:, or exclude date matches with !@.',
             '==Emojis in tags==! You can now use emojis when naming and renaming tags. Inline tag operations show a warning confirmation when a tag contains characters Obsidian cannot parse inline (example: ‼ can split an inline tag). YAML frontmatter tags can contain any characters.',
