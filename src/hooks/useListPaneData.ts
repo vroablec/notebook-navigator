@@ -155,6 +155,18 @@ export function useListPaneData({
     const isOmnisearchAvailable = omnisearchService?.isAvailable() ?? false;
     // Use Omnisearch only when selected, available, and there's a query
     const useOmnisearch = searchProvider === 'omnisearch' && isOmnisearchAvailable && hasSearchQuery;
+    const hasTaskSearchFilters = useMemo(() => {
+        if (!trimmedQuery || useOmnisearch) {
+            return false;
+        }
+
+        const tokens = searchTokens ?? parseFilterSearchTokens(trimmedQuery);
+        if (!filterSearchHasActiveCriteria(tokens)) {
+            return false;
+        }
+
+        return tokens.requireUnfinishedTasks || tokens.excludeUnfinishedTasks;
+    }, [trimmedQuery, useOmnisearch, searchTokens]);
     /**
      * Optional folder scope passed to Omnisearch.
      *
@@ -417,6 +429,7 @@ export function useListPaneData({
 
         // Check if date filtering is needed and resolve which date field to use
         const hasDateFilters = tokens.dateRanges.length > 0 || tokens.excludeDateRanges.length > 0;
+        const hasTaskFilters = tokens.requireUnfinishedTasks || tokens.excludeUnfinishedTasks;
         const defaultDateField = resolveDefaultDateField(sortOption, settings.alphabeticalDateMode ?? 'modified');
 
         // Check if we need to access tag metadata for any file
@@ -444,10 +457,13 @@ export function useListPaneData({
 
         const filteredByFilterSearch = baseFiles.filter(file => {
             const lowercaseName = searchableNames.get(file.path) || '';
+            const fileData = hasTaskFilters || needsTagLookup ? db.getFile(file.path) : null;
+            const hasUnfinishedTasks = typeof fileData?.taskUnfinished === 'number' && fileData.taskUnfinished > 0;
+            const matchOptions = hasTaskFilters ? { hasUnfinishedTasks } : undefined;
 
             // Skip tag lookup if tokens do not reference tags
             if (!needsTagLookup) {
-                if (!fileMatchesFilterTokens(lowercaseName, emptyTags, tokens)) {
+                if (!fileMatchesFilterTokens(lowercaseName, emptyTags, tokens, matchOptions)) {
                     return false;
                 }
 
@@ -462,7 +478,7 @@ export function useListPaneData({
                 );
             }
 
-            const rawTags = getCachedFileTags({ app, file, db });
+            const rawTags = getCachedFileTags({ app, file, db, fileData });
             const hasTags = rawTags.length > 0;
 
             // Early return if file must have tags but has none
@@ -479,7 +495,7 @@ export function useListPaneData({
                 lowercaseTags = TAG_PRESENCE_SENTINEL;
             }
 
-            if (!fileMatchesFilterTokens(lowercaseName, lowercaseTags, tokens)) {
+            if (!fileMatchesFilterTokens(lowercaseName, lowercaseTags, tokens, matchOptions)) {
                 return false;
             }
 
@@ -1100,6 +1116,13 @@ export function useListPaneData({
                 }
             }
 
+            // React to task counter changes when task filters are active in the search query
+            if (!shouldRefresh && hasTaskSearchFilters) {
+                shouldRefresh = changes.some(change => {
+                    return change.changes.taskUnfinished !== undefined && basePathSet.has(change.path);
+                });
+            }
+
             if (!shouldRefresh) {
                 return;
             }
@@ -1129,6 +1152,7 @@ export function useListPaneData({
         hiddenFolders,
         hiddenFileTags,
         showHiddenItems,
+        hasTaskSearchFilters,
         getDB,
         commandQueue,
         basePathSet,

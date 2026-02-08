@@ -156,7 +156,7 @@ export const STRINGS_PT_BR = {
                     items: [
                         '`word` Encontrar notas com "word" no nome do arquivo.',
                         '`word1 word2` Cada palavra deve corresponder ao nome do arquivo.',
-                        '`!word` Excluir notas com "word" no nome do arquivo.'
+                        '`-word` Excluir notas com "word" no nome do arquivo.'
                     ]
                 },
                 tags: {
@@ -164,13 +164,23 @@ export const STRINGS_PT_BR = {
                     items: [
                         '`#tag` Incluir notas com tag (também corresponde a tags aninhadas como `#tag/subtag`).',
                         '`#` Incluir apenas notas com tags.',
-                        '`!#tag` Excluir notas com tag.',
-                        '`!#` Incluir apenas notas sem tags.',
+                        '`-#tag` Excluir notas com tag.',
+                        '`-#` Incluir apenas notas sem tags.',
                         '`#tag1 #tag2` Corresponder a ambas as tags (AND implícito).',
                         '`#tag1 AND #tag2` Corresponder a ambas as tags (AND explícito).',
                         '`#tag1 OR #tag2` Corresponder a qualquer uma das tags.',
                         '`#a OR #b AND #c` AND tem precedência maior: corresponde a `#a`, ou ambos `#b` e `#c`.',
                         'Cmd/Ctrl+Clique em uma tag para adicionar com AND. Cmd/Ctrl+Shift+Clique para adicionar com OR.'
+                    ]
+                },
+                connectors: {
+                    title: 'Comportamento AND/OR',
+                    items: [
+                        '`AND` e `OR` são operadores apenas em consultas exclusivas de tags.',
+                        'Consultas exclusivas de tags contêm apenas filtros de tags: `#tag`, `-#tag`, `#`, `-#`.',
+                        'Se uma consulta incluir nomes, datas (`@...`) ou filtros de tarefas (`has:task`), `AND` e `OR` são pesquisados como palavras.',
+                        'Exemplo de consulta com operadores: `#work OR #home`.',
+                        'Exemplo de consulta mista: `#work OR has:task` (`OR` é pesquisado nos nomes dos arquivos).'
                     ]
                 },
                 dates: {
@@ -186,7 +196,7 @@ export const STRINGS_PT_BR = {
                         '`@13/02/2026` Formatos numéricos com separadores (`@07022026` segue sua localização quando ambíguo).',
                         '`@2026-02-01..2026-02-07` Encontrar um intervalo de dias inclusivo (extremos abertos suportados).',
                         '`@c:...` ou `@m:...` Apontar para data de criação ou modificação.',
-                        '`!@...` Excluir uma correspondência de data.'
+                        '`-@...` Excluir uma correspondência de data.'
                     ]
                 },
                 omnisearch: {

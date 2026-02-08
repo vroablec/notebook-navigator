@@ -154,7 +154,7 @@ export const STRINGS_PL = {
                     items: [
                         '`word` Znajdź notatki ze słowem "word" w nazwie pliku.',
                         '`word1 word2` Każde słowo musi pasować do nazwy pliku.',
-                        '`!word` Wyklucz notatki ze słowem "word" w nazwie pliku.'
+                        '`-word` Wyklucz notatki ze słowem "word" w nazwie pliku.'
                     ]
                 },
                 tags: {
@@ -162,13 +162,23 @@ export const STRINGS_PL = {
                     items: [
                         '`#tag` Uwzględnij notatki z tagiem (pasuje też do zagnieżdżonych tagów jak `#tag/subtag`).',
                         '`#` Uwzględnij tylko notatki z tagami.',
-                        '`!#tag` Wyklucz notatki z tagiem.',
-                        '`!#` Uwzględnij tylko notatki bez tagów.',
+                        '`-#tag` Wyklucz notatki z tagiem.',
+                        '`-#` Uwzględnij tylko notatki bez tagów.',
                         '`#tag1 #tag2` Znajdź oba tagi (niejawne AND).',
                         '`#tag1 AND #tag2` Znajdź oba tagi (jawne AND).',
                         '`#tag1 OR #tag2` Znajdź dowolny z tagów.',
                         '`#a OR #b AND #c` AND ma wyższy priorytet: pasuje do `#a` lub obu `#b` i `#c`.',
                         'Cmd/Ctrl+Kliknij tag, aby dodać z AND. Cmd/Ctrl+Shift+Kliknij, aby dodać z OR.'
+                    ]
+                },
+                connectors: {
+                    title: 'Zachowanie AND/OR',
+                    items: [
+                        '`AND` i `OR` są operatorami tylko w zapytaniach składających się wyłącznie z tagów.',
+                        'Zapytania wyłącznie z tagów zawierają tylko filtry tagów: `#tag`, `-#tag`, `#`, `-#`.',
+                        'Jeśli zapytanie zawiera nazwy, daty (`@...`) lub filtry zadań (`has:task`), `AND` i `OR` są wyszukiwane jako słowa.',
+                        'Przykład zapytania z operatorami: `#work OR #home`.',
+                        'Przykład zapytania mieszanego: `#work OR has:task` (`OR` jest wyszukiwane w nazwach plików).'
                     ]
                 },
                 dates: {
@@ -184,7 +194,7 @@ export const STRINGS_PL = {
                         '`@13/02/2026` Formaty numeryczne z separatorami (`@07022026` podąża za ustawieniami regionalnymi przy niejednoznaczności).',
                         '`@2026-02-01..2026-02-07` Znajdź włączny zakres dni (otwarte końce obsługiwane).',
                         '`@c:...` lub `@m:...` Wskaż datę utworzenia lub modyfikacji.',
-                        '`!@...` Wyklucz dopasowanie daty.'
+                        '`-@...` Wyklucz dopasowanie daty.'
                     ]
                 },
                 omnisearch: {

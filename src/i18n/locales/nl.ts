@@ -156,7 +156,7 @@ export const STRINGS_NL = {
                     items: [
                         '`word` Notities met "word" in de bestandsnaam vinden.',
                         '`word1 word2` Elk woord moet overeenkomen met de bestandsnaam.',
-                        '`!word` Notities met "word" in de bestandsnaam uitsluiten.'
+                        '`-word` Notities met "word" in de bestandsnaam uitsluiten.'
                     ]
                 },
                 tags: {
@@ -164,13 +164,23 @@ export const STRINGS_NL = {
                     items: [
                         '`#tag` Notities met tag opnemen (vindt ook geneste tags zoals `#tag/subtag`).',
                         '`#` Alleen notities met tags opnemen.',
-                        '`!#tag` Notities met tag uitsluiten.',
-                        '`!#` Alleen notities zonder tags opnemen.',
+                        '`-#tag` Notities met tag uitsluiten.',
+                        '`-#` Alleen notities zonder tags opnemen.',
                         '`#tag1 #tag2` Beide tags vinden (impliciete AND).',
                         '`#tag1 AND #tag2` Beide tags vinden (expliciete AND).',
                         '`#tag1 OR #tag2` Een van beide tags vinden.',
                         '`#a OR #b AND #c` AND heeft hogere prioriteit: vindt `#a`, of beide `#b` en `#c`.',
                         'Cmd/Ctrl+Klik op een tag om toe te voegen met AND. Cmd/Ctrl+Shift+Klik om toe te voegen met OR.'
+                    ]
+                },
+                connectors: {
+                    title: 'AND/OR-gedrag',
+                    items: [
+                        '`AND` en `OR` zijn alleen operatoren in zoekopdrachten met uitsluitend tags.',
+                        'Zoekopdrachten met uitsluitend tags bevatten alleen tagfilters: `#tag`, `-#tag`, `#`, `-#`.',
+                        'Als een zoekopdracht namen, datums (`@...`) of taakfilters (`has:task`) bevat, worden `AND` en `OR` als woorden gezocht.',
+                        'Voorbeeld operatorzoekopdracht: `#work OR #home`.',
+                        'Voorbeeld gemengde zoekopdracht: `#work OR has:task` (`OR` wordt gezocht in bestandsnamen).'
                     ]
                 },
                 dates: {
@@ -186,7 +196,7 @@ export const STRINGS_NL = {
                         '`@13/02/2026` Numerieke formaten met scheidingstekens (`@07022026` volgt uw landinstelling bij onduidelijkheid).',
                         '`@2026-02-01..2026-02-07` Een inclusief dagenbereik vinden (open einden ondersteund).',
                         '`@c:...` of `@m:...` Aanmaak- of wijzigingsdatum targeten.',
-                        '`!@...` Een datumovereenkomst uitsluiten.'
+                        '`-@...` Een datumovereenkomst uitsluiten.'
                     ]
                 },
                 omnisearch: {

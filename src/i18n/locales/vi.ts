@@ -154,7 +154,7 @@ export const STRINGS_VI = {
                     items: [
                         '`word` Tìm ghi chú có "word" trong tên tệp.',
                         '`word1 word2` Mỗi từ phải khớp với tên tệp.',
-                        '`!word` Loại trừ ghi chú có "word" trong tên tệp.'
+                        '`-word` Loại trừ ghi chú có "word" trong tên tệp.'
                     ]
                 },
                 tags: {
@@ -162,13 +162,23 @@ export const STRINGS_VI = {
                     items: [
                         '`#tag` Bao gồm ghi chú có thẻ (cũng khớp với thẻ lồng nhau như `#tag/subtag`).',
                         '`#` Chỉ bao gồm ghi chú có thẻ.',
-                        '`!#tag` Loại trừ ghi chú có thẻ.',
-                        '`!#` Chỉ bao gồm ghi chú không có thẻ.',
+                        '`-#tag` Loại trừ ghi chú có thẻ.',
+                        '`-#` Chỉ bao gồm ghi chú không có thẻ.',
                         '`#tag1 #tag2` Khớp cả hai thẻ (AND ngầm định).',
                         '`#tag1 AND #tag2` Khớp cả hai thẻ (AND rõ ràng).',
                         '`#tag1 OR #tag2` Tìm một trong các thẻ.',
                         '`#a OR #b AND #c` AND có độ ưu tiên cao hơn: khớp `#a`, hoặc cả `#b` và `#c`.',
                         'Cmd/Ctrl+Nhấp vào thẻ để thêm với AND. Cmd/Ctrl+Shift+Nhấp để thêm với OR.'
+                    ]
+                },
+                connectors: {
+                    title: 'Hành vi AND/OR',
+                    items: [
+                        '`AND` và `OR` chỉ là toán tử trong các truy vấn chỉ chứa thẻ.',
+                        'Truy vấn chỉ chứa thẻ chỉ bao gồm bộ lọc thẻ: `#tag`, `-#tag`, `#`, `-#`.',
+                        'Nếu truy vấn bao gồm tên, ngày (`@...`) hoặc bộ lọc nhiệm vụ (`has:task`), `AND` và `OR` được tìm kiếm như từ.',
+                        'Ví dụ truy vấn toán tử: `#work OR #home`.',
+                        'Ví dụ truy vấn hỗn hợp: `#work OR has:task` (`OR` được tìm kiếm trong tên tệp).'
                     ]
                 },
                 dates: {
@@ -184,7 +194,7 @@ export const STRINGS_VI = {
                         '`@13/02/2026` Định dạng số có dấu phân cách (`@07022026` theo địa phương của bạn khi mơ hồ).',
                         '`@2026-02-01..2026-02-07` Tìm phạm vi ngày bao gồm (hỗ trợ đầu mở).',
                         '`@c:...` hoặc `@m:...` Nhắm mục tiêu ngày tạo hoặc sửa đổi.',
-                        '`!@...` Loại trừ một kết quả khớp ngày.'
+                        '`-@...` Loại trừ một kết quả khớp ngày.'
                     ]
                 },
                 omnisearch: {

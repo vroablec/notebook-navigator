@@ -96,14 +96,14 @@ Filters files by name and tags within the current folder and subfolders. Default
 
 - `word` - Match notes with "word" in the file name
 - `word1 word2` - Require every word to match the file name
-- `!word` - Exclude notes with "word" in the file name
+- `-word` - Exclude notes with "word" in the file name
 
 **Tags**
 
 - `#tag` - Include notes with tag (also matches nested tags like `#tag/subtag`)
 - `#` - Include only tagged notes
-- `!#tag` - Exclude notes with tag
-- `!#` - Include only untagged notes
+- `-#tag` - Exclude notes with tag
+- `-#` - Include only untagged notes
 - `#tag1 #tag2` - Match both tags (implicit AND)
 - `#tag1 AND #tag2` - Match both tags (explicit AND)
 - `#tag1 OR #tag2` - Match either tag
@@ -122,7 +122,7 @@ Filters files by name and tags within the current folder and subfolders. Default
 - `@13/02/2026` - Numeric formats with separators (`@07022026` follows your locale when ambiguous)
 - `@2026-02-01..2026-02-07` - Match an inclusive day range (open ends supported)
 - `@c:...` or `@m:...` - Target created or modified date
-- `!@...` - Exclude a date match
+- `-@...` - Exclude a date match
 
 The default date field follows the current sort order. When sorting by name, the date field is configured in Settings → Notes → Date → When sorting by name.
 

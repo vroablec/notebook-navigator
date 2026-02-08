@@ -155,7 +155,7 @@ export const STRINGS_TR = {
                     items: [
                         '`word` Dosya adında "word" olan notları bul.',
                         '`word1 word2` Her kelime dosya adıyla eşleşmeli.',
-                        '`!word` Dosya adında "word" olan notları hariç tut.'
+                        '`-word` Dosya adında "word" olan notları hariç tut.'
                     ]
                 },
                 tags: {
@@ -163,13 +163,23 @@ export const STRINGS_TR = {
                     items: [
                         '`#tag` Etiketli notları dahil et (`#tag/subtag` gibi iç içe etiketleri de bulur).',
                         '`#` Yalnızca etiketli notları dahil et.',
-                        '`!#tag` Etiketli notları hariç tut.',
-                        '`!#` Yalnızca etiketsiz notları dahil et.',
+                        '`-#tag` Etiketli notları hariç tut.',
+                        '`-#` Yalnızca etiketsiz notları dahil et.',
                         '`#tag1 #tag2` Her iki etiketi bul (örtük AND).',
                         '`#tag1 AND #tag2` Her iki etiketi bul (açık AND).',
                         '`#tag1 OR #tag2` Etiketlerden herhangi birini bul.',
                         '`#a OR #b AND #c` AND daha yüksek önceliğe sahip: `#a` veya hem `#b` hem `#c` ile eşleşir.',
                         'Cmd/Ctrl+Tıklama ile etiketi AND olarak ekleyin. Cmd/Ctrl+Shift+Tıklama ile OR olarak ekleyin.'
+                    ]
+                },
+                connectors: {
+                    title: 'AND/OR davranışı',
+                    items: [
+                        '`AND` ve `OR` yalnızca etiket sorgularında operatör olarak çalışır.',
+                        'Etiket sorguları yalnızca etiket filtreleri içerir: `#tag`, `-#tag`, `#`, `-#`.',
+                        'Bir sorgu adlar, tarihler (`@...`) veya görev filtreleri (`has:task`) içeriyorsa, `AND` ve `OR` kelime olarak aranır.',
+                        'Operatör sorgusu örneği: `#work OR #home`.',
+                        'Karma sorgu örneği: `#work OR has:task` (`OR` dosya adlarında aranır).'
                     ]
                 },
                 dates: {
@@ -185,7 +195,7 @@ export const STRINGS_TR = {
                         '`@13/02/2026` Ayırıcılı sayısal formatlar (`@07022026` belirsizlikte yerel ayarınızı takip eder).',
                         '`@2026-02-01..2026-02-07` Kapsayıcı bir gün aralığı bul (açık uçlar desteklenir).',
                         '`@c:...` veya `@m:...` Oluşturma veya değiştirme tarihini hedefle.',
-                        '`!@...` Bir tarih eşleşmesini hariç tut.'
+                        '`-@...` Bir tarih eşleşmesini hariç tut.'
                     ]
                 },
                 omnisearch: {

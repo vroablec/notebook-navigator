@@ -154,7 +154,7 @@ export const STRINGS_DE = {
                     items: [
                         '`word` Notizen mit "word" im Dateinamen finden.',
                         '`word1 word2` Jedes Wort muss im Dateinamen vorkommen.',
-                        '`!word` Notizen mit "word" im Dateinamen ausschließen.'
+                        '`-word` Notizen mit "word" im Dateinamen ausschließen.'
                     ]
                 },
                 tags: {
@@ -162,13 +162,23 @@ export const STRINGS_DE = {
                     items: [
                         '`#tag` Notizen mit Tag einschließen (findet auch verschachtelte Tags wie `#tag/subtag`).',
                         '`#` Nur Notizen mit Tags anzeigen.',
-                        '`!#tag` Notizen mit Tag ausschließen.',
-                        '`!#` Nur Notizen ohne Tags anzeigen.',
+                        '`-#tag` Notizen mit Tag ausschließen.',
+                        '`-#` Nur Notizen ohne Tags anzeigen.',
                         '`#tag1 #tag2` Beide Tags finden (implizites AND).',
                         '`#tag1 AND #tag2` Beide Tags finden (explizites AND).',
                         '`#tag1 OR #tag2` Eines der Tags finden.',
                         '`#a OR #b AND #c` AND hat höhere Priorität: findet `#a` oder beide `#b` und `#c`.',
                         'Cmd/Ctrl+Klick auf einen Tag zum Hinzufügen mit AND. Cmd/Ctrl+Shift+Klick zum Hinzufügen mit OR.'
+                    ]
+                },
+                connectors: {
+                    title: 'AND/OR-Verhalten',
+                    items: [
+                        '`AND` und `OR` sind nur in reinen Tag-Abfragen Operatoren.',
+                        'Reine Tag-Abfragen enthalten nur Tag-Filter: `#tag`, `-#tag`, `#`, `-#`.',
+                        'Wenn eine Abfrage Namen, Daten (`@...`) oder Aufgabenfilter (`has:task`) enthält, werden `AND` und `OR` als Wörter abgeglichen.',
+                        'Beispiel für Operator-Abfrage: `#work OR #home`.',
+                        'Beispiel für gemischte Abfrage: `#work OR has:task` (`OR` wird in Dateinamen abgeglichen).'
                     ]
                 },
                 dates: {
@@ -184,7 +194,7 @@ export const STRINGS_DE = {
                         '`@13/02/2026` Numerische Formate mit Trennzeichen (`@07022026` folgt Ihrem Gebietsschema bei Mehrdeutigkeit).',
                         '`@2026-02-01..2026-02-07` Einen inklusiven Datumsbereich finden (offene Enden unterstützt).',
                         '`@c:...` oder `@m:...` Erstellungs- oder Änderungsdatum ansprechen.',
-                        '`!@...` Ein Datum ausschließen.'
+                        '`-@...` Ein Datum ausschließen.'
                     ]
                 },
                 omnisearch: {

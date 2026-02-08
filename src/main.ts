@@ -28,6 +28,7 @@ import {
     extractLegacyPeriodicNotesFolder,
     extractLegacyShortcuts,
     extractLegacyVisibilitySettings,
+    migrateSearchShortcutNegationSyntax,
     migrateFolderNoteTemplateSetting,
     migrateLegacySyncedSettings
 } from './settings/migrations/syncedSettings';
@@ -527,6 +528,7 @@ export default class NotebookNavigatorPlugin extends Plugin implements ISettings
         applyLegacyPeriodicNotesFolderMigration({ settings: this.settings, legacyPeriodicNotesFolder });
         applyLegacyVisibilityMigration({ settings: this.settings, migration: legacyVisibility });
         applyLegacyShortcutsMigration({ settings: this.settings, legacyShortcuts });
+        const migratedShortcutNegationSyntax = migrateSearchShortcutNegationSyntax({ settings: this.settings });
         this.normalizeIconSettings(this.settings);
         this.normalizeFileIconMapSettings(this.settings);
         this.normalizeCustomPropertyColorMapSettings(this.settings);
@@ -540,7 +542,8 @@ export default class NotebookNavigatorPlugin extends Plugin implements ISettings
             hadLocalValuesInSettings ||
             hadLegacySearchProviderInSettings ||
             uiScaleMigrated ||
-            migratedMomentFormats;
+            migratedMomentFormats ||
+            migratedShortcutNegationSyntax;
 
         if (needsPersistedCleanup) {
             await this.saveData(this.getPersistableSettings());

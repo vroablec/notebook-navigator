@@ -73,6 +73,14 @@
    Search help modal
    ======================================================================== */
 
+.modal.nn-search-help-modal {
+    /* Desktop layout with bounded width while keeping viewport margins */
+    width: min(600px, calc(100vw - 80px));
+    max-width: min(600px, calc(100vw - 80px));
+    /* Shorter desktop layout so the modal does not dominate vertical space */
+    max-height: min(70vh, 640px);
+}
+
 .modal.nn-search-help-modal .modal-content {
     display: flex;
     flex-direction: column;

@@ -154,7 +154,7 @@ export const STRINGS_FR = {
                     items: [
                         '`word` Trouver les notes avec "word" dans le nom de fichier.',
                         '`word1 word2` Chaque mot doit correspondre au nom de fichier.',
-                        '`!word` Exclure les notes avec "word" dans le nom de fichier.'
+                        '`-word` Exclure les notes avec "word" dans le nom de fichier.'
                     ]
                 },
                 tags: {
@@ -162,13 +162,23 @@ export const STRINGS_FR = {
                     items: [
                         "`#tag` Inclure les notes avec l'étiquette (correspond aussi aux étiquettes imbriquées comme `#tag/subtag`).",
                         '`#` Inclure uniquement les notes étiquetées.',
-                        "`!#tag` Exclure les notes avec l'étiquette.",
-                        '`!#` Inclure uniquement les notes sans étiquettes.',
+                        "`-#tag` Exclure les notes avec l'étiquette.",
+                        '`-#` Inclure uniquement les notes sans étiquettes.',
                         '`#tag1 #tag2` Correspondre aux deux étiquettes (AND implicite).',
                         '`#tag1 AND #tag2` Correspondre aux deux étiquettes (AND explicite).',
                         "`#tag1 OR #tag2` Correspondre à l'une des étiquettes.",
                         '`#a OR #b AND #c` AND a une priorité plus élevée : correspond à `#a`, ou aux deux `#b` et `#c`.',
                         'Cmd/Ctrl+Clic sur une étiquette pour ajouter avec AND. Cmd/Ctrl+Shift+Clic pour ajouter avec OR.'
+                    ]
+                },
+                connectors: {
+                    title: 'Comportement AND/OR',
+                    items: [
+                        '`AND` et `OR` sont des opérateurs uniquement dans les requêtes composées exclusivement de tags.',
+                        'Les requêtes de tags exclusives ne contiennent que des filtres de tags : `#tag`, `-#tag`, `#`, `-#`.',
+                        'Si une requête inclut des noms, des dates (`@...`) ou des filtres de tâches (`has:task`), `AND` et `OR` sont recherchés comme des mots.',
+                        'Exemple de requête avec opérateurs : `#work OR #home`.',
+                        'Exemple de requête mixte : `#work OR has:task` (`OR` est recherché dans les noms de fichiers).'
                     ]
                 },
                 dates: {
@@ -184,7 +194,7 @@ export const STRINGS_FR = {
                         "`@13/02/2026` Formats numériques avec séparateurs (`@07022026` suit votre locale en cas d'ambiguïté).",
                         '`@2026-02-01..2026-02-07` Trouver une plage de jours inclusive (fins ouvertes supportées).',
                         '`@c:...` ou `@m:...` Cibler la date de création ou de modification.',
-                        '`!@...` Exclure une correspondance de date.'
+                        '`-@...` Exclure une correspondance de date.'
                     ]
                 },
                 omnisearch: {

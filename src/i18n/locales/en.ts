@@ -154,7 +154,7 @@ export const STRINGS_EN = {
                     items: [
                         '`word` Match notes with "word" in the file name.',
                         '`word1 word2` Require every word to match the file name.',
-                        '`!word` Exclude notes with "word" in the file name.'
+                        '`-word` Exclude notes with "word" in the file name.'
                     ]
                 },
                 tags: {
@@ -162,13 +162,23 @@ export const STRINGS_EN = {
                     items: [
                         '`#tag` Include notes with tag (also matches nested tags like `#tag/subtag`).',
                         '`#` Include only tagged notes.',
-                        '`!#tag` Exclude notes with tag.',
-                        '`!#` Include only untagged notes.',
+                        '`-#tag` Exclude notes with tag.',
+                        '`-#` Include only untagged notes.',
                         '`#tag1 #tag2` Match both tags (implicit AND).',
                         '`#tag1 AND #tag2` Match both tags (explicit AND).',
                         '`#tag1 OR #tag2` Match either tag.',
                         '`#a OR #b AND #c` AND has higher precedence: matches `#a`, or both `#b` and `#c`.',
                         'Cmd/Ctrl+Click a tag to add with AND. Cmd/Ctrl+Shift+Click to add with OR.'
+                    ]
+                },
+                connectors: {
+                    title: 'AND/OR behavior',
+                    items: [
+                        '`AND` and `OR` are operators only in tag-only queries.',
+                        'Tag-only queries contain only tag filters: `#tag`, `-#tag`, `#`, `-#`.',
+                        'If a query includes names, dates (`@...`), or task filters (`has:task`), `AND` and `OR` are matched as words.',
+                        'Example operator query: `#work OR #home`.',
+                        'Example mixed query: `#work OR has:task` (`OR` is matched in file names).'
                     ]
                 },
                 dates: {
@@ -184,7 +194,7 @@ export const STRINGS_EN = {
                         '`@13/02/2026` Numeric formats with separators (`@07022026` follows your locale when ambiguous).',
                         '`@2026-02-01..2026-02-07` Match an inclusive day range (open ends supported).',
                         '`@c:...` or `@m:...` Target created or modified date.',
-                        '`!@...` Exclude a date match.'
+                        '`-@...` Exclude a date match.'
                     ]
                 },
                 omnisearch: {

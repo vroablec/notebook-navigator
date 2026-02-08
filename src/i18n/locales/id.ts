@@ -155,7 +155,7 @@ export const STRINGS_ID = {
                     items: [
                         '`word` Temukan catatan dengan "word" di nama file.',
                         '`word1 word2` Setiap kata harus cocok dengan nama file.',
-                        '`!word` Kecualikan catatan dengan "word" di nama file.'
+                        '`-word` Kecualikan catatan dengan "word" di nama file.'
                     ]
                 },
                 tags: {
@@ -163,13 +163,23 @@ export const STRINGS_ID = {
                     items: [
                         '`#tag` Sertakan catatan dengan tag (juga cocok dengan tag bersarang seperti `#tag/subtag`).',
                         '`#` Sertakan hanya catatan dengan tag.',
-                        '`!#tag` Kecualikan catatan dengan tag.',
-                        '`!#` Sertakan hanya catatan tanpa tag.',
+                        '`-#tag` Kecualikan catatan dengan tag.',
+                        '`-#` Sertakan hanya catatan tanpa tag.',
                         '`#tag1 #tag2` Cocokkan kedua tag (AND implisit).',
                         '`#tag1 AND #tag2` Cocokkan kedua tag (AND eksplisit).',
                         '`#tag1 OR #tag2` Cocokkan salah satu tag.',
                         '`#a OR #b AND #c` AND memiliki prioritas lebih tinggi: cocok dengan `#a`, atau keduanya `#b` dan `#c`.',
                         'Cmd/Ctrl+Klik tag untuk menambahkan dengan AND. Cmd/Ctrl+Shift+Klik untuk menambahkan dengan OR.'
+                    ]
+                },
+                connectors: {
+                    title: 'Perilaku AND/OR',
+                    items: [
+                        '`AND` dan `OR` adalah operator hanya dalam kueri khusus tag.',
+                        'Kueri khusus tag hanya berisi filter tag: `#tag`, `-#tag`, `#`, `-#`.',
+                        'Jika kueri menyertakan nama, tanggal (`@...`), atau filter tugas (`has:task`), `AND` dan `OR` dicocokkan sebagai kata.',
+                        'Contoh kueri operator: `#work OR #home`.',
+                        'Contoh kueri campuran: `#work OR has:task` (`OR` dicocokkan dalam nama file).'
                     ]
                 },
                 dates: {
@@ -185,7 +195,7 @@ export const STRINGS_ID = {
                         '`@13/02/2026` Format numerik dengan pemisah (`@07022026` mengikuti lokal Anda saat ambigu).',
                         '`@2026-02-01..2026-02-07` Temukan rentang hari inklusif (ujung terbuka didukung).',
                         '`@c:...` atau `@m:...` Targetkan tanggal pembuatan atau modifikasi.',
-                        '`!@...` Kecualikan kecocokan tanggal.'
+                        '`-@...` Kecualikan kecocokan tanggal.'
                     ]
                 },
                 omnisearch: {

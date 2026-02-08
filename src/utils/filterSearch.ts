@@ -70,6 +70,8 @@ export interface FilterSearchTokens {
     hasInclusions: boolean;
     requiresTags: boolean;
     allRequireTags: boolean;
+    requireUnfinishedTasks: boolean;
+    excludeUnfinishedTasks: boolean;
     includedTagTokens: string[];
     nameTokens: string[];
     tagTokens: string[];
@@ -89,6 +91,8 @@ const EMPTY_TOKENS: FilterSearchTokens = {
     hasInclusions: false,
     requiresTags: false,
     allRequireTags: false,
+    requireUnfinishedTasks: false,
+    excludeUnfinishedTasks: false,
     includedTagTokens: [],
     nameTokens: [],
     tagTokens: [],
@@ -109,6 +113,7 @@ const OPERATOR_PRECEDENCE: Record<InclusionOperator, number> = {
 
 // Set of recognized connector words in search queries
 const CONNECTOR_TOKEN_SET = new Set(['and', 'or']);
+const UNFINISHED_TASK_FILTER_TOKEN_SET = new Set(['has:task', 'has:tasks']);
 
 // Checks if a tag token matches a lowercase tag path (exact or descendant)
 const tagMatchesToken = (tagPath: string, token: string): boolean => {
@@ -141,6 +146,12 @@ type ClassifiedToken =
           range: DateFilterRange;
       }
     | {
+          kind: 'unfinishedTask';
+      }
+    | {
+          kind: 'unfinishedTaskNegation';
+      }
+    | {
           kind: 'name';
           value: string;
       }
@@ -159,7 +170,33 @@ interface TokenClassificationResult {
 
 // Checks if a token set can use tag expression mode
 const canUseTagMode = (classification: TokenClassificationResult): boolean => {
+    // Tag expression mode is intentionally strict:
+    // - Requires at least one tag operand
+    // - Rejects any non-tag operand (name/date/task tokens)
+    // - Rejects malformed/dangling syntax
+    //
+    // This keeps AND/OR operator behavior scoped to tag-only queries.
+    // Mixed queries intentionally fall back to regular filter mode where
+    // AND/OR are interpreted as literal words in file names.
     return classification.hasTagOperand && !classification.hasNonTagOperand && !classification.hasInvalidToken;
+};
+
+// Detects a token prefix used to negate an operand.
+const getNegationPrefix = (token: string): '-' | null => {
+    if (!token) {
+        return null;
+    }
+
+    const first = token.charAt(0);
+    if (first === '-') {
+        return '-';
+    }
+
+    return null;
+};
+
+const isUnfinishedTaskFilterToken = (token: string): boolean => {
+    return UNFINISHED_TASK_FILTER_TOKEN_SET.has(token);
 };
 
 // Recognized relative date keywords for @today, @yesterday, etc.
@@ -656,6 +693,10 @@ const classifyRawTokens = (rawTokens: string[]): TokenClassificationResult => {
             continue;
         }
 
+        // Classify connector words first. Whether they behave as operators
+        // or literal words is decided later by mode selection:
+        // - tag mode (pure tag queries): operators
+        // - filter mode (mixed queries): literal name tokens
         if (token === 'and') {
             tokens.push({ kind: 'operator', operator: 'AND' });
             continue;
@@ -666,10 +707,19 @@ const classifyRawTokens = (rawTokens: string[]): TokenClassificationResult => {
             continue;
         }
 
-        if (token.startsWith('!')) {
+        const negationPrefix = getNegationPrefix(token);
+        if (negationPrefix !== null) {
             const negatedToken = token.slice(1);
             if (!negatedToken) {
                 hasInvalidToken = true;
+                continue;
+            }
+
+            if (isUnfinishedTaskFilterToken(negatedToken)) {
+                tokens.push({ kind: 'unfinishedTaskNegation' });
+                // Task filters make the query non-tag, so AND/OR must not
+                // be interpreted as tag-expression operators.
+                hasNonTagOperand = true;
                 continue;
             }
 
@@ -680,6 +730,10 @@ const classifyRawTokens = (rawTokens: string[]): TokenClassificationResult => {
                     const range = parseDateFilterRange(negatedToken);
                     if (range) {
                         tokens.push({ kind: 'dateNegation', range });
+                        // Date filters are non-tag operands by design.
+                        // Their presence forces filter mode so AND/OR are
+                        // treated as literal words.
+                        hasNonTagOperand = true;
                     }
                     continue;
                 }
@@ -701,6 +755,13 @@ const classifyRawTokens = (rawTokens: string[]): TokenClassificationResult => {
             continue;
         }
 
+        if (isUnfinishedTaskFilterToken(token)) {
+            tokens.push({ kind: 'unfinishedTask' });
+            // Task filters are non-tag operands.
+            hasNonTagOperand = true;
+            continue;
+        }
+
         if (token.startsWith('@')) {
             if (isDateFilterCandidate(token)) {
                 // Only commit to a date filter when parsing succeeds. Partial/invalid date fragments are ignored
@@ -708,6 +769,8 @@ const classifyRawTokens = (rawTokens: string[]): TokenClassificationResult => {
                 const range = parseDateFilterRange(token);
                 if (range) {
                     tokens.push({ kind: 'date', range });
+                    // Date filters are non-tag operands.
+                    hasNonTagOperand = true;
                 }
                 continue;
             }
@@ -922,19 +985,17 @@ const evaluateTagExpression = (expression: TagExpressionToken[], lowercaseTags: 
 
 // Parses tokens into tag expression mode with OR/AND precedence
 const parseTagModeTokens = (classifiedTokens: ClassifiedToken[], excludeTagTokens: string[]): FilterSearchTokens | null => {
-    const dateRanges: DateFilterRange[] = [];
-    const excludeDateRanges: DateFilterRange[] = [];
-    const tagExpressionTokens = classifiedTokens.filter(token => {
-        if (token.kind === 'date') {
-            dateRanges.push(token.range);
-            return false;
+    const tagExpressionTokens: ClassifiedToken[] = [];
+    for (const token of classifiedTokens) {
+        if (token.kind === 'tag' || token.kind === 'tagNegation' || token.kind === 'operator') {
+            tagExpressionTokens.push(token);
+            continue;
         }
-        if (token.kind === 'dateNegation') {
-            excludeDateRanges.push(token.range);
-            return false;
-        }
-        return true;
-    });
+
+        // Tag mode accepts only tag operands and connectors.
+        // Non-tag operands are handled in filter mode.
+        return null;
+    }
 
     const buildResult = buildTagExpression(tagExpressionTokens);
     if (!buildResult) {
@@ -953,15 +1014,17 @@ const parseTagModeTokens = (classifiedTokens: ClassifiedToken[], excludeTagToken
         hasInclusions,
         requiresTags,
         allRequireTags,
+        requireUnfinishedTasks: false,
+        excludeUnfinishedTasks: false,
         includedTagTokens,
         nameTokens: [],
         tagTokens: includedTagTokens.slice(),
-        dateRanges,
+        dateRanges: [],
         requireTagged,
         includeUntagged,
         excludeNameTokens: [],
         excludeTagTokens,
-        excludeDateRanges,
+        excludeDateRanges: [],
         excludeTagged: false
     };
 };
@@ -978,6 +1041,8 @@ const parseFilterModeTokens = (
     const connectorCandidates: string[] = [];
     const excludeNameTokens: string[] = [];
     const excludeDateRanges: DateFilterRange[] = [];
+    let requireUnfinishedTasks = false;
+    let excludeUnfinishedTasks = false;
     let requireTagged = false;
 
     // Extract name and tag tokens, treating operators as potential name tokens
@@ -998,6 +1063,12 @@ const parseFilterModeTokens = (
             case 'date':
                 dateRanges.push(token.range);
                 break;
+            case 'unfinishedTask':
+                requireUnfinishedTasks = true;
+                break;
+            case 'unfinishedTaskNegation':
+                excludeUnfinishedTasks = true;
+                break;
             case 'operator':
                 connectorCandidates.push(token.operator.toLowerCase());
                 break;
@@ -1009,12 +1080,14 @@ const parseFilterModeTokens = (
         }
     }
 
-    // Treat connector words as literal tokens when not in tag mode
+    // Treat connector words as literal tokens when not in tag mode.
+    // This allows users to search for "and"/"or" in file names while
+    // keeping explicit operator behavior exclusive to pure tag queries.
     if (connectorCandidates.length > 0) {
         nameTokens.push(...connectorCandidates);
     }
 
-    const hasInclusions = nameTokens.length > 0 || tagTokens.length > 0 || dateRanges.length > 0 || requireTagged;
+    const hasInclusions = nameTokens.length > 0 || tagTokens.length > 0 || dateRanges.length > 0 || requireTagged || requireUnfinishedTasks;
     const requiresTags = requireTagged || tagTokens.length > 0;
     const allRequireTags = hasInclusions ? requiresTags : false;
     const includedTagTokens = tagTokens.slice();
@@ -1025,6 +1098,8 @@ const parseFilterModeTokens = (
         hasInclusions,
         requiresTags,
         allRequireTags,
+        requireUnfinishedTasks,
+        excludeUnfinishedTasks,
         includedTagTokens,
         nameTokens,
         tagTokens,
@@ -1052,18 +1127,22 @@ const parseFilterModeTokens = (
  * - @YYYY-Qq - Include notes matching the default date field inside a calendar quarter
  * - @YYYY-MM-DD..YYYY-MM-DD - Include notes matching the default date field inside an inclusive day range (open ends supported)
  * - @c:... / @m:... - Target created/modified date field for a date token
+ * - has:task - Include notes with unfinished tasks
  * - word - Include notes with "word" in their name
  *
  * Exclusion patterns (must NOT match):
- * - !#tag - Exclude notes with tags containing "tag"
- * - !# - Exclude all tagged notes (show only untagged)
- * - !@... - Exclude notes matching a date token or range
- * - !word - Exclude notes with "word" in their name
+ * - -#tag - Exclude notes with tags containing "tag"
+ * - -# - Exclude all tagged notes (show only untagged)
+ * - -@... - Exclude notes matching a date token or range
+ * - -has:task - Exclude notes with unfinished tasks
+ * - -word - Exclude notes with "word" in their name
  *
  * Special handling:
- * - AND has higher precedence than OR for inclusion clauses
+ * - AND/OR act as operators only in pure tag queries
+ * - Mixed queries treat AND/OR as literal name tokens
+ * - In pure tag queries, AND has higher precedence than OR
  * - Adjacent tokens without connectors implicitly use AND
- * - Leading or consecutive connectors are treated as literal text tokens
+ * - Leading or consecutive connectors are treated as literal text tokens in filter mode
  * - All tokens are normalized to lowercase for case-insensitive matching
  *
  * @param query - Raw search query from the UI
@@ -1098,6 +1177,10 @@ export function parseFilterSearchTokens(query: string): FilterSearchTokens {
     }
 
     if (canUseTagMode(classification)) {
+        // Tag mode is only allowed for pure tag expressions.
+        // Once a query includes any non-tag operand (name/date/task),
+        // we intentionally stay in filter mode so connector words are
+        // evaluated as literal name tokens.
         const tagTokens = parseTagModeTokens(classifiedTokens, excludeTagTokens);
         if (tagTokens) {
             return tagTokens;
@@ -1115,6 +1198,37 @@ const isConnectorToken = (value: string | undefined): boolean => {
     return CONNECTOR_TOKEN_SET.has(value.toLowerCase());
 };
 
+// Checks whether a query contains only tag operands and connector words.
+const isTagOnlyMutationQuery = (query: string): boolean => {
+    const trimmed = query.trim().toLowerCase();
+    if (!trimmed) {
+        return true;
+    }
+
+    const tokens = trimmed.split(/\s+/).filter(Boolean);
+    let hasTagOperand = false;
+
+    for (const token of tokens) {
+        if (isConnectorToken(token)) {
+            continue;
+        }
+
+        const candidate = token.startsWith('-') ? token.slice(1) : token;
+        if (!candidate) {
+            return false;
+        }
+
+        if (candidate.startsWith('#')) {
+            hasTagOperand = true;
+            continue;
+        }
+
+        return false;
+    }
+
+    return hasTagOperand;
+};
+
 export interface UpdateFilterQueryWithTagResult {
     query: string;
     action: 'added' | 'removed';
@@ -1122,7 +1236,9 @@ export interface UpdateFilterQueryWithTagResult {
 }
 
 /**
- * Toggle a normalized tag inside a raw query string, inserting or pruning connectors.
+ * Toggle a normalized tag inside a raw query string.
+ * In tag-only queries, connectors are inserted/cleaned as expression operators.
+ * In mixed queries, tags are appended/removed without connector mutation.
  * Returns the updated query string and whether the operation modified the input.
  */
 export function updateFilterQueryWithTag(
@@ -1141,6 +1257,7 @@ export function updateFilterQueryWithTag(
 
     const formattedTag = `#${normalizedTag}`;
     const tokens = trimmed.length > 0 ? trimmed.split(/\s+/) : [];
+    const tagOnlyQuery = isTagOnlyMutationQuery(trimmed);
     const lowerTarget = formattedTag.toLowerCase();
     const removalIndex = tokens.findIndex(token => token.toLowerCase() === lowerTarget);
 
@@ -1148,24 +1265,26 @@ export function updateFilterQueryWithTag(
         const updatedTokens = tokens.slice();
         updatedTokens.splice(removalIndex, 1);
 
-        const precedingIndex = removalIndex - 1;
-        if (precedingIndex >= 0 && isConnectorToken(updatedTokens[precedingIndex])) {
-            updatedTokens.splice(precedingIndex, 1);
-        }
-
-        while (updatedTokens.length > 0 && isConnectorToken(updatedTokens[0])) {
-            updatedTokens.shift();
-        }
-
-        for (let index = 0; index < updatedTokens.length - 1; index += 1) {
-            if (isConnectorToken(updatedTokens[index]) && isConnectorToken(updatedTokens[index + 1])) {
-                updatedTokens.splice(index + 1, 1);
-                index -= 1;
+        if (tagOnlyQuery) {
+            const precedingIndex = removalIndex - 1;
+            if (precedingIndex >= 0 && isConnectorToken(updatedTokens[precedingIndex])) {
+                updatedTokens.splice(precedingIndex, 1);
             }
-        }
 
-        while (updatedTokens.length > 0 && isConnectorToken(updatedTokens[updatedTokens.length - 1])) {
-            updatedTokens.pop();
+            while (updatedTokens.length > 0 && isConnectorToken(updatedTokens[0])) {
+                updatedTokens.shift();
+            }
+
+            for (let index = 0; index < updatedTokens.length - 1; index += 1) {
+                if (isConnectorToken(updatedTokens[index]) && isConnectorToken(updatedTokens[index + 1])) {
+                    updatedTokens.splice(index + 1, 1);
+                    index -= 1;
+                }
+            }
+
+            while (updatedTokens.length > 0 && isConnectorToken(updatedTokens[updatedTokens.length - 1])) {
+                updatedTokens.pop();
+            }
         }
 
         const nextQuery = updatedTokens.join(' ').trim();
@@ -1176,16 +1295,19 @@ export function updateFilterQueryWithTag(
         };
     }
 
-    const connector = operator === 'OR' ? 'OR' : 'AND';
     const nextTokens = tokens.slice();
-
-    if (nextTokens.length === 0) {
-        nextTokens.push(formattedTag);
-    } else if (isConnectorToken(nextTokens[nextTokens.length - 1])) {
-        nextTokens[nextTokens.length - 1] = connector;
+    if (!tagOnlyQuery) {
         nextTokens.push(formattedTag);
     } else {
-        nextTokens.push(connector, formattedTag);
+        const connector = operator === 'OR' ? 'OR' : 'AND';
+        if (nextTokens.length === 0) {
+            nextTokens.push(formattedTag);
+        } else if (isConnectorToken(nextTokens[nextTokens.length - 1])) {
+            nextTokens[nextTokens.length - 1] = connector;
+            nextTokens.push(formattedTag);
+        } else {
+            nextTokens.push(connector, formattedTag);
+        }
     }
 
     const nextQuery = nextTokens.join(' ').trim();
@@ -1205,6 +1327,7 @@ export function filterSearchHasActiveCriteria(tokens: FilterSearchTokens): boole
         tokens.excludeNameTokens.length > 0 ||
         tokens.excludeTagTokens.length > 0 ||
         tokens.excludeDateRanges.length > 0 ||
+        tokens.excludeUnfinishedTasks ||
         tokens.excludeTagged
     );
 }
@@ -1223,21 +1346,40 @@ export function filterSearchRequiresTagsForEveryMatch(tokens: FilterSearchTokens
     return tokens.hasInclusions && tokens.allRequireTags;
 }
 
+export interface FilterSearchMatchOptions {
+    hasUnfinishedTasks: boolean;
+}
+
 /**
  * Check if a file matches parsed filter search tokens.
  *
  * Filtering logic:
  * - Inclusion clauses are evaluated with AND semantics; the file must satisfy every token inside a clause
  * - If any clause matches, the file is accepted (OR across clauses)
- * - All exclusion tokens (!name, !#tag) are ANDed - file must match NONE
- * - Tag requirements (# or !#) control whether tagged/untagged notes are shown
+ * - All exclusion tokens (-name, -#tag) are ANDed - file must match NONE
+ * - Tag requirements (# or -#) control whether tagged/untagged notes are shown
  *
  * @param lowercaseName - File display name in lowercase
  * @param lowercaseTags - File tags in lowercase
  * @param tokens - Parsed query tokens with include/exclude criteria
  * @returns True when the file passes all filter criteria
  */
-export function fileMatchesFilterTokens(lowercaseName: string, lowercaseTags: string[], tokens: FilterSearchTokens): boolean {
+export function fileMatchesFilterTokens(
+    lowercaseName: string,
+    lowercaseTags: string[],
+    tokens: FilterSearchTokens,
+    options?: FilterSearchMatchOptions
+): boolean {
+    const hasUnfinishedTasks = options?.hasUnfinishedTasks ?? false;
+
+    if (tokens.excludeUnfinishedTasks && hasUnfinishedTasks) {
+        return false;
+    }
+
+    if (tokens.requireUnfinishedTasks && !hasUnfinishedTasks) {
+        return false;
+    }
+
     if (tokens.mode === 'filter') {
         if (tokens.excludeNameTokens.length > 0) {
             const hasExcludedName = tokens.excludeNameTokens.some(token => lowercaseName.includes(token));

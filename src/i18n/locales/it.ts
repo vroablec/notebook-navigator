@@ -154,7 +154,7 @@ export const STRINGS_IT = {
                     items: [
                         '`word` Trova note con "word" nel nome del file.',
                         '`word1 word2` Ogni parola deve corrispondere al nome del file.',
-                        '`!word` Escludi note con "word" nel nome del file.'
+                        '`-word` Escludi note con "word" nel nome del file.'
                     ]
                 },
                 tags: {
@@ -162,13 +162,23 @@ export const STRINGS_IT = {
                     items: [
                         '`#tag` Includi note con tag (trova anche tag nidificati come `#tag/subtag`).',
                         '`#` Includi solo note con tag.',
-                        '`!#tag` Escludi note con tag.',
-                        '`!#` Includi solo note senza tag.',
+                        '`-#tag` Escludi note con tag.',
+                        '`-#` Includi solo note senza tag.',
                         '`#tag1 #tag2` Trova entrambi i tag (AND implicito).',
                         '`#tag1 AND #tag2` Trova entrambi i tag (AND esplicito).',
                         '`#tag1 OR #tag2` Trova uno dei tag.',
                         '`#a OR #b AND #c` AND ha priorità maggiore: trova `#a`, o entrambi `#b` e `#c`.',
                         'Cmd/Ctrl+Clic su un tag per aggiungere con AND. Cmd/Ctrl+Shift+Clic per aggiungere con OR.'
+                    ]
+                },
+                connectors: {
+                    title: 'Comportamento AND/OR',
+                    items: [
+                        '`AND` e `OR` sono operatori solo nelle query composte esclusivamente da tag.',
+                        'Le query di soli tag contengono solo filtri tag: `#tag`, `-#tag`, `#`, `-#`.',
+                        'Se una query include nomi, date (`@...`) o filtri attività (`has:task`), `AND` e `OR` vengono cercati come parole.',
+                        'Esempio di query con operatori: `#work OR #home`.',
+                        'Esempio di query mista: `#work OR has:task` (`OR` viene cercato nei nomi dei file).'
                     ]
                 },
                 dates: {
@@ -184,7 +194,7 @@ export const STRINGS_IT = {
                         '`@13/02/2026` Formati numerici con separatori (`@07022026` segue la tua locale in caso di ambiguità).',
                         '`@2026-02-01..2026-02-07` Trova un intervallo di giorni inclusivo (estremi aperti supportati).',
                         '`@c:...` o `@m:...` Indica data di creazione o modifica.',
-                        '`!@...` Escludi una corrispondenza di data.'
+                        '`-@...` Escludi una corrispondenza di data.'
                     ]
                 },
                 omnisearch: {

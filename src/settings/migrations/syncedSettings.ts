@@ -38,6 +38,18 @@ export interface LegacyVisibilityMigration {
     shouldApplyToProfiles: boolean;
 }
 
+const SEARCH_SHORTCUT_LEGACY_NEGATION_PATTERN = /(^|\s)!(?=\S)/g;
+
+// Rewrites legacy search negation prefixes from "!" to "-" at token boundaries.
+// Returns an empty query when legacy data contains a non-string value.
+const migrateLegacySearchShortcutQuery = (query: unknown): string => {
+    if (typeof query !== 'string') {
+        return '';
+    }
+
+    return query.replace(SEARCH_SHORTCUT_LEGACY_NEGATION_PATTERN, '$1-');
+};
+
 // Migrates legacy synced settings fields into the current settings schema.
 // This runs before local-only settings are resolved from localStorage.
 export function migrateLegacySyncedSettings(params: {
@@ -307,6 +319,49 @@ export function applyLegacyShortcutsMigration(params: {
         }
         profile.shortcuts = cloneShortcuts(template);
     });
+}
+
+// Migrates saved search shortcut queries from legacy "!" negation prefixes to "-" prefixes.
+export function migrateSearchShortcutNegationSyntax(params: { settings: NotebookNavigatorSettings }): boolean {
+    const { settings } = params;
+    if (!Array.isArray(settings.vaultProfiles) || settings.vaultProfiles.length === 0) {
+        return false;
+    }
+
+    let migrated = false;
+
+    settings.vaultProfiles.forEach(profile => {
+        if (!Array.isArray(profile.shortcuts) || profile.shortcuts.length === 0) {
+            return;
+        }
+
+        let profileChanged = false;
+        const nextShortcuts = profile.shortcuts.map(shortcut => {
+            if (shortcut.type !== ShortcutType.SEARCH) {
+                return shortcut;
+            }
+
+            const nextQuery = migrateLegacySearchShortcutQuery(shortcut.query);
+            if (nextQuery === shortcut.query) {
+                return shortcut;
+            }
+
+            profileChanged = true;
+            return {
+                ...shortcut,
+                query: nextQuery
+            };
+        });
+
+        if (!profileChanged) {
+            return;
+        }
+
+        profile.shortcuts = nextShortcuts;
+        migrated = true;
+    });
+
+    return migrated;
 }
 
 // Extracts legacy exclusion settings from old format and prepares them for migration to vault profiles
