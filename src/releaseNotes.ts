@@ -79,12 +79,12 @@ const RELEASE_NOTES: ReleaseNote[] = [
         date: '2026-02-08',
         showOnUpdate: true,
         new: [
-            '==Tasks==! New setting: Notes > Show icon for notes with unfinished tasks. Enable to show an icon in listpane for notes with unfinished tasks. Default enabled. Tasks now will also show in the calendar for daily notes with unfinished tasks. You can set a custom color for the task icon in Style settings.',
             '==Vault icons==. You can now use SVG images from your vault for icons. Just pick the new "Vault" tab in the icon picker.',
             '==Date filters in search==! You can now filter notes by date using the "@" symbol. Some examples: @today, @2026W02, @2026-Q1, @13/02/2026, or ranges like @2026-01-01..2026-02-07. You can specifically choose created date with @c:, modified date with @m:, or exclude date matches with !@.',
             '==Emojis in tags==! You can now use emojis when naming and renaming tags. Inline tag operations show a warning confirmation when a tag contains characters Obsidian cannot parse inline (example: ‼ can split an inline tag). YAML frontmatter tags can contain any characters.',
             '==Quickly switch between filter search and Omnisearch==! Quickly switch between filter search and Omnisearch by pressing the search icon or pressing UP/DOWN when the search input is focused.',
             'You can now set individual colors for property values in ==Notes > Property colors==! Use property:value=color to set colors for individual property values, like status:done=green and status:todo=red. If no value color is set it will fall back to the property color if defined.',
+            'New setting: ==Notes > Show icon for notes with unfinished tasks==. Enable to show an icon in listpane for notes with unfinished tasks. Tasks now will also show in the calendar for daily notes with unfinished tasks. You can also set a custom color for the task icon in Style settings.',
             'New setting: ==Folders & tags > Folder note name pattern==. You can now add prefixes and suffixes to folder note names, like _foldername to make them appear on top of alphabetically sorted lists.',
             'New setting: ==Folders & tags > Folder note template==. You can now set a template file for folder notes. **Important! This is a breaking change** - the old setting "Folder note properties" was used to set frontmatter properties for folder notes, and it is now removed. If you were using that setting, you can migrate by creating a template file with the desired frontmatter properties and setting that as the new "Folder note template".',
             'New setting: ==Navigation pane > Show indent guides==. You can now show vertical indent guides in the navigation pane to better visualize the folder and tag hierarchy.',
@@ -93,6 +93,7 @@ const RELEASE_NOTES: ReleaseNote[] = [
         ],
         improved: [
             'Many improvements to calendar display. Days with notes now show as dots, and overall look and feel is much improved.',
+            'Calendar now shows a small circle for notes with unfinished tasks.',
             'You can now remove icons from the recently used icons list.',
             'Omnisearch now scopes searches to the selected folder when possible. In folder view, notes from the selected folder and its subfolders are less likely to be pushed out by matches from other parts of the vault.'
         ],
