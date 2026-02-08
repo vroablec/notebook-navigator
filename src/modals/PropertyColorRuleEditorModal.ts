@@ -23,7 +23,12 @@ import { ItemType } from '../types';
 import { runAsyncAction } from '../utils/async';
 import { addAsyncEventListener } from '../utils/domEventListeners';
 import { isSupportedCssColor } from '../utils/customPropertyUtils';
-import { normalizePropertyColorMapEntry, normalizePropertyColorMapRecord } from '../utils/propertyColorMapFormat';
+import {
+    buildPropertyColorMapKey,
+    normalizePropertyColorMapKey,
+    normalizePropertyColorMapRecord,
+    parsePropertyColorMapKey
+} from '../utils/propertyColorMapFormat';
 import { sanitizeRecord } from '../utils/recordUtils';
 
 /** Configuration options for the property color map editor modal */
@@ -32,20 +37,21 @@ interface PropertyColorRuleEditorModalOptions {
     initialMap: Record<string, string>;
     metadataService: MetadataService;
     onSave: (nextMap: Record<string, string>) => Promise<void> | void;
-    normalizeKey: (input: string) => string;
 }
 
 /** Internal representation of a single property color mapping row */
 interface RuleRow {
     id: string;
-    keyInput: string;
+    propertyInput: string;
+    valueInput: string;
     color: string;
 }
 
 /** DOM element references for a rendered rule row */
 interface RowControls {
     rowEl: HTMLDivElement;
-    inputEl: HTMLInputElement;
+    propertyInputEl: HTMLInputElement;
+    valueInputEl: HTMLInputElement;
     colorButtonEl: HTMLButtonElement;
 }
 
@@ -57,6 +63,7 @@ export class PropertyColorRuleEditorModal extends Modal {
     private rowControls = new Map<string, RowControls>();
     private applyButton: HTMLButtonElement | null = null;
     private rowIdCounter = 0;
+    private validationFrameId: number | null = null;
 
     constructor(
         app: App,
@@ -81,6 +88,10 @@ export class PropertyColorRuleEditorModal extends Modal {
     onClose(): void {
         this.disposeRowDisposers();
         this.disposeFooterDisposers();
+        if (this.validationFrameId !== null) {
+            window.cancelAnimationFrame(this.validationFrameId);
+            this.validationFrameId = null;
+        }
         this.rowControls.clear();
         this.listEl = null;
         this.applyButton = null;
@@ -94,11 +105,23 @@ export class PropertyColorRuleEditorModal extends Modal {
             .filter(([key, color]) => Boolean(key) && Boolean(color))
             .sort(([a], [b]) => a.localeCompare(b));
 
-        return entries.map(([key, color]) => ({
-            id: this.nextRowId(),
-            keyInput: key,
-            color: color.trim()
-        }));
+        const rows: RuleRow[] = [];
+        entries.forEach(([key, color]) => {
+            const parsedKey = parsePropertyColorMapKey(key);
+            if (!parsedKey) {
+                // Rows with invalid key grammar are excluded from the visual editor representation.
+                return;
+            }
+
+            rows.push({
+                id: this.nextRowId(),
+                propertyInput: parsedKey.propertyKey,
+                valueInput: parsedKey.valueKey ?? '',
+                color: color.trim()
+            });
+        });
+
+        return rows;
     }
 
     /** Generates a unique identifier for a new row */
@@ -160,17 +183,31 @@ export class PropertyColorRuleEditorModal extends Modal {
                 })
             );
 
-            const inputEl = rowEl.createEl('input', {
-                cls: 'nn-input nn-property-color-rule-key',
+            const propertyInputEl = rowEl.createEl('input', {
+                cls: 'nn-input nn-property-color-rule-key nn-property-color-rule-property',
                 attr: {
                     type: 'text',
-                    placeholder: 'Status'
+                    placeholder: strings.modals.propertyColorRuleEditor.propertyPlaceholder
                 }
             });
-            inputEl.value = row.keyInput;
+            propertyInputEl.value = row.propertyInput;
             this.rowDisposers.push(
-                addAsyncEventListener(inputEl, 'input', () => {
-                    this.handleRowKeyInput(row.id, inputEl.value);
+                addAsyncEventListener(propertyInputEl, 'input', () => {
+                    this.handleRowPropertyInput(row.id, propertyInputEl.value);
+                })
+            );
+
+            const valueInputEl = rowEl.createEl('input', {
+                cls: 'nn-input nn-property-color-rule-key nn-property-color-rule-value',
+                attr: {
+                    type: 'text',
+                    placeholder: strings.modals.propertyColorRuleEditor.valuePlaceholder
+                }
+            });
+            valueInputEl.value = row.valueInput;
+            this.rowDisposers.push(
+                addAsyncEventListener(valueInputEl, 'input', () => {
+                    this.handleRowValueInput(row.id, valueInputEl.value);
                 })
             );
 
@@ -185,7 +222,7 @@ export class PropertyColorRuleEditorModal extends Modal {
                 })
             );
 
-            this.rowControls.set(row.id, { rowEl, inputEl, colorButtonEl });
+            this.rowControls.set(row.id, { rowEl, propertyInputEl, valueInputEl, colorButtonEl });
         });
 
         this.updateApplyButtonState();
@@ -228,11 +265,11 @@ export class PropertyColorRuleEditorModal extends Modal {
 
     /** Appends a new empty rule row and focuses its input */
     private addRow(): void {
-        this.rows.push({ id: this.nextRowId(), keyInput: '', color: '#000000' });
+        this.rows.push({ id: this.nextRowId(), propertyInput: '', valueInput: '', color: '#000000' });
         this.renderRows();
         const newRow = this.rows[this.rows.length - 1];
         const controls = this.rowControls.get(newRow.id);
-        controls?.inputEl.focus();
+        controls?.propertyInputEl.focus();
         controls?.rowEl.scrollIntoView({ block: 'nearest' });
     }
 
@@ -242,14 +279,24 @@ export class PropertyColorRuleEditorModal extends Modal {
         this.renderRows();
     }
 
-    /** Updates a row's key value when the input changes */
-    private handleRowKeyInput(rowId: string, value: string): void {
+    /** Updates a row's property value when the input changes */
+    private handleRowPropertyInput(rowId: string, value: string): void {
         const row = this.rows.find(candidate => candidate.id === rowId);
         if (!row) {
             return;
         }
-        row.keyInput = value;
-        this.updateApplyButtonState();
+        row.propertyInput = value;
+        this.scheduleApplyButtonStateUpdate();
+    }
+
+    /** Updates a row's value match when the input changes */
+    private handleRowValueInput(rowId: string, value: string): void {
+        const row = this.rows.find(candidate => candidate.id === rowId);
+        if (!row) {
+            return;
+        }
+        row.valueInput = value;
+        this.scheduleApplyButtonStateUpdate();
     }
 
     private openColorPicker(rowId: string): void {
@@ -261,7 +308,7 @@ export class PropertyColorRuleEditorModal extends Modal {
         runAsyncAction(async () => {
             const { ColorPickerModal } = await import('./ColorPickerModal');
 
-            const keyLabel = this.options.normalizeKey(row.keyInput);
+            const keyLabel = buildPropertyColorMapKey(row.propertyInput, row.valueInput);
             const titleLabel = keyLabel || this.options.title;
 
             const metadataService = this.options.metadataService;
@@ -310,7 +357,19 @@ export class PropertyColorRuleEditorModal extends Modal {
         if (controls) {
             controls.colorButtonEl.style.setProperty('--nn-color-swatch-color', color);
         }
-        this.updateApplyButtonState();
+        this.scheduleApplyButtonStateUpdate();
+    }
+
+    /** Schedules validation once per frame while users type */
+    private scheduleApplyButtonStateUpdate(): void {
+        if (this.validationFrameId !== null) {
+            return;
+        }
+
+        this.validationFrameId = window.requestAnimationFrame(() => {
+            this.validationFrameId = null;
+            this.updateApplyButtonState();
+        });
     }
 
     /** Enables or disables the apply button and highlights invalid rows */
@@ -336,15 +395,16 @@ export class PropertyColorRuleEditorModal extends Modal {
         const normalizedKeyToRowIds = new Map<string, string[]>();
 
         this.rows.forEach(row => {
-            const entry = normalizePropertyColorMapEntry(row.keyInput, row.color, this.options.normalizeKey);
-            if (!entry || !isSupportedCssColor(entry.color)) {
+            const normalizedKey = buildPropertyColorMapKey(row.propertyInput, row.valueInput);
+            const trimmedColor = row.color.trim();
+            if (!normalizedKey || trimmedColor.length === 0 || !isSupportedCssColor(trimmedColor)) {
                 invalidRowIds.add(row.id);
                 return;
             }
 
-            const list = normalizedKeyToRowIds.get(entry.key) ?? [];
+            const list = normalizedKeyToRowIds.get(normalizedKey) ?? [];
             list.push(row.id);
-            normalizedKeyToRowIds.set(entry.key, list);
+            normalizedKeyToRowIds.set(normalizedKey, list);
         });
 
         normalizedKeyToRowIds.forEach(rowIds => {
@@ -365,10 +425,15 @@ export class PropertyColorRuleEditorModal extends Modal {
 
         const draft = sanitizeRecord<string>(undefined);
         this.rows.forEach(row => {
-            draft[row.keyInput] = row.color;
+            const normalizedKey = buildPropertyColorMapKey(row.propertyInput, row.valueInput);
+            if (!normalizedKey) {
+                // Empty or invalid key inputs are excluded from persisted mappings.
+                return;
+            }
+            draft[normalizedKey] = row.color;
         });
 
-        const normalized: Record<string, string> = normalizePropertyColorMapRecord(draft, this.options.normalizeKey);
+        const normalized: Record<string, string> = normalizePropertyColorMapRecord(draft, normalizePropertyColorMapKey);
         runAsyncAction(async () => {
             await this.options.onSave(normalized);
             this.close();

@@ -329,6 +329,10 @@ export const STRINGS_ID = {
         fileIconRuleEditor: {
             addRuleAria: 'Tambah aturan'
         },
+        propertyColorRuleEditor: {
+            propertyPlaceholder: 'Property',
+            valuePlaceholder: 'Value'
+        },
         interfaceIcons: {
             title: 'Ikon antarmuka',
             fileItemsSection: 'Item file',
@@ -1248,8 +1252,8 @@ export const STRINGS_ID = {
             },
             customPropertyColorMap: {
                 name: 'Warna properti',
-                desc: 'Petakan properti frontmatter ke warna lencana. Satu pemetaan per baris: properti=warna',
-                placeholder: '# Properti=warna\nstatus=#ff0000\ntype=#00ff00',
+                desc: 'Petakan properti dan nilai frontmatter ke warna lencana. Satu pemetaan per baris: properti=warna atau properti:nilai=warna',
+                placeholder: '# Properti atau properti:nilai warna\nstatus=#f59e0b\nstatus:done=#10b981\nstatus:todo=#ef4444',
                 editTooltip: 'Edit pemetaan'
             },
             showCustomPropertyInCompactMode: {

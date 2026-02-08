@@ -328,6 +328,10 @@ export const STRINGS_ZH_CN = {
         fileIconRuleEditor: {
             addRuleAria: '添加规则'
         },
+        propertyColorRuleEditor: {
+            propertyPlaceholder: 'Property',
+            valuePlaceholder: 'Value'
+        },
         interfaceIcons: {
             title: '界面图标',
             fileItemsSection: '文件项目',
@@ -1246,8 +1250,8 @@ export const STRINGS_ZH_CN = {
             },
             customPropertyColorMap: {
                 name: '属性颜色',
-                desc: '将前置元数据属性映射到徽章颜色。每行一个映射：属性=颜色',
-                placeholder: '# 属性=颜色\nstatus=#ff0000\ntype=#00ff00',
+                desc: '将前置元数据属性和值映射到徽章颜色。每行一个映射：属性=颜色 或 属性:值=颜色',
+                placeholder: '# 属性 或 属性:值 颜色\nstatus=#f59e0b\nstatus:done=#10b981\nstatus:todo=#ef4444',
                 editTooltip: '编辑映射'
             },
             showCustomPropertyInCompactMode: {

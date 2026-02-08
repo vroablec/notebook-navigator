@@ -328,6 +328,10 @@ export const STRINGS_TH = {
         fileIconRuleEditor: {
             addRuleAria: 'เพิ่มกฎ'
         },
+        propertyColorRuleEditor: {
+            propertyPlaceholder: 'Property',
+            valuePlaceholder: 'Value'
+        },
         interfaceIcons: {
             title: 'ไอคอนอินเทอร์เฟซ',
             fileItemsSection: 'รายการไฟล์',
@@ -1246,8 +1250,8 @@ export const STRINGS_TH = {
             },
             customPropertyColorMap: {
                 name: 'สีคุณสมบัติ',
-                desc: 'กำหนดคุณสมบัติ frontmatter ให้กับสีป้าย หนึ่งการกำหนดต่อบรรทัด: คุณสมบัติ=สี',
-                placeholder: '# คุณสมบัติ=สี\nstatus=#ff0000\ntype=#00ff00',
+                desc: 'กำหนดคุณสมบัติและค่า frontmatter ให้กับสีป้าย หนึ่งการกำหนดต่อบรรทัด: คุณสมบัติ=สี หรือ คุณสมบัติ:ค่า=สี',
+                placeholder: '# คุณสมบัติ หรือ คุณสมบัติ:ค่า สี\nstatus=#f59e0b\nstatus:done=#10b981\nstatus:todo=#ef4444',
                 editTooltip: 'แก้ไขการกำหนด'
             },
             showCustomPropertyInCompactMode: {

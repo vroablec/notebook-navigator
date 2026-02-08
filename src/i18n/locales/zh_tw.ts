@@ -328,6 +328,10 @@ export const STRINGS_ZH_TW = {
         fileIconRuleEditor: {
             addRuleAria: '新增規則'
         },
+        propertyColorRuleEditor: {
+            propertyPlaceholder: 'Property',
+            valuePlaceholder: 'Value'
+        },
         interfaceIcons: {
             title: '介面圖示',
             fileItemsSection: '檔案項目',
@@ -1245,8 +1249,8 @@ export const STRINGS_ZH_TW = {
             },
             customPropertyColorMap: {
                 name: '屬性顏色',
-                desc: '將前置資料屬性對應到徽章顏色。每行一個對應：屬性=顏色',
-                placeholder: '# 屬性=顏色\nstatus=#ff0000\ntype=#00ff00',
+                desc: '將前置資料屬性和值對應到徽章顏色。每行一個對應：屬性=顏色 或 屬性:值=顏色',
+                placeholder: '# 屬性 或 屬性:值 顏色\nstatus=#f59e0b\nstatus:done=#10b981\nstatus:todo=#ef4444',
                 editTooltip: '編輯對應'
             },
             showCustomPropertyInCompactMode: {

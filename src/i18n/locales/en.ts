@@ -328,6 +328,10 @@ export const STRINGS_EN = {
         fileIconRuleEditor: {
             addRuleAria: 'Add rule'
         },
+        propertyColorRuleEditor: {
+            propertyPlaceholder: 'Property',
+            valuePlaceholder: 'Value'
+        },
         interfaceIcons: {
             title: 'Interface icons',
             fileItemsSection: 'File items',
@@ -1245,8 +1249,8 @@ export const STRINGS_EN = {
             },
             customPropertyColorMap: {
                 name: 'Property colors',
-                desc: 'Map frontmatter properties to badge colors. One mapping per line: property=color',
-                placeholder: '# Property=color\nstatus=#ff0000\ntype=#00ff00',
+                desc: 'Map frontmatter properties and values to badge colors. One mapping per line: property=color or property:value=color',
+                placeholder: '# property=color or property:value=color\nstatus=#f59e0b\nstatus:done=#10b981\nstatus:todo=#ef4444',
                 editTooltip: 'Edit mappings'
             },
             showCustomPropertyInCompactMode: {

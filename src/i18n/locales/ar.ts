@@ -328,6 +328,10 @@ export const STRINGS_AR = {
         fileIconRuleEditor: {
             addRuleAria: 'إضافة قاعدة'
         },
+        propertyColorRuleEditor: {
+            propertyPlaceholder: 'Property',
+            valuePlaceholder: 'Value'
+        },
         interfaceIcons: {
             title: 'أيقونات الواجهة',
             fileItemsSection: 'عناصر الملفات',
@@ -1246,8 +1250,8 @@ export const STRINGS_AR = {
             },
             customPropertyColorMap: {
                 name: 'ألوان الخصائص',
-                desc: 'ربط خصائص البيانات الوصفية بألوان الشارات. رابط واحد لكل سطر: خاصية=لون',
-                placeholder: '# خاصية=لون\nstatus=#ff0000\ntype=#00ff00',
+                desc: 'ربط خصائص وقيم البيانات الوصفية بألوان الشارات. رابط واحد لكل سطر: خاصية=لون أو خاصية:قيمة=لون',
+                placeholder: '# خاصية أو خاصية:قيمة لون\nstatus=#f59e0b\nstatus:done=#10b981\nstatus:todo=#ef4444',
                 editTooltip: 'تحرير الروابط'
             },
             showCustomPropertyInCompactMode: {

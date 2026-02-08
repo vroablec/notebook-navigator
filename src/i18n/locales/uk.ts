@@ -329,6 +329,10 @@ export const STRINGS_UK = {
         fileIconRuleEditor: {
             addRuleAria: 'Додати правило'
         },
+        propertyColorRuleEditor: {
+            propertyPlaceholder: 'Property',
+            valuePlaceholder: 'Value'
+        },
         interfaceIcons: {
             title: 'Іконки інтерфейсу',
             fileItemsSection: 'Елементи файлу',
@@ -1248,8 +1252,8 @@ export const STRINGS_UK = {
             },
             customPropertyColorMap: {
                 name: 'Кольори властивостей',
-                desc: 'Зіставлення властивостей frontmatter з кольорами значків. Одне зіставлення на рядок: властивість=колір',
-                placeholder: '# Властивість=колір\nstatus=#ff0000\ntype=#00ff00',
+                desc: 'Зіставлення властивостей і значень frontmatter з кольорами значків. Одне зіставлення на рядок: властивість=колір або властивість:значення=колір',
+                placeholder: '# Властивість або властивість:значення колір\nstatus=#f59e0b\nstatus:done=#10b981\nstatus:todo=#ef4444',
                 editTooltip: 'Редагувати зіставлення'
             },
             showCustomPropertyInCompactMode: {

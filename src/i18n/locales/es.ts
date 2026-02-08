@@ -329,6 +329,10 @@ export const STRINGS_ES = {
         fileIconRuleEditor: {
             addRuleAria: 'Añadir regla'
         },
+        propertyColorRuleEditor: {
+            propertyPlaceholder: 'Property',
+            valuePlaceholder: 'Value'
+        },
         interfaceIcons: {
             title: 'Iconos de interfaz',
             fileItemsSection: 'Elementos de archivo',
@@ -1251,8 +1255,8 @@ export const STRINGS_ES = {
             },
             customPropertyColorMap: {
                 name: 'Colores de propiedad',
-                desc: 'Asigna propiedades de frontmatter a colores de insignia. Una asignación por línea: propiedad=color',
-                placeholder: '# Propiedad=color\nstatus=#ff0000\ntype=#00ff00',
+                desc: 'Asigna propiedades y valores de frontmatter a colores de insignia. Una asignación por línea: propiedad=color o propiedad:valor=color',
+                placeholder: '# Propiedad o propiedad:valor color\nstatus=#f59e0b\nstatus:done=#10b981\nstatus:todo=#ef4444',
                 editTooltip: 'Editar asignaciones'
             },
             showCustomPropertyInCompactMode: {

@@ -47,8 +47,12 @@
 }
 
 .nn-property-color-rule-key {
-    flex: 1;
     min-width: 0;
+}
+
+.nn-property-color-rule-property,
+.nn-property-color-rule-value {
+    flex: 1 1 44%;
 }
 
 .nn-property-color-rule-row-invalid .nn-property-color-rule-key {

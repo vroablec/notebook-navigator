@@ -330,6 +330,10 @@ export const STRINGS_PL = {
         fileIconRuleEditor: {
             addRuleAria: 'Dodaj regułę'
         },
+        propertyColorRuleEditor: {
+            propertyPlaceholder: 'Property',
+            valuePlaceholder: 'Value'
+        },
         interfaceIcons: {
             title: 'Ikony interfejsu',
             fileItemsSection: 'Elementy pliku',
@@ -1250,8 +1254,8 @@ export const STRINGS_PL = {
             },
             customPropertyColorMap: {
                 name: 'Kolory właściwości',
-                desc: 'Przypisz właściwości frontmatter do kolorów odznak. Jedno przypisanie na wiersz: właściwość=kolor',
-                placeholder: '# Właściwość=kolor\nstatus=#ff0000\ntype=#00ff00',
+                desc: 'Przypisz właściwości i wartości frontmatter do kolorów odznak. Jedno przypisanie na wiersz: właściwość=kolor lub właściwość:wartość=kolor',
+                placeholder: '# Właściwość lub właściwość:wartość kolor\nstatus=#f59e0b\nstatus:done=#10b981\nstatus:todo=#ef4444',
                 editTooltip: 'Edytuj przypisania'
             },
             showCustomPropertyInCompactMode: {

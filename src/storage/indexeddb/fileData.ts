@@ -24,7 +24,7 @@ export type PreviewStatus = 'unprocessed' | 'none' | 'has';
 
 export interface CustomPropertyItem {
     // Frontmatter field name that produced the value.
-    // Used at render time for per-property color rules (normalized via `casefold()` before lookup).
+    // Used at render time for property and property:value color rules.
     fieldKey: string;
     // Rendered pill text (raw frontmatter value after frontmatter flattening).
     value: string;

@@ -328,6 +328,10 @@ export const STRINGS_FA = {
         fileIconRuleEditor: {
             addRuleAria: 'افزودن قانون'
         },
+        propertyColorRuleEditor: {
+            propertyPlaceholder: 'Property',
+            valuePlaceholder: 'Value'
+        },
         interfaceIcons: {
             title: 'آیکون‌های رابط کاربری',
             fileItemsSection: 'آیتم‌های فایل',
@@ -1247,8 +1251,8 @@ export const STRINGS_FA = {
             },
             customPropertyColorMap: {
                 name: 'رنگ‌های ویژگی',
-                desc: 'نگاشت ویژگی‌های فرانت‌متر به رنگ‌های نشان. یک نگاشت در هر خط: ویژگی=رنگ',
-                placeholder: '# ویژگی=رنگ\nstatus=#ff0000\ntype=#00ff00',
+                desc: 'نگاشت ویژگی‌ها و مقادیر فرانت‌متر به رنگ‌های نشان. یک نگاشت در هر خط: ویژگی=رنگ یا ویژگی:مقدار=رنگ',
+                placeholder: '# ویژگی یا ویژگی:مقدار رنگ\nstatus=#f59e0b\nstatus:done=#10b981\nstatus:todo=#ef4444',
                 editTooltip: 'ویرایش نگاشت‌ها'
             },
             showCustomPropertyInCompactMode: {

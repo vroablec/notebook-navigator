@@ -327,6 +327,10 @@ export const STRINGS_KO = {
         fileIconRuleEditor: {
             addRuleAria: '규칙 추가'
         },
+        propertyColorRuleEditor: {
+            propertyPlaceholder: 'Property',
+            valuePlaceholder: 'Value'
+        },
         interfaceIcons: {
             title: '인터페이스 아이콘',
             fileItemsSection: '파일 항목',
@@ -1247,8 +1251,8 @@ export const STRINGS_KO = {
             },
             customPropertyColorMap: {
                 name: '속성 색상',
-                desc: '프론트매터 속성을 배지 색상에 매핑합니다. 한 줄에 하나의 매핑: 속성=색상',
-                placeholder: '# 속성=색상\nstatus=#ff0000\ntype=#00ff00',
+                desc: '프론트매터 속성과 값을 배지 색상에 매핑합니다. 한 줄에 하나의 매핑: 속성=색상 또는 속성:값=색상',
+                placeholder: '# 속성 또는 속성:값 색상\nstatus=#f59e0b\nstatus:done=#10b981\nstatus:todo=#ef4444',
                 editTooltip: '매핑 편집'
             },
             showCustomPropertyInCompactMode: {

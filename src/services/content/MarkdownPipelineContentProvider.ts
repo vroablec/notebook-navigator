@@ -209,7 +209,7 @@ function resolveCustomPropertyItemsFromFrontmatter(
     }
 
     // Custom property items are persisted without styling metadata.
-    // Rendering derives per-property colors from settings using the `fieldKey`.
+    // Rendering derives property and property:value colors from `fieldKey` and raw value.
     const entries: CustomPropertyItem[] = [];
 
     for (let fieldIndex = 0; fieldIndex < nameFields.length; fieldIndex += 1) {

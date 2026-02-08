@@ -397,7 +397,6 @@ export function renderNotesTab(context: SettingsTabContext): void {
         title: string;
         getMap: () => Record<string, string>;
         setMap: (nextMap: Record<string, string>) => void;
-        normalizeKey: (input: string) => string;
     }): void => {
         options.setting.addExtraButton(button =>
             button
@@ -416,7 +415,6 @@ export function renderNotesTab(context: SettingsTabContext): void {
                             title: options.title,
                             initialMap: options.getMap(),
                             metadataService,
-                            normalizeKey: options.normalizeKey,
                             onSave: async nextMap => {
                                 options.setMap(nextMap);
 
@@ -785,8 +783,7 @@ export function renderNotesTab(context: SettingsTabContext): void {
         getMap: () => plugin.settings.customPropertyColorMap,
         setMap: nextMap => {
             plugin.settings.customPropertyColorMap = nextMap;
-        },
-        normalizeKey: normalizePropertyColorMapKey
+        }
     });
     customPropertyColorMapSetting.controlEl.addClass('nn-setting-wide-input');
 

@@ -85,7 +85,7 @@ import { openAddTagToFilesModal } from '../utils/tagModalHelpers';
 import { getTagSearchModifierOperator } from '../utils/tagUtils';
 import { resolveUXIcon } from '../utils/uxIcons';
 import type { InclusionOperator } from '../utils/filterSearch';
-import { casefold } from '../utils/recordUtils';
+import { resolvePropertyColorMapColor } from '../utils/propertyColorMapFormat';
 import { ServiceIcon } from './ServiceIcon';
 
 const FEATURE_IMAGE_MAX_ASPECT_RATIO = 16 / 9;
@@ -632,6 +632,7 @@ export const FileItem = React.memo(function FileItem({
 
         // Convert cached custom property data to renderable pill models.
         const pills: CustomPropertyPill[] = [];
+        const colorLookupCache = new Map<string, string | undefined>();
         for (const entry of customProperty) {
             const rawValue = entry.value;
             if (rawValue.trim().length === 0) {
@@ -641,11 +642,16 @@ export const FileItem = React.memo(function FileItem({
             const wikiLink = parseStrictWikiLink(rawValue);
             const label = wikiLink ? wikiLink.displayText : rawValue;
 
-            // Resolve custom property colors at render time from the field key.
+            // Resolve custom property colors at render time from field key and raw value.
             // This keeps persisted custom property items stable across style rule changes.
-            const colorKey = casefold(entry.fieldKey);
-            const mappedColor = colorKey ? (settings.customPropertyColorMap[colorKey] ?? '').trim() : '';
-            const color = mappedColor.length > 0 ? mappedColor : undefined;
+            const cacheKey = `${entry.fieldKey}\u0000${rawValue}`;
+            let color: string | undefined;
+            if (colorLookupCache.has(cacheKey)) {
+                color = colorLookupCache.get(cacheKey);
+            } else {
+                color = resolvePropertyColorMapColor(settings.customPropertyColorMap, entry.fieldKey, rawValue);
+                colorLookupCache.set(cacheKey, color);
+            }
 
             pills.push({ value: rawValue, label, wikiLink, color });
         }

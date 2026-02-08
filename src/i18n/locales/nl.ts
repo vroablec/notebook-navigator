@@ -330,6 +330,10 @@ export const STRINGS_NL = {
         fileIconRuleEditor: {
             addRuleAria: 'Regel toevoegen'
         },
+        propertyColorRuleEditor: {
+            propertyPlaceholder: 'Property',
+            valuePlaceholder: 'Value'
+        },
         interfaceIcons: {
             title: 'Interface-iconen',
             fileItemsSection: 'Bestandsitems',
@@ -1251,8 +1255,8 @@ export const STRINGS_NL = {
             },
             customPropertyColorMap: {
                 name: 'Eigenschapkleuren',
-                desc: 'Koppel frontmatter-eigenschappen aan badge-kleuren. Eén koppeling per regel: eigenschap=kleur',
-                placeholder: '# Eigenschap=kleur\nstatus=#ff0000\ntype=#00ff00',
+                desc: 'Koppel frontmatter-eigenschappen en -waarden aan badge-kleuren. Eén koppeling per regel: eigenschap=kleur of eigenschap:waarde=kleur',
+                placeholder: '# Eigenschap of eigenschap:waarde kleur\nstatus=#f59e0b\nstatus:done=#10b981\nstatus:todo=#ef4444',
                 editTooltip: 'Koppelingen bewerken'
             },
             showCustomPropertyInCompactMode: {

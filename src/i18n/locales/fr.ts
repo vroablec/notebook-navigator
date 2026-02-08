@@ -329,6 +329,10 @@ export const STRINGS_FR = {
         fileIconRuleEditor: {
             addRuleAria: 'Ajouter une règle'
         },
+        propertyColorRuleEditor: {
+            propertyPlaceholder: 'Property',
+            valuePlaceholder: 'Value'
+        },
         interfaceIcons: {
             title: "Icônes de l'interface",
             fileItemsSection: 'Éléments de fichier',
@@ -1253,8 +1257,8 @@ export const STRINGS_FR = {
             },
             customPropertyColorMap: {
                 name: 'Couleurs des propriétés',
-                desc: 'Associe des propriétés frontmatter à des couleurs de badge. Une association par ligne : propriété=couleur',
-                placeholder: '# Propriété=couleur\nstatus=#ff0000\ntype=#00ff00',
+                desc: 'Associe des propriétés et valeurs frontmatter à des couleurs de badge. Une association par ligne : propriété=couleur ou propriété:valeur=couleur',
+                placeholder: '# Propriété ou propriété:valeur couleur\nstatus=#f59e0b\nstatus:done=#10b981\nstatus:todo=#ef4444',
                 editTooltip: 'Modifier les associations'
             },
             showCustomPropertyInCompactMode: {

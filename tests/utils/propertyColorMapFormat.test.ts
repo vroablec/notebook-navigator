@@ -18,8 +18,11 @@
 
 import { describe, it, expect } from 'vitest';
 import {
+    buildPropertyColorMapKey,
     normalizePropertyColorMapKey,
+    parsePropertyColorMapKey,
     parsePropertyColorMapText,
+    resolvePropertyColorMapColor,
     serializePropertyColorMapRecord
 } from '../../src/utils/propertyColorMapFormat';
 
@@ -52,5 +55,61 @@ describe('propertyColorMapFormat', () => {
 
         expect(parsed.invalidLines).toEqual([]);
         expect(Object.entries(parsed.map)).toEqual([['due date', '#ff0000']]);
+    });
+
+    it('normalizes property:value keys with trim and casefold', () => {
+        expect(normalizePropertyColorMapKey(' Status : Active ')).toBe('status:active');
+    });
+
+    it('parses property:value keys into normalized parts', () => {
+        const parsed = parsePropertyColorMapKey(' Status : Active ');
+        expect(parsed).toEqual({
+            propertyKey: 'status',
+            valueKey: 'active'
+        });
+    });
+
+    it('parses quoted property:value keys with spaces', () => {
+        const parsed = parsePropertyColorMapText("'status:In progress'=#f59e0b", normalizePropertyColorMapKey);
+        expect(parsed.invalidLines).toEqual([]);
+        expect(Object.entries(parsed.map)).toEqual([['status:in progress', '#f59e0b']]);
+    });
+
+    it('parses property:value mappings from text area input', () => {
+        const parsed = parsePropertyColorMapText('status:active=#ff0000', normalizePropertyColorMapKey);
+        expect(parsed.invalidLines).toEqual([]);
+        expect(Object.entries(parsed.map)).toEqual([['status:active', '#ff0000']]);
+    });
+
+    it('requires "=" as key/color separator in text area input', () => {
+        const parsed = parsePropertyColorMapText('status:done:#ff0000', normalizePropertyColorMapKey);
+        expect(parsed.invalidLines).toEqual(['status:done:#ff0000']);
+        expect(Object.entries(parsed.map)).toEqual([]);
+    });
+
+    it('builds property-only key when value is empty', () => {
+        expect(buildPropertyColorMapKey('status', '   ')).toBe('status');
+    });
+
+    it('drops keys with invalid property:value grammar during normalization', () => {
+        expect(normalizePropertyColorMapKey('status:')).toBe('');
+    });
+
+    it('resolves property:value color before property fallback', () => {
+        const map = {
+            status: '#999999',
+            'status:active': '#ff0000'
+        };
+
+        expect(resolvePropertyColorMapColor(map, 'Status', 'Active')).toBe('#ff0000');
+        expect(resolvePropertyColorMapColor(map, 'Status', 'Finished')).toBe('#999999');
+    });
+
+    it('roundtrips keys containing "=" characters', () => {
+        const serialized = serializePropertyColorMapRecord({ 'status:a=b': '#ff0000' });
+        const parsed = parsePropertyColorMapText(serialized, normalizePropertyColorMapKey);
+
+        expect(parsed.invalidLines).toEqual([]);
+        expect(Object.entries(parsed.map)).toEqual([['status:a=b', '#ff0000']]);
     });
 });

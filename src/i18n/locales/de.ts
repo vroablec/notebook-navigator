@@ -329,6 +329,10 @@ export const STRINGS_DE = {
         fileIconRuleEditor: {
             addRuleAria: 'Regel hinzufügen'
         },
+        propertyColorRuleEditor: {
+            propertyPlaceholder: 'Property',
+            valuePlaceholder: 'Value'
+        },
         interfaceIcons: {
             title: 'Oberflächensymbole',
             fileItemsSection: 'Datei-Elemente',
@@ -1251,8 +1255,8 @@ export const STRINGS_DE = {
             },
             customPropertyColorMap: {
                 name: 'Eigenschaftsfarben',
-                desc: 'Ordne Frontmatter-Eigenschaften Badge-Farben zu. Eine Zuordnung pro Zeile: Eigenschaft=Farbe',
-                placeholder: '# Eigenschaft=Farbe\nstatus=#ff0000\ntype=#00ff00',
+                desc: 'Ordne Frontmatter-Eigenschaften und -Werte Badge-Farben zu. Eine Zuordnung pro Zeile: Eigenschaft=Farbe oder Eigenschaft:Wert=Farbe',
+                placeholder: '# Eigenschaft oder Eigenschaft:Wert Farbe\nstatus=#f59e0b\nstatus:done=#10b981\nstatus:todo=#ef4444',
                 editTooltip: 'Zuordnungen bearbeiten'
             },
             showCustomPropertyInCompactMode: {

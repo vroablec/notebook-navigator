@@ -18,8 +18,12 @@
 
 import { casefold } from './recordUtils';
 
-/** Normalizes a property color map key by trimming, unquoting, and converting to lowercase */
-export function normalizePropertyColorMapKey(input: string): string {
+interface PropertyColorMapKeyParts {
+    propertyKey: string;
+    valueKey: string | null;
+}
+
+function normalizePropertyColorMapKeyPart(input: string): string {
     const trimmed = input.trim();
     if (!trimmed) {
         return '';
@@ -27,6 +31,95 @@ export function normalizePropertyColorMapKey(input: string): string {
 
     const unquoted = tryUnquoteQuotedText(trimmed);
     return casefold(unquoted ?? trimmed);
+}
+
+/** Parses a property color key into normalized property/value parts */
+export function parsePropertyColorMapKey(input: string): PropertyColorMapKeyParts | null {
+    const trimmed = input.trim();
+    if (!trimmed) {
+        return null;
+    }
+
+    const unquoted = tryUnquoteQuotedText(trimmed) ?? trimmed;
+    const separatorIndex = findPropertyColorMapKeyValueSeparatorIndex(unquoted);
+    if (separatorIndex === -1) {
+        const propertyKey = normalizePropertyColorMapKeyPart(unquoted);
+        if (!propertyKey) {
+            return null;
+        }
+        return { propertyKey, valueKey: null };
+    }
+
+    // The first unquoted ":" defines the property/value split for this grammar.
+    // Literal ":" in property names are not represented separately in map keys.
+    const propertyKey = normalizePropertyColorMapKeyPart(unquoted.slice(0, separatorIndex));
+    const valueKey = normalizePropertyColorMapKeyPart(unquoted.slice(separatorIndex + 1));
+    if (!propertyKey || !valueKey) {
+        return null;
+    }
+
+    return { propertyKey, valueKey };
+}
+
+/** Normalizes a property color map key and canonicalizes `property:value` entries */
+export function normalizePropertyColorMapKey(input: string): string {
+    const parsed = parsePropertyColorMapKey(input);
+    if (!parsed) {
+        // Invalid key grammar is treated as absent and removed when records are normalized.
+        return '';
+    }
+
+    if (parsed.valueKey) {
+        return `${parsed.propertyKey}:${parsed.valueKey}`;
+    }
+
+    return parsed.propertyKey;
+}
+
+/** Builds a normalized map key from separate property and optional value inputs */
+export function buildPropertyColorMapKey(propertyInput: string, valueInput: string | null | undefined): string {
+    const propertyKey = normalizePropertyColorMapKeyPart(propertyInput);
+    if (!propertyKey) {
+        return '';
+    }
+
+    const valueKey = typeof valueInput === 'string' ? normalizePropertyColorMapKeyPart(valueInput) : '';
+    if (!valueKey) {
+        return propertyKey;
+    }
+
+    return `${propertyKey}:${valueKey}`;
+}
+
+/** Resolves a color from the map using property:value first, then property */
+export function resolvePropertyColorMapColor(map: Record<string, string>, propertyInput: string, valueInput: string): string | undefined {
+    const propertyKey = normalizePropertyColorMapKeyPart(propertyInput);
+    if (!propertyKey) {
+        return undefined;
+    }
+
+    const valueKey = normalizePropertyColorMapKeyPart(valueInput);
+    if (valueKey) {
+        const valueColor = map[`${propertyKey}:${valueKey}`];
+        if (typeof valueColor === 'string') {
+            const trimmedValueColor = valueColor.trim();
+            if (trimmedValueColor.length > 0) {
+                return trimmedValueColor;
+            }
+        }
+    }
+
+    const propertyColor = map[propertyKey];
+    if (typeof propertyColor !== 'string') {
+        return undefined;
+    }
+
+    const trimmedPropertyColor = propertyColor.trim();
+    if (trimmedPropertyColor.length === 0) {
+        return undefined;
+    }
+
+    return trimmedPropertyColor;
 }
 
 interface NormalizedPropertyColorMapEntry {
@@ -39,7 +132,7 @@ export interface PropertyColorMapParseResult {
     invalidLines: string[];
 }
 
-export function normalizePropertyColorMapEntry(
+function normalizePropertyColorMapEntry(
     key: string,
     color: string,
     normalizeKey: (input: string) => string
@@ -128,7 +221,7 @@ export function parsePropertyColorMapText(value: string, normalizeKey: (input: s
 
 /** Returns true if the key needs to be wrapped in single quotes for serialization */
 function shouldQuotePropertyColorMapKey(key: string): boolean {
-    return /\s/.test(key) || key.startsWith('#');
+    return /\s/.test(key) || key.startsWith('#') || key.includes('=');
 }
 
 /** Escapes backslashes and single quotes for embedding in a single-quoted string */
@@ -171,7 +264,15 @@ function unescapeQuotedText(value: string, quote: "'" | '"'): string {
 }
 
 function findPropertyColorMapSeparatorIndex(value: string): number {
-    let firstColonIndex = -1;
+    // Mapping lines require "=" between key and color.
+    return findFirstUnquotedCharacterIndex(value, ch => ch === '=');
+}
+
+function findPropertyColorMapKeyValueSeparatorIndex(value: string): number {
+    return findFirstUnquotedCharacterIndex(value, ch => ch === ':');
+}
+
+function findFirstUnquotedCharacterIndex(value: string, matcher: (ch: string) => boolean): number {
     let activeQuote: "'" | '"' | null = null;
 
     for (let i = 0; i < value.length; i++) {
@@ -194,14 +295,10 @@ function findPropertyColorMapSeparatorIndex(value: string): number {
             continue;
         }
 
-        if (ch === '=') {
+        if (matcher(ch)) {
             return i;
-        }
-
-        if (ch === ':' && firstColonIndex === -1) {
-            firstColonIndex = i;
         }
     }
 
-    return firstColonIndex;
+    return -1;
 }

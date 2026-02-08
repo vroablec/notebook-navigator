@@ -328,6 +328,10 @@ export const STRINGS_VI = {
         fileIconRuleEditor: {
             addRuleAria: 'Thêm quy tắc'
         },
+        propertyColorRuleEditor: {
+            propertyPlaceholder: 'Property',
+            valuePlaceholder: 'Value'
+        },
         interfaceIcons: {
             title: 'Biểu tượng giao diện',
             fileItemsSection: 'Mục tệp',
@@ -1247,8 +1251,8 @@ export const STRINGS_VI = {
             },
             customPropertyColorMap: {
                 name: 'Màu thuộc tính',
-                desc: 'Ánh xạ thuộc tính frontmatter thành màu huy hiệu. Một ánh xạ mỗi dòng: thuộc tính=màu',
-                placeholder: '# Thuộc tính=màu\nstatus=#ff0000\ntype=#00ff00',
+                desc: 'Ánh xạ thuộc tính và giá trị frontmatter thành màu huy hiệu. Một ánh xạ mỗi dòng: thuộc tính=màu hoặc thuộc tính:giá trị=màu',
+                placeholder: '# Thuộc tính hoặc thuộc tính:giá trị màu\nstatus=#f59e0b\nstatus:done=#10b981\nstatus:todo=#ef4444',
                 editTooltip: 'Chỉnh sửa ánh xạ'
             },
             showCustomPropertyInCompactMode: {

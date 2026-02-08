@@ -1881,6 +1881,7 @@ export default class NotebookNavigatorPlugin extends Plugin implements ISettings
     private normalizeCustomPropertyColorMapSettings(settings: NotebookNavigatorSettings): void {
         const normalizeColorMap = (input: unknown, fallback: Record<string, string>) => {
             if (!isPlainObjectRecordValue(input)) {
+                // Invalid or non-record inputs resolve to a normalized record shape.
                 return normalizePropertyColorMapRecord(fallback, normalizePropertyColorMapKey);
             }
 
@@ -1892,6 +1893,7 @@ export default class NotebookNavigatorPlugin extends Plugin implements ISettings
                 source[key] = value;
             });
 
+            // Entries with invalid key grammar normalize to empty keys and are removed.
             return normalizePropertyColorMapRecord(source, normalizePropertyColorMapKey);
         };
 

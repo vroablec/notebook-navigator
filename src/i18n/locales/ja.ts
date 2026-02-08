@@ -328,6 +328,10 @@ export const STRINGS_JA = {
         fileIconRuleEditor: {
             addRuleAria: 'ルールを追加'
         },
+        propertyColorRuleEditor: {
+            propertyPlaceholder: 'Property',
+            valuePlaceholder: 'Value'
+        },
         interfaceIcons: {
             title: 'インターフェースアイコン',
             fileItemsSection: 'ファイル項目',
@@ -1249,8 +1253,8 @@ export const STRINGS_JA = {
             },
             customPropertyColorMap: {
                 name: 'プロパティの色',
-                desc: 'フロントマターのプロパティをバッジの色にマッピングします。1行に1つのマッピング: プロパティ=色',
-                placeholder: '# プロパティ=色\nstatus=#ff0000\ntype=#00ff00',
+                desc: 'フロントマターのプロパティと値をバッジの色にマッピングします。1行に1つのマッピング: プロパティ=色 または プロパティ:値=色',
+                placeholder: '# プロパティ または プロパティ:値 色\nstatus=#f59e0b\nstatus:done=#10b981\nstatus:todo=#ef4444',
                 editTooltip: 'マッピングを編集'
             },
             showCustomPropertyInCompactMode: {

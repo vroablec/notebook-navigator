@@ -329,6 +329,10 @@ export const STRINGS_TR = {
         fileIconRuleEditor: {
             addRuleAria: 'Kural ekle'
         },
+        propertyColorRuleEditor: {
+            propertyPlaceholder: 'Property',
+            valuePlaceholder: 'Value'
+        },
         interfaceIcons: {
             title: 'Arayüz simgeleri',
             fileItemsSection: 'Dosya öğeleri',
@@ -1248,8 +1252,8 @@ export const STRINGS_TR = {
             },
             customPropertyColorMap: {
                 name: 'Özellik renkleri',
-                desc: 'Frontmatter özelliklerini rozet renklerine eşle. Satır başına bir eşleme: özellik=renk',
-                placeholder: '# Özellik=renk\nstatus=#ff0000\ntype=#00ff00',
+                desc: 'Frontmatter özelliklerini ve değerlerini rozet renklerine eşle. Satır başına bir eşleme: özellik=renk veya özellik:değer=renk',
+                placeholder: '# Özellik veya özellik:değer renk\nstatus=#f59e0b\nstatus:done=#10b981\nstatus:todo=#ef4444',
                 editTooltip: 'Eşlemeleri düzenle'
             },
             showCustomPropertyInCompactMode: {
