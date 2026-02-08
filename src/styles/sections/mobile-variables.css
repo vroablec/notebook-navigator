@@ -34,7 +34,7 @@
 
 /* Mobile folder content padding adjustment for proper selection height */
 .notebook-navigator-mobile .nn-navitem-content {
-    padding: var(--nn-setting-nav-padding-vertical-mobile) var(--nn-nav-item-padding-horizontal);
+    padding: 0 var(--nn-nav-item-padding-horizontal);
     padding-inline-start: 4px;
     height: 100%;
 }

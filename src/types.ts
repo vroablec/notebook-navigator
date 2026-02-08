@@ -161,9 +161,6 @@ export const NAVPANE_MEASUREMENTS = {
     defaultIndent: 16, // Default tree indentation
     defaultFontSize: 13, // Default desktop font size
 
-    // Navigation item components
-    lineHeight: 18, // Fixed line height for folder/tag names (--nn-nav-line-height)
-
     // Mobile adjustments
     mobileHeightIncrement: 12, // Mobile item height is desktop + 12px
     mobileFontSizeIncrement: 3, // Mobile font size is desktop + 3px

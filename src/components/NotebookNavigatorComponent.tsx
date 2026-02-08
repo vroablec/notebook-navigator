@@ -901,15 +901,8 @@ export const NotebookNavigatorComponent = React.memo(
                 const compensatedFontSize = fontSize / androidFontScale;
                 const compensatedMobileFontSize = mobileFontSize / androidFontScale;
 
-                // Calculate padding: (total height - line height) / 2
-                // Line height is fixed at 18px in CSS (--nn-nav-line-height)
-                const desktopPadding = Math.floor((navItemHeight - NAVPANE_MEASUREMENTS.lineHeight) / 2);
-                const mobilePadding = Math.floor((mobileNavItemHeight - NAVPANE_MEASUREMENTS.lineHeight) / 2);
-
                 containerRef.current.style.setProperty('--nn-setting-nav-item-height', `${navItemHeight}px`);
                 containerRef.current.style.setProperty('--nn-setting-nav-item-height-mobile', `${mobileNavItemHeight}px`);
-                containerRef.current.style.setProperty('--nn-setting-nav-padding-vertical', `${desktopPadding}px`);
-                containerRef.current.style.setProperty('--nn-setting-nav-padding-vertical-mobile', `${mobilePadding}px`);
                 containerRef.current.style.setProperty('--nn-setting-nav-font-size', `${compensatedFontSize}px`);
                 containerRef.current.style.setProperty('--nn-setting-nav-font-size-mobile', `${compensatedMobileFontSize}px`);
                 containerRef.current.style.setProperty('--nn-setting-nav-indent', `${settings.navIndent}px`);
@@ -1011,7 +1004,7 @@ export const NotebookNavigatorComponent = React.memo(
                     />
                     {shouldRenderSinglePaneCalendar ? (
                         <div className="nn-single-pane-calendar">
-                            <NavigationPaneCalendar layout="panel" onWeekCountChange={handleSinglePaneCalendarWeekCountChange} />
+                            <NavigationPaneCalendar onWeekCountChange={handleSinglePaneCalendarWeekCountChange} />
                         </div>
                     ) : null}
                 </div>

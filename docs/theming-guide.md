@@ -1,6 +1,6 @@
 # Notebook Navigator Theming Guide
 
-Updated: January 29, 2026
+Updated: February 8, 2026
 
 ## Table of Contents
 
@@ -55,21 +55,18 @@ Most variables are colors and should resolve to a computed color (some are used 
 
 ### Calendar
 
-| Variable                                        | Default                         | Description                                             |
-| ----------------------------------------------- | ------------------------------- | ------------------------------------------------------- |
-| `--nn-theme-calendar-header-color`          | `var(--nn-theme-foreground)`          | Text color for month/year and header buttons            |
-| `--nn-theme-calendar-weekday-color`         | `var(--nn-theme-foreground-muted)`    | Text color for weekday labels (Mon, Tue, Wed...)        |
-| `--nn-theme-calendar-week-color`      | `var(--nn-theme-foreground-muted)`                 | Text color for week numbers                             |
-| `--nn-theme-calendar-day-in-month-color`    | `var(--nn-theme-foreground)`          | Text color for days within the current month            |
-| `--nn-theme-calendar-day-outside-month-color` | `var(--nn-theme-foreground-muted)`  | Text color for days outside the current month           |
-| `--nn-theme-calendar-hover-bg`              | `var(--background-modifier-hover)` | Hover background for calendar buttons and days          |
-| `--nn-theme-calendar-weekend-bg`            | `var(--background-secondary)`       | Background color for weekend days (panel layout)        |
-| `--nn-theme-calendar-day-has-note-color`    | `white`                         | Text color for dates with a daily note                  |
-| `--nn-theme-calendar-day-has-note-bg`       | `var(--text-selection)`         | Background color for dates with a daily note            |
-| `--nn-theme-calendar-day-has-feature-image-color` | `white`                  | Text color for dates with feature images                |
-| `--nn-theme-calendar-day-today-color`       | `var(--nn-theme-calendar-day-has-note-color)` | Text color for today's date (overlay layout)            |
-| `--nn-theme-calendar-day-today-bg`          | `var(--color-red)`            | Background color for the today highlight circle (overlay layout) |
-| `--nn-theme-calendar-day-today-accent`      | `var(--color-red)`            | Border and text color for today (panel layout)          |
+| Variable                                      | Default                                | Description                                     |
+| --------------------------------------------- | -------------------------------------- | ----------------------------------------------- |
+| `--nn-theme-calendar-header-color`            | `var(--nn-theme-foreground)`           | Text color for month/year and header buttons    |
+| `--nn-theme-calendar-weekday-color`           | `var(--nn-theme-foreground-muted)`     | Text color for weekday labels (Mon, Tue, Wed...) |
+| `--nn-theme-calendar-week-color`              | `var(--nn-theme-foreground-muted)`     | Text color for week numbers                     |
+| `--nn-theme-calendar-day-in-month-color`      | `var(--nn-theme-foreground)`           | Text color for days within the current month    |
+| `--nn-theme-calendar-day-outside-month-color` | `var(--nn-theme-foreground-faded)`     | Text color for days outside the current month   |
+| `--nn-theme-calendar-hover-bg`                | `var(--background-modifier-hover)`     | Hover background for calendar buttons and days  |
+| `--nn-theme-calendar-day-has-note-bg`         | `var(--nn-theme-foreground-faint)`     | Dot color for dates with a daily note           |
+| `--nn-theme-calendar-day-has-feature-image-color` | `white`                             | Text color for dates with feature images        |
+| `--nn-theme-calendar-day-today-color`         | `var(--nn-theme-calendar-day-in-month-color)` | Text color for today's date                |
+| `--nn-theme-calendar-day-today-bg`            | `var(--text-selection)`                | Background color for today's date highlight     |
 
 ### Navigation pane
 
@@ -270,15 +267,12 @@ body {
   --nn-theme-calendar-weekday-color: var(--nn-theme-foreground-muted);
   --nn-theme-calendar-week-color: var(--nn-theme-foreground-muted);
   --nn-theme-calendar-day-in-month-color: var(--nn-theme-foreground);
-  --nn-theme-calendar-day-outside-month-color: var(--nn-theme-foreground-muted);
+  --nn-theme-calendar-day-outside-month-color: var(--nn-theme-foreground-faded);
   --nn-theme-calendar-hover-bg: #4b5059;
-  --nn-theme-calendar-weekend-bg: #4b5059;
-  --nn-theme-calendar-day-has-note-color: #ffffff;
   --nn-theme-calendar-day-has-note-bg: #4a78c8;
   --nn-theme-calendar-day-has-feature-image-color: #ffffff;
   --nn-theme-calendar-day-today-color: #ffffff;
-  --nn-theme-calendar-day-today-bg: #db5050;
-  --nn-theme-calendar-day-today-accent: #db5050;
+  --nn-theme-calendar-day-today-bg: #4a78c8;
 
   /* Folder & tag items */
   --nn-theme-navitem-chevron-color: #6e6e6e;

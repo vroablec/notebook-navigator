@@ -93,7 +93,8 @@
 .nn-navitem-content {
     display: flex;
     align-items: center;
-    padding: var(--nn-setting-nav-padding-vertical) var(--nn-nav-item-padding-horizontal);
+    height: 100%;
+    padding: 0 var(--nn-nav-item-padding-horizontal);
     border-radius: min(14px, var(--nn-theme-navitem-border-radius));
     margin: 0;
     background: transparent;
@@ -257,7 +258,7 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    line-height: var(--nn-nav-line-height);
+    line-height: normal;
     color: var(--nn-theme-navitem-name-color);
 }
 

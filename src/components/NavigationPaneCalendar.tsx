@@ -231,7 +231,6 @@ function isWeekendDay(dayOfWeek: number, weekendDays: CalendarWeekendDays): bool
 export interface NavigationPaneCalendarProps {
     onWeekCountChange?: (count: number) => void;
     onNavigationAction?: () => void;
-    layout?: 'overlay' | 'panel';
     weeksToShowOverride?: CalendarWeeksToShow;
 }
 
@@ -243,12 +242,7 @@ interface CalendarHoverTooltipState {
 type CustomCalendarNoteKind = CalendarNoteKind;
 type CustomCalendarNoteConfig = CalendarNoteConfig;
 
-export function NavigationPaneCalendar({
-    onWeekCountChange,
-    onNavigationAction,
-    layout = 'overlay',
-    weeksToShowOverride
-}: NavigationPaneCalendarProps) {
+export function NavigationPaneCalendar({ onWeekCountChange, onNavigationAction, weeksToShowOverride }: NavigationPaneCalendarProps) {
     const { app, fileSystemOps, isMobile } = useServices();
     const settings = useSettingsState();
     const periodicNotesFolder = getActiveVaultProfile(settings).periodicNotesFolder;
@@ -408,19 +402,13 @@ export function NavigationPaneCalendar({
 
         const firstDay = weekStartsOn;
         const localeData = momentApi().locale(displayLocale).localeData();
-        const labels = layout === 'panel' ? localeData.weekdaysShort() : localeData.weekdaysMin();
+        const labels = localeData.weekdaysMin();
         if (!Array.isArray(labels) || labels.length !== 7) {
             return [];
         }
         const ordered = [...labels.slice(firstDay), ...labels.slice(0, firstDay)];
-        if (layout === 'panel') {
-            return ordered.map(label => {
-                const normalized = label.trim().replace(/\./g, '');
-                return normalized.length > 3 ? normalized.slice(0, 3) : normalized;
-            });
-        }
         return ordered.map(label => Array.from(label.trim())[0] ?? '');
-    }, [displayLocale, layout, momentApi, weekStartsOn]);
+    }, [displayLocale, momentApi, weekStartsOn]);
 
     const dailyNoteSettings = useMemo(() => {
         // Force refresh when vault contents change so `getDailyNoteFile()` reflects created/renamed/deleted daily notes.
@@ -1317,7 +1305,6 @@ export function NavigationPaneCalendar({
                 role="group"
                 aria-labelledby={calendarLabelId}
                 data-highlight-today={highlightToday ? 'true' : undefined}
-                data-layout={layout}
                 data-weeknumbers={showWeekNumbers ? 'true' : undefined}
             >
                 <span id={calendarLabelId} className="nn-visually-hidden">
@@ -1543,7 +1530,7 @@ export function NavigationPaneCalendar({
                                                     });
                                                 }}
                                             >
-                                                {week.weekNumber}
+                                                <span className="nn-navigation-calendar-weeknumber-value">{week.weekNumber}</span>
                                             </button>
                                         ) : (
                                             <div
@@ -1563,7 +1550,7 @@ export function NavigationPaneCalendar({
                                                     });
                                                 }}
                                             >
-                                                {week.weekNumber}
+                                                <span className="nn-navigation-calendar-weeknumber-value">{week.weekNumber}</span>
                                             </div>
                                         )}
                                         <div className="nn-navigation-calendar-weeknumber-divider" aria-hidden="true" />

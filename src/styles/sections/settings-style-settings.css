@@ -159,25 +159,9 @@ settings:
         default-light: '#'
         default-dark: '#'
     -
-        id: nn-theme-calendar-weekend-bg
-        title: Weekend background
-        description: Background color for weekend days (panel layout).
-        type: variable-themed-color
-        format: hex
-        default-light: '#'
-        default-dark: '#'
-    -
-        id: nn-theme-calendar-day-has-note-color
-        title: Daily note text color
-        description: Text color for dates with a daily note.
-        type: variable-themed-color
-        format: hex
-        default-light: '#'
-        default-dark: '#'
-    -
         id: nn-theme-calendar-day-has-note-bg
-        title: Daily note background
-        description: Background color for dates with a daily note.
+        title: Daily note indicator
+        description: Color for the dot indicator shown on dates with a daily note.
         type: variable-themed-color
         format: hex
         default-light: '#'
@@ -193,7 +177,7 @@ settings:
     -
         id: nn-theme-calendar-day-today-color
         title: Day text color (today)
-        description: Text color for today's date (overlay layout).
+        description: Text color for today's date.
         type: variable-themed-color
         format: hex
         default-light: '#'
@@ -201,32 +185,11 @@ settings:
     -
         id: nn-theme-calendar-day-today-bg
         title: Today highlight background
-        description: Background color for the today highlight circle (overlay layout).
+        description: Background color for today's date highlight.
         type: variable-themed-color
         format: hex
         default-light: '#'
         default-dark: '#'
-    -
-        id: nn-theme-calendar-day-today-accent
-        title: Today accent color
-        description: Border and text color for today (panel layout).
-        type: variable-themed-color
-        format: hex
-        default-light: '#'
-        default-dark: '#'
-    -
-        id: nn-calendar-right-sidebar-date-placement
-        title: Right sidebar date placement
-        description: Position of day numbers in the right sidebar calendar.
-        type: variable-select
-        default: flex-end
-        options:
-          -
-            label: Bottom right
-            value: flex-end
-          -
-            label: Centered
-            value: center
     -
         id: nn-nav-pane-heading
         title: Navigation pane (folders, tags, shortcuts)
