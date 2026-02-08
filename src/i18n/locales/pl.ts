@@ -362,6 +362,7 @@ export const STRINGS_PL = {
                 'nav-folder-note': 'Notatka folderu',
                 'nav-tag': 'Tag',
                 'list-pinned': 'Przypięte elementy',
+                'file-unfinished-task': 'Nieukończone zadania',
                 'file-word-count': 'Liczba słów',
                 'file-custom-property': 'Właściwość niestandardowa'
             }
@@ -804,7 +805,11 @@ export const STRINGS_PL = {
             },
             showFileIcons: {
                 name: 'Pokaż ikony plików',
-                desc: 'Wyświetl ikony plików z wyrównaniem do lewej. Wyłączenie usuwa zarówno ikony, jak i wcięcie. Priorytet: niestandardowe > nazwa pliku > typ pliku > domyślne.'
+                desc: 'Wyświetl ikony plików z wyrównaniem do lewej. Wyłączenie usuwa zarówno ikony, jak i wcięcie. Priorytet: ikona niedokończonych zadań > ikona niestandardowa > ikona nazwy pliku > ikona typu pliku > ikona domyślna.'
+            },
+            showFileIconUnfinishedTask: {
+                name: 'Ikona nieukończonych zadań',
+                desc: 'Wyświetl ikonę zadania, gdy notatka zawiera nieukończone zadania.'
             },
             showFilenameMatchIcons: {
                 name: 'Ikony według nazwy pliku',

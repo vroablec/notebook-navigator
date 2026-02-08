@@ -361,6 +361,7 @@ export const STRINGS_PT = {
                 'nav-folder-note': 'Nota da pasta',
                 'nav-tag': 'Etiqueta',
                 'list-pinned': 'Itens fixados',
+                'file-unfinished-task': 'Tarefas inacabadas',
                 'file-word-count': 'Contagem de palavras',
                 'file-custom-property': 'Propriedade personalizada'
             }
@@ -803,7 +804,11 @@ export const STRINGS_PT = {
             },
             showFileIcons: {
                 name: 'Mostrar ícones de ficheiros',
-                desc: 'Exibir ícones de ficheiros com espaçamento alinhado à esquerda. Desativar remove ícones e indentação. Prioridade: personalizado > nome de ficheiro > tipo de ficheiro > predefinido.'
+                desc: 'Exibir ícones de ficheiros com espaçamento alinhado à esquerda. Desativar remove ícones e indentação. Prioridade: ícone de tarefas inacabadas > ícone personalizado > ícone de nome de ficheiro > ícone de tipo de ficheiro > ícone predefinido.'
+            },
+            showFileIconUnfinishedTask: {
+                name: 'Ícone de tarefas inacabadas',
+                desc: 'Apresentar um ícone de tarefa quando uma nota tem tarefas inacabadas.'
             },
             showFilenameMatchIcons: {
                 name: 'Ícones por nome de ficheiro',

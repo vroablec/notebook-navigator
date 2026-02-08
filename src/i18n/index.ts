@@ -34,6 +34,7 @@ import { STRINGS_KO } from './locales/ko';
 import { STRINGS_NL } from './locales/nl';
 import { STRINGS_PL } from './locales/pl';
 import { STRINGS_PT } from './locales/pt';
+import { STRINGS_PT_BR } from './locales/pt_br';
 import { STRINGS_RU } from './locales/ru';
 import { STRINGS_TH } from './locales/th';
 import { STRINGS_TR } from './locales/tr';
@@ -92,6 +93,7 @@ const LANGUAGE_MAP: Record<string, TranslationStrings> = {
     nl: STRINGS_NL,
     pl: STRINGS_PL,
     pt: STRINGS_PT,
+    'pt-BR': STRINGS_PT_BR,
     ru: STRINGS_RU,
     th: STRINGS_TH,
     tr: STRINGS_TR,

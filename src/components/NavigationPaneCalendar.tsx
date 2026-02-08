@@ -25,6 +25,7 @@ import { useServices } from '../context/ServicesContext';
 import { useSettingsState } from '../context/SettingsContext';
 import { useFileCacheOptional } from '../context/StorageContext';
 import { getDBInstanceOrNull } from '../storage/fileOperations';
+import type { IndexedDBStorage } from '../storage/IndexedDBStorage';
 import { runAsyncAction } from '../utils/async';
 import { DateUtils } from '../utils/dateUtils';
 import {
@@ -86,6 +87,7 @@ interface CalendarDayButtonProps {
     ariaText: string;
     dayNumber: number;
     isMobile: boolean;
+    showUnfinishedTaskIndicator: boolean;
     onClick: () => void;
     onContextMenu: (event: React.MouseEvent<HTMLButtonElement>) => void;
     style: React.CSSProperties | undefined;
@@ -101,6 +103,7 @@ function CalendarDayButton({
     ariaText,
     dayNumber,
     isMobile,
+    showUnfinishedTaskIndicator,
     onClick,
     onContextMenu,
     style,
@@ -189,6 +192,9 @@ function CalendarDayButton({
             <span className="nn-navigation-calendar-day-number" aria-hidden="true">
                 {dayNumber}
             </span>
+            {showUnfinishedTaskIndicator ? (
+                <span className="nn-navigation-calendar-day-unfinished-task-indicator" aria-hidden="true" />
+            ) : null}
             <span className="nn-visually-hidden">{ariaText}</span>
         </button>
     );
@@ -228,6 +234,27 @@ function isWeekendDay(dayOfWeek: number, weekendDays: CalendarWeekendDays): bool
     }
 }
 
+function getIncompleteTaskCountForPath(db: IndexedDBStorage, path: string): number | null {
+    const taskIncomplete = db.getFile(path)?.taskIncomplete;
+    if (typeof taskIncomplete !== 'number' || taskIncomplete <= 0) {
+        return null;
+    }
+    return taskIncomplete;
+}
+
+function setIncompleteTaskCount<TKey>(counts: Map<TKey, number>, key: TKey, file: TFile | null, db: IndexedDBStorage): void {
+    if (!file) {
+        return;
+    }
+
+    const taskIncomplete = getIncompleteTaskCountForPath(db, file.path);
+    if (taskIncomplete === null) {
+        return;
+    }
+
+    counts.set(key, taskIncomplete);
+}
+
 export interface NavigationPaneCalendarProps {
     onWeekCountChange?: (count: number) => void;
     onNavigationAction?: () => void;
@@ -259,9 +286,12 @@ export function NavigationPaneCalendar({ onWeekCountChange, onNavigationAction, 
     const todayIso = momentApi ? formatIsoDate(momentApi().startOf('day')) : null;
 
     const [vaultVersion, setVaultVersion] = useState(0);
-    const [contentVersion, setContentVersion] = useState(0);
+    const [featureImageVersion, setFeatureImageVersion] = useState(0);
+    const [taskIndicatorVersion, setTaskIndicatorVersion] = useState(0);
+    const [hoverTooltipPreviewVersion, setHoverTooltipPreviewVersion] = useState(0);
     const [metadataVersion, setMetadataVersion] = useState(0);
-    const visibleDailyNotePathsRef = useRef<Set<string>>(new Set());
+    const visibleIndicatorNotePathsRef = useRef<Set<string>>(new Set());
+    const visibleFrontmatterNotePathsRef = useRef<Set<string>>(new Set());
     const hoverTooltipStateRef = useRef<CalendarHoverTooltipState | null>(null);
 
     useEffect(() => {
@@ -317,24 +347,61 @@ export function NavigationPaneCalendar({ onWeekCountChange, onNavigationAction, 
         }
 
         return db.onContentChange(changes => {
-            const visiblePaths = visibleDailyNotePathsRef.current;
-            const hasCalendarRelevantChange = changes.some(change => {
-                if (!visiblePaths.has(change.path)) {
-                    return false;
-                }
-                return (
-                    change.changes.preview !== undefined ||
-                    change.changes.featureImage !== undefined ||
-                    change.changes.featureImageKey !== undefined ||
-                    change.changes.featureImageStatus !== undefined
-                );
-            });
+            const visibleIndicatorPaths = visibleIndicatorNotePathsRef.current;
+            const hoverTooltipState = hoverTooltipStateRef.current;
+            const hoverPreviewPath =
+                hoverTooltipState && hoverTooltipState.tooltipData.previewEnabled ? hoverTooltipState.tooltipData.previewPath : null;
+            const shouldTrackFeatureImage = settings.calendarShowFeatureImage;
+            const shouldTrackTaskIndicator = visibleIndicatorPaths.size > 0;
+            const shouldTrackHoverPreview = Boolean(hoverPreviewPath);
 
-            if (hasCalendarRelevantChange) {
-                setContentVersion(v => v + 1);
+            let hasFeatureImageChange = !shouldTrackFeatureImage;
+            let hasTaskIndicatorChange = !shouldTrackTaskIndicator;
+            let hasHoverPreviewChange = !shouldTrackHoverPreview;
+
+            for (const change of changes) {
+                if (
+                    !hasHoverPreviewChange &&
+                    hoverPreviewPath &&
+                    change.path === hoverPreviewPath &&
+                    change.changes.preview !== undefined
+                ) {
+                    hasHoverPreviewChange = true;
+                }
+
+                if ((!hasTaskIndicatorChange || !hasFeatureImageChange) && visibleIndicatorPaths.has(change.path)) {
+                    if (!hasTaskIndicatorChange && change.changes.taskIncomplete !== undefined) {
+                        hasTaskIndicatorChange = true;
+                    }
+
+                    if (
+                        !hasFeatureImageChange &&
+                        (change.changes.featureImage !== undefined ||
+                            change.changes.featureImageKey !== undefined ||
+                            change.changes.featureImageStatus !== undefined)
+                    ) {
+                        hasFeatureImageChange = true;
+                    }
+                }
+
+                if (hasFeatureImageChange && hasTaskIndicatorChange && hasHoverPreviewChange) {
+                    break;
+                }
+            }
+
+            if (shouldTrackFeatureImage && hasFeatureImageChange) {
+                setFeatureImageVersion(v => v + 1);
+            }
+
+            if (shouldTrackTaskIndicator && hasTaskIndicatorChange) {
+                setTaskIndicatorVersion(v => v + 1);
+            }
+
+            if (shouldTrackHoverPreview && hasHoverPreviewChange) {
+                setHoverTooltipPreviewVersion(v => v + 1);
             }
         });
-    }, [db]);
+    }, [db, settings.calendarShowFeatureImage]);
 
     useEffect(() => {
         if (!settings.useFrontmatterMetadata) {
@@ -345,7 +412,7 @@ export function NavigationPaneCalendar({ onWeekCountChange, onNavigationAction, 
             if (!file) {
                 return;
             }
-            if (!visibleDailyNotePathsRef.current.has(file.path)) {
+            if (!visibleFrontmatterNotePathsRef.current.has(file.path)) {
                 return;
             }
             setMetadataVersion(v => v + 1);
@@ -529,7 +596,7 @@ export function NavigationPaneCalendar({ onWeekCountChange, onNavigationAction, 
         weekStartsOn
     ]);
 
-    const visibleDailyNotePaths = useMemo(() => {
+    const visibleDayNotePaths = useMemo(() => {
         const paths = new Set<string>();
         for (const week of weeks) {
             for (const day of week.days) {
@@ -540,41 +607,54 @@ export function NavigationPaneCalendar({ onWeekCountChange, onNavigationAction, 
         }
         return paths;
     }, [weeks]);
-    visibleDailyNotePathsRef.current = visibleDailyNotePaths;
 
     const featureImageKeysByIso = useMemo(() => {
-        // Force refresh when calendar-relevant content changes so feature-image keys reflect the latest metadata.
-        void contentVersion;
+        // Force refresh when calendar feature-image metadata changes so rendered day backgrounds stay in sync with content updates.
+        void featureImageVersion;
 
-        if (!settings.calendarShowFeatureImage) {
-            return new Map<string, string>();
+        const featureKeys = new Map<string, string>();
+
+        if (!db || !settings.calendarShowFeatureImage) {
+            return featureKeys;
         }
-
-        if (!db) {
-            return new Map<string, string>();
-        }
-
-        const keys = new Map<string, string>();
 
         for (const week of weeks) {
             for (const day of week.days) {
-                if (!day.file) {
+                const file = day.file;
+                if (!file) {
                     continue;
                 }
 
-                const record = db.getFile(day.file.path);
+                const record = db.getFile(file.path);
                 const featureKey = record?.featureImageKey ?? null;
                 const featureStatus = record?.featureImageStatus ?? null;
-                if (featureStatus !== 'has' || !featureKey || featureKey === '') {
-                    continue;
+                if (featureStatus === 'has' && featureKey && featureKey !== '') {
+                    featureKeys.set(day.iso, featureKey);
                 }
-
-                keys.set(day.iso, featureKey);
             }
         }
 
-        return keys;
-    }, [contentVersion, db, settings.calendarShowFeatureImage, weeks]);
+        return featureKeys;
+    }, [db, featureImageVersion, settings.calendarShowFeatureImage, weeks]);
+
+    const incompleteTaskCountByIso = useMemo(() => {
+        // Force refresh when calendar task metadata changes so day task indicators stay in sync with content updates.
+        void taskIndicatorVersion;
+
+        const incompleteTaskCounts = new Map<string, number>();
+
+        if (!db) {
+            return incompleteTaskCounts;
+        }
+
+        for (const week of weeks) {
+            for (const day of week.days) {
+                setIncompleteTaskCount(incompleteTaskCounts, day.iso, day.file, db);
+            }
+        }
+
+        return incompleteTaskCounts;
+    }, [db, taskIndicatorVersion, weeks]);
 
     useLayoutEffect(() => {
         if (weeks.length === 0) {
@@ -592,10 +672,13 @@ export function NavigationPaneCalendar({ onWeekCountChange, onNavigationAction, 
     const hoverTooltipAnchorRef = useRef<HTMLElement | null>(null);
     const lastHoverTooltipPreviewVisibleRef = useRef<boolean | null>(null);
 
-    const hoverTooltipPreviewText =
-        hoverTooltip && db && hoverTooltip.tooltipData.previewEnabled && hoverTooltip.tooltipData.previewPath
-            ? db.getCachedPreviewText(hoverTooltip.tooltipData.previewPath)
-            : '';
+    const hoverTooltipPreviewText = useMemo(() => {
+        void hoverTooltipPreviewVersion;
+        if (!hoverTooltip || !db || !hoverTooltip.tooltipData.previewEnabled || !hoverTooltip.tooltipData.previewPath) {
+            return '';
+        }
+        return db.getCachedPreviewText(hoverTooltip.tooltipData.previewPath);
+    }, [db, hoverTooltip, hoverTooltipPreviewVersion]);
     const shouldShowHoverTooltipPreview = hoverTooltipPreviewText.trim().length > 0;
     const hoverTooltipDateText =
         hoverTooltip && hoverTooltip.tooltipData.showDate
@@ -1250,6 +1333,36 @@ export function NavigationPaneCalendar({ onWeekCountChange, onNavigationAction, 
         return entries;
     }, [cursorDate, displayLocale, getExistingCustomCalendarNoteFile, momentApi, showWeekNumbers, vaultVersion, weekNotesEnabled, weeks]);
 
+    const weekIncompleteTaskCountByKey = useMemo(() => {
+        // Force refresh when calendar task metadata changes so week number task indicators reflect the latest metadata.
+        void taskIndicatorVersion;
+
+        if (!db) {
+            return new Map<string, number>();
+        }
+
+        const counts = new Map<string, number>();
+        weekNoteFilesByKey.forEach((file, weekKey) => {
+            setIncompleteTaskCount(counts, weekKey, file, db);
+        });
+
+        return counts;
+    }, [db, taskIndicatorVersion, weekNoteFilesByKey]);
+
+    const visibleIndicatorNotePaths = useMemo(() => {
+        const paths = new Set<string>(visibleDayNotePaths);
+
+        weekNoteFilesByKey.forEach(file => {
+            if (file) {
+                paths.add(file.path);
+            }
+        });
+
+        return paths;
+    }, [visibleDayNotePaths, weekNoteFilesByKey]);
+    visibleIndicatorNotePathsRef.current = visibleIndicatorNotePaths;
+    visibleFrontmatterNotePathsRef.current = visibleDayNotePaths;
+
     if (!momentApi || !cursorDate) {
         return null;
     }
@@ -1490,143 +1603,153 @@ export function NavigationPaneCalendar({ onWeekCountChange, onNavigationAction, 
                     </div>
 
                     <div className="nn-navigation-calendar-weeks" data-weeknumbers={showWeekNumbers ? 'true' : undefined}>
-                        {weeks.map(week => (
-                            <div key={week.key} className="nn-navigation-calendar-week">
-                                {showWeekNumbers ? (
-                                    <>
-                                        {weekNotesEnabled ? (
-                                            <button
-                                                type="button"
-                                                className={[
-                                                    'nn-navigation-calendar-weeknumber',
-                                                    'nn-navigation-calendar-weeknumber-button',
-                                                    weekNoteFilesByKey.get(week.key) ? 'has-period-note' : ''
-                                                ]
-                                                    .filter(Boolean)
-                                                    .join(' ')}
-                                                onClick={() => {
-                                                    const weekStart = week.days[0]?.date;
-                                                    if (!weekStart) {
-                                                        return;
-                                                    }
+                        {weeks.map(week => {
+                            const weekNoteFile = weekNoteFilesByKey.get(week.key) ?? null;
+                            const weekHasUnfinishedTasks = (weekIncompleteTaskCountByKey.get(week.key) ?? 0) > 0;
 
-                                                    openOrCreateCustomCalendarNote(
-                                                        'week',
-                                                        weekStart.clone().locale(displayLocale),
-                                                        weekNoteFilesByKey.get(week.key) ?? null
-                                                    );
-                                                }}
-                                                onContextMenu={event => {
-                                                    const weekStart = week.days[0]?.date;
-                                                    if (!weekStart) {
-                                                        return;
-                                                    }
+                            return (
+                                <div key={week.key} className="nn-navigation-calendar-week">
+                                    {showWeekNumbers ? (
+                                        <>
+                                            {weekNotesEnabled ? (
+                                                <button
+                                                    type="button"
+                                                    className={[
+                                                        'nn-navigation-calendar-weeknumber',
+                                                        'nn-navigation-calendar-weeknumber-button',
+                                                        weekNoteFile ? 'has-period-note' : '',
+                                                        weekHasUnfinishedTasks ? 'has-unfinished-tasks' : ''
+                                                    ]
+                                                        .filter(Boolean)
+                                                        .join(' ')}
+                                                    onClick={() => {
+                                                        const weekStart = week.days[0]?.date;
+                                                        if (!weekStart) {
+                                                            return;
+                                                        }
 
+                                                        openOrCreateCustomCalendarNote(
+                                                            'week',
+                                                            weekStart.clone().locale(displayLocale),
+                                                            weekNoteFile
+                                                        );
+                                                    }}
+                                                    onContextMenu={event => {
+                                                        const weekStart = week.days[0]?.date;
+                                                        if (!weekStart) {
+                                                            return;
+                                                        }
+
+                                                        showCalendarNoteContextMenu(event, {
+                                                            kind: 'week',
+                                                            date: weekStart.clone().locale(displayLocale),
+                                                            existingFile: weekNoteFile,
+                                                            canCreate: weekNotesEnabled
+                                                        });
+                                                    }}
+                                                >
+                                                    <span className="nn-navigation-calendar-weeknumber-value">{week.weekNumber}</span>
+                                                </button>
+                                            ) : (
+                                                <div
+                                                    className="nn-navigation-calendar-weeknumber"
+                                                    aria-hidden="true"
+                                                    onContextMenu={event => {
+                                                        const weekStart = week.days[0]?.date;
+                                                        if (!weekStart) {
+                                                            return;
+                                                        }
+
+                                                        showCalendarNoteContextMenu(event, {
+                                                            kind: 'week',
+                                                            date: weekStart.clone().locale(displayLocale),
+                                                            existingFile: null,
+                                                            canCreate: weekNotesEnabled
+                                                        });
+                                                    }}
+                                                >
+                                                    <span className="nn-navigation-calendar-weeknumber-value">{week.weekNumber}</span>
+                                                </div>
+                                            )}
+                                            <div className="nn-navigation-calendar-weeknumber-divider" aria-hidden="true" />
+                                        </>
+                                    ) : null}
+                                    {week.days.map(day => {
+                                        const dayNumber = day.date.date();
+                                        const hasDailyNote = Boolean(day.file);
+                                        const dayIncompleteTaskCount = hasDailyNote ? (incompleteTaskCountByIso.get(day.iso) ?? 0) : 0;
+                                        const hasUnfinishedTasks = dayIncompleteTaskCount > 0;
+                                        const featureImageUrl = featureImageUrls[day.iso] ?? null;
+                                        const hasFeatureImageKey = featureImageKeysByIso.has(day.iso);
+                                        const isToday = todayIso === day.iso;
+                                        const dayOfWeek = day.date.toDate().getDay();
+                                        const isWeekend = isWeekendDay(dayOfWeek, settings.calendarWeekendDays);
+
+                                        const className = [
+                                            'nn-navigation-calendar-day',
+                                            day.inMonth ? 'is-in-month' : 'is-outside-month',
+                                            isToday ? 'is-today' : '',
+                                            isWeekend ? 'is-weekend' : 'is-weekday',
+                                            hasDailyNote ? 'has-daily-note' : '',
+                                            hasUnfinishedTasks ? 'has-unfinished-tasks' : '',
+                                            hasFeatureImageKey ? 'has-feature-image-key' : '',
+                                            featureImageUrl ? 'has-feature-image' : ''
+                                        ]
+                                            .filter(Boolean)
+                                            .join(' ');
+
+                                        const style: React.CSSProperties | undefined = featureImageUrl
+                                            ? { backgroundImage: `url(${featureImageUrl})` }
+                                            : undefined;
+
+                                        const ariaLabel = day.date.clone().locale(displayLocale).format('LL');
+                                        const dateTimestamp = day.date.toDate().getTime();
+                                        const frontmatterTitle = day.file ? (frontmatterTitlesByPath.get(day.file.path) ?? '') : '';
+                                        const hasFrontmatterTitle = frontmatterTitle.trim().length > 0;
+                                        const tooltipTitle = hasFrontmatterTitle
+                                            ? frontmatterTitle
+                                            : DateUtils.formatDate(dateTimestamp, settings.dateFormat);
+                                        const showDate = hasFrontmatterTitle;
+                                        const tooltipAriaText = hasFrontmatterTitle ? `${ariaLabel}, ${frontmatterTitle}` : ariaLabel;
+                                        const tooltipEnabled = Boolean(day.file || featureImageUrl);
+                                        const tooltipData: CalendarHoverTooltipData = {
+                                            imageUrl: featureImageUrl,
+                                            title: tooltipTitle || ariaLabel,
+                                            dateTimestamp,
+                                            previewPath: day.file?.path ?? null,
+                                            previewEnabled: Boolean(day.file && day.file.extension === 'md'),
+                                            showDate
+                                        };
+
+                                        return (
+                                            <CalendarDayButton
+                                                key={day.iso}
+                                                className={className}
+                                                ariaText={tooltipAriaText}
+                                                style={style}
+                                                tooltipEnabled={tooltipEnabled}
+                                                tooltipData={tooltipData}
+                                                dayNumber={dayNumber}
+                                                isMobile={isMobile}
+                                                showUnfinishedTaskIndicator={hasUnfinishedTasks}
+                                                onShowTooltip={handleShowTooltip}
+                                                onHideTooltip={handleHideTooltip}
+                                                onClick={() => openOrCreateDailyNote(day.date, day.file)}
+                                                onContextMenu={event =>
                                                     showCalendarNoteContextMenu(event, {
-                                                        kind: 'week',
-                                                        date: weekStart.clone().locale(displayLocale),
-                                                        existingFile: weekNoteFilesByKey.get(week.key) ?? null,
-                                                        canCreate: weekNotesEnabled
-                                                    });
-                                                }}
-                                            >
-                                                <span className="nn-navigation-calendar-weeknumber-value">{week.weekNumber}</span>
-                                            </button>
-                                        ) : (
-                                            <div
-                                                className="nn-navigation-calendar-weeknumber"
-                                                aria-hidden="true"
-                                                onContextMenu={event => {
-                                                    const weekStart = week.days[0]?.date;
-                                                    if (!weekStart) {
-                                                        return;
-                                                    }
-
-                                                    showCalendarNoteContextMenu(event, {
-                                                        kind: 'week',
-                                                        date: weekStart.clone().locale(displayLocale),
-                                                        existingFile: null,
-                                                        canCreate: weekNotesEnabled
-                                                    });
-                                                }}
-                                            >
-                                                <span className="nn-navigation-calendar-weeknumber-value">{week.weekNumber}</span>
-                                            </div>
-                                        )}
-                                        <div className="nn-navigation-calendar-weeknumber-divider" aria-hidden="true" />
-                                    </>
-                                ) : null}
-                                {week.days.map(day => {
-                                    const dayNumber = day.date.date();
-                                    const hasDailyNote = Boolean(day.file);
-                                    const featureImageUrl = featureImageUrls[day.iso] ?? null;
-                                    const hasFeatureImageKey = featureImageKeysByIso.has(day.iso);
-                                    const isToday = todayIso === day.iso;
-                                    const dayOfWeek = day.date.toDate().getDay();
-                                    const isWeekend = isWeekendDay(dayOfWeek, settings.calendarWeekendDays);
-
-                                    const className = [
-                                        'nn-navigation-calendar-day',
-                                        day.inMonth ? 'is-in-month' : 'is-outside-month',
-                                        isToday ? 'is-today' : '',
-                                        isWeekend ? 'is-weekend' : 'is-weekday',
-                                        hasDailyNote ? 'has-daily-note' : '',
-                                        hasFeatureImageKey ? 'has-feature-image-key' : '',
-                                        featureImageUrl ? 'has-feature-image' : ''
-                                    ]
-                                        .filter(Boolean)
-                                        .join(' ');
-
-                                    const style: React.CSSProperties | undefined = featureImageUrl
-                                        ? { backgroundImage: `url(${featureImageUrl})` }
-                                        : undefined;
-
-                                    const ariaLabel = day.date.clone().locale(displayLocale).format('LL');
-                                    const dateTimestamp = day.date.toDate().getTime();
-                                    const frontmatterTitle = day.file ? (frontmatterTitlesByPath.get(day.file.path) ?? '') : '';
-                                    const hasFrontmatterTitle = frontmatterTitle.trim().length > 0;
-                                    const tooltipTitle = hasFrontmatterTitle
-                                        ? frontmatterTitle
-                                        : DateUtils.formatDate(dateTimestamp, settings.dateFormat);
-                                    const showDate = hasFrontmatterTitle;
-                                    const tooltipAriaText = hasFrontmatterTitle ? `${ariaLabel}, ${frontmatterTitle}` : ariaLabel;
-                                    const tooltipEnabled = Boolean(day.file || featureImageUrl);
-                                    const tooltipData: CalendarHoverTooltipData = {
-                                        imageUrl: featureImageUrl,
-                                        title: tooltipTitle || ariaLabel,
-                                        dateTimestamp,
-                                        previewPath: day.file?.path ?? null,
-                                        previewEnabled: Boolean(day.file && day.file.extension === 'md'),
-                                        showDate
-                                    };
-
-                                    return (
-                                        <CalendarDayButton
-                                            key={day.iso}
-                                            className={className}
-                                            ariaText={tooltipAriaText}
-                                            style={style}
-                                            tooltipEnabled={tooltipEnabled}
-                                            tooltipData={tooltipData}
-                                            dayNumber={dayNumber}
-                                            isMobile={isMobile}
-                                            onShowTooltip={handleShowTooltip}
-                                            onHideTooltip={handleHideTooltip}
-                                            onClick={() => openOrCreateDailyNote(day.date, day.file)}
-                                            onContextMenu={event =>
-                                                showCalendarNoteContextMenu(event, {
-                                                    kind: 'day',
-                                                    date: day.date,
-                                                    existingFile: day.file,
-                                                    canCreate:
-                                                        settings.calendarIntegrationMode !== 'daily-notes' || Boolean(dailyNoteSettings)
-                                                })
-                                            }
-                                        />
-                                    );
-                                })}
-                            </div>
-                        ))}
+                                                        kind: 'day',
+                                                        date: day.date,
+                                                        existingFile: day.file,
+                                                        canCreate:
+                                                            settings.calendarIntegrationMode !== 'daily-notes' || Boolean(dailyNoteSettings)
+                                                    })
+                                                }
+                                            />
+                                        );
+                                    })}
+                                </div>
+                            );
+                        })}
                     </div>
                 </div>
             </div>

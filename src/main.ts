@@ -1861,6 +1861,10 @@ export default class NotebookNavigatorPlugin extends Plugin implements ISettings
             settings.showCategoryIcons = DEFAULT_SETTINGS.showCategoryIcons;
         }
 
+        if (typeof settings.showFileIconUnfinishedTask !== 'boolean') {
+            settings.showFileIconUnfinishedTask = DEFAULT_SETTINGS.showFileIconUnfinishedTask;
+        }
+
         if (typeof settings.showFilenameMatchIcons !== 'boolean') {
             settings.showFilenameMatchIcons = DEFAULT_SETTINGS.showFilenameMatchIcons;
         }

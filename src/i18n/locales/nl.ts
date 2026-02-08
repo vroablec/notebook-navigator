@@ -362,6 +362,7 @@ export const STRINGS_NL = {
                 'nav-folder-note': 'Mapnotitie',
                 'nav-tag': 'Tag',
                 'list-pinned': 'Vastgezette items',
+                'file-unfinished-task': 'Onvoltooide taken',
                 'file-word-count': 'Aantal woorden',
                 'file-custom-property': 'Aangepaste eigenschap'
             }
@@ -804,7 +805,11 @@ export const STRINGS_NL = {
             },
             showFileIcons: {
                 name: 'Bestandspictogrammen tonen',
-                desc: 'Bestandspictogrammen tonen met links uitgelijnde ruimte. Uitschakelen verwijdert zowel pictogrammen als inspringing. Prioriteit: aangepast > bestandsnaam > bestandstype > standaard.'
+                desc: 'Bestandspictogrammen tonen met links uitgelijnde ruimte. Uitschakelen verwijdert zowel pictogrammen als inspringing. Prioriteit: onvoltooide taken-pictogram > aangepast pictogram > bestandsnaam-pictogram > bestandstype-pictogram > standaardpictogram.'
+            },
+            showFileIconUnfinishedTask: {
+                name: 'Pictogram voor onvoltooide taken',
+                desc: 'Een taakpictogram weergeven wanneer een notitie onvoltooide taken bevat.'
             },
             showFilenameMatchIcons: {
                 name: 'Pictogrammen op bestandsnaam',

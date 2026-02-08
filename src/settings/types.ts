@@ -345,6 +345,7 @@ export interface NotebookNavigatorSettings {
     frontmatterDateFormat: string;
     saveMetadataToFrontmatter: boolean;
     showFileIcons: boolean;
+    showFileIconUnfinishedTask: boolean;
     showFilenameMatchIcons: boolean;
     fileNameIconMap: Record<string, string>;
     showCategoryIcons: boolean;

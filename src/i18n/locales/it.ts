@@ -360,6 +360,7 @@ export const STRINGS_IT = {
                 'nav-folder-note': 'Nota cartella',
                 'nav-tag': 'Tag',
                 'list-pinned': 'Elementi fissati',
+                'file-unfinished-task': 'Attività incomplete',
                 'file-word-count': 'Conteggio parole',
                 'file-custom-property': 'Proprietà personalizzata'
             }
@@ -801,7 +802,11 @@ export const STRINGS_IT = {
             },
             showFileIcons: {
                 name: 'Mostra icone file',
-                desc: 'Visualizza icone file con spaziatura allineata a sinistra. Disabilitando rimuove sia icone che indentazione. Priorità: personalizzato > nome file > tipo file > predefinito.'
+                desc: 'Visualizza icone file con spaziatura allineata a sinistra. Disabilitando rimuove sia icone che indentazione. Priorità: icona attività incomplete > icona personalizzata > icona nome file > icona tipo file > icona predefinita.'
+            },
+            showFileIconUnfinishedTask: {
+                name: 'Icona attività incomplete',
+                desc: "Mostra un'icona di attività quando una nota ha attività incomplete."
             },
             showFilenameMatchIcons: {
                 name: 'Icone per nome file',

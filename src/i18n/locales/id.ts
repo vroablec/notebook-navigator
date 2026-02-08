@@ -361,6 +361,7 @@ export const STRINGS_ID = {
                 'nav-folder-note': 'Catatan folder',
                 'nav-tag': 'Tag',
                 'list-pinned': 'Item tersemat',
+                'file-unfinished-task': 'Tugas belum selesai',
                 'file-word-count': 'Jumlah kata',
                 'file-custom-property': 'Properti kustom'
             }
@@ -802,7 +803,11 @@ export const STRINGS_ID = {
             },
             showFileIcons: {
                 name: 'Tampilkan ikon file',
-                desc: 'Tampilkan ikon file dengan spasi rata kiri. Menonaktifkan menghapus ikon dan indentasi. Prioritas: kustom > nama file > tipe file > default.'
+                desc: 'Tampilkan ikon file dengan spasi rata kiri. Menonaktifkan menghapus ikon dan indentasi. Prioritas: ikon tugas belum selesai > ikon kustom > ikon nama file > ikon tipe file > ikon default.'
+            },
+            showFileIconUnfinishedTask: {
+                name: 'Ikon tugas belum selesai',
+                desc: 'Tampilkan ikon tugas saat catatan memiliki tugas yang belum selesai.'
             },
             showFilenameMatchIcons: {
                 name: 'Ikon berdasarkan nama file',

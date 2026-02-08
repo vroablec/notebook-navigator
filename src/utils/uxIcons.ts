@@ -44,6 +44,7 @@ export type UXIconId =
     | 'list-appearance'
     | 'list-new-note'
     | 'list-pinned'
+    | 'file-unfinished-task'
     | 'file-word-count'
     | 'file-custom-property';
 
@@ -80,6 +81,7 @@ export const UX_ICON_DEFINITIONS: UXIconDefinition[] = [
     { id: 'list-appearance', category: 'listPane', defaultIconId: 'palette' },
     { id: 'list-new-note', category: 'listPane', defaultIconId: 'pen-box' },
     { id: 'list-pinned', category: 'listPane', defaultIconId: 'pin' },
+    { id: 'file-unfinished-task', category: 'fileItems', defaultIconId: 'circle-alert' },
     { id: 'file-word-count', category: 'fileItems', defaultIconId: 'case-sensitive' },
     { id: 'file-custom-property', category: 'fileItems', defaultIconId: 'align-left' }
 ];

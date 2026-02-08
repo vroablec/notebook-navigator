@@ -225,6 +225,7 @@ export const DEFAULT_SETTINGS: NotebookNavigatorSettings = {
     frontmatterDateFormat: '',
     saveMetadataToFrontmatter: false,
     showFileIcons: true,
+    showFileIconUnfinishedTask: false,
     showFilenameMatchIcons: false,
     fileNameIconMap: {},
     showCategoryIcons: false,

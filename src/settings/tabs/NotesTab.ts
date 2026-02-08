@@ -339,6 +339,16 @@ export function renderNotesTab(context: SettingsTabContext): void {
         }
     );
 
+    new Setting(fileIconSubSettingsEl)
+        .setName(strings.settings.items.showFileIconUnfinishedTask.name)
+        .setDesc(strings.settings.items.showFileIconUnfinishedTask.desc)
+        .addToggle(toggle =>
+            toggle.setValue(plugin.settings.showFileIconUnfinishedTask).onChange(async value => {
+                plugin.settings.showFileIconUnfinishedTask = value;
+                await plugin.saveSettingsAndUpdate();
+            })
+        );
+
     let updateFileNameIconMapVisibility: (() => void) | null = null;
     let updateFileTypeIconMapVisibility: (() => void) | null = null;
 

@@ -360,6 +360,7 @@ export const STRINGS_ZH_TW = {
                 'nav-folder-note': '資料夾筆記',
                 'nav-tag': '標籤',
                 'list-pinned': '釘選項目',
+                'file-unfinished-task': '未完成任務',
                 'file-word-count': '字數統計',
                 'file-custom-property': '自訂屬性'
             }
@@ -800,7 +801,11 @@ export const STRINGS_ZH_TW = {
             },
             showFileIcons: {
                 name: '顯示檔案圖示',
-                desc: '顯示檔案圖示並保留左對齊間距。停用後將移除圖示和縮排。優先順序：自訂 > 檔名 > 檔案類型 > 預設。'
+                desc: '顯示檔案圖示並保留左對齊間距。停用後將移除圖示和縮排。優先順序：未完成任務圖示 > 自訂圖示 > 檔名圖示 > 檔案類型圖示 > 預設圖示。'
+            },
+            showFileIconUnfinishedTask: {
+                name: '未完成任務圖示',
+                desc: '當筆記包含未完成任務時顯示任務圖示。'
             },
             showFilenameMatchIcons: {
                 name: '按檔名設定圖示',

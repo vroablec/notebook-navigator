@@ -360,6 +360,7 @@ export const STRINGS_EN = {
                 'nav-folder-note': 'Folder note',
                 'nav-tag': 'Tag',
                 'list-pinned': 'Pinned items',
+                'file-unfinished-task': 'Unfinished tasks',
                 'file-word-count': 'Word count',
                 'file-custom-property': 'Custom property'
             }
@@ -801,7 +802,11 @@ export const STRINGS_EN = {
             },
             showFileIcons: {
                 name: 'Show file icons',
-                desc: 'Display file icons with left-aligned spacing. Disabling removes both icons and indentation. Priority: custom > file name > file type > default.'
+                desc: 'Display file icons with left-aligned spacing. Disabling removes both icons and indentation. Priority: unfinished tasks icon > custom icon > file name icon > file type icon > default icon.'
+            },
+            showFileIconUnfinishedTask: {
+                name: 'Unfinished tasks icon',
+                desc: 'Display a task icon when a note has unfinished tasks.'
             },
             showFilenameMatchIcons: {
                 name: 'Icons by file name',

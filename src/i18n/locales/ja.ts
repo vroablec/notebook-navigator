@@ -360,6 +360,7 @@ export const STRINGS_JA = {
                 'nav-folder-note': 'フォルダノート',
                 'nav-tag': 'タグ',
                 'list-pinned': 'ピン留め項目',
+                'file-unfinished-task': '未完了タスク',
                 'file-word-count': '単語数',
                 'file-custom-property': 'カスタムプロパティ'
             }
@@ -802,7 +803,11 @@ export const STRINGS_JA = {
             },
             showFileIcons: {
                 name: 'ファイルアイコンを表示',
-                desc: 'ファイルアイコンを左寄せ間隔で表示。無効化するとアイコンとインデントの両方が削除されます。優先順位: カスタム > ファイル名 > ファイルタイプ > デフォルト。'
+                desc: 'ファイルアイコンを左寄せ間隔で表示。無効化するとアイコンとインデントの両方が削除されます。優先順位: 未完了タスクアイコン > カスタムアイコン > ファイル名アイコン > ファイルタイプアイコン > デフォルトアイコン。'
+            },
+            showFileIconUnfinishedTask: {
+                name: '未完了タスクアイコン',
+                desc: 'ノートに未完了のタスクがある場合にタスクアイコンを表示します。'
             },
             showFilenameMatchIcons: {
                 name: 'ファイル名でアイコン設定',

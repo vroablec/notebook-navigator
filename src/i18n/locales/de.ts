@@ -361,6 +361,7 @@ export const STRINGS_DE = {
                 'nav-folder-note': 'Ordnernotiz',
                 'nav-tag': 'Tag',
                 'list-pinned': 'Angeheftete Elemente',
+                'file-unfinished-task': 'Unerledigte Aufgaben',
                 'file-word-count': 'Wortanzahl',
                 'file-custom-property': 'Benutzerdefinierte Eigenschaft'
             }
@@ -804,7 +805,11 @@ export const STRINGS_DE = {
             },
             showFileIcons: {
                 name: 'Dateisymbole anzeigen',
-                desc: 'Dateisymbole mit linksbündigem Abstand anzeigen. Deaktivierung entfernt sowohl Symbole als auch Einrückung. Priorität: Benutzerdefiniert > Dateiname > Dateityp > Standard.'
+                desc: 'Dateisymbole mit linksbündigem Abstand anzeigen. Deaktivierung entfernt sowohl Symbole als auch Einrückung. Priorität: Unerledigte-Aufgaben-Symbol > Benutzerdefiniertes Symbol > Dateiname-Symbol > Dateityp-Symbol > Standard-Symbol.'
+            },
+            showFileIconUnfinishedTask: {
+                name: 'Symbol für unerledigte Aufgaben',
+                desc: 'Ein Aufgabensymbol anzeigen, wenn eine Notiz unerledigte Aufgaben enthält.'
             },
             showFilenameMatchIcons: {
                 name: 'Symbole nach Dateiname',

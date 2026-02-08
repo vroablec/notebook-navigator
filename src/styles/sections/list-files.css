@@ -233,6 +233,14 @@
     color: var(--nn-theme-navitem-selected-icon-color);
 }
 
+.nn-file-icon.nn-file-icon-unfinished-task[data-has-color='false'] {
+    color: var(--nn-theme-file-task-icon-color);
+}
+
+.nn-file.nn-selected .nn-file-icon.nn-file-icon-unfinished-task[data-has-color='false'] {
+    color: var(--nn-theme-file-task-icon-color);
+}
+
 .nn-file-icon[data-has-color='true'] svg {
     stroke-width: 2.4;
 }

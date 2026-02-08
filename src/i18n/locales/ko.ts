@@ -359,6 +359,7 @@ export const STRINGS_KO = {
                 'nav-folder-note': '폴더 노트',
                 'nav-tag': '태그',
                 'list-pinned': '고정 항목',
+                'file-unfinished-task': '미완료 작업',
                 'file-word-count': '단어 수',
                 'file-custom-property': '사용자 지정 속성'
             }
@@ -802,7 +803,11 @@ export const STRINGS_KO = {
             },
             showFileIcons: {
                 name: '파일 아이콘 표시',
-                desc: '파일 아이콘을 왼쪽 정렬 간격과 함께 표시. 비활성화하면 아이콘과 들여쓰기가 모두 제거됩니다. 우선순위: 사용자 지정 > 파일 이름 > 파일 유형 > 기본값.'
+                desc: '파일 아이콘을 왼쪽 정렬 간격과 함께 표시. 비활성화하면 아이콘과 들여쓰기가 모두 제거됩니다. 우선순위: 미완료 작업 아이콘 > 사용자 지정 아이콘 > 파일 이름 아이콘 > 파일 유형 아이콘 > 기본값 아이콘.'
+            },
+            showFileIconUnfinishedTask: {
+                name: '미완료 작업 아이콘',
+                desc: '노트에 미완료 작업이 있을 때 작업 아이콘을 표시합니다.'
             },
             showFilenameMatchIcons: {
                 name: '파일 이름으로 아이콘 설정',

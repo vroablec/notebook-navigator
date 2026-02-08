@@ -361,6 +361,7 @@ export const STRINGS_TR = {
                 'nav-folder-note': 'Klasör notu',
                 'nav-tag': 'Etiket',
                 'list-pinned': 'Sabitlenmiş öğeler',
+                'file-unfinished-task': 'Tamamlanmamış görevler',
                 'file-word-count': 'Kelime sayısı',
                 'file-custom-property': 'Özel özellik'
             }
@@ -803,7 +804,11 @@ export const STRINGS_TR = {
             },
             showFileIcons: {
                 name: 'Dosya simgelerini göster',
-                desc: 'Dosya simgelerini sol hizalı boşlukla göster. Devre dışı bırakma hem simgeleri hem de girintiyi kaldırır. Öncelik: özel > dosya adı > dosya türü > varsayılan.'
+                desc: 'Dosya simgelerini sol hizalı boşlukla göster. Devre dışı bırakma hem simgeleri hem de girintiyi kaldırır. Öncelik: tamamlanmamış görev simgesi > özel simge > dosya adı simgesi > dosya türü simgesi > varsayılan simge.'
+            },
+            showFileIconUnfinishedTask: {
+                name: 'Tamamlanmamış görev simgesi',
+                desc: 'Bir notta tamamlanmamış görevler olduğunda görev simgesi gösterir.'
             },
             showFilenameMatchIcons: {
                 name: 'Dosya adına göre simgeler',

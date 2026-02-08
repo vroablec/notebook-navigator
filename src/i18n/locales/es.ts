@@ -361,6 +361,7 @@ export const STRINGS_ES = {
                 'nav-folder-note': 'Nota de carpeta',
                 'nav-tag': 'Etiqueta',
                 'list-pinned': 'Elementos fijados',
+                'file-unfinished-task': 'Tareas pendientes',
                 'file-word-count': 'Conteo de palabras',
                 'file-custom-property': 'Propiedad personalizada'
             }
@@ -804,7 +805,11 @@ export const STRINGS_ES = {
             },
             showFileIcons: {
                 name: 'Mostrar iconos de archivo',
-                desc: 'Mostrar iconos de archivo con espaciado alineado a la izquierda. Desactivar elimina tanto iconos como sangría. Prioridad: personalizado > nombre de archivo > tipo de archivo > predeterminado.'
+                desc: 'Mostrar iconos de archivo con espaciado alineado a la izquierda. Desactivar elimina tanto iconos como sangría. Prioridad: icono de tareas pendientes > icono personalizado > icono de nombre de archivo > icono de tipo de archivo > icono predeterminado.'
+            },
+            showFileIconUnfinishedTask: {
+                name: 'Icono de tareas pendientes',
+                desc: 'Mostrar un icono de tarea cuando una nota tiene tareas pendientes.'
             },
             showFilenameMatchIcons: {
                 name: 'Iconos por nombre de archivo',

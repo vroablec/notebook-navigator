@@ -22,6 +22,7 @@ describe('resolveUXIcon', () => {
     it('returns defaults when no overrides are present', () => {
         expect(resolveUXIcon(undefined, 'list-search')).toBe('search');
         expect(resolveUXIcon(undefined, 'nav-tag')).toBe('tags');
+        expect(resolveUXIcon(undefined, 'file-unfinished-task')).toBe('circle-alert');
     });
 
     it('deserializes Iconize formatted overrides', () => {

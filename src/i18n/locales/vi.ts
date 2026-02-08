@@ -360,6 +360,7 @@ export const STRINGS_VI = {
                 'nav-folder-note': 'Ghi chú thư mục',
                 'nav-tag': 'Thẻ',
                 'list-pinned': 'Mục đã ghim',
+                'file-unfinished-task': 'Nhiệm vụ chưa hoàn thành',
                 'file-word-count': 'Số từ',
                 'file-custom-property': 'Thuộc tính tùy chỉnh'
             }
@@ -802,7 +803,11 @@ export const STRINGS_VI = {
             },
             showFileIcons: {
                 name: 'Hiện biểu tượng tệp',
-                desc: 'Hiển thị biểu tượng tệp với khoảng cách căn trái. Tắt sẽ gỡ cả biểu tượng và thụt lề. Ưu tiên: tùy chỉnh > tên tệp > loại tệp > mặc định.'
+                desc: 'Hiển thị biểu tượng tệp với khoảng cách căn trái. Tắt sẽ gỡ cả biểu tượng và thụt lề. Ưu tiên: biểu tượng tác vụ chưa hoàn thành > biểu tượng tùy chỉnh > biểu tượng tên tệp > biểu tượng loại tệp > biểu tượng mặc định.'
+            },
+            showFileIconUnfinishedTask: {
+                name: 'Biểu tượng nhiệm vụ chưa hoàn thành',
+                desc: 'Hiển thị biểu tượng nhiệm vụ khi ghi chú có nhiệm vụ chưa hoàn thành.'
             },
             showFilenameMatchIcons: {
                 name: 'Biểu tượng theo tên tệp',

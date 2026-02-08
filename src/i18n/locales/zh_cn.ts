@@ -360,6 +360,7 @@ export const STRINGS_ZH_CN = {
                 'nav-folder-note': '文件夹笔记',
                 'nav-tag': '标签',
                 'list-pinned': '固定项目',
+                'file-unfinished-task': '未完成任务',
                 'file-word-count': '字数统计',
                 'file-custom-property': '自定义属性'
             }
@@ -800,7 +801,11 @@ export const STRINGS_ZH_CN = {
             },
             showFileIcons: {
                 name: '显示文件图标',
-                desc: '显示文件图标并保留左对齐间距。禁用后将移除图标和缩进。优先级：自定义 > 文件名 > 文件类型 > 默认。'
+                desc: '显示文件图标并保留左对齐间距。禁用后将移除图标和缩进。优先级：未完成任务图标 > 自定义图标 > 文件名图标 > 文件类型图标 > 默认图标。'
+            },
+            showFileIconUnfinishedTask: {
+                name: '未完成任务图标',
+                desc: '当笔记包含未完成任务时显示任务图标。'
             },
             showFilenameMatchIcons: {
                 name: '按文件名设置图标',

@@ -336,6 +336,7 @@ export const STRINGS_PT_BR = {
         },
         interfaceIcons: {
             title: 'Ícones da interface',
+            fileItemsSection: 'Itens de arquivo',
             items: {
                 'nav-shortcuts': 'Atalhos',
                 'nav-recent-files': 'Arquivos recentes',
@@ -358,8 +359,12 @@ export const STRINGS_PT_BR = {
                 'list-new-note': 'Nova nota',
                 'nav-folder-open': 'Pasta aberta',
                 'nav-folder-closed': 'Pasta fechada',
+                'nav-folder-note': 'Nota da pasta',
                 'nav-tag': 'Tag',
-                'list-pinned': 'Itens fixados'
+                'list-pinned': 'Itens fixados',
+                'file-unfinished-task': 'Tarefas inacabadas',
+                'file-word-count': 'Contagem de palavras',
+                'file-custom-property': 'Propriedade personalizada'
             }
         },
         colorPicker: {
@@ -436,7 +441,8 @@ export const STRINGS_PT_BR = {
             folderLabel: 'Pasta: {name}'
         },
         folderSuggest: {
-            placeholder: 'Mover para pasta...',
+            placeholder: (name: string) => `Mover ${name} para pasta...`,
+            multipleFilesLabel: (count: number) => `${count} arquivos`,
             navigatePlaceholder: 'Navegar para pasta...',
             instructions: {
                 navigate: 'para navegar',
@@ -800,7 +806,11 @@ export const STRINGS_PT_BR = {
             },
             showFileIcons: {
                 name: 'Mostrar ícones de arquivo',
-                desc: 'Exibir ícones de arquivo com espaçamento alinhado à esquerda. Desativar remove tanto ícones quanto recuo. Prioridade: personalizado > nome de arquivo > tipo de arquivo > padrão.'
+                desc: 'Exibir ícones de arquivo com espaçamento alinhado à esquerda. Desativar remove tanto ícones quanto recuo. Prioridade: ícone de tarefas inacabadas > ícone personalizado > ícone de nome de arquivo > ícone de tipo de arquivo > ícone padrão.'
+            },
+            showFileIconUnfinishedTask: {
+                name: 'Ícone de tarefas inacabadas',
+                desc: 'Exibir um ícone de tarefa quando uma nota possui tarefas inacabadas.'
             },
             showFilenameMatchIcons: {
                 name: 'Ícones por nome de arquivo',

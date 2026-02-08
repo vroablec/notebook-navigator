@@ -331,6 +331,7 @@ export const FileItem = React.memo(function FileItem({
         const featureImageStatus: FeatureImageStatus = record?.featureImageStatus ?? 'unprocessed';
         const customProperty = cloneCustomPropertyItems(record?.customProperty ?? null);
         const wordCount = record?.wordCount ?? null;
+        const taskIncomplete = record?.taskIncomplete ?? null;
 
         let imageUrl: string | null = null;
         if (appearanceSettings.showImage && isImageFile(file)) {
@@ -341,7 +342,7 @@ export const FileItem = React.memo(function FileItem({
             }
         }
 
-        return { preview, tags: tagList, imageUrl, featureImageKey, featureImageStatus, customProperty, wordCount };
+        return { preview, tags: tagList, imageUrl, featureImageKey, featureImageStatus, customProperty, wordCount, taskIncomplete };
     }, [appearanceSettings.showImage, appearanceSettings.showPreview, app, file, getDB]);
 
     // === State ===
@@ -359,6 +360,7 @@ export const FileItem = React.memo(function FileItem({
     const [featureImageUrl, setFeatureImageUrl] = useState<string | null>(initialData.imageUrl);
     const [customProperty, setCustomProperty] = useState<CustomPropertyItem[] | null>(initialData.customProperty);
     const [wordCount, setWordCount] = useState<number | null>(initialData.wordCount);
+    const [taskIncomplete, setTaskIncomplete] = useState<number | null>(initialData.taskIncomplete);
     const [featureImageAspectRatio, setFeatureImageAspectRatio] = useState<number | null>(null);
     const [isFeatureImageHidden, setIsFeatureImageHidden] = useState(false);
     const [metadataVersion, setMetadataVersion] = useState(0);
@@ -392,6 +394,9 @@ export const FileItem = React.memo(function FileItem({
         shouldShowOpenInNewTab || shouldShowPinNote || shouldShowRevealIcon || shouldShowAddTagAction || shouldShowShortcutAction;
     const iconServiceVersion = useIconServiceVersion();
     const showFileIcons = settings.showFileIcons;
+    const hasUnfinishedTasks = typeof taskIncomplete === 'number' && taskIncomplete > 0;
+    const showFileIconUnfinishedTask = settings.showFileIconUnfinishedTask && hasUnfinishedTasks;
+    const unfinishedTaskIconId = useMemo(() => resolveUXIcon(settings.interfaceIcons, 'file-unfinished-task'), [settings.interfaceIcons]);
 
     // Get display name from RAM cache (handles frontmatter title)
     const displayName = useMemo(() => {
@@ -421,6 +426,10 @@ export const FileItem = React.memo(function FileItem({
     // Determine the actual icon to display, considering custom icon and colorIconOnly setting
     const effectiveFileIconId = useMemo(() => {
         void metadataVersion;
+        if (showFileIconUnfinishedTask) {
+            return unfinishedTaskIconId;
+        }
+
         return resolveFileIconId(
             file,
             {
@@ -451,7 +460,9 @@ export const FileItem = React.memo(function FileItem({
         settings.fileNameIconMap,
         settings.fileTypeIconMap,
         settings.showCategoryIcons,
-        settings.showFilenameMatchIcons
+        settings.showFilenameMatchIcons,
+        showFileIconUnfinishedTask,
+        unfinishedTaskIconId
     ]);
     // Determine whether to apply color to the file name instead of the icon
     const applyColorToName = Boolean(fileColor) && !settings.colorIconOnly;
@@ -473,6 +484,10 @@ export const FileItem = React.memo(function FileItem({
         }
         return true;
     }, [effectiveFileIconId, showFileIcons]);
+    const fileIconHasColor = Boolean(fileColor) && !showFileIconUnfinishedTask;
+    const fileIconStyle = fileColor && !showFileIconUnfinishedTask ? ({ color: fileColor } as React.CSSProperties) : undefined;
+    const fileIconClassName = showFileIconUnfinishedTask ? 'nn-file-icon nn-file-icon-unfinished-task' : 'nn-file-icon';
+    const dragIconColor = showFileIconUnfinishedTask ? undefined : (fileColor ?? undefined);
     const shouldShowCompactExtensionBadge = isCompactMode && (isBaseFile || isCanvasFile);
 
     const fileTitleElement = useMemo(() => {
@@ -1108,7 +1123,8 @@ export const FileItem = React.memo(function FileItem({
             featureImageKey: initialFeatureImageKey,
             featureImageStatus: initialFeatureImageStatus,
             customProperty: initialCustomProperty,
-            wordCount: initialWordCount
+            wordCount: initialWordCount,
+            taskIncomplete: initialTaskIncomplete
         } = loadFileData();
 
         // Only update state if values actually changed to prevent unnecessary re-renders
@@ -1118,6 +1134,7 @@ export const FileItem = React.memo(function FileItem({
         setFeatureImageStatus(prev => (prev === initialFeatureImageStatus ? prev : initialFeatureImageStatus));
         setCustomProperty(prev => (areCustomPropertyItemsEqual(prev, initialCustomProperty) ? prev : initialCustomProperty));
         setWordCount(prev => (prev === initialWordCount ? prev : initialWordCount));
+        setTaskIncomplete(prev => (prev === initialTaskIncomplete ? prev : initialTaskIncomplete));
 
         const db = getDB();
         const unsubscribe = db.onFileContentChange(file.path, (changes: FileContentChange['changes']) => {
@@ -1142,6 +1159,10 @@ export const FileItem = React.memo(function FileItem({
             if (changes.wordCount !== undefined) {
                 const nextWordCount = changes.wordCount ?? null;
                 setWordCount(prev => (prev === nextWordCount ? prev : nextWordCount));
+            }
+            if (changes.taskIncomplete !== undefined) {
+                const nextTaskIncomplete = changes.taskIncomplete ?? null;
+                setTaskIncomplete(prev => (prev === nextTaskIncomplete ? prev : nextTaskIncomplete));
             }
             // Update custom property when it changes
             if (changes.customProperty !== undefined) {
@@ -1560,7 +1581,7 @@ export const FileItem = React.memo(function FileItem({
             // Icon to display in drag ghost
             data-drag-icon={dragIconId}
             // Icon color to display in drag ghost
-            data-drag-icon-color={fileColor || undefined}
+            data-drag-icon-color={dragIconColor}
             onClick={handleItemClick}
             onMouseDown={handleMouseDown}
             draggable={!isMobile}
@@ -1591,9 +1612,9 @@ export const FileItem = React.memo(function FileItem({
                             {shouldShowFileIcon ? (
                                 <span
                                     ref={fileIconRef}
-                                    className="nn-file-icon"
-                                    data-has-color={fileColor ? 'true' : 'false'}
-                                    style={fileColor ? { color: fileColor } : undefined}
+                                    className={fileIconClassName}
+                                    data-has-color={fileIconHasColor ? 'true' : 'false'}
+                                    style={fileIconStyle}
                                 />
                             ) : null}
                         </div>

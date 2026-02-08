@@ -361,6 +361,7 @@ export const STRINGS_FR = {
                 'nav-folder-note': 'Note de dossier',
                 'nav-tag': 'Étiquette',
                 'list-pinned': 'Éléments épinglés',
+                'file-unfinished-task': 'Tâches inachevées',
                 'file-word-count': 'Nombre de mots',
                 'file-custom-property': 'Propriété personnalisée'
             }
@@ -804,7 +805,11 @@ export const STRINGS_FR = {
             },
             showFileIcons: {
                 name: 'Afficher les icônes de fichier',
-                desc: "Afficher les icônes de fichier avec espacement aligné à gauche. La désactivation supprime les icônes et l'indentation. Priorité : personnalisé > nom de fichier > type de fichier > par défaut."
+                desc: "Afficher les icônes de fichier avec espacement aligné à gauche. La désactivation supprime les icônes et l'indentation. Priorité : icône de tâches inachevées > icône personnalisée > icône de nom de fichier > icône de type de fichier > icône par défaut."
+            },
+            showFileIconUnfinishedTask: {
+                name: 'Icône des tâches inachevées',
+                desc: "Afficher une icône de tâche lorsqu'une note contient des tâches inachevées."
             },
             showFilenameMatchIcons: {
                 name: 'Icônes par nom de fichier',
