@@ -2454,7 +2454,20 @@ body {
 /* Source: src/styles/sections/navigation-calendar.css */
 
 /* ========================================================================
-   Navigation Pane Calendar (bottom overlay)
+   Section index
+   1. Shared tokens and shell (overlay + right sidebar)
+   2. Header controls (shared)
+   3. Header mode: split
+   4. Year panel (shared)
+   5. Month grid and day cells
+   6. Hover and day-state styling
+   7. Hover tooltip
+   8. Right sidebar shell
+   9. Header mode: compact yearly (right sidebar)
+   ======================================================================== */
+
+/* ========================================================================
+   Shared tokens and shell (overlay + right sidebar)
    ======================================================================== */
 
 :is(.nn-navigation-pane, .nn-list-pane, .nn-single-pane-calendar) {
@@ -2535,6 +2548,10 @@ body {
     gap: var(--nn-nav-calendar-section-gap);
 }
 
+/* ========================================================================
+   Header controls (shared)
+   ======================================================================== */
+
 .nn-navigation-calendar-header {
     height: var(--nn-nav-calendar-header-row-height);
     display: flex;
@@ -2594,26 +2611,34 @@ body {
     white-space: nowrap;
 }
 
-.nn-navigation-calendar-period-button {
+.nn-navigation-calendar-period-button,
+.nn-navigation-calendar-nav-button,
+.nn-navigation-calendar-today,
+.nn-navigation-calendar-year-month,
+.nn-navigation-calendar-weeknumber-button,
+.nn-navigation-calendar-day {
     -webkit-appearance: none;
     appearance: none;
     border: none !important;
     border-radius: 6px;
-    background: var(--nn-nav-calendar-header-chip-bg) !important;
-    color: var(--nn-theme-calendar-header-color);
     cursor: pointer;
-    font: inherit;
-    padding: 2px 1px;
     box-shadow: none !important;
     outline: none;
-    line-height: 1;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
     transition:
         background-color 120ms ease,
         filter 120ms ease,
         box-shadow 120ms ease;
+}
+
+.nn-navigation-calendar-period-button {
+    background: var(--nn-nav-calendar-header-chip-bg) !important;
+    color: var(--nn-theme-calendar-header-color);
+    font: inherit;
+    padding: 2px 1px;
+    line-height: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .nn-navigation-calendar-period-label {
@@ -2642,9 +2667,7 @@ body {
     position: relative;
 }
 
-.nn-navigation-pane .nn-navigation-calendar-nav,
-.nn-list-pane .nn-navigation-calendar-nav,
-.nn-single-pane-calendar .nn-navigation-calendar-nav {
+:is(.nn-navigation-pane, .nn-list-pane, .nn-single-pane-calendar) .nn-navigation-calendar-nav {
     flex: 0 0 auto;
     margin-left: auto;
     position: relative;
@@ -2707,7 +2730,6 @@ body {
     transform: translateY(-50%);
     width: 20px !important;
     height: 20px !important;
-    transition: opacity 120ms ease;
 }
 
 .nn-navigation-calendar-quarter-inline {
@@ -2742,32 +2764,18 @@ body {
 }
 
 .nn-navigation-calendar-nav-button {
-    -webkit-appearance: none;
-    appearance: none;
     width: var(--nn-nav-calendar-nav-button-size);
     height: var(--nn-nav-calendar-nav-button-size);
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    border: none !important;
-    border-radius: 6px;
     background: transparent !important;
     color: var(--nn-theme-foreground-muted);
-    cursor: pointer;
     padding: 0;
-    box-shadow: none !important;
-    outline: none;
     line-height: 0;
-    transition:
-        background-color 120ms ease,
-        filter 120ms ease,
-        box-shadow 120ms ease;
 }
 
 .nn-navigation-calendar-today {
-    -webkit-appearance: none;
-    appearance: none;
-    border: none !important;
     background: transparent !important;
     color: var(--nn-theme-foreground-muted);
     font: inherit;
@@ -2775,27 +2783,59 @@ body {
     font-weight: 600;
     height: var(--nn-nav-calendar-today-height);
     padding: 0 1px;
-    border-radius: 6px;
-    cursor: pointer;
-    box-shadow: none !important;
-    outline: none;
     display: inline-flex;
     align-items: center;
     justify-content: center;
     line-height: 1;
-    transition:
-        background-color 120ms ease,
-        filter 120ms ease,
-        box-shadow 120ms ease;
 }
 
-.nn-navigation-calendar button.nn-navigation-calendar-nav-button {
+.nn-navigation-calendar button:is(.nn-navigation-calendar-nav-button, .nn-navigation-calendar-today) {
     color: var(--nn-theme-foreground-muted);
 }
 
-.nn-navigation-calendar button.nn-navigation-calendar-today {
-    color: var(--nn-theme-foreground-muted);
+/* ========================================================================
+   Header mode: split
+   ======================================================================== */
+
+.nn-navigation-calendar[data-split-header='true'] .nn-navigation-calendar-header {
+    position: relative;
+    height: var(--nn-nav-calendar-header-row-height);
+    min-height: var(--nn-nav-calendar-header-row-height);
+    flex-wrap: nowrap;
+    flex-direction: row;
+    justify-content: flex-start;
+    overflow: hidden;
 }
+
+.nn-navigation-calendar[data-split-header='true'] .nn-navigation-calendar-nav {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    margin-left: 0;
+    z-index: 3;
+    background-color: var(--nn-nav-calendar-header-chip-bg);
+    border-radius: 8px;
+    padding: 0 2px;
+}
+
+.nn-navigation-calendar[data-split-header='true'] .nn-navigation-calendar-month {
+    flex: 1 1 auto;
+    max-width: none;
+    overflow: hidden;
+    z-index: 1;
+}
+
+.nn-navigation-calendar[data-split-header='true'] .nn-navigation-calendar-month .nn-navigation-calendar-period-month {
+    flex: 0 0 auto;
+    max-width: none;
+    overflow: visible;
+    text-overflow: clip;
+}
+
+/* ========================================================================
+   Year panel (shared)
+   ======================================================================== */
 
 .nn-navigation-calendar-year-nav {
     display: flex;
@@ -2817,7 +2857,6 @@ body {
     line-height: 1;
     min-width: 64px;
     padding: 0 8px;
-    border-radius: 6px;
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -2835,10 +2874,6 @@ body {
 }
 
 .nn-navigation-calendar-year-month {
-    -webkit-appearance: none;
-    appearance: none;
-    border: none !important;
-    border-radius: 6px;
     background: transparent !important;
     color: var(--nn-theme-calendar-day-in-month-color);
     font: inherit;
@@ -2846,18 +2881,11 @@ body {
     line-height: 1;
     min-height: 24px;
     padding: 4px 6px;
-    cursor: pointer;
-    box-shadow: none !important;
-    outline: none;
     text-align: center;
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
     font-variant-numeric: tabular-nums;
-    transition:
-        background-color 120ms ease,
-        filter 120ms ease,
-        box-shadow 120ms ease;
 }
 
 .nn-navigation-calendar-year-month.is-selected-month {
@@ -2886,6 +2914,10 @@ body {
     height: 16px;
     stroke-width: 2;
 }
+
+/* ========================================================================
+   Month grid and day cells
+   ======================================================================== */
 
 .nn-navigation-calendar-weekdays {
     min-height: var(--nn-nav-calendar-weekday-row-height);
@@ -2978,19 +3010,8 @@ body {
 }
 
 .nn-navigation-calendar-weeknumber-button {
-    -webkit-appearance: none;
-    appearance: none;
     width: 100%;
-    border: none !important;
-    border-radius: 6px;
     background: transparent !important;
-    cursor: pointer;
-    box-shadow: none !important;
-    outline: none;
-    transition:
-        background-color 120ms ease,
-        filter 120ms ease,
-        box-shadow 120ms ease;
 }
 
 .nn-navigation-calendar button.nn-navigation-calendar-weeknumber {
@@ -3071,13 +3092,9 @@ body {
 }
 
 .nn-navigation-calendar-day {
-    -webkit-appearance: none;
-    appearance: none;
     position: relative;
     height: auto;
     aspect-ratio: 1 / 1;
-    border: none !important;
-    border-radius: 6px;
     box-sizing: border-box;
     min-width: 0;
     width: 100%;
@@ -3087,17 +3104,10 @@ body {
     justify-content: center;
     background-color: transparent !important;
     color: var(--nn-theme-calendar-day-in-month-color);
-    cursor: pointer;
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
-    box-shadow: none !important;
-    outline: none;
     z-index: 1;
-    transition:
-        background-color 120ms ease,
-        filter 120ms ease,
-        box-shadow 120ms ease;
 }
 
 .nn-navigation-calendar-day-spacer {
@@ -3106,6 +3116,10 @@ body {
     aspect-ratio: 1 / 1;
     pointer-events: none;
 }
+
+/* ========================================================================
+   Hover and day-state styling
+   ======================================================================== */
 
 /* Hover effects only apply on hover-capable devices (prevents "stuck hover" on touch). */
 @media (hover: hover) and (pointer: fine) {
@@ -3285,6 +3299,10 @@ body {
     z-index: 1;
 }
 
+/* ========================================================================
+   Hover tooltip
+   ======================================================================== */
+
 .nn-navigation-calendar-hover-tooltip {
     position: fixed;
     z-index: 1000;
@@ -3310,7 +3328,7 @@ body {
 }
 
 /* ========================================================================
-   Right Sidebar Calendar
+   Right sidebar shell
    ======================================================================== */
 
 .nn-calendar-right-sidebar {
@@ -3322,6 +3340,10 @@ body {
 .nn-calendar-right-sidebar .nn-navigation-calendar {
     --nn-nav-calendar-header-chip-bg: var(--nn-calendar-right-sidebar-bg);
 }
+
+/* ========================================================================
+   Header mode: compact yearly (right sidebar)
+   ======================================================================== */
 
 .nn-calendar-right-sidebar .nn-navigation-calendar[data-compact-header='true'] .nn-navigation-calendar-header {
     height: auto;
@@ -3336,42 +3358,6 @@ body {
     width: 100%;
     justify-content: center;
     font-size: calc(var(--nn-nav-calendar-header-font-size) + 2px);
-}
-
-.nn-navigation-calendar[data-split-header='true'] .nn-navigation-calendar-header {
-    position: relative;
-    height: var(--nn-nav-calendar-header-row-height);
-    min-height: var(--nn-nav-calendar-header-row-height);
-    flex-wrap: nowrap;
-    flex-direction: row;
-    justify-content: flex-start;
-    overflow: hidden;
-}
-
-.nn-navigation-calendar[data-split-header='true'] .nn-navigation-calendar-nav {
-    position: absolute;
-    right: 0;
-    top: 50%;
-    transform: translateY(-50%);
-    margin-left: 0;
-    z-index: 3;
-    background-color: var(--nn-nav-calendar-header-chip-bg);
-    border-radius: 8px;
-    padding: 0 2px;
-}
-
-.nn-navigation-calendar[data-split-header='true'] .nn-navigation-calendar-month {
-    flex: 1 1 auto;
-    max-width: none;
-    overflow: hidden;
-    z-index: 1;
-}
-
-.nn-navigation-calendar[data-split-header='true'] .nn-navigation-calendar-month .nn-navigation-calendar-period-month {
-    flex: 0 0 auto;
-    max-width: none;
-    overflow: visible;
-    text-overflow: clip;
 }
 
 .nn-calendar-right-sidebar
