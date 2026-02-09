@@ -84,7 +84,7 @@ export const STRINGS_EN = {
             confirmButton: 'Create'
         },
         helpModal: {
-            title: 'Calendar',
+            title: 'Calendar shortcuts',
             items: [
                 'Click any day to open or create a daily note. Weeks, months, quarters, and years work the same way.',
                 'A filled dot under a day means it has a note. A hollow dot means it has unfinished tasks.',
@@ -1056,6 +1056,10 @@ export const STRINGS_EN = {
             calendarShowQuarter: {
                 name: 'Show quarter',
                 desc: 'Add a quarter label in the calendar header.'
+            },
+            calendarShowYearCalendar: {
+                name: 'Show year calendar',
+                desc: 'Display year navigation and month grid in the right sidebar.'
             },
             calendarConfirmBeforeCreate: {
                 name: 'Confirm before creating new note',

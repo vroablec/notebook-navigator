@@ -83,7 +83,7 @@ export const STRINGS_DE = {
             confirmButton: 'Erstellen'
         },
         helpModal: {
-            title: 'Kalender',
+            title: 'Kalender-Tastenkürzel',
             items: [
                 'Klicken Sie auf einen Tag, um eine tägliche Notiz zu öffnen oder zu erstellen. Wochen, Monate, Quartale und Jahre funktionieren genauso.',
                 'Ein gefüllter Punkt unter einem Tag bedeutet, dass eine Notiz vorhanden ist. Ein hohler Punkt bedeutet, dass unerledigte Aufgaben vorhanden sind.',
@@ -1059,6 +1059,10 @@ export const STRINGS_DE = {
             calendarShowQuarter: {
                 name: 'Quartal anzeigen',
                 desc: 'Quartalbezeichnung im Kalender-Header hinzufügen.'
+            },
+            calendarShowYearCalendar: {
+                name: 'Jahreskalender anzeigen',
+                desc: 'Jahresnavigation und Monatsraster in der rechten Seitenleiste anzeigen.'
             },
             calendarConfirmBeforeCreate: {
                 name: 'Vor Erstellung bestätigen',

@@ -124,6 +124,7 @@ export const DEFAULT_SETTINGS: NotebookNavigatorSettings = {
     calendarShowFeatureImage: true,
     calendarShowWeekNumber: false,
     calendarShowQuarter: false,
+    calendarShowYearCalendar: true,
     calendarLeftPlacement: 'navigation',
     calendarWeeksToShow: 1,
 

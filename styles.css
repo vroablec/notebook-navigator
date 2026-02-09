@@ -193,6 +193,7 @@ body {
     --nn-theme-calendar-week-color: var(--nn-theme-foreground-muted);
     --nn-theme-calendar-day-in-month-color: var(--nn-theme-foreground);
     --nn-theme-calendar-day-outside-month-color: var(--nn-theme-foreground-faded);
+    --nn-theme-calendar-weekend-bg: color-mix(in srgb, var(--nn-theme-foreground) 10%, transparent);
     --nn-theme-calendar-hover-bg: var(--background-modifier-hover);
     --nn-theme-calendar-day-has-note-bg: var(--nn-theme-foreground-faded);
     --nn-theme-calendar-day-has-unfinished-task-color: var(--nn-theme-calendar-day-has-note-bg);
@@ -2599,6 +2600,23 @@ body {
     flex: 0 0 auto;
 }
 
+.nn-navigation-pane .nn-navigation-calendar-month,
+.nn-list-pane .nn-navigation-calendar-month,
+.nn-single-pane-calendar .nn-navigation-calendar-month {
+    flex-wrap: nowrap;
+    white-space: nowrap;
+    overflow: visible;
+}
+
+.nn-navigation-pane .nn-navigation-calendar-month .nn-navigation-calendar-period-month,
+.nn-list-pane .nn-navigation-calendar-month .nn-navigation-calendar-period-month,
+.nn-single-pane-calendar .nn-navigation-calendar-month .nn-navigation-calendar-period-month {
+    max-width: none;
+    overflow: visible;
+    text-overflow: clip;
+    white-space: nowrap;
+}
+
 .nn-navigation-calendar-period-button {
     -webkit-appearance: none;
     appearance: none;
@@ -2647,13 +2665,130 @@ body {
     position: relative;
 }
 
-.nn-navigation-calendar-help {
+.nn-navigation-pane .nn-navigation-calendar-nav,
+.nn-list-pane .nn-navigation-calendar-nav,
+.nn-single-pane-calendar .nn-navigation-calendar-nav {
+    flex: 0 0 auto;
+    margin-left: auto;
+    position: relative;
+    z-index: 2;
+}
+
+.nn-navigation-calendar-help:not(.nn-navigation-calendar-help-inline) {
     position: absolute;
     right: calc(100% + 4px);
     top: 50%;
     transform: translateY(-50%);
     color: var(--nn-theme-foreground-muted);
     z-index: 0;
+}
+
+.nn-navigation-calendar-help-inline {
+    position: static;
+    right: auto;
+    top: auto;
+    transform: none;
+    color: var(--nn-theme-foreground-muted);
+    z-index: 0;
+    flex: 0 0 auto;
+    transition: opacity 120ms ease;
+}
+
+.nn-navigation-pane .nn-navigation-calendar-month,
+.nn-list-pane .nn-navigation-calendar-month,
+.nn-single-pane-calendar .nn-navigation-calendar-month {
+    z-index: 0;
+}
+
+.nn-navigation-calendar-month.has-month-help {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+    align-items: center;
+    gap: 0;
+    padding-inline: 0;
+}
+
+.nn-navigation-calendar-month-help {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--nn-theme-foreground-muted);
+    z-index: 0;
+}
+
+.nn-navigation-calendar-month.has-month-help .nn-navigation-calendar-period-month {
+    grid-column: 2;
+    justify-self: center;
+}
+
+.nn-navigation-calendar-month.has-month-help .nn-navigation-calendar-month-help {
+    position: static;
+    grid-column: 3;
+    justify-self: end;
+    top: auto;
+    right: auto;
+    transform: none;
+}
+
+.nn-navigation-calendar-month.has-inline-month-nav {
+    display: grid;
+    grid-template-columns: var(--nn-nav-calendar-nav-button-size) minmax(0, 1fr) var(--nn-nav-calendar-nav-button-size);
+    align-items: center;
+    gap: 0;
+}
+
+.nn-navigation-calendar-inline-month-center {
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+    min-width: 0;
+}
+
+.nn-navigation-calendar-month.has-inline-month-nav .nn-navigation-calendar-inline-month-center {
+    grid-column: 2;
+    justify-self: center;
+}
+
+.nn-navigation-calendar-month.has-inline-help .nn-navigation-calendar-inline-month-center {
+    position: relative;
+    overflow: visible;
+}
+
+.nn-navigation-calendar-month.has-inline-month-nav .nn-navigation-calendar-inline-month-center .nn-navigation-calendar-period-month {
+    padding-inline: 1px;
+}
+
+.nn-navigation-calendar-month.has-inline-help.has-inline-month-nav .nn-navigation-calendar-inline-help {
+    position: absolute;
+    left: calc(100% + 2px);
+    right: auto;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 20px !important;
+    height: 20px !important;
+    transition: opacity 120ms ease;
+}
+
+.nn-navigation-calendar-quarter-inline {
+    flex: 0 0 auto;
+}
+
+.nn-navigation-calendar-month.has-inline-month-nav .nn-navigation-calendar-year-nav-button {
+    position: static;
+    top: auto;
+    transform: none;
+    z-index: 1;
+}
+
+.nn-navigation-calendar-month.has-inline-month-nav .nn-navigation-calendar-inline-month-nav-prev {
+    grid-column: 1;
+    justify-self: start;
+}
+
+.nn-navigation-calendar-month.has-inline-month-nav .nn-navigation-calendar-inline-month-nav-next {
+    grid-column: 3;
+    justify-self: end;
 }
 
 .nn-navigation-calendar-nav-prev {
@@ -2722,6 +2857,82 @@ body {
     color: var(--nn-theme-foreground-muted);
 }
 
+.nn-navigation-calendar-year-nav {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+}
+
+.nn-navigation-calendar-year-nav-button {
+    width: 24px !important;
+    height: var(--nn-nav-calendar-nav-button-size) !important;
+}
+
+.nn-navigation-calendar-year-label {
+    color: var(--nn-theme-foreground-muted);
+    font-size: var(--nn-nav-calendar-today-font-size);
+    font-weight: 600;
+    height: var(--nn-nav-calendar-today-height);
+    line-height: 1;
+    min-width: 64px;
+    padding: 0 8px;
+    border-radius: 6px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-variant-numeric: tabular-nums;
+}
+
+.nn-navigation-calendar-year-label.nn-navigation-calendar-period-button {
+    color: var(--nn-theme-calendar-header-color);
+}
+
+.nn-navigation-calendar-year-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 4px;
+}
+
+.nn-navigation-calendar-year-month {
+    -webkit-appearance: none;
+    appearance: none;
+    border: none !important;
+    border-radius: 6px;
+    background: transparent !important;
+    color: var(--nn-theme-calendar-day-in-month-color);
+    font: inherit;
+    font-size: var(--nn-nav-calendar-day-font-size);
+    line-height: 1;
+    min-height: 24px;
+    padding: 4px 6px;
+    cursor: pointer;
+    box-shadow: none !important;
+    outline: none;
+    text-align: center;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    font-variant-numeric: tabular-nums;
+    transition:
+        background-color 120ms ease,
+        filter 120ms ease,
+        box-shadow 120ms ease;
+}
+
+.nn-navigation-calendar-year-month.is-selected-month {
+    background-color: var(--nn-theme-calendar-day-today-bg) !important;
+    color: var(--nn-theme-calendar-day-today-color);
+}
+
+.nn-navigation-calendar button.nn-navigation-calendar-year-month {
+    color: var(--nn-theme-calendar-day-in-month-color);
+}
+
+.nn-navigation-calendar button.nn-navigation-calendar-year-month.is-selected-month {
+    color: var(--nn-theme-calendar-day-today-color);
+}
+
 /* Calendar month navigation icon sizing (ServiceIcon renders an SVG). */
 .nn-navigation-calendar-nav-button svg {
     width: var(--nn-nav-calendar-nav-icon-size);
@@ -2729,7 +2940,8 @@ body {
     stroke-width: 2.5;
 }
 
-.nn-navigation-calendar-help svg {
+.nn-navigation-calendar-help svg,
+.nn-navigation-calendar-month-help svg {
     width: 16px;
     height: 16px;
     stroke-width: 2;
@@ -2781,6 +2993,10 @@ body {
     pointer-events: none;
 }
 
+.nn-navigation-calendar-weeks[data-weeknumbers='true'][data-has-trailing-spacer='true']::before {
+    content: none;
+}
+
 .nn-navigation-calendar-week {
     display: grid;
     grid-template-columns: repeat(7, minmax(0, 1fr));
@@ -2792,10 +3008,19 @@ body {
     grid-template-columns: var(--nn-nav-calendar-weeknumber-column-width) 1px repeat(7, minmax(0, 1fr));
 }
 
+.nn-navigation-calendar-week-spacer {
+    pointer-events: none;
+}
+
 .nn-navigation-calendar-weeknumber-divider {
     width: 1px;
     height: 100%;
+    background-color: var(--nn-theme-calendar-hover-bg);
     pointer-events: none;
+}
+
+.nn-navigation-calendar-weekdays .nn-navigation-calendar-weeknumber-divider {
+    background-color: transparent;
 }
 
 .nn-navigation-calendar-weeknumber {
@@ -2834,6 +3059,10 @@ body {
 
 .nn-navigation-calendar-weeknumber-button.has-period-note {
     text-decoration: none;
+}
+
+.nn-navigation-calendar-weeknumber-spacer-row {
+    visibility: hidden;
 }
 
 .nn-navigation-calendar-weeknumber-value {
@@ -2875,6 +3104,32 @@ body {
     pointer-events: none;
 }
 
+.nn-navigation-calendar-day-cell {
+    position: relative;
+    min-width: 0;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 1 / 1;
+}
+
+.nn-navigation-calendar-day-cell.is-weekend::before {
+    content: '';
+    position: absolute;
+    inset-block: -0.5px;
+    inset-inline: 0;
+    background-color: var(--nn-theme-calendar-weekend-bg);
+    pointer-events: none;
+    z-index: 0;
+}
+
+.nn-navigation-calendar-day-cell.is-weekend.has-weekend-before::before {
+    inset-inline-start: -0.5px;
+}
+
+.nn-navigation-calendar-day-cell.is-weekend.has-weekend-after::before {
+    inset-inline-end: -0.5px;
+}
+
 .nn-navigation-calendar-day {
     -webkit-appearance: none;
     appearance: none;
@@ -2898,10 +3153,24 @@ body {
     background-repeat: no-repeat;
     box-shadow: none !important;
     outline: none;
+    z-index: 1;
     transition:
         background-color 120ms ease,
         filter 120ms ease,
         box-shadow 120ms ease;
+}
+
+.nn-navigation-calendar-day-spacer {
+    min-width: 0;
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    pointer-events: none;
+}
+
+.nn-navigation-calendar-day-spacer::before {
+    content: '';
+    display: block;
+    padding-top: 100%;
 }
 
 /* Hover effects only apply on hover-capable devices (prevents "stuck hover" on touch). */
@@ -2912,6 +3181,56 @@ body {
 
     .nn-navigation-calendar-help:hover {
         background-color: transparent !important;
+    }
+
+    .nn-navigation-calendar-month-help:hover {
+        background-color: transparent !important;
+    }
+
+    .nn-navigation-calendar-month.has-inline-help .nn-navigation-calendar-inline-help {
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+    }
+
+    .nn-navigation-calendar-month.has-inline-help:hover .nn-navigation-calendar-inline-help,
+    .nn-navigation-calendar-month.has-inline-help:focus-within .nn-navigation-calendar-inline-help {
+        opacity: 1;
+        visibility: visible;
+        pointer-events: auto;
+    }
+
+    .nn-navigation-pane .nn-navigation-calendar-header .nn-navigation-calendar-help-inline,
+    .nn-list-pane .nn-navigation-calendar-header .nn-navigation-calendar-help-inline,
+    .nn-single-pane-calendar .nn-navigation-calendar-header .nn-navigation-calendar-help-inline {
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+    }
+
+    .nn-navigation-pane .nn-navigation-calendar-header:hover .nn-navigation-calendar-help-inline,
+    .nn-navigation-pane .nn-navigation-calendar-header:focus-within .nn-navigation-calendar-help-inline,
+    .nn-list-pane .nn-navigation-calendar-header:hover .nn-navigation-calendar-help-inline,
+    .nn-list-pane .nn-navigation-calendar-header:focus-within .nn-navigation-calendar-help-inline,
+    .nn-single-pane-calendar .nn-navigation-calendar-header:hover .nn-navigation-calendar-help-inline,
+    .nn-single-pane-calendar .nn-navigation-calendar-header:focus-within .nn-navigation-calendar-help-inline {
+        opacity: 1;
+        visibility: visible;
+        pointer-events: auto;
+    }
+
+    .nn-navigation-calendar[data-split-header='true'] .nn-navigation-calendar-header .nn-navigation-calendar-help-inline {
+        width: 0 !important;
+        min-width: 0 !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        overflow: hidden;
+    }
+
+    .nn-navigation-calendar[data-split-header='true'] .nn-navigation-calendar-header:hover .nn-navigation-calendar-help-inline,
+    .nn-navigation-calendar[data-split-header='true'] .nn-navigation-calendar-header:focus-within .nn-navigation-calendar-help-inline {
+        width: var(--nn-nav-calendar-nav-button-size) !important;
+        min-width: var(--nn-nav-calendar-nav-button-size) !important;
     }
 
     .nn-navigation-calendar-today:hover {
@@ -2930,6 +3249,11 @@ body {
 
     .nn-navigation-calendar-day:hover:not(.has-feature-image):not(.has-feature-image-key) {
         background-color: var(--nn-theme-calendar-hover-bg) !important;
+    }
+
+    .nn-navigation-calendar-year-month:hover:not(.is-selected-month) {
+        background-color: var(--nn-theme-calendar-hover-bg) !important;
+        filter: brightness(1.05);
     }
 }
 
@@ -3068,6 +3392,72 @@ body {
 
 .nn-calendar-right-sidebar .nn-navigation-calendar {
     --nn-nav-calendar-header-chip-bg: var(--nn-calendar-right-sidebar-bg);
+}
+
+.nn-calendar-right-sidebar .nn-navigation-calendar[data-compact-header='true'] .nn-navigation-calendar-header {
+    height: auto;
+    min-height: var(--nn-nav-calendar-header-row-height);
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: center;
+    gap: 6px;
+}
+
+.nn-calendar-right-sidebar .nn-navigation-calendar[data-compact-header='true'] .nn-navigation-calendar-month {
+    width: 100%;
+    justify-content: center;
+    font-size: calc(var(--nn-nav-calendar-header-font-size) + 2px);
+}
+
+.nn-navigation-calendar[data-split-header='true'] .nn-navigation-calendar-header {
+    position: relative;
+    height: var(--nn-nav-calendar-header-row-height);
+    min-height: var(--nn-nav-calendar-header-row-height);
+    flex-wrap: nowrap;
+    flex-direction: row;
+    justify-content: flex-start;
+    overflow: hidden;
+}
+
+.nn-navigation-calendar[data-split-header='true'] .nn-navigation-calendar-nav {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    margin-left: 0;
+    z-index: 3;
+    background-color: var(--nn-nav-calendar-header-chip-bg);
+    border-radius: 8px;
+    padding: 0 2px;
+}
+
+.nn-navigation-calendar[data-split-header='true'] .nn-navigation-calendar-month {
+    flex: 1 1 auto;
+    max-width: none;
+    overflow: hidden;
+    z-index: 1;
+}
+
+.nn-navigation-calendar[data-split-header='true'] .nn-navigation-calendar-month .nn-navigation-calendar-period-month {
+    flex: 0 0 auto;
+    max-width: none;
+    overflow: visible;
+    text-overflow: clip;
+}
+
+.nn-calendar-right-sidebar
+    .nn-navigation-calendar[data-compact-header='true']
+    .nn-navigation-calendar-month
+    .nn-navigation-calendar-period-month {
+    text-align: center;
+}
+
+.nn-calendar-right-sidebar
+    .nn-navigation-calendar[data-compact-header='true']
+    .nn-navigation-calendar-month
+    .nn-navigation-calendar-period-month {
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
 }
 
 .is-mobile .nn-calendar-right-sidebar {
@@ -7322,6 +7712,14 @@ settings:
         id: nn-theme-calendar-day-outside-month-color
         title: Day text color (outside month)
         description: Text color for days outside the current month.
+        type: variable-themed-color
+        format: hex
+        default-light: '#'
+        default-dark: '#'
+    -
+        id: nn-theme-calendar-weekend-bg
+        title: Weekend day background
+        description: Background color for weekend day cells.
         type: variable-themed-color
         format: hex
         default-light: '#'

@@ -83,7 +83,7 @@ export const STRINGS_PL = {
             confirmButton: 'Utwórz'
         },
         helpModal: {
-            title: 'Kalendarz',
+            title: 'Skróty kalendarza',
             items: [
                 'Kliknij dowolny dzień, aby otworzyć lub utworzyć notatkę dzienną. Tygodnie, miesiące, kwartały i lata działają w ten sam sposób.',
                 'Wypełniona kropka pod dniem oznacza, że ma notatkę. Pusta kropka oznacza, że ma nieukończone zadania.',
@@ -1059,6 +1059,10 @@ export const STRINGS_PL = {
             calendarShowQuarter: {
                 name: 'Pokaż kwartał',
                 desc: 'Dodaj etykietę kwartału w nagłówku kalendarza.'
+            },
+            calendarShowYearCalendar: {
+                name: 'Pokaż kalendarz roczny',
+                desc: 'Wyświetl nawigację po latach i siatkę miesięcy w prawym pasku bocznym.'
             },
             calendarConfirmBeforeCreate: {
                 name: 'Potwierdź przed utworzeniem',

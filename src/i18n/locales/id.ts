@@ -84,7 +84,7 @@ export const STRINGS_ID = {
             confirmButton: 'Buat'
         },
         helpModal: {
-            title: 'Kalender',
+            title: 'Pintasan kalender',
             items: [
                 'Klik hari mana pun untuk membuka atau membuat catatan harian. Minggu, bulan, kuartal, dan tahun berfungsi dengan cara yang sama.',
                 'Titik terisi di bawah hari berarti memiliki catatan. Titik kosong berarti memiliki tugas yang belum selesai.',
@@ -1057,6 +1057,10 @@ export const STRINGS_ID = {
             calendarShowQuarter: {
                 name: 'Tampilkan kuartal',
                 desc: 'Tambahkan label kuartal di header kalender.'
+            },
+            calendarShowYearCalendar: {
+                name: 'Tampilkan kalender tahunan',
+                desc: 'Tampilkan navigasi tahun dan kisi bulan di bilah sisi kanan.'
             },
             calendarConfirmBeforeCreate: {
                 name: 'Konfirmasi sebelum membuat',

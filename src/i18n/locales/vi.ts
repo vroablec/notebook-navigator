@@ -84,7 +84,7 @@ export const STRINGS_VI = {
             confirmButton: 'Tạo'
         },
         helpModal: {
-            title: 'Lịch',
+            title: 'Phím tắt lịch',
             items: [
                 'Nhấp vào bất kỳ ngày nào để mở hoặc tạo ghi chú hàng ngày. Tuần, tháng, quý và năm hoạt động tương tự.',
                 'Chấm đặc dưới một ngày nghĩa là có ghi chú. Chấm rỗng nghĩa là có nhiệm vụ chưa hoàn thành.',
@@ -1057,6 +1057,10 @@ export const STRINGS_VI = {
             calendarShowQuarter: {
                 name: 'Hiển thị quý',
                 desc: 'Thêm nhãn quý vào tiêu đề lịch.'
+            },
+            calendarShowYearCalendar: {
+                name: 'Hiển thị lịch năm',
+                desc: 'Hiển thị điều hướng năm và lưới tháng trong thanh bên phải.'
             },
             calendarConfirmBeforeCreate: {
                 name: 'Xác nhận trước khi tạo',

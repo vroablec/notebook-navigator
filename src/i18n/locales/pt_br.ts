@@ -84,7 +84,7 @@ export const STRINGS_PT_BR = {
             confirmButton: 'Criar'
         },
         helpModal: {
-            title: 'Calendário',
+            title: 'Atalhos do calendário',
             items: [
                 'Clique em qualquer dia para abrir ou criar uma nota diária. Semanas, meses, trimestres e anos funcionam da mesma forma.',
                 'Um ponto preenchido abaixo de um dia significa que ele tem uma nota. Um ponto oco significa que ele tem tarefas pendentes.',
@@ -1060,6 +1060,10 @@ export const STRINGS_PT_BR = {
             calendarShowQuarter: {
                 name: 'Mostrar trimestre',
                 desc: 'Adicionar uma etiqueta de trimestre no cabeçalho do calendário.'
+            },
+            calendarShowYearCalendar: {
+                name: 'Mostrar calendário anual',
+                desc: 'Exibir navegação anual e grade de meses na barra lateral direita.'
             },
             calendarConfirmBeforeCreate: {
                 name: 'Confirmar antes de criar',

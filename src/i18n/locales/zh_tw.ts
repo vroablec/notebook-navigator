@@ -83,7 +83,7 @@ export const STRINGS_ZH_TW = {
             confirmButton: '建立'
         },
         helpModal: {
-            title: '行事曆',
+            title: '行事曆快捷鍵',
             items: [
                 '點擊任意日期以開啟或建立每日筆記。週、月、季度和年份的操作方式相同。',
                 '日期下方的實心圓點表示有筆記。空心圓點表示有未完成的任務。',
@@ -1055,6 +1055,10 @@ export const STRINGS_ZH_TW = {
             calendarShowQuarter: {
                 name: '顯示季度',
                 desc: '在行事曆標題中新增季度標籤。'
+            },
+            calendarShowYearCalendar: {
+                name: '顯示年曆',
+                desc: '在右側邊欄中顯示年份導覽和月份網格。'
             },
             calendarConfirmBeforeCreate: {
                 name: '建立前確認',

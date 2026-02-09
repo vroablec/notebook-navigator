@@ -83,7 +83,7 @@ export const STRINGS_FR = {
             confirmButton: 'Créer'
         },
         helpModal: {
-            title: 'Calendrier',
+            title: 'Raccourcis du calendrier',
             items: [
                 'Cliquez sur un jour pour ouvrir ou créer une note quotidienne. Les semaines, mois, trimestres et années fonctionnent de la même manière.',
                 "Un point plein sous un jour signifie qu'il a une note. Un point creux signifie qu'il a des tâches inachevées.",
@@ -1059,6 +1059,10 @@ export const STRINGS_FR = {
             calendarShowQuarter: {
                 name: 'Afficher le trimestre',
                 desc: "Ajouter une étiquette de trimestre dans l'en-tête du calendrier."
+            },
+            calendarShowYearCalendar: {
+                name: 'Afficher le calendrier annuel',
+                desc: 'Afficher la navigation annuelle et la grille des mois dans la barre latérale droite.'
             },
             calendarConfirmBeforeCreate: {
                 name: 'Confirmer avant de créer',

@@ -62,6 +62,7 @@ Most variables are colors and should resolve to a computed color (some are used 
 | `--nn-theme-calendar-week-color`              | `var(--nn-theme-foreground-muted)`     | Text color for week numbers                     |
 | `--nn-theme-calendar-day-in-month-color`      | `var(--nn-theme-foreground)`           | Text color for days within the current month    |
 | `--nn-theme-calendar-day-outside-month-color` | `var(--nn-theme-foreground-faded)`     | Text color for days outside the current month   |
+| `--nn-theme-calendar-weekend-bg`              | `color-mix(in srgb, var(--nn-theme-foreground) 10%, transparent)` | Background color for weekend day cells |
 | `--nn-theme-calendar-hover-bg`                | `var(--background-modifier-hover)`     | Hover background for calendar buttons and days  |
 | `--nn-theme-calendar-day-has-note-bg`         | `var(--nn-theme-foreground-faint)`     | Dot color for dates with a daily note           |
 | `--nn-theme-calendar-day-has-feature-image-color` | `white`                             | Text color for dates with feature images        |
@@ -268,6 +269,7 @@ body {
   --nn-theme-calendar-week-color: var(--nn-theme-foreground-muted);
   --nn-theme-calendar-day-in-month-color: var(--nn-theme-foreground);
   --nn-theme-calendar-day-outside-month-color: var(--nn-theme-foreground-faded);
+  --nn-theme-calendar-weekend-bg: rgba(169, 183, 198, 0.1);
   --nn-theme-calendar-hover-bg: #4b5059;
   --nn-theme-calendar-day-has-note-bg: #4a78c8;
   --nn-theme-calendar-day-has-feature-image-color: #ffffff;

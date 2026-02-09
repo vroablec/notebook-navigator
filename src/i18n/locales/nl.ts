@@ -84,7 +84,7 @@ export const STRINGS_NL = {
             confirmButton: 'Aanmaken'
         },
         helpModal: {
-            title: 'Kalender',
+            title: 'Kalendersneltoetsen',
             items: [
                 'Klik op een dag om een dagnotitie te openen of aan te maken. Weken, maanden, kwartalen en jaren werken op dezelfde manier.',
                 'Een gevulde stip onder een dag betekent dat er een notitie is. Een holle stip betekent dat er onvoltooide taken zijn.',
@@ -1059,6 +1059,10 @@ export const STRINGS_NL = {
             calendarShowQuarter: {
                 name: 'Kwartaal tonen',
                 desc: 'Voeg een kwartaallabel toe in de kalender-header.'
+            },
+            calendarShowYearCalendar: {
+                name: 'Jaarkalender tonen',
+                desc: 'Jaarnavigatie en maandraster weergeven in de rechter zijbalk.'
             },
             calendarConfirmBeforeCreate: {
                 name: 'Bevestigen voor aanmaken',

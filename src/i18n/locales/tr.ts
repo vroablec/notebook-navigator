@@ -84,7 +84,7 @@ export const STRINGS_TR = {
             confirmButton: 'Oluştur'
         },
         helpModal: {
-            title: 'Takvim',
+            title: 'Takvim kısayolları',
             items: [
                 'Günlük not açmak veya oluşturmak için herhangi bir güne tıklayın. Haftalar, aylar, çeyrekler ve yıllar aynı şekilde çalışır.',
                 'Bir günün altındaki dolu nokta, notu olduğu anlamına gelir. Boş nokta, tamamlanmamış görevleri olduğu anlamına gelir.',
@@ -1058,6 +1058,10 @@ export const STRINGS_TR = {
             calendarShowQuarter: {
                 name: 'Çeyreği göster',
                 desc: 'Takvim başlığına çeyrek etiketi ekle.'
+            },
+            calendarShowYearCalendar: {
+                name: 'Yıllık takvimi göster',
+                desc: 'Sağ kenar çubuğunda yıl gezintisi ve ay ızgarası göster.'
             },
             calendarConfirmBeforeCreate: {
                 name: 'Oluşturmadan önce onayla',

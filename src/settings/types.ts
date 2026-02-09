@@ -261,6 +261,7 @@ export interface NotebookNavigatorSettings {
     calendarShowFeatureImage: boolean;
     calendarShowWeekNumber: boolean;
     calendarShowQuarter: boolean;
+    calendarShowYearCalendar: boolean;
     calendarLeftPlacement: CalendarLeftPlacement;
     calendarWeeksToShow: CalendarWeeksToShow;
 

@@ -84,7 +84,7 @@ export const STRINGS_IT = {
             confirmButton: 'Crea'
         },
         helpModal: {
-            title: 'Calendario',
+            title: 'Scorciatoie del calendario',
             items: [
                 'Fai clic su un giorno per aprire o creare una nota giornaliera. Settimane, mesi, trimestri e anni funzionano allo stesso modo.',
                 'Un punto pieno sotto un giorno indica che ha una nota. Un punto vuoto indica che ha attività incomplete.',
@@ -1056,6 +1056,10 @@ export const STRINGS_IT = {
             calendarShowQuarter: {
                 name: 'Mostra trimestre',
                 desc: "Aggiungi un'etichetta del trimestre nell'intestazione del calendario."
+            },
+            calendarShowYearCalendar: {
+                name: 'Mostra calendario annuale',
+                desc: 'Mostra la navigazione annuale e la griglia dei mesi nella barra laterale destra.'
             },
             calendarConfirmBeforeCreate: {
                 name: 'Conferma prima di creare',

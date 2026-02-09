@@ -83,7 +83,7 @@ export const STRINGS_ES = {
             confirmButton: 'Crear'
         },
         helpModal: {
-            title: 'Calendario',
+            title: 'Atajos del calendario',
             items: [
                 'Haz clic en cualquier día para abrir o crear una nota diaria. Las semanas, meses, trimestres y años funcionan de la misma manera.',
                 'Un punto relleno debajo de un día significa que tiene una nota. Un punto hueco significa que tiene tareas pendientes.',
@@ -1059,6 +1059,10 @@ export const STRINGS_ES = {
             calendarShowQuarter: {
                 name: 'Mostrar trimestre',
                 desc: 'Agregar una etiqueta de trimestre en el encabezado del calendario.'
+            },
+            calendarShowYearCalendar: {
+                name: 'Mostrar calendario anual',
+                desc: 'Mostrar navegación anual y cuadrícula de meses en la barra lateral derecha.'
             },
             calendarConfirmBeforeCreate: {
                 name: 'Confirmar antes de crear nueva nota',

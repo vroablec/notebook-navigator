@@ -83,7 +83,7 @@ export const STRINGS_ZH_CN = {
             confirmButton: '创建'
         },
         helpModal: {
-            title: '日历',
+            title: '日历快捷键',
             items: [
                 '点击任意日期以打开或创建每日笔记。周、月、季度和年份的操作方式相同。',
                 '日期下方的实心圆点表示有笔记。空心圆点表示有未完成的任务。',
@@ -1055,6 +1055,10 @@ export const STRINGS_ZH_CN = {
             calendarShowQuarter: {
                 name: '显示季度',
                 desc: '在日历标题中添加季度标签。'
+            },
+            calendarShowYearCalendar: {
+                name: '显示年历',
+                desc: '在右侧边栏中显示年份导航和月份网格。'
             },
             calendarConfirmBeforeCreate: {
                 name: '创建前确认',

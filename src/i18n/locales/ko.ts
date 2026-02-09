@@ -83,7 +83,7 @@ export const STRINGS_KO = {
             confirmButton: '생성'
         },
         helpModal: {
-            title: '캘린더',
+            title: '캘린더 단축키',
             items: [
                 '아무 날이나 클릭하여 일간 노트를 열거나 만듭니다. 주, 월, 분기, 연도도 같은 방식으로 작동합니다.',
                 '날짜 아래 채워진 점은 노트가 있음을 의미합니다. 빈 점은 미완료 작업이 있음을 의미합니다.',
@@ -1057,6 +1057,10 @@ export const STRINGS_KO = {
             calendarShowQuarter: {
                 name: '분기 표시',
                 desc: '캘린더 헤더에 분기 레이블을 추가합니다.'
+            },
+            calendarShowYearCalendar: {
+                name: '연간 캘린더 표시',
+                desc: '오른쪽 사이드바에 연도 탐색 및 월 그리드를 표시합니다.'
             },
             calendarConfirmBeforeCreate: {
                 name: '생성 전 확인',

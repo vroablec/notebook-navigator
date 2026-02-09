@@ -83,6 +83,15 @@ interface CalendarWeek {
     days: CalendarDay[];
 }
 
+interface CalendarYearMonthEntry {
+    date: MomentInstance;
+    fullLabel: string;
+    key: string;
+    monthIndex: number;
+    noteCount: number;
+    shortLabel: string;
+}
+
 interface CalendarDayButtonProps {
     className: string;
     ariaText: string;
@@ -303,6 +312,7 @@ export interface NavigationPaneCalendarProps {
     onNavigationAction?: () => void;
     weeksToShowOverride?: CalendarWeeksToShow;
     onAddDateFilter?: (dateToken: string) => void;
+    isRightSidebar?: boolean;
 }
 
 interface CalendarHoverTooltipState {
@@ -317,7 +327,8 @@ export function NavigationPaneCalendar({
     onWeekCountChange,
     onNavigationAction,
     weeksToShowOverride,
-    onAddDateFilter
+    onAddDateFilter,
+    isRightSidebar = false
 }: NavigationPaneCalendarProps) {
     const { app, fileSystemOps, isMobile } = useServices();
     const settings = useSettingsState();
@@ -332,7 +343,8 @@ export function NavigationPaneCalendar({
 
     const momentApi = getMomentApi();
     const [cursorDate, setCursorDate] = useState<MomentInstance | null>(() => (momentApi ? momentApi().startOf('day') : null));
-    const todayIso = momentApi ? formatIsoDate(momentApi().startOf('day')) : null;
+    const todayDate = useMemo(() => (momentApi ? momentApi().startOf('day') : null), [momentApi]);
+    const todayIso = todayDate ? formatIsoDate(todayDate) : null;
 
     const [vaultVersion, setVaultVersion] = useState(0);
     const [featureImageVersion, setFeatureImageVersion] = useState(0);
@@ -560,6 +572,34 @@ export function NavigationPaneCalendar({
         return { filePathForDate, momentPattern };
     }, [displayLocale, settings.calendarCustomFilePattern, periodicNotesFolder]);
 
+    const canResolveCustomDayNotes = useMemo(() => {
+        if (!momentApi) {
+            return false;
+        }
+
+        return (
+            settings.calendarIntegrationMode === 'notebook-navigator' &&
+            isCalendarCustomDatePatternValid(customCalendarDayPathBuilder.momentPattern, momentApi)
+        );
+    }, [customCalendarDayPathBuilder.momentPattern, momentApi, settings.calendarIntegrationMode]);
+
+    const getExistingDayNoteFile = useCallback(
+        (date: MomentInstance): TFile | null => {
+            if (canResolveCustomDayNotes) {
+                const filePath = customCalendarDayPathBuilder.filePathForDate(date);
+                const existing = app.vault.getAbstractFileByPath(filePath);
+                return existing instanceof TFile ? existing : null;
+            }
+
+            if (settings.calendarIntegrationMode === 'daily-notes' && dailyNoteSettings) {
+                return getDailyNoteFile(app, date, dailyNoteSettings);
+            }
+
+            return null;
+        },
+        [app, canResolveCustomDayNotes, customCalendarDayPathBuilder, dailyNoteSettings, settings.calendarIntegrationMode]
+    );
+
     const weeks = useMemo<CalendarWeek[]>(() => {
         if (!momentApi || !cursorDate) {
             return [];
@@ -567,11 +607,6 @@ export function NavigationPaneCalendar({
 
         // Force refresh when vault contents change so custom calendar resolution reflects created/renamed/deleted notes.
         void vaultVersion;
-
-        const integrationMode = settings.calendarIntegrationMode;
-        const canResolveCustomDayNotes =
-            integrationMode === 'notebook-navigator' &&
-            isCalendarCustomDatePatternValid(customCalendarDayPathBuilder.momentPattern, momentApi);
 
         const weeksToShow = clamp(weeksToShowSetting, 1, 6);
         const cursor = cursorDate.clone().startOf('day');
@@ -611,15 +646,7 @@ export function NavigationPaneCalendar({
                 const date = weekStart.clone().add(dayOffset, 'day');
                 const inMonth = date.month() === targetMonth && date.year() === targetYear;
                 const iso = formatIsoDate(date);
-                let file: TFile | null = null;
-
-                if (canResolveCustomDayNotes) {
-                    const filePath = customCalendarDayPathBuilder.filePathForDate(date);
-                    const existing = app.vault.getAbstractFileByPath(filePath);
-                    file = existing instanceof TFile ? existing : null;
-                } else {
-                    file = dailyNoteSettings ? getDailyNoteFile(app, date, dailyNoteSettings) : null;
-                }
+                const file = getExistingDayNoteFile(date);
 
                 days.push({ date, iso, inMonth, file });
             }
@@ -632,18 +659,7 @@ export function NavigationPaneCalendar({
         }
 
         return visibleWeeks;
-    }, [
-        app,
-        calendarRulesLocale,
-        cursorDate,
-        dailyNoteSettings,
-        momentApi,
-        vaultVersion,
-        settings.calendarIntegrationMode,
-        weeksToShowSetting,
-        customCalendarDayPathBuilder,
-        weekStartsOn
-    ]);
+    }, [calendarRulesLocale, cursorDate, getExistingDayNoteFile, momentApi, vaultVersion, weeksToShowSetting, weekStartsOn]);
 
     const visibleDayNotePaths = useMemo(() => {
         const paths = new Set<string>();
@@ -705,12 +721,22 @@ export function NavigationPaneCalendar({
         return unfinishedTaskCounts;
     }, [db, taskIndicatorVersion, weeks]);
 
+    const renderedWeekRowCount = useMemo(() => {
+        const weeksToShow = clamp(weeksToShowSetting, 1, 6);
+        if (weeksToShow === 6) {
+            return 6;
+        }
+        return weeks.length;
+    }, [weeks.length, weeksToShowSetting]);
+
+    const trailingSpacerWeekCount = Math.max(0, renderedWeekRowCount - weeks.length);
+
     useLayoutEffect(() => {
         if (weeks.length === 0) {
             return;
         }
-        onWeekCountChange?.(weeks.length);
-    }, [onWeekCountChange, weeks.length]);
+        onWeekCountChange?.(renderedWeekRowCount);
+    }, [onWeekCountChange, renderedWeekRowCount, weeks.length]);
 
     const featureImageUrlMapRef = useRef<Map<string, { key: string; url: string }>>(new Map());
     const [featureImageUrls, setFeatureImageUrls] = useState<Record<string, string>>({});
@@ -1085,14 +1111,18 @@ export function NavigationPaneCalendar({
         [momentApi, onNavigationAction, weeksToShowSetting]
     );
 
-    const handleToday = useCallback(() => {
-        if (!momentApi) {
-            return;
-        }
-        setHoverTooltip(null);
-        setCursorDate(momentApi().startOf('day'));
-        onNavigationAction?.();
-    }, [momentApi, onNavigationAction]);
+    const handleNavigateYear = useCallback(
+        (delta: number) => {
+            if (!momentApi) {
+                return;
+            }
+
+            setHoverTooltip(null);
+            setCursorDate(prev => (prev ?? momentApi().startOf('day')).clone().add(delta, 'year'));
+            onNavigationAction?.();
+        },
+        [momentApi, onNavigationAction]
+    );
 
     const openCalendarHelp = useCallback(() => {
         new InfoModal(app, {
@@ -1123,6 +1153,19 @@ export function NavigationPaneCalendar({
             return true;
         },
         [onAddDateFilter, settings.multiSelectModifier, isMobile]
+    );
+
+    const handleSelectYearMonth = useCallback(
+        (event: React.MouseEvent<HTMLButtonElement>, date: MomentInstance) => {
+            if (handleDateFilterModifiedClick(event, 'month', date)) {
+                return;
+            }
+
+            setHoverTooltip(null);
+            setCursorDate(date.clone().startOf('day'));
+            onNavigationAction?.();
+        },
+        [handleDateFilterModifiedClick, onNavigationAction]
     );
 
     const collapseNavigationIfMobile = useCallback(() => {
@@ -1288,6 +1331,15 @@ export function NavigationPaneCalendar({
         [app, collapseNavigationIfMobile, dailyNoteSettings, openFile, openOrCreateCustomCalendarNote, settings]
     );
 
+    const handleToday = useCallback(() => {
+        if (!momentApi) {
+            return;
+        }
+        setHoverTooltip(null);
+        setCursorDate(momentApi().startOf('day'));
+        onNavigationAction?.();
+    }, [momentApi, onNavigationAction]);
+
     const showCalendarNoteContextMenu = useCallback(
         (
             event: React.MouseEvent<HTMLElement>,
@@ -1354,14 +1406,63 @@ export function NavigationPaneCalendar({
     );
 
     const showWeekNumbers = settings.calendarShowWeekNumber;
-    const showInfoButton = settings.calendarShowInfoButton;
+    const showInfoButton = settings.calendarShowInfoButton && !isMobile;
     const highlightToday = settings.calendarHighlightToday;
+    const showYearCalendar = isRightSidebar && settings.calendarShowYearCalendar;
+    const showYearInHeader = !isRightSidebar || !showYearCalendar;
+    const useRightSidebarYearCalendarHeaderLayout = isRightSidebar && showYearCalendar;
+    const useSplitHeaderLayout = !useRightSidebarYearCalendarHeaderLayout;
+    const showInlineMonthNavigation = useRightSidebarYearCalendarHeaderLayout;
+    const showCompactQuarterInMonthRow = useRightSidebarYearCalendarHeaderLayout && settings.calendarShowQuarter;
+    const showHeaderPeriodDetails = useSplitHeaderLayout;
+    const showHeaderNavRow = useSplitHeaderLayout;
+    const showCompactHeaderInlineInfoButton = showInfoButton && useRightSidebarYearCalendarHeaderLayout;
+    const showInfoInNavRow = showInfoButton && showHeaderNavRow;
 
     const isCustomCalendar = settings.calendarIntegrationMode === 'notebook-navigator';
     const weekNotesEnabled = isCustomCalendar && settings.calendarCustomWeekPattern.trim() !== '';
     const monthNotesEnabled = isCustomCalendar && settings.calendarCustomMonthPattern.trim() !== '';
     const quarterNotesEnabled = isCustomCalendar && settings.calendarCustomQuarterPattern.trim() !== '';
     const yearNotesEnabled = isCustomCalendar && settings.calendarCustomYearPattern.trim() !== '';
+    const selectedYear = cursorDate?.year() ?? null;
+
+    const yearMonthEntries = useMemo<CalendarYearMonthEntry[]>(() => {
+        if (!momentApi || selectedYear === null || !showYearCalendar) {
+            return [];
+        }
+
+        // Force refresh when vault contents change so year month counts reflect created/renamed/deleted daily notes.
+        void vaultVersion;
+
+        const entries: CalendarYearMonthEntry[] = [];
+        for (let monthIndex = 0; monthIndex < 12; monthIndex++) {
+            const monthDate = momentApi(new Date(selectedYear, monthIndex, 1))
+                .startOf('day')
+                .locale(displayLocale);
+            const daysInMonth = new Date(selectedYear, monthIndex + 1, 0).getDate();
+            let noteCount = 0;
+
+            for (let dayNumber = 1; dayNumber <= daysInMonth; dayNumber++) {
+                const dayDate = momentApi(new Date(selectedYear, monthIndex, dayNumber)).startOf('day');
+                const existingFile = getExistingDayNoteFile(dayDate);
+
+                if (existingFile) {
+                    noteCount += 1;
+                }
+            }
+
+            entries.push({
+                date: monthDate,
+                fullLabel: monthDate.format('MMMM'),
+                key: `${selectedYear}-${monthIndex + 1}`,
+                monthIndex,
+                noteCount,
+                shortLabel: monthDate.format('MMM')
+            });
+        }
+
+        return entries;
+    }, [displayLocale, getExistingDayNoteFile, momentApi, selectedYear, showYearCalendar, vaultVersion]);
 
     const headerPeriodNoteFiles = useMemo(() => {
         void vaultVersion;
@@ -1387,6 +1488,49 @@ export function NavigationPaneCalendar({
         vaultVersion,
         yearNotesEnabled
     ]);
+
+    const handleYearPeriodClick = useCallback(
+        (event: React.MouseEvent<HTMLElement>) => {
+            if (!cursorDate) {
+                return;
+            }
+
+            const periodDate = cursorDate.clone().locale(displayLocale);
+            if (handleDateFilterModifiedClick(event, 'year', periodDate)) {
+                return;
+            }
+
+            if (!yearNotesEnabled) {
+                return;
+            }
+
+            openOrCreateCustomCalendarNote('year', periodDate, headerPeriodNoteFiles.year);
+        },
+        [
+            cursorDate,
+            displayLocale,
+            handleDateFilterModifiedClick,
+            headerPeriodNoteFiles.year,
+            openOrCreateCustomCalendarNote,
+            yearNotesEnabled
+        ]
+    );
+
+    const handleYearPeriodContextMenu = useCallback(
+        (event: React.MouseEvent<HTMLElement>) => {
+            if (!cursorDate) {
+                return;
+            }
+
+            showCalendarNoteContextMenu(event, {
+                kind: 'year',
+                date: cursorDate.clone().locale(displayLocale),
+                existingFile: headerPeriodNoteFiles.year,
+                canCreate: yearNotesEnabled
+            });
+        },
+        [cursorDate, displayLocale, headerPeriodNoteFiles.year, showCalendarNoteContextMenu, yearNotesEnabled]
+    );
 
     const weekNoteFilesByKey = useMemo(() => {
         void vaultVersion;
@@ -1448,10 +1592,43 @@ export function NavigationPaneCalendar({
         return null;
     }
 
+    const selectedYearValue = cursorDate.year();
     const monthYearHeaderDate = cursorDate.clone().locale(displayLocale);
     const monthLabel = monthYearHeaderDate.format('MMMM');
     const yearLabel = monthYearHeaderDate.format('YYYY');
     const quarterLabel = monthYearHeaderDate.format('[Q]Q');
+    let headerYearControl: React.ReactNode = null;
+
+    if (showYearInHeader) {
+        if (yearNotesEnabled) {
+            headerYearControl = (
+                <button
+                    type="button"
+                    className={[
+                        'nn-navigation-calendar-period-button',
+                        'nn-navigation-calendar-period-year',
+                        headerPeriodNoteFiles.year ? 'has-period-note' : ''
+                    ]
+                        .filter(Boolean)
+                        .join(' ')}
+                    onClick={handleYearPeriodClick}
+                    onContextMenu={handleYearPeriodContextMenu}
+                >
+                    {yearLabel}
+                </button>
+            );
+        } else {
+            headerYearControl = (
+                <span
+                    className="nn-navigation-calendar-period-label nn-navigation-calendar-period-year"
+                    onClick={handleYearPeriodClick}
+                    onContextMenu={handleYearPeriodContextMenu}
+                >
+                    {yearLabel}
+                </span>
+            );
+        }
+    }
 
     return (
         <>
@@ -1500,107 +1677,157 @@ export function NavigationPaneCalendar({
                 aria-labelledby={calendarLabelId}
                 data-highlight-today={highlightToday ? 'true' : undefined}
                 data-weeknumbers={showWeekNumbers ? 'true' : undefined}
+                data-compact-header={useRightSidebarYearCalendarHeaderLayout ? 'true' : undefined}
+                data-split-header={useSplitHeaderLayout ? 'true' : undefined}
             >
                 <span id={calendarLabelId} className="nn-visually-hidden">
                     {strings.navigationCalendar.ariaLabel}
                 </span>
                 <div className="nn-navigation-calendar-header">
-                    <div className="nn-navigation-calendar-month">
-                        {monthNotesEnabled ? (
+                    <div
+                        className={[
+                            'nn-navigation-calendar-month',
+                            showInlineMonthNavigation ? 'has-inline-month-nav' : '',
+                            showCompactHeaderInlineInfoButton ? 'has-inline-help' : ''
+                        ]
+                            .filter(Boolean)
+                            .join(' ')}
+                    >
+                        {showInlineMonthNavigation ? (
                             <button
                                 type="button"
-                                className={[
-                                    'nn-navigation-calendar-period-button',
-                                    'nn-navigation-calendar-period-month',
-                                    headerPeriodNoteFiles.month ? 'has-period-note' : ''
-                                ]
-                                    .filter(Boolean)
-                                    .join(' ')}
-                                onClick={event => {
-                                    const periodDate = cursorDate.clone().locale(displayLocale);
-                                    if (handleDateFilterModifiedClick(event, 'month', periodDate)) {
-                                        return;
-                                    }
-                                    openOrCreateCustomCalendarNote('month', periodDate, headerPeriodNoteFiles.month);
-                                }}
-                                onContextMenu={event =>
-                                    showCalendarNoteContextMenu(event, {
-                                        kind: 'month',
-                                        date: cursorDate.clone().locale(displayLocale),
-                                        existingFile: headerPeriodNoteFiles.month,
-                                        canCreate: monthNotesEnabled
-                                    })
-                                }
+                                className="nn-navigation-calendar-nav-button nn-navigation-calendar-year-nav-button nn-navigation-calendar-inline-month-nav-prev"
+                                aria-label={strings.common.previous}
+                                onClick={() => handleNavigate(-1)}
                             >
-                                {monthLabel}
+                                <ServiceIcon iconId="lucide-chevron-left" aria-hidden={true} />
                             </button>
-                        ) : (
-                            <span
-                                className="nn-navigation-calendar-period-label nn-navigation-calendar-period-month"
-                                onClick={event => {
-                                    handleDateFilterModifiedClick(event, 'month', cursorDate.clone().locale(displayLocale));
-                                }}
-                                onContextMenu={event =>
-                                    showCalendarNoteContextMenu(event, {
-                                        kind: 'month',
-                                        date: cursorDate.clone().locale(displayLocale),
-                                        existingFile: headerPeriodNoteFiles.month,
-                                        canCreate: monthNotesEnabled
-                                    })
-                                }
-                            >
-                                {monthLabel}
-                            </span>
-                        )}
-
-                        {yearNotesEnabled ? (
+                        ) : null}
+                        <div className="nn-navigation-calendar-inline-month-center">
+                            {monthNotesEnabled ? (
+                                <button
+                                    type="button"
+                                    className={[
+                                        'nn-navigation-calendar-period-button',
+                                        'nn-navigation-calendar-period-month',
+                                        headerPeriodNoteFiles.month ? 'has-period-note' : ''
+                                    ]
+                                        .filter(Boolean)
+                                        .join(' ')}
+                                    onClick={event => {
+                                        const periodDate = cursorDate.clone().locale(displayLocale);
+                                        if (handleDateFilterModifiedClick(event, 'month', periodDate)) {
+                                            return;
+                                        }
+                                        openOrCreateCustomCalendarNote('month', periodDate, headerPeriodNoteFiles.month);
+                                    }}
+                                    onContextMenu={event =>
+                                        showCalendarNoteContextMenu(event, {
+                                            kind: 'month',
+                                            date: cursorDate.clone().locale(displayLocale),
+                                            existingFile: headerPeriodNoteFiles.month,
+                                            canCreate: monthNotesEnabled
+                                        })
+                                    }
+                                >
+                                    {monthLabel}
+                                </button>
+                            ) : (
+                                <span
+                                    className="nn-navigation-calendar-period-label nn-navigation-calendar-period-month"
+                                    onClick={event => {
+                                        handleDateFilterModifiedClick(event, 'month', cursorDate.clone().locale(displayLocale));
+                                    }}
+                                    onContextMenu={event =>
+                                        showCalendarNoteContextMenu(event, {
+                                            kind: 'month',
+                                            date: cursorDate.clone().locale(displayLocale),
+                                            existingFile: headerPeriodNoteFiles.month,
+                                            canCreate: monthNotesEnabled
+                                        })
+                                    }
+                                >
+                                    {monthLabel}
+                                </span>
+                            )}
+                            {showCompactQuarterInMonthRow ? (
+                                quarterNotesEnabled ? (
+                                    <button
+                                        type="button"
+                                        className={[
+                                            'nn-navigation-calendar-period-button',
+                                            'nn-navigation-calendar-quarter-button',
+                                            'nn-navigation-calendar-quarter-inline',
+                                            headerPeriodNoteFiles.quarter ? 'has-period-note' : ''
+                                        ]
+                                            .filter(Boolean)
+                                            .join(' ')}
+                                        onClick={event => {
+                                            const periodDate = cursorDate.clone().locale(displayLocale);
+                                            if (handleDateFilterModifiedClick(event, 'quarter', periodDate)) {
+                                                return;
+                                            }
+                                            openOrCreateCustomCalendarNote('quarter', periodDate, headerPeriodNoteFiles.quarter);
+                                        }}
+                                        onContextMenu={event =>
+                                            showCalendarNoteContextMenu(event, {
+                                                kind: 'quarter',
+                                                date: cursorDate.clone().locale(displayLocale),
+                                                existingFile: headerPeriodNoteFiles.quarter,
+                                                canCreate: settings.calendarShowQuarter && quarterNotesEnabled
+                                            })
+                                        }
+                                    >
+                                        <span aria-hidden="true">(</span>
+                                        {quarterLabel}
+                                        <span aria-hidden="true">)</span>
+                                    </button>
+                                ) : (
+                                    <span
+                                        className="nn-navigation-calendar-period-label nn-navigation-calendar-quarter-label nn-navigation-calendar-quarter-inline"
+                                        onClick={event => {
+                                            handleDateFilterModifiedClick(event, 'quarter', cursorDate.clone().locale(displayLocale));
+                                        }}
+                                        onContextMenu={event =>
+                                            showCalendarNoteContextMenu(event, {
+                                                kind: 'quarter',
+                                                date: cursorDate.clone().locale(displayLocale),
+                                                existingFile: headerPeriodNoteFiles.quarter,
+                                                canCreate: settings.calendarShowQuarter && quarterNotesEnabled
+                                            })
+                                        }
+                                    >
+                                        <span aria-hidden="true">(</span>
+                                        {quarterLabel}
+                                        <span aria-hidden="true">)</span>
+                                    </span>
+                                )
+                            ) : null}
+                            {showCompactHeaderInlineInfoButton ? (
+                                <button
+                                    type="button"
+                                    className="nn-navigation-calendar-nav-button nn-navigation-calendar-month-help nn-navigation-calendar-inline-help"
+                                    aria-label={strings.navigationCalendar.helpModal.title}
+                                    onClick={openCalendarHelp}
+                                >
+                                    <ServiceIcon iconId="info" aria-hidden={true} />
+                                </button>
+                            ) : null}
+                        </div>
+                        {showInlineMonthNavigation ? (
                             <button
                                 type="button"
-                                className={[
-                                    'nn-navigation-calendar-period-button',
-                                    'nn-navigation-calendar-period-year',
-                                    headerPeriodNoteFiles.year ? 'has-period-note' : ''
-                                ]
-                                    .filter(Boolean)
-                                    .join(' ')}
-                                onClick={event => {
-                                    const periodDate = cursorDate.clone().locale(displayLocale);
-                                    if (handleDateFilterModifiedClick(event, 'year', periodDate)) {
-                                        return;
-                                    }
-                                    openOrCreateCustomCalendarNote('year', periodDate, headerPeriodNoteFiles.year);
-                                }}
-                                onContextMenu={event =>
-                                    showCalendarNoteContextMenu(event, {
-                                        kind: 'year',
-                                        date: cursorDate.clone().locale(displayLocale),
-                                        existingFile: headerPeriodNoteFiles.year,
-                                        canCreate: yearNotesEnabled
-                                    })
-                                }
+                                className="nn-navigation-calendar-nav-button nn-navigation-calendar-year-nav-button nn-navigation-calendar-inline-month-nav-next"
+                                aria-label={strings.common.next}
+                                onClick={() => handleNavigate(1)}
                             >
-                                {yearLabel}
+                                <ServiceIcon iconId="lucide-chevron-right" aria-hidden={true} />
                             </button>
-                        ) : (
-                            <span
-                                className="nn-navigation-calendar-period-label nn-navigation-calendar-period-year"
-                                onClick={event => {
-                                    handleDateFilterModifiedClick(event, 'year', cursorDate.clone().locale(displayLocale));
-                                }}
-                                onContextMenu={event =>
-                                    showCalendarNoteContextMenu(event, {
-                                        kind: 'year',
-                                        date: cursorDate.clone().locale(displayLocale),
-                                        existingFile: headerPeriodNoteFiles.year,
-                                        canCreate: yearNotesEnabled
-                                    })
-                                }
-                            >
-                                {yearLabel}
-                            </span>
-                        )}
+                        ) : null}
 
-                        {settings.calendarShowQuarter ? (
+                        {showHeaderPeriodDetails ? headerYearControl : null}
+
+                        {showHeaderPeriodDetails && settings.calendarShowQuarter ? (
                             quarterNotesEnabled ? (
                                 <button
                                     type="button"
@@ -1653,42 +1880,50 @@ export function NavigationPaneCalendar({
                             )
                         ) : null}
                     </div>
-                    <div className="nn-navigation-calendar-nav">
-                        {showInfoButton ? (
+                    {showHeaderNavRow ? (
+                        <div className="nn-navigation-calendar-nav">
+                            {showInfoInNavRow ? (
+                                <button
+                                    type="button"
+                                    className={[
+                                        'nn-navigation-calendar-nav-button',
+                                        'nn-navigation-calendar-help',
+                                        'nn-navigation-calendar-help-inline'
+                                    ]
+                                        .filter(Boolean)
+                                        .join(' ')}
+                                    aria-label={strings.navigationCalendar.helpModal.title}
+                                    onClick={openCalendarHelp}
+                                >
+                                    <ServiceIcon iconId="info" aria-hidden={true} />
+                                </button>
+                            ) : null}
                             <button
                                 type="button"
-                                className="nn-navigation-calendar-nav-button nn-navigation-calendar-help"
-                                aria-label={strings.navigationCalendar.helpModal.title}
-                                onClick={openCalendarHelp}
+                                className="nn-navigation-calendar-nav-button nn-navigation-calendar-nav-prev"
+                                aria-label={strings.common.previous}
+                                onClick={() => handleNavigate(-1)}
                             >
-                                <ServiceIcon iconId="info" aria-hidden={true} />
+                                <ServiceIcon iconId="lucide-chevron-left" aria-hidden={true} />
                             </button>
-                        ) : null}
-                        <button
-                            type="button"
-                            className="nn-navigation-calendar-nav-button nn-navigation-calendar-nav-prev"
-                            aria-label={strings.common.previous}
-                            onClick={() => handleNavigate(-1)}
-                        >
-                            <ServiceIcon iconId="lucide-chevron-left" aria-hidden={true} />
-                        </button>
-                        <button
-                            type="button"
-                            className="nn-navigation-calendar-today"
-                            aria-label={strings.dateGroups.today}
-                            onClick={handleToday}
-                        >
-                            {strings.dateGroups.today}
-                        </button>
-                        <button
-                            type="button"
-                            className="nn-navigation-calendar-nav-button nn-navigation-calendar-nav-next"
-                            aria-label={strings.common.next}
-                            onClick={() => handleNavigate(1)}
-                        >
-                            <ServiceIcon iconId="lucide-chevron-right" aria-hidden={true} />
-                        </button>
-                    </div>
+                            <button
+                                type="button"
+                                className="nn-navigation-calendar-today"
+                                aria-label={strings.dateGroups.today}
+                                onClick={handleToday}
+                            >
+                                {strings.dateGroups.today}
+                            </button>
+                            <button
+                                type="button"
+                                className="nn-navigation-calendar-nav-button nn-navigation-calendar-nav-next"
+                                aria-label={strings.common.next}
+                                onClick={() => handleNavigate(1)}
+                            >
+                                <ServiceIcon iconId="lucide-chevron-right" aria-hidden={true} />
+                            </button>
+                        </div>
+                    ) : null}
                 </div>
 
                 <div className="nn-navigation-calendar-grid" data-weeknumbers={showWeekNumbers ? 'true' : undefined}>
@@ -1702,7 +1937,11 @@ export function NavigationPaneCalendar({
                         ))}
                     </div>
 
-                    <div className="nn-navigation-calendar-weeks" data-weeknumbers={showWeekNumbers ? 'true' : undefined}>
+                    <div
+                        className="nn-navigation-calendar-weeks"
+                        data-weeknumbers={showWeekNumbers ? 'true' : undefined}
+                        data-has-trailing-spacer={trailingSpacerWeekCount > 0 ? 'true' : undefined}
+                    >
                         {weeks.map(week => {
                             const weekNoteFile = weekNoteFilesByKey.get(week.key) ?? null;
                             const weekHasUnfinishedTasks = (weekUnfinishedTaskCountByKey.get(week.key) ?? 0) > 0;
@@ -1787,7 +2026,7 @@ export function NavigationPaneCalendar({
                                             <div className="nn-navigation-calendar-weeknumber-divider" aria-hidden="true" />
                                         </>
                                     ) : null}
-                                    {week.days.map(day => {
+                                    {week.days.map((day, dayIndex) => {
                                         const dayNumber = day.date.date();
                                         const hasDailyNote = Boolean(day.file);
                                         const dayUnfinishedTaskCount = hasDailyNote ? (unfinishedTaskCountByIso.get(day.iso) ?? 0) : 0;
@@ -1797,6 +2036,25 @@ export function NavigationPaneCalendar({
                                         const isToday = todayIso === day.iso;
                                         const dayOfWeek = day.date.toDate().getDay();
                                         const isWeekend = isWeekendDay(dayOfWeek, settings.calendarWeekendDays);
+                                        const previousDay = dayIndex > 0 ? week.days[dayIndex - 1] : null;
+                                        const nextDay = dayIndex < week.days.length - 1 ? week.days[dayIndex + 1] : null;
+                                        const hasWeekendBefore =
+                                            isWeekend &&
+                                            Boolean(
+                                                previousDay &&
+                                                    isWeekendDay(previousDay.date.toDate().getDay(), settings.calendarWeekendDays)
+                                            );
+                                        const hasWeekendAfter =
+                                            isWeekend &&
+                                            Boolean(nextDay && isWeekendDay(nextDay.date.toDate().getDay(), settings.calendarWeekendDays));
+                                        const dayCellClassName = [
+                                            'nn-navigation-calendar-day-cell',
+                                            isWeekend ? 'is-weekend' : 'is-weekday',
+                                            hasWeekendBefore ? 'has-weekend-before' : '',
+                                            hasWeekendAfter ? 'has-weekend-after' : ''
+                                        ]
+                                            .filter(Boolean)
+                                            .join(' ');
 
                                         const className = [
                                             'nn-navigation-calendar-day',
@@ -1835,41 +2093,128 @@ export function NavigationPaneCalendar({
                                         };
 
                                         return (
-                                            <CalendarDayButton
-                                                key={day.iso}
-                                                className={className}
-                                                ariaText={tooltipAriaText}
-                                                style={style}
-                                                tooltipEnabled={tooltipEnabled}
-                                                tooltipData={tooltipData}
-                                                dayNumber={dayNumber}
-                                                isMobile={isMobile}
-                                                showUnfinishedTaskIndicator={hasUnfinishedTasks}
-                                                onShowTooltip={handleShowTooltip}
-                                                onHideTooltip={handleHideTooltip}
-                                                onClick={event => {
-                                                    if (handleDateFilterModifiedClick(event, 'day', day.date)) {
-                                                        return;
+                                            <div key={day.iso} className={dayCellClassName}>
+                                                <CalendarDayButton
+                                                    className={className}
+                                                    ariaText={tooltipAriaText}
+                                                    style={style}
+                                                    tooltipEnabled={tooltipEnabled}
+                                                    tooltipData={tooltipData}
+                                                    dayNumber={dayNumber}
+                                                    isMobile={isMobile}
+                                                    showUnfinishedTaskIndicator={hasUnfinishedTasks}
+                                                    onShowTooltip={handleShowTooltip}
+                                                    onHideTooltip={handleHideTooltip}
+                                                    onClick={event => {
+                                                        if (handleDateFilterModifiedClick(event, 'day', day.date)) {
+                                                            return;
+                                                        }
+                                                        openOrCreateDailyNote(day.date, day.file);
+                                                    }}
+                                                    onContextMenu={event =>
+                                                        showCalendarNoteContextMenu(event, {
+                                                            kind: 'day',
+                                                            date: day.date,
+                                                            existingFile: day.file,
+                                                            canCreate:
+                                                                settings.calendarIntegrationMode !== 'daily-notes' ||
+                                                                Boolean(dailyNoteSettings)
+                                                        })
                                                     }
-                                                    openOrCreateDailyNote(day.date, day.file);
-                                                }}
-                                                onContextMenu={event =>
-                                                    showCalendarNoteContextMenu(event, {
-                                                        kind: 'day',
-                                                        date: day.date,
-                                                        existingFile: day.file,
-                                                        canCreate:
-                                                            settings.calendarIntegrationMode !== 'daily-notes' || Boolean(dailyNoteSettings)
-                                                    })
-                                                }
-                                            />
+                                                />
+                                            </div>
                                         );
                                     })}
                                 </div>
                             );
                         })}
+                        {Array.from({ length: trailingSpacerWeekCount }).map((_, spacerIndex) => (
+                            <div
+                                key={`spacer-week-${spacerIndex}`}
+                                className="nn-navigation-calendar-week nn-navigation-calendar-week-spacer"
+                            >
+                                {showWeekNumbers ? (
+                                    <>
+                                        <div
+                                            className="nn-navigation-calendar-weeknumber nn-navigation-calendar-weeknumber-spacer-row"
+                                            aria-hidden="true"
+                                        />
+                                    </>
+                                ) : null}
+                                {Array.from({ length: 7 }).map((_day, dayIndex) => (
+                                    <div
+                                        key={`spacer-day-${spacerIndex}-${dayIndex}`}
+                                        className="nn-navigation-calendar-day-spacer"
+                                        aria-hidden="true"
+                                    />
+                                ))}
+                            </div>
+                        ))}
                     </div>
                 </div>
+
+                {showYearCalendar ? (
+                    <>
+                        <div className="nn-navigation-calendar-year-nav">
+                            <button
+                                type="button"
+                                className="nn-navigation-calendar-nav-button nn-navigation-calendar-year-nav-button"
+                                aria-label={strings.common.previous}
+                                onClick={() => handleNavigateYear(-1)}
+                            >
+                                <ServiceIcon iconId="lucide-chevron-left" aria-hidden={true} />
+                            </button>
+                            <button
+                                type="button"
+                                className={[
+                                    'nn-navigation-calendar-year-label',
+                                    'nn-navigation-calendar-period-button',
+                                    headerPeriodNoteFiles.year ? 'has-period-note' : ''
+                                ]
+                                    .filter(Boolean)
+                                    .join(' ')}
+                                aria-live="polite"
+                                onClick={handleYearPeriodClick}
+                                onContextMenu={handleYearPeriodContextMenu}
+                            >
+                                {selectedYearValue}
+                            </button>
+                            <button
+                                type="button"
+                                className="nn-navigation-calendar-nav-button nn-navigation-calendar-year-nav-button"
+                                aria-label={strings.common.next}
+                                onClick={() => handleNavigateYear(1)}
+                            >
+                                <ServiceIcon iconId="lucide-chevron-right" aria-hidden={true} />
+                            </button>
+                        </div>
+
+                        <div className="nn-navigation-calendar-year-grid">
+                            {yearMonthEntries.map(entry => {
+                                const isSelectedMonth = entry.monthIndex === cursorDate.month();
+                                const monthLabelText = entry.noteCount > 0 ? `${entry.shortLabel} (${entry.noteCount})` : entry.shortLabel;
+                                const monthAriaLabel =
+                                    entry.noteCount > 0
+                                        ? `${entry.fullLabel} ${selectedYearValue} (${entry.noteCount})`
+                                        : `${entry.fullLabel} ${selectedYearValue}`;
+
+                                return (
+                                    <button
+                                        key={entry.key}
+                                        type="button"
+                                        className={['nn-navigation-calendar-year-month', isSelectedMonth ? 'is-selected-month' : '']
+                                            .filter(Boolean)
+                                            .join(' ')}
+                                        aria-label={monthAriaLabel}
+                                        onClick={event => handleSelectYearMonth(event, entry.date)}
+                                    >
+                                        {monthLabelText}
+                                    </button>
+                                );
+                            })}
+                        </div>
+                    </>
+                ) : null}
             </div>
         </>
     );

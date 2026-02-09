@@ -83,7 +83,7 @@ export const STRINGS_JA = {
             confirmButton: '作成'
         },
         helpModal: {
-            title: 'カレンダー',
+            title: 'カレンダーのショートカット',
             items: [
                 '任意の日をクリックしてデイリーノートを開くか作成します。週、月、四半期、年も同様に機能します。',
                 '日付の下の塗りつぶされたドットはノートがあることを意味します。中空のドットは未完了のタスクがあることを意味します。',
@@ -1057,6 +1057,10 @@ export const STRINGS_JA = {
             calendarShowQuarter: {
                 name: '四半期を表示',
                 desc: 'カレンダーヘッダーに四半期ラベルを追加します。'
+            },
+            calendarShowYearCalendar: {
+                name: '年間カレンダーを表示',
+                desc: '右サイドバーに年ナビゲーションと月グリッドを表示します。'
             },
             calendarConfirmBeforeCreate: {
                 name: '作成前に確認',

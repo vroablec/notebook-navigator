@@ -245,6 +245,21 @@ export function renderCalendarTab(context: SettingsTabContext): void {
 
     addSettingSyncModeToggle({ setting: calendarWeeksToShowSetting, plugin, settingId: 'calendarWeeksToShow' });
 
+    const rightSidebarGroup = createGroup(strings.settings.items.calendarPlacement.options.rightSidebar);
+
+    rightSidebarGroup
+        .addSetting(setting => {
+            setting
+                .setName(strings.settings.items.calendarShowYearCalendar.name)
+                .setDesc(strings.settings.items.calendarShowYearCalendar.desc);
+        })
+        .addToggle(toggle =>
+            toggle.setValue(plugin.settings.calendarShowYearCalendar).onChange(async value => {
+                plugin.settings.calendarShowYearCalendar = value;
+                await plugin.saveSettingsAndUpdate();
+            })
+        );
+
     const calendarIntegrationGroup = createGroup(strings.settings.groups.navigation.calendarIntegration);
 
     const calendarIntegrationSetting = calendarIntegrationGroup.addSetting(setting => {
