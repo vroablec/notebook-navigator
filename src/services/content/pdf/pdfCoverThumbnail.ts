@@ -46,7 +46,7 @@ type PdfJsLibrary = {
 // Minimal interface for a pdf.js document object
 type PdfDocument = {
     getPage: (pageNumber: number) => Promise<unknown>;
-    destroy?: () => void;
+    destroy?: () => void | Promise<void>;
 };
 
 // Render task returned by pdf.js page.render()
@@ -109,12 +109,13 @@ function touchWorkerIdleTimer(): void {
             touchWorkerIdleTimer();
             return;
         }
-        destroySharedWorker();
+        // Timer callbacks cannot await, so worker teardown runs in the background.
+        void destroySharedWorker();
     }, DEFAULT_WORKER_IDLE_TIMEOUT_MS);
 }
 
 // Cleans up and destroys the shared pdf.js worker instance
-function destroySharedWorker(): void {
+async function destroySharedWorker(): Promise<void> {
     clearWorkerIdleTimer();
 
     const worker = sharedWorker;
@@ -125,10 +126,13 @@ function destroySharedWorker(): void {
         return;
     }
 
-    const destroy = worker['destroy'];
-    if (typeof destroy === 'function') {
+    if (hasFunctionProperty(worker, 'destroy')) {
         try {
-            destroy.call(worker);
+            // pdf.js destroy can be sync or async depending on version/build.
+            const result = worker.destroy();
+            if (isPromiseLike(result)) {
+                await result;
+            }
         } catch {
             // ignore
         }
@@ -242,7 +246,8 @@ async function getSharedWorkerInstance(pdfjs: unknown, verbosityLevel: number | 
             return sharedWorker;
         }
 
-        destroySharedWorker();
+        // Wait for the old worker shutdown before creating a new worker instance.
+        await destroySharedWorker();
     }
 
     const worker = tryCreateWorker(pdfjs, verbosityLevel);
@@ -399,16 +404,21 @@ export async function renderPdfCoverThumbnail(app: App, pdfFile: TFile, options:
         }
 
         try {
-            doc?.destroy?.();
+            // Document teardown can return a Promise in newer pdf.js builds.
+            const destroyResult = doc?.destroy?.();
+            if (isPromiseLike(destroyResult)) {
+                await destroyResult;
+            }
         } catch {
             // ignore
         }
 
-        release();
-
         if (Platform.isMobile) {
-            destroySharedWorker();
+            // Keep the render slot until worker teardown completes to avoid overlap on mobile.
+            await destroySharedWorker();
+            release();
         } else {
+            release();
             touchWorkerIdleTimer();
         }
     }
