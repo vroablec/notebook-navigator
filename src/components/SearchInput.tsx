@@ -335,7 +335,7 @@ export function SearchInput({
                     onKeyDown={handleKeyDown}
                     onClick={handleSearchClick}
                 />
-                {!hasQuery && settings.calendarShowInfoButton && (
+                {!hasQuery && settings.showInfoButtons && (
                     <div
                         className="nn-search-help-button"
                         role="button"

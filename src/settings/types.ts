@@ -214,6 +214,7 @@ export interface NotebookNavigatorSettings {
 
     // General tab - View
     startView: 'navigation' | 'files';
+    showInfoButtons: boolean;
     interfaceIcons: Record<string, string>;
 
     // General tab - Homepage
@@ -256,7 +257,6 @@ export interface NotebookNavigatorSettings {
     calendarConfirmBeforeCreate: boolean;
     calendarLocale: string;
     calendarWeekendDays: CalendarWeekendDays;
-    calendarShowInfoButton: boolean;
     calendarHighlightToday: boolean;
     calendarShowFeatureImage: boolean;
     calendarShowWeekNumber: boolean;

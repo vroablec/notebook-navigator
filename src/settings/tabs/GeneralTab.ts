@@ -903,11 +903,11 @@ export function renderGeneralTab(context: SettingsTabContext): void {
 
     viewGroup
         .addSetting(setting => {
-            setting.setName(strings.settings.items.calendarShowInfoButton.name).setDesc(strings.settings.items.calendarShowInfoButton.desc);
+            setting.setName(strings.settings.items.showInfoButtons.name).setDesc(strings.settings.items.showInfoButtons.desc);
         })
         .addToggle(toggle =>
-            toggle.setValue(plugin.settings.calendarShowInfoButton).onChange(async value => {
-                plugin.settings.calendarShowInfoButton = value;
+            toggle.setValue(plugin.settings.showInfoButtons).onChange(async value => {
+                plugin.settings.showInfoButtons = value;
                 await plugin.saveSettingsAndUpdate();
             })
         );

@@ -1031,7 +1031,7 @@ export const STRINGS_NL = {
                     thuFri: 'Donderdag en vrijdag'
                 }
             },
-            calendarShowInfoButton: {
+            showInfoButtons: {
                 name: 'Infoknoppen tonen',
                 desc: 'Infoknoppen weergeven in de zoekbalk en de kalenderheader.'
             },

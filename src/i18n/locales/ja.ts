@@ -1029,7 +1029,7 @@ export const STRINGS_JA = {
                     thuFri: '木曜日と金曜日'
                 }
             },
-            calendarShowInfoButton: {
+            showInfoButtons: {
                 name: '情報ボタンを表示',
                 desc: '検索バーとカレンダーヘッダーに情報ボタンを表示します。'
             },

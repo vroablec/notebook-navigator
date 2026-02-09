@@ -1028,7 +1028,7 @@ export const STRINGS_TH = {
                     thuFri: 'วันพฤหัสบดีและวันศุกร์'
                 }
             },
-            calendarShowInfoButton: {
+            showInfoButtons: {
                 name: 'แสดงปุ่มข้อมูล',
                 desc: 'แสดงปุ่มข้อมูลในแถบค้นหาและส่วนหัวปฏิทิน'
             },

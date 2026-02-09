@@ -1028,7 +1028,7 @@ export const STRINGS_AR = {
                     thuFri: 'الخميس والجمعة'
                 }
             },
-            calendarShowInfoButton: {
+            showInfoButtons: {
                 name: 'إظهار أزرار المعلومات',
                 desc: 'عرض أزرار المعلومات في شريط البحث ورأس التقويم.'
             },

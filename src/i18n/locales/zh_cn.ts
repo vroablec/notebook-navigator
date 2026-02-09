@@ -1027,7 +1027,7 @@ export const STRINGS_ZH_CN = {
                     thuFri: '周四和周五'
                 }
             },
-            calendarShowInfoButton: {
+            showInfoButtons: {
                 name: '显示信息按钮',
                 desc: '在搜索栏和日历标题中显示信息按钮。'
             },

@@ -1029,7 +1029,7 @@ export const STRINGS_VI = {
                     thuFri: 'Thứ năm và thứ sáu'
                 }
             },
-            calendarShowInfoButton: {
+            showInfoButtons: {
                 name: 'Hiển thị nút thông tin',
                 desc: 'Hiển thị nút thông tin trên thanh tìm kiếm và tiêu đề lịch.'
             },

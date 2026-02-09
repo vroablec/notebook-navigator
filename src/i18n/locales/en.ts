@@ -1028,7 +1028,7 @@ export const STRINGS_EN = {
                     thuFri: 'Thursday and Friday'
                 }
             },
-            calendarShowInfoButton: {
+            showInfoButtons: {
                 name: 'Show info buttons',
                 desc: 'Display info buttons in the search bar and calendar header.'
             },

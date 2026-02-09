@@ -1406,7 +1406,7 @@ export function NavigationPaneCalendar({
     );
 
     const showWeekNumbers = settings.calendarShowWeekNumber;
-    const showInfoButton = settings.calendarShowInfoButton && !isMobile;
+    const showInfoButton = settings.showInfoButtons && !isMobile;
     const highlightToday = settings.calendarHighlightToday;
     const showYearCalendar = isRightSidebar && settings.calendarShowYearCalendar;
     const showYearInHeader = !isRightSidebar || !showYearCalendar;

@@ -1029,7 +1029,7 @@ export const STRINGS_KO = {
                     thuFri: '목요일과 금요일'
                 }
             },
-            calendarShowInfoButton: {
+            showInfoButtons: {
                 name: '정보 버튼 표시',
                 desc: '검색 바와 캘린더 헤더에 정보 버튼을 표시합니다.'
             },

@@ -1031,7 +1031,7 @@ export const STRINGS_PL = {
                     thuFri: 'Czwartek i piątek'
                 }
             },
-            calendarShowInfoButton: {
+            showInfoButtons: {
                 name: 'Pokaż przyciski informacji',
                 desc: 'Wyświetl przyciski informacji na pasku wyszukiwania i w nagłówku kalendarza.'
             },

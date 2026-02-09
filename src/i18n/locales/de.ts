@@ -1031,7 +1031,7 @@ export const STRINGS_DE = {
                     thuFri: 'Donnerstag und Freitag'
                 }
             },
-            calendarShowInfoButton: {
+            showInfoButtons: {
                 name: 'Info-Schaltflächen anzeigen',
                 desc: 'Info-Schaltflächen in der Suchleiste und der Kalenderüberschrift anzeigen.'
             },

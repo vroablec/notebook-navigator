@@ -1029,7 +1029,7 @@ export const STRINGS_FA = {
                     thuFri: 'پنجشنبه و جمعه'
                 }
             },
-            calendarShowInfoButton: {
+            showInfoButtons: {
                 name: 'نمایش دکمه‌های اطلاعات',
                 desc: 'نمایش دکمه‌های اطلاعات در نوار جستجو و سربرگ تقویم.'
             },

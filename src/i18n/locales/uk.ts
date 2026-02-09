@@ -1029,7 +1029,7 @@ export const STRINGS_UK = {
                     thuFri: "Четвер та п'ятниця"
                 }
             },
-            calendarShowInfoButton: {
+            showInfoButtons: {
                 name: 'Показати кнопки інформації',
                 desc: 'Відображати кнопки інформації в рядку пошуку та заголовку календаря.'
             },

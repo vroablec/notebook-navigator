@@ -76,6 +76,7 @@ export const DEFAULT_SETTINGS: NotebookNavigatorSettings = {
 
     // General tab - View
     startView: 'files',
+    showInfoButtons: true,
     interfaceIcons: sanitizeRecord<string>(undefined),
 
     // General tab - Homepage
@@ -119,7 +120,6 @@ export const DEFAULT_SETTINGS: NotebookNavigatorSettings = {
     calendarConfirmBeforeCreate: true,
     calendarLocale: 'system-default',
     calendarWeekendDays: 'sat-sun',
-    calendarShowInfoButton: true,
     calendarHighlightToday: true,
     calendarShowFeatureImage: true,
     calendarShowWeekNumber: false,

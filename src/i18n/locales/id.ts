@@ -1029,7 +1029,7 @@ export const STRINGS_ID = {
                     thuFri: 'Kamis dan Jumat'
                 }
             },
-            calendarShowInfoButton: {
+            showInfoButtons: {
                 name: 'Tampilkan tombol info',
                 desc: 'Tampilkan tombol info di bilah pencarian dan header kalender.'
             },

@@ -1030,7 +1030,7 @@ export const STRINGS_TR = {
                     thuFri: 'Perşembe ve cuma'
                 }
             },
-            calendarShowInfoButton: {
+            showInfoButtons: {
                 name: 'Bilgi düğmelerini göster',
                 desc: 'Arama çubuğunda ve takvim başlığında bilgi düğmelerini göster.'
             },
