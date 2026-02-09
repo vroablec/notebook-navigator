@@ -190,6 +190,33 @@ export const LIMITS = {
              * Maximum concurrent PDF page renders on mobile.
              */
             maxParallelRendersMobile: 1,
+            preflight: {
+                /**
+                 * Conservative mobile render work budget (bytes) used to decide whether to skip PDF cover thumbnails.
+                 *
+                 * Used by:
+                 * - `renderPdfCoverThumbnail()` via `pdfPreflight` to avoid calling `page.render(...)` on PDFs that are
+                 *   likely to exceed mobile memory/work budgets.
+                 *
+                 * Notes:
+                 * - This is a worst-case estimate; preflight is intentionally fail-closed on mobile.
+                 */
+                mobileBudgetBytes: 200_000_000,
+                /**
+                 * Maximum time (ms) to wait for `page.getOperatorList()` during preflight.
+                 */
+                operatorListTimeoutMs: 1_500,
+                multipliers: {
+                    /**
+                     * Applies when the PDF signals page group transparency.
+                     */
+                    transparencyGroup: 1.5,
+                    /**
+                     * Applies when the PDF uses soft masks.
+                     */
+                    softMask: 1.5
+                }
+            },
             /**
              * Idle timeout for the shared pdf.js worker.
              *

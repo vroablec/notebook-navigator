@@ -21,7 +21,7 @@ export interface FolderNoteNameSettings {
     folderNoteNamePattern?: string;
 }
 
-export const FOLDER_NOTE_NAME_PATTERN_TOKEN = '{{folder}}';
+const FOLDER_NOTE_NAME_PATTERN_TOKEN = '{{folder}}';
 export const FOLDER_NOTE_NAME_PATTERN_PLACEHOLDER = '_{{folder}}';
 
 const FOLDER_NOTE_NAME_TOKEN_PATTERN = /\{\{\s*folder\s*\}\}/giu;
