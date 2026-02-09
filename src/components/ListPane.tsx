@@ -219,7 +219,7 @@ export const ListPane = React.memo(
         const listPaneStyle = useMemo<CSSPropertiesWithVars>(() => {
             return {
                 ...(iconColumnStyle ?? {}),
-                '--nn-nav-calendar-week-count': calendarWeekCount
+                '--nn-calendar-week-count': calendarWeekCount
             };
         }, [calendarWeekCount, iconColumnStyle]);
 

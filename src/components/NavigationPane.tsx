@@ -2764,8 +2764,8 @@ export const NavigationPane = React.memo(
         const navigationPaneStyle = useMemo<CSSPropertiesWithVars>(() => {
             return {
                 ...(props.style ?? {}),
-                // Used by `src/styles/sections/navigation-calendar.css` to compute `--nn-nav-calendar-height`.
-                '--nn-nav-calendar-week-count': calendarWeekCount
+                // Used by `src/styles/sections/calendar.css` to size the rendered week rows.
+                '--nn-calendar-week-count': calendarWeekCount
             };
         }, [calendarWeekCount, props.style]);
 
