@@ -672,18 +672,18 @@ export function Calendar({
     }, [clearHoverTooltip, momentApi, onNavigationAction]);
 
     const showWeekNumbers = settings.calendarShowWeekNumber;
-    const showInfoButton = settings.showInfoButtons && !isMobile;
     const highlightToday = settings.calendarHighlightToday;
     const showYearCalendar = isRightSidebar && settings.calendarShowYearCalendar;
     const showYearInHeader = !isRightSidebar || !showYearCalendar;
     const useRightSidebarYearCalendarHeaderLayout = isRightSidebar && showYearCalendar;
     const useSplitHeaderLayout = !useRightSidebarYearCalendarHeaderLayout;
+    const showHeaderHelpButton = settings.showInfoButtons && !isMobile && useRightSidebarYearCalendarHeaderLayout;
     const showInlineMonthNavigation = useRightSidebarYearCalendarHeaderLayout;
     const showCompactQuarterInMonthRow = useRightSidebarYearCalendarHeaderLayout && settings.calendarShowQuarter;
     const showHeaderPeriodDetails = useSplitHeaderLayout;
     const showHeaderNavRow = useSplitHeaderLayout;
-    const showCompactHeaderInlineInfoButton = showInfoButton && useRightSidebarYearCalendarHeaderLayout;
-    const showInfoInNavRow = showInfoButton && showHeaderNavRow;
+    const showCompactHeaderInlineInfoButton = showHeaderHelpButton;
+    const showInfoInNavRow = false;
 
     const isCustomCalendar = settings.calendarIntegrationMode === 'notebook-navigator';
     const weekNotesEnabled = isCustomCalendar && settings.calendarCustomWeekPattern.trim() !== '';

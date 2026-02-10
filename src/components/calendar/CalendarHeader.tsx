@@ -65,6 +65,16 @@ export const CalendarHeader = React.memo(function CalendarHeader({
     onPeriodClick,
     onPeriodContextMenu
 }: CalendarHeaderProps) {
+    // Keep mouse clicks from moving focus to header controls so `:focus-within`
+    // does not keep the inline help `(i)` button visible after pointer hover ends.
+    const handleMouseDown = (event: React.MouseEvent<HTMLButtonElement>) => {
+        if (event.button !== 0) {
+            return;
+        }
+
+        event.preventDefault();
+    };
+
     const headerYearControl = showYearInHeader ? (
         <button
             type="button"
@@ -75,6 +85,7 @@ export const CalendarHeader = React.memo(function CalendarHeader({
             ]
                 .filter(Boolean)
                 .join(' ')}
+            onMouseDown={handleMouseDown}
             onClick={event => onPeriodClick(event, 'year')}
             onContextMenu={event => onPeriodContextMenu(event, 'year')}
         >
@@ -94,6 +105,7 @@ export const CalendarHeader = React.memo(function CalendarHeader({
                 ]
                     .filter(Boolean)
                     .join(' ')}
+                onMouseDown={handleMouseDown}
                 onClick={event => onPeriodClick(event, 'quarter')}
                 onContextMenu={event => onPeriodContextMenu(event, 'quarter')}
             >
@@ -120,6 +132,7 @@ export const CalendarHeader = React.memo(function CalendarHeader({
                         type="button"
                         className="nn-navigation-calendar-nav-button nn-navigation-calendar-year-nav-button nn-navigation-calendar-inline-month-nav-prev"
                         aria-label={strings.common.previous}
+                        onMouseDown={handleMouseDown}
                         onClick={() => onNavigate(-1)}
                     >
                         <ServiceIcon iconId="lucide-chevron-left" aria-hidden={true} />
@@ -135,6 +148,7 @@ export const CalendarHeader = React.memo(function CalendarHeader({
                         ]
                             .filter(Boolean)
                             .join(' ')}
+                        onMouseDown={handleMouseDown}
                         onClick={event => onPeriodClick(event, 'month')}
                         onContextMenu={event => onPeriodContextMenu(event, 'month')}
                     >
@@ -146,6 +160,7 @@ export const CalendarHeader = React.memo(function CalendarHeader({
                             type="button"
                             className="nn-navigation-calendar-nav-button nn-navigation-calendar-month-help nn-navigation-calendar-inline-help"
                             aria-label={strings.navigationCalendar.helpModal.title}
+                            onMouseDown={handleMouseDown}
                             onClick={onOpenHelp}
                         >
                             <ServiceIcon iconId="info" aria-hidden={true} />
@@ -157,6 +172,7 @@ export const CalendarHeader = React.memo(function CalendarHeader({
                         type="button"
                         className="nn-navigation-calendar-nav-button nn-navigation-calendar-year-nav-button nn-navigation-calendar-inline-month-nav-next"
                         aria-label={strings.common.next}
+                        onMouseDown={handleMouseDown}
                         onClick={() => onNavigate(1)}
                     >
                         <ServiceIcon iconId="lucide-chevron-right" aria-hidden={true} />
@@ -179,6 +195,7 @@ export const CalendarHeader = React.memo(function CalendarHeader({
                                 .filter(Boolean)
                                 .join(' ')}
                             aria-label={strings.navigationCalendar.helpModal.title}
+                            onMouseDown={handleMouseDown}
                             onClick={onOpenHelp}
                         >
                             <ServiceIcon iconId="info" aria-hidden={true} />
@@ -188,17 +205,25 @@ export const CalendarHeader = React.memo(function CalendarHeader({
                         type="button"
                         className="nn-navigation-calendar-nav-button nn-navigation-calendar-nav-prev"
                         aria-label={strings.common.previous}
+                        onMouseDown={handleMouseDown}
                         onClick={() => onNavigate(-1)}
                     >
                         <ServiceIcon iconId="lucide-chevron-left" aria-hidden={true} />
                     </button>
-                    <button type="button" className="nn-navigation-calendar-today" aria-label={strings.dateGroups.today} onClick={onToday}>
+                    <button
+                        type="button"
+                        className="nn-navigation-calendar-today"
+                        aria-label={strings.dateGroups.today}
+                        onMouseDown={handleMouseDown}
+                        onClick={onToday}
+                    >
                         {strings.dateGroups.today}
                     </button>
                     <button
                         type="button"
                         className="nn-navigation-calendar-nav-button nn-navigation-calendar-nav-next"
                         aria-label={strings.common.next}
+                        onMouseDown={handleMouseDown}
                         onClick={() => onNavigate(1)}
                     >
                         <ServiceIcon iconId="lucide-chevron-right" aria-hidden={true} />
