@@ -220,6 +220,44 @@ describe('MarkdownPipelineContentProvider task counters', () => {
         expect(result).toEqual({ total: 1, unfinished: 1 });
     });
 
+    it('handles deep blockquote prefixes', async () => {
+        const context = createApp();
+        const settings = createSettings();
+        const provider = new TestMarkdownPipelineContentProvider(context.app);
+        const file = createFile('notes/note.md');
+        file.stat.mtime = 100;
+
+        const blockquotePrefix = '> '.repeat(120);
+        setMarkdownContent(
+            context,
+            file,
+            `${blockquotePrefix}not a task\n${blockquotePrefix}- [ ] outside\n${blockquotePrefix}* [x] done\n`
+        );
+        const fileData = createFileData({ mtime: file.stat.mtime, markdownPipelineMtime: file.stat.mtime });
+        const result = await provider.runTasks(file, fileData, settings);
+
+        expect(result).toEqual({ total: 2, unfinished: 1 });
+    });
+
+    it('handles very long blockquote prefixes', async () => {
+        const context = createApp();
+        const settings = createSettings();
+        const provider = new TestMarkdownPipelineContentProvider(context.app);
+        const file = createFile('notes/note.md');
+        file.stat.mtime = 100;
+
+        const blockquotePrefix = '> '.repeat(5000);
+        setMarkdownContent(
+            context,
+            file,
+            `${blockquotePrefix}not a task\n${blockquotePrefix}- [ ] outside\n${blockquotePrefix}* [x] done\n`
+        );
+        const fileData = createFileData({ mtime: file.stat.mtime, markdownPipelineMtime: file.stat.mtime });
+        const result = await provider.runTasks(file, fileData, settings);
+
+        expect(result).toEqual({ total: 2, unfinished: 1 });
+    });
+
     it('sets 0/0 for stale tasks when file is too large to read', async () => {
         const context = createApp();
         const settings = createSettings();

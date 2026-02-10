@@ -75,6 +75,12 @@ export interface ReleaseNote {
  */
 const RELEASE_NOTES: ReleaseNote[] = [
     {
+        version: '2.3.1',
+        date: '2026-02-10',
+        showOnUpdate: false,
+        fixed: ['Fixed an issue in task parsing that could freeze Obsidian during startup in vaults with large task datasets.']
+    },
+    {
         version: '2.3.0',
         date: '2026-02-10',
         showOnUpdate: true,

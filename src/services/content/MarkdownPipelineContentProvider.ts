@@ -25,6 +25,14 @@ import { getDBInstance } from '../../storage/fileOperations';
 import { getCachedCommaSeparatedList } from '../../utils/commaSeparatedListUtils';
 import { areStringArraysEqual } from '../../utils/arrayUtils';
 import { areCustomPropertyItemsEqual, hasCustomPropertyFrontmatterFields } from '../../utils/customPropertyUtils';
+import {
+    type FenceMarkerChar,
+    isFenceClose,
+    isMarkdownWhitespace,
+    parseBlockquotePrefix,
+    parseFenceOpen,
+    skipMarkdownWhitespace
+} from '../../utils/codeRangeUtils';
 import { PreviewTextUtils } from '../../utils/previewTextUtils';
 import { createCaseInsensitiveKeyMatcher } from '../../utils/recordUtils';
 import { countWordsForCustomProperty } from '../../utils/wordCountUtils';
@@ -85,23 +93,57 @@ function resolveMarkdownBodyStartIndex(metadata: CachedMetadata, content: string
     return index;
 }
 
-const REGEX_MARKDOWN_TASK_ITEM = /^(?:\s*>\s*)*\s*(?:[-*]|[1-9]\d*\.)\s+\[([ xX])\]/u;
-const REGEX_FENCE_OPEN_LINE = /^(\s*)((?:>\s*)*)\s*([`~]{3,}).*$/u;
-const REGEX_FENCE_CLOSE_LINE = /^(\s*)((?:>\s*)*)\s*([`~]{3,})\s*$/u;
-
-function countBlockquoteDepth(prefix: string): number {
-    if (!prefix.includes('>')) {
-        return 0;
+type MarkdownTaskMarker = 'complete' | 'unfinished';
+function parseMarkdownTaskMarker(line: string, startIndex: number): MarkdownTaskMarker | null {
+    let index = skipMarkdownWhitespace(line, startIndex);
+    if (index >= line.length) {
+        return null;
     }
 
-    let depth = 0;
-    for (let index = 0; index < prefix.length; index += 1) {
-        if (prefix[index] === '>') {
-            depth += 1;
+    const listMarker = line[index];
+    if (listMarker === '-' || listMarker === '*') {
+        index += 1;
+    } else {
+        const firstDigit = line.charCodeAt(index);
+        if (firstDigit < 49 || firstDigit > 57) {
+            return null;
         }
+
+        index += 1;
+        while (index < line.length) {
+            const digit = line.charCodeAt(index);
+            if (digit < 48 || digit > 57) {
+                break;
+            }
+            index += 1;
+        }
+
+        if (line[index] !== '.') {
+            return null;
+        }
+        index += 1;
     }
 
-    return depth;
+    if (index >= line.length || !isMarkdownWhitespace(line.charCodeAt(index))) {
+        return null;
+    }
+    index = skipMarkdownWhitespace(line, index);
+
+    if (index + 2 >= line.length) {
+        return null;
+    }
+    if (line[index] !== '[' || line[index + 2] !== ']') {
+        return null;
+    }
+
+    const marker = line[index + 1];
+    if (marker === ' ') {
+        return 'unfinished';
+    }
+    if (marker === 'x' || marker === 'X') {
+        return 'complete';
+    }
+    return null;
 }
 
 function countMarkdownTasks(content: string, bodyStartIndex: number): { taskTotal: number; taskUnfinished: number } {
@@ -116,7 +158,7 @@ function countMarkdownTasks(content: string, bodyStartIndex: number): { taskTota
     let taskUnfinished = 0;
     let lineStart = 0;
     let inFence = false;
-    let fenceChar = '';
+    let fenceChar: FenceMarkerChar | '' = '';
     let fenceLength = 0;
     let fenceDepth = 0;
 
@@ -127,31 +169,27 @@ function countMarkdownTasks(content: string, bodyStartIndex: number): { taskTota
         if (line.endsWith('\r')) {
             line = line.slice(0, -1);
         }
+        const prefix = parseBlockquotePrefix(line);
 
         if (inFence) {
-            const closeMatch = line.match(REGEX_FENCE_CLOSE_LINE);
-            if (closeMatch && closeMatch[3]) {
-                const currentDepth = countBlockquoteDepth(closeMatch[2] ?? '');
-                const matchChar = closeMatch[3][0] ?? '';
-                if (currentDepth === fenceDepth && matchChar === fenceChar && closeMatch[3].length >= fenceLength) {
-                    inFence = false;
-                    fenceChar = '';
-                    fenceLength = 0;
-                    fenceDepth = 0;
-                }
+            if (fenceChar !== '' && isFenceClose(line, fenceDepth, fenceChar, fenceLength, prefix)) {
+                inFence = false;
+                fenceChar = '';
+                fenceLength = 0;
+                fenceDepth = 0;
             }
         } else {
-            const openMatch = line.match(REGEX_FENCE_OPEN_LINE);
-            if (openMatch && openMatch[3]) {
+            const openMatch = parseFenceOpen(line, prefix);
+            if (openMatch) {
                 inFence = true;
-                fenceChar = openMatch[3][0] ?? '';
-                fenceLength = openMatch[3].length;
-                fenceDepth = countBlockquoteDepth(openMatch[2] ?? '');
+                fenceChar = openMatch.markerChar;
+                fenceLength = openMatch.markerLength;
+                fenceDepth = openMatch.depth;
             } else {
-                const match = line.match(REGEX_MARKDOWN_TASK_ITEM);
-                if (match) {
+                const marker = parseMarkdownTaskMarker(line, prefix.nextIndex);
+                if (marker) {
                     taskTotal += 1;
-                    if (match[1] === ' ') {
+                    if (marker === 'unfinished') {
                         taskUnfinished += 1;
                     }
                 }

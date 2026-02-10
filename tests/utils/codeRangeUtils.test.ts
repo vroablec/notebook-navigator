@@ -36,6 +36,15 @@ describe('codeRangeUtils', () => {
         expect(ranges[0]).toEqual({ start: 'Intro\n'.length, end: content.length });
     });
 
+    it('recognizes CRLF fenced code blocks', () => {
+        const content = ['Intro', '```js', 'const value = 1;', '```', 'Outro'].join('\r\n');
+        const ranges = findFencedCodeBlockRanges(content);
+
+        expect(ranges).toHaveLength(1);
+        const [range] = ranges;
+        expect(content.slice(range.start, range.end)).toBe(['```js', 'const value = 1;', '```', ''].join('\r\n'));
+    });
+
     it('ignores inline backticks inside fenced blocks', () => {
         const content = ['Alpha `code` segment', '```js', 'const value = `inline`;', '```', 'Omega'].join('\n');
         const fenced = findFencedCodeBlockRanges(content);
