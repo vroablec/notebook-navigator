@@ -97,7 +97,7 @@ import { getListPaneMeasurements } from '../utils/listPaneMeasurements';
 import { ServiceIcon } from './ServiceIcon';
 import { resolveUXIcon } from '../utils/uxIcons';
 import { showNotice } from '../utils/noticeUtils';
-import { isKeyboardEventContextBlocked } from '../utils/domUtils';
+import { focusElementPreventScroll, isKeyboardEventContextBlocked } from '../utils/domUtils';
 
 /**
  * Renders the list pane displaying files from the selected folder.
@@ -1088,7 +1088,7 @@ export const ListPane = React.memo(
             const scope = props.rootContainerRef.current ?? document;
             const listPaneScroller = scope.querySelector('.nn-list-pane-scroller');
             if (listPaneScroller instanceof HTMLElement) {
-                listPaneScroller.focus();
+                focusElementPreventScroll(listPaneScroller);
             }
         }, [props.rootContainerRef]);
 

@@ -70,6 +70,19 @@ export function isKeyboardEventContextBlocked(e: KeyboardEvent): boolean {
     return activeElement instanceof HTMLElement && activeElement.closest('.modal-container') !== null;
 }
 
+/**
+ * Focuses an element without scrolling it into view when supported.
+ * On desktop (Electron/Chromium), focusing can trigger implicit scroll-into-view behavior.
+ * During single-pane pane transitions (translateX), that can cause horizontal overscroll/bounce.
+ */
+export function focusElementPreventScroll(element: HTMLElement): void {
+    try {
+        element.focus({ preventScroll: true });
+    } catch {
+        element.focus();
+    }
+}
+
 export function getTooltipPlacement(): 'left' | 'right' {
     if (typeof document === 'undefined' || !document.body) {
         return 'right';

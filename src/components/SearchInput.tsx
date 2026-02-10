@@ -29,6 +29,7 @@ import { SearchTagInputSuggest } from '../suggest/SearchTagInputSuggest';
 import type { SearchProvider } from '../types/search';
 import { resolveUXIcon } from '../utils/uxIcons';
 import { InfoModal } from '../modals/InfoModal';
+import { focusElementPreventScroll } from '../utils/domUtils';
 
 interface SearchInputProps {
     searchQuery: string;
@@ -207,7 +208,7 @@ export function SearchInput({
             const scope = containerRef?.current ?? document;
             const listPaneScroller = scope.querySelector('.nn-list-pane-scroller');
             if (listPaneScroller instanceof HTMLElement) {
-                listPaneScroller.focus();
+                focusElementPreventScroll(listPaneScroller);
             }
         }, 0);
     };
