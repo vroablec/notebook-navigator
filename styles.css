@@ -7736,7 +7736,7 @@ settings:
     -
         id: nn-theme-file-tag-border-color
         title: Tag pill border color
-        description: Border color on tag pills.
+        description: Border color on tag pills without custom colors.
         type: variable-themed-color
         opacity: true
         format: rgb
@@ -7745,7 +7745,7 @@ settings:
     -
         id: nn-theme-file-custom-property-border-color
         title: Custom property pill border color
-        description: Border color on custom property pills.
+        description: Border color on custom property pills without custom colors.
         type: variable-themed-color
         opacity: true
         format: rgb
@@ -7754,7 +7754,7 @@ settings:
     -
         id: nn-theme-file-selected-tag-border-color
         title: Selected tag pill border color
-        description: Border color on tag pills in selected files.
+        description: Border color on tag pills without custom colors in selected files.
         type: variable-themed-color
         opacity: true
         format: rgb
@@ -7763,7 +7763,7 @@ settings:
     -
         id: nn-theme-file-selected-custom-property-border-color
         title: Selected custom property pill border color
-        description: Border color on custom property pills in selected files.
+        description: Border color on custom property pills without custom colors in selected files.
         type: variable-themed-color
         opacity: true
         format: rgb
