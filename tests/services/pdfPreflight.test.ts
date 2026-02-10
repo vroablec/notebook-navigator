@@ -232,6 +232,7 @@ describe('pdfPreflight stage decisions', () => {
                 scan,
                 budgetBytes: 200_000_000,
                 timeoutMs: 10,
+                viewportScale: 1,
                 multipliers
             });
 
@@ -276,10 +277,181 @@ describe('pdfPreflight stage decisions', () => {
             scan,
             budgetBytes: 1_000_000,
             timeoutMs: 1_000,
+            viewportScale: 1,
             multipliers
         });
 
         expect(decision.decision).toBe('skip');
         expect(decision.reason).toBe('stageB.compositeOverBudget');
+    });
+
+    it('stage B uses unique xObject ids for the worst-case estimate when available', async () => {
+        const pdfjs = {
+            OPS: {
+                paintImageXObject: 10
+            }
+        };
+
+        const fnArray = Array.from({ length: 100 }, () => 10);
+        const argsArray = Array.from({ length: 100 }, () => ['Im1']);
+
+        const page = {
+            getOperatorList: async () => ({
+                fnArray,
+                argsArray
+            }),
+            getViewport: () => ({ width: 100, height: 100 })
+        };
+
+        const scan = {
+            sumImagePixels: 0,
+            maxImagePixels: 0,
+            imageDictHits: 0,
+            parsedDimsHits: 0,
+            hasSoftMask: false,
+            hasTransparencyGroup: false,
+            uncertain: false
+        };
+
+        const decision = await preflightPdfCoverThumbnailStageB({
+            pdfjs,
+            page,
+            scan,
+            budgetBytes: 200_000,
+            timeoutMs: 1_000,
+            viewportScale: 1,
+            multipliers
+        });
+
+        expect(decision.decision).toBe('render');
+        expect(decision.reason).toBe('stageB.allow');
+        expect(decision.metrics.estimatedBytes).toBe(40_000);
+    });
+
+    it('stage B applies soft mask multiplier when scan detects /SMask', async () => {
+        const pdfjs = {
+            OPS: {
+                paintImageXObject: 10
+            }
+        };
+
+        const fnArray = Array.from({ length: 10 }, () => 10);
+        const argsArray = Array.from({ length: 10 }, (_, index) => [`Im${index + 1}`]);
+
+        const page = {
+            getOperatorList: async () => ({
+                fnArray,
+                argsArray
+            }),
+            getViewport: () => ({ width: 100, height: 100 })
+        };
+
+        const scan = {
+            sumImagePixels: 0,
+            maxImagePixels: 0,
+            imageDictHits: 0,
+            parsedDimsHits: 0,
+            hasSoftMask: true,
+            hasTransparencyGroup: false,
+            uncertain: false
+        };
+
+        const decision = await preflightPdfCoverThumbnailStageB({
+            pdfjs,
+            page,
+            scan,
+            budgetBytes: 500_000,
+            timeoutMs: 1_000,
+            viewportScale: 1,
+            multipliers: { transparencyGroup: 1, softMask: 2 }
+        });
+
+        expect(decision.decision).toBe('skip');
+        expect(decision.reason).toBe('stageB.compositeOverBudget');
+        expect(decision.metrics.estimatedBytes).toBe(800_000);
+    });
+
+    it('stage B applies transparency multiplier when scan detects /S /Transparency', async () => {
+        const pdfjs = {
+            OPS: {
+                paintImageXObject: 10
+            }
+        };
+
+        const fnArray = Array.from({ length: 10 }, () => 10);
+        const argsArray = Array.from({ length: 10 }, (_, index) => [`Im${index + 1}`]);
+
+        const page = {
+            getOperatorList: async () => ({
+                fnArray,
+                argsArray
+            }),
+            getViewport: () => ({ width: 100, height: 100 })
+        };
+
+        const scan = {
+            sumImagePixels: 0,
+            maxImagePixels: 0,
+            imageDictHits: 0,
+            parsedDimsHits: 0,
+            hasSoftMask: false,
+            hasTransparencyGroup: true,
+            uncertain: false
+        };
+
+        const decision = await preflightPdfCoverThumbnailStageB({
+            pdfjs,
+            page,
+            scan,
+            budgetBytes: 500_000,
+            timeoutMs: 1_000,
+            viewportScale: 1,
+            multipliers: { transparencyGroup: 2, softMask: 1 }
+        });
+
+        expect(decision.decision).toBe('skip');
+        expect(decision.reason).toBe('stageB.compositeOverBudget');
+        expect(decision.metrics.estimatedBytes).toBe(800_000);
+    });
+
+    it('stage B uses viewportScale when estimating page pixels', async () => {
+        const pdfjs = {
+            OPS: {
+                paintImageXObject: 10
+            }
+        };
+
+        const page = {
+            getOperatorList: async () => ({
+                fnArray: [10],
+                argsArray: [['Im1']]
+            }),
+            getViewport: ({ scale }: { scale: number }) => ({ width: 2000 * scale, height: 2000 * scale })
+        };
+
+        const scan = {
+            sumImagePixels: 0,
+            maxImagePixels: 0,
+            imageDictHits: 0,
+            parsedDimsHits: 0,
+            hasSoftMask: false,
+            hasTransparencyGroup: false,
+            uncertain: false
+        };
+
+        const decision = await preflightPdfCoverThumbnailStageB({
+            pdfjs,
+            page,
+            scan,
+            budgetBytes: 1_000_000,
+            timeoutMs: 1_000,
+            viewportScale: 0.1,
+            multipliers: { transparencyGroup: 1, softMask: 1 }
+        });
+
+        expect(decision.decision).toBe('render');
+        expect(decision.reason).toBe('stageB.allow');
+        expect(decision.metrics.pagePixels).toBe(40_000);
+        expect(decision.metrics.estimatedBytes).toBe(160_000);
     });
 });

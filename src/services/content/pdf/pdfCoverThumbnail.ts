@@ -397,6 +397,14 @@ export async function renderPdfCoverThumbnail(app: App, pdfFile: TFile, options:
         }
         page = firstPage;
 
+        const baseViewport = firstPage.getViewport({ scale: 1 });
+        const scale = calculateScale({
+            baseWidth: baseViewport.width,
+            baseHeight: baseViewport.height,
+            maxWidth: options.maxWidth,
+            maxHeight: options.maxHeight
+        });
+
         if (Platform.isMobile && preflightScan) {
             const stageB = await preflightPdfCoverThumbnailStageB({
                 pdfjs,
@@ -404,6 +412,7 @@ export async function renderPdfCoverThumbnail(app: App, pdfFile: TFile, options:
                 scan: preflightScan,
                 budgetBytes: MOBILE_PDF_PREFLIGHT_BUDGET_BYTES,
                 timeoutMs: MOBILE_PDF_OPERATOR_LIST_TIMEOUT_MS,
+                viewportScale: scale,
                 maxDecodedImagePixels: MOBILE_PDF_MAX_DECODED_IMAGE_PIXELS,
                 multipliers: MOBILE_PDF_PREFLIGHT_MULTIPLIERS
             });
@@ -456,13 +465,6 @@ export async function renderPdfCoverThumbnail(app: App, pdfFile: TFile, options:
             }
         }
 
-        const baseViewport = firstPage.getViewport({ scale: 1 });
-        const scale = calculateScale({
-            baseWidth: baseViewport.width,
-            baseHeight: baseViewport.height,
-            maxWidth: options.maxWidth,
-            maxHeight: options.maxHeight
-        });
         const viewport = firstPage.getViewport({ scale });
 
         const canvas = document.createElement('canvas');

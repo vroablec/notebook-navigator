@@ -687,16 +687,21 @@ export async function getOperatorListMetrics(
     };
 }
 
-// Returns viewport pixel count at scale 1.
+// Returns viewport pixel count at the requested scale.
 // Any invalid viewport data is treated as uncertain.
-function getViewportPixels(page: unknown): { pagePixels: number; uncertain: boolean } {
+function getViewportPixels(page: unknown, params: { scale: number }): { pagePixels: number; uncertain: boolean } {
     if (!isRecord(page) || typeof page['getViewport'] !== 'function') {
+        return { pagePixels: 0, uncertain: true };
+    }
+
+    const scale = params.scale;
+    if (typeof scale !== 'number' || !Number.isFinite(scale) || scale <= 0) {
         return { pagePixels: 0, uncertain: true };
     }
 
     let viewport: unknown;
     try {
-        viewport = Reflect.apply(page['getViewport'], page, [{ scale: 1 }]);
+        viewport = Reflect.apply(page['getViewport'], page, [{ scale }]);
     } catch {
         return { pagePixels: 0, uncertain: true };
     }
@@ -807,6 +812,7 @@ export async function preflightPdfCoverThumbnailStageB(params: {
     scan: PdfByteScanMetrics;
     budgetBytes: number;
     timeoutMs: number;
+    viewportScale: number;
     maxDecodedImagePixels?: number;
     multipliers: PdfPreflightMultipliers;
 }): Promise<PdfPreflightDecision> {
@@ -828,17 +834,21 @@ export async function preflightPdfCoverThumbnailStageB(params: {
         };
     }
 
-    const { pagePixels, uncertain: viewportUncertain } = getViewportPixels(params.page);
+    const { pagePixels, uncertain: viewportUncertain } = getViewportPixels(params.page, { scale: params.viewportScale });
     if (viewportUncertain) {
         return { decision: 'skip', reason: 'stageB.viewportUncertain', metrics: { budgetBytes, scan, operators } };
     }
 
+    const nonInlinePaintOps =
+        operators.uniqueXObjectIds !== null ? operators.uniqueXObjectIds : operators.xObjectPaintOps + operators.maskPaintOps;
+    const effectivePaintOps = nonInlinePaintOps + operators.inlinePaintOps;
+
     // Composite estimate combines paint op count, per-op pixel bound, and transparency multipliers.
-    const hasSoftMask = operators.maskPaintOps > 0;
-    const hasTransparencyGroup = operators.transparencyGroupOps > 0;
+    const hasSoftMask = scan.hasSoftMask || operators.maskPaintOps > 0;
+    const hasTransparencyGroup = scan.hasTransparencyGroup || operators.transparencyGroupOps > 0;
     const estimatedBytes = estimateWorstCaseBytes({
         pagePixels,
-        paintOps: operators.paintOps,
+        paintOps: effectivePaintOps,
         maxImagePixels: scan.maxImagePixels,
         maxInlineImagePixels: operators.maxInlineImagePixels,
         hasSoftMask,
