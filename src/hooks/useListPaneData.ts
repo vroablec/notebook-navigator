@@ -68,6 +68,7 @@ import type { ActiveProfileState } from '../context/SettingsContext';
 import type { SearchProvider } from '../types/search';
 import { PreviewTextUtils } from '../utils/previewTextUtils';
 import { getCachedFileTags } from '../utils/tagUtils';
+import { createOmnisearchHighlightQueryTokenContext, sanitizeOmnisearchHighlightTokens } from '../utils/omnisearchHighlight';
 
 const EMPTY_SEARCH_META = new Map<string, SearchResultMeta>();
 // Shared empty map used when no files are hidden to avoid allocations
@@ -318,6 +319,7 @@ export function useListPaneData({
 
                 const meta = new Map<string, SearchResultMeta>();
                 const orderedFiles: TFile[] = [];
+                const queryTokenContext = createOmnisearchHighlightQueryTokenContext(trimmedQuery);
 
                 for (const hit of hits) {
                     // Skip files outside the current view's scope
@@ -326,16 +328,8 @@ export function useListPaneData({
                     }
                     orderedFiles.push(hit.file);
 
-                    // Sanitize and normalize match data
-                    const matches = hit.matches
-                        .filter(match => typeof match.text === 'string' && match.text.length > 0)
-                        .map(match => ({
-                            offset: match.offset,
-                            length: match.length,
-                            text: match.text
-                        }));
-
-                    const terms = hit.foundWords.filter(word => typeof word === 'string' && word.length > 0);
+                    // Filter highlight tokens against the active query.
+                    const { matches, terms } = sanitizeOmnisearchHighlightTokens(hit.matches, hit.foundWords, queryTokenContext);
                     // Omnisearch excerpts are normalized on every search update; keep this cheap.
                     // HTML stripping is intentionally disabled regardless of stripHtmlInPreview to avoid
                     // additional per-keystroke processing on large excerpts.

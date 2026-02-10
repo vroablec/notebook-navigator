@@ -154,7 +154,9 @@ function getMergedHighlightRanges(text: string, query?: string, searchMeta?: Sea
         searchMeta.terms.forEach(term => addTokenRanges(term));
     }
 
-    if (ranges.length === 0 && query) {
+    // When Omnisearch metadata is present, highlight strictly from provider tokens.
+    // This avoids raw-query fallback highlighting for path/ext-only filters.
+    if (!searchMeta && ranges.length === 0 && query) {
         const normalizedQuery = query.trim().toLowerCase();
         if (normalizedQuery) {
             normalizedQuery
@@ -976,8 +978,8 @@ export const FileItem = React.memo(function FileItem({
     const hasPreviewContent = hasPreviewAccordingToStatus || effectivePreviewText.length > 0;
     const highlightedPreview = useMemo(
         // Only Omnisearch trigger highlighting in preview, not regular filter
-        () => (searchMeta ? renderHighlightedText(effectivePreviewText, undefined, searchMeta) : effectivePreviewText),
-        [effectivePreviewText, searchMeta]
+        () => (searchMeta ? renderHighlightedText(effectivePreviewText, searchQuery, searchMeta) : effectivePreviewText),
+        [effectivePreviewText, searchMeta, searchQuery]
     );
 
     // Determine if we should show the feature image area (either with an image or extension badge)
