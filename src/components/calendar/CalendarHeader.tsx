@@ -27,9 +27,6 @@ interface CalendarHeaderProps {
     yearLabel: string;
     quarterLabel: string;
     showYearInHeader: boolean;
-    monthNotesEnabled: boolean;
-    quarterNotesEnabled: boolean;
-    yearNotesEnabled: boolean;
     showQuarter: boolean;
     hasMonthPeriodNote: boolean;
     hasQuarterPeriodNote: boolean;
@@ -52,9 +49,6 @@ export const CalendarHeader = React.memo(function CalendarHeader({
     yearLabel,
     quarterLabel,
     showYearInHeader,
-    monthNotesEnabled,
-    quarterNotesEnabled,
-    yearNotesEnabled,
     showQuarter,
     hasMonthPeriodNote,
     hasQuarterPeriodNote,
@@ -71,61 +65,32 @@ export const CalendarHeader = React.memo(function CalendarHeader({
     onPeriodClick,
     onPeriodContextMenu
 }: CalendarHeaderProps) {
-    const headerYearControl =
-        showYearInHeader && yearNotesEnabled ? (
+    const headerYearControl = showYearInHeader ? (
+        <button
+            type="button"
+            className={[
+                'nn-navigation-calendar-period-button',
+                'nn-navigation-calendar-period-year',
+                hasYearPeriodNote ? 'has-period-note' : ''
+            ]
+                .filter(Boolean)
+                .join(' ')}
+            onClick={event => onPeriodClick(event, 'year')}
+            onContextMenu={event => onPeriodContextMenu(event, 'year')}
+        >
+            {yearLabel}
+        </button>
+    ) : null;
+
+    const renderQuarterControl = (isInline: boolean) => {
+        return (
             <button
                 type="button"
                 className={[
                     'nn-navigation-calendar-period-button',
-                    'nn-navigation-calendar-period-year',
-                    hasYearPeriodNote ? 'has-period-note' : ''
-                ]
-                    .filter(Boolean)
-                    .join(' ')}
-                onClick={event => onPeriodClick(event, 'year')}
-                onContextMenu={event => onPeriodContextMenu(event, 'year')}
-            >
-                {yearLabel}
-            </button>
-        ) : showYearInHeader ? (
-            <span
-                className="nn-navigation-calendar-period-label nn-navigation-calendar-period-year"
-                onClick={event => onPeriodClick(event, 'year')}
-                onContextMenu={event => onPeriodContextMenu(event, 'year')}
-            >
-                {yearLabel}
-            </span>
-        ) : null;
-
-    const renderQuarterControl = (isInline: boolean) => {
-        if (quarterNotesEnabled) {
-            return (
-                <button
-                    type="button"
-                    className={[
-                        'nn-navigation-calendar-period-button',
-                        'nn-navigation-calendar-quarter-button',
-                        isInline ? 'nn-navigation-calendar-quarter-inline' : '',
-                        hasQuarterPeriodNote ? 'has-period-note' : ''
-                    ]
-                        .filter(Boolean)
-                        .join(' ')}
-                    onClick={event => onPeriodClick(event, 'quarter')}
-                    onContextMenu={event => onPeriodContextMenu(event, 'quarter')}
-                >
-                    <span aria-hidden="true">(</span>
-                    {quarterLabel}
-                    <span aria-hidden="true">)</span>
-                </button>
-            );
-        }
-
-        return (
-            <span
-                className={[
-                    'nn-navigation-calendar-period-label',
-                    'nn-navigation-calendar-quarter-label',
-                    isInline ? 'nn-navigation-calendar-quarter-inline' : ''
+                    'nn-navigation-calendar-quarter-button',
+                    isInline ? 'nn-navigation-calendar-quarter-inline' : '',
+                    hasQuarterPeriodNote ? 'has-period-note' : ''
                 ]
                     .filter(Boolean)
                     .join(' ')}
@@ -135,7 +100,7 @@ export const CalendarHeader = React.memo(function CalendarHeader({
                 <span aria-hidden="true">(</span>
                 {quarterLabel}
                 <span aria-hidden="true">)</span>
-            </span>
+            </button>
         );
     };
 
@@ -161,30 +126,20 @@ export const CalendarHeader = React.memo(function CalendarHeader({
                     </button>
                 ) : null}
                 <div className="nn-navigation-calendar-inline-month-center">
-                    {monthNotesEnabled ? (
-                        <button
-                            type="button"
-                            className={[
-                                'nn-navigation-calendar-period-button',
-                                'nn-navigation-calendar-period-month',
-                                hasMonthPeriodNote ? 'has-period-note' : ''
-                            ]
-                                .filter(Boolean)
-                                .join(' ')}
-                            onClick={event => onPeriodClick(event, 'month')}
-                            onContextMenu={event => onPeriodContextMenu(event, 'month')}
-                        >
-                            {monthLabel}
-                        </button>
-                    ) : (
-                        <span
-                            className="nn-navigation-calendar-period-label nn-navigation-calendar-period-month"
-                            onClick={event => onPeriodClick(event, 'month')}
-                            onContextMenu={event => onPeriodContextMenu(event, 'month')}
-                        >
-                            {monthLabel}
-                        </span>
-                    )}
+                    <button
+                        type="button"
+                        className={[
+                            'nn-navigation-calendar-period-button',
+                            'nn-navigation-calendar-period-month',
+                            hasMonthPeriodNote ? 'has-period-note' : ''
+                        ]
+                            .filter(Boolean)
+                            .join(' ')}
+                        onClick={event => onPeriodClick(event, 'month')}
+                        onContextMenu={event => onPeriodContextMenu(event, 'month')}
+                    >
+                        {monthLabel}
+                    </button>
                     {showCompactQuarterInMonthRow ? renderQuarterControl(true) : null}
                     {showCompactHeaderInlineInfoButton ? (
                         <button

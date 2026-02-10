@@ -992,9 +992,6 @@ export function Calendar({
                     yearLabel={yearLabel}
                     quarterLabel={quarterLabel}
                     showYearInHeader={showYearInHeader}
-                    monthNotesEnabled={monthNotesEnabled}
-                    quarterNotesEnabled={quarterNotesEnabled}
-                    yearNotesEnabled={yearNotesEnabled}
                     showQuarter={settings.calendarShowQuarter}
                     hasMonthPeriodNote={Boolean(headerPeriodNoteFiles.month)}
                     hasQuarterPeriodNote={Boolean(headerPeriodNoteFiles.quarter)}

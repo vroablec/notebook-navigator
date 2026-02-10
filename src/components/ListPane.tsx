@@ -1352,6 +1352,10 @@ export const ListPane = React.memo(
                     return;
                 }
 
+                if (searchProvider !== 'internal') {
+                    plugin.setSearchProvider('internal');
+                }
+
                 if (!isSearchActive) {
                     setIsSearchActive(true);
                     if (uiState.singlePane) {
@@ -1381,6 +1385,8 @@ export const ListPane = React.memo(
                 setSearchQuery,
                 setDebouncedSearchQuery,
                 isSearchActive,
+                plugin,
+                searchProvider,
                 uiState.singlePane
             ]
         );
