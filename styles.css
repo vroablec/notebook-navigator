@@ -2986,25 +2986,6 @@ body {
     gap: var(--nn-calendar-week-gap);
 }
 
-.nn-navigation-calendar-weeks[data-weeknumbers='true'] {
-    position: relative;
-}
-
-.nn-navigation-calendar-weeks[data-weeknumbers='true']::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: calc(var(--nn-calendar-weeknumber-column-width) + 1px);
-    width: 1px;
-    background-color: var(--nn-theme-calendar-hover-bg);
-    pointer-events: none;
-}
-
-.nn-navigation-calendar-weeks[data-weeknumbers='true'][data-has-trailing-spacer='true']::before {
-    content: none;
-}
-
 .nn-navigation-calendar-week {
     display: grid;
     grid-template-columns: repeat(7, minmax(0, 1fr));
@@ -3023,6 +3004,20 @@ body {
 .nn-navigation-calendar-weeknumber-divider {
     width: 1px;
     height: 100%;
+    background-color: var(--nn-theme-calendar-hover-bg);
+    pointer-events: none;
+}
+
+.nn-navigation-calendar-week.has-next-week .nn-navigation-calendar-weeknumber-divider {
+    position: relative;
+}
+
+.nn-navigation-calendar-week.has-next-week .nn-navigation-calendar-weeknumber-divider::after {
+    content: '';
+    position: absolute;
+    inset-inline: 0;
+    top: 100%;
+    height: var(--nn-calendar-week-gap);
     background-color: var(--nn-theme-calendar-hover-bg);
     pointer-events: none;
 }

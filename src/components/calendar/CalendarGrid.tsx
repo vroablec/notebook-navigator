@@ -91,11 +91,7 @@ export const CalendarGrid = React.memo(function CalendarGrid({
                 ))}
             </div>
 
-            <div
-                className="nn-navigation-calendar-weeks"
-                data-weeknumbers={showWeekNumbers ? 'true' : undefined}
-                data-has-trailing-spacer={trailingSpacerWeekCount > 0 ? 'true' : undefined}
-            >
+            <div className="nn-navigation-calendar-weeks" data-weeknumbers={showWeekNumbers ? 'true' : undefined}>
                 {weeks.map((week, weekIndex) => {
                     const weekNoteFile = weekNoteFilesByKey.get(week.key) ?? null;
                     const weekHasUnfinishedTasks = (weekUnfinishedTaskCountByKey.get(week.key) ?? 0) > 0;
@@ -103,7 +99,10 @@ export const CalendarGrid = React.memo(function CalendarGrid({
                     const nextWeek = weekIndex < weeks.length - 1 ? weeks[weekIndex + 1] : null;
 
                     return (
-                        <div key={week.key} className="nn-navigation-calendar-week">
+                        <div
+                            key={week.key}
+                            className={`nn-navigation-calendar-week${weekIndex < weeks.length - 1 ? ' has-next-week' : ''}`}
+                        >
                             {showWeekNumbers ? (
                                 <>
                                     {weekNotesEnabled ? (
