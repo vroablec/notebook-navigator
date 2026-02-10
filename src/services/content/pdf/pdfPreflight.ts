@@ -834,11 +834,19 @@ export async function preflightPdfCoverThumbnailStageB(params: {
         };
     }
 
+    // Use the thumbnail render scale for page pixels so Stage B matches the actual canvas target.
     const { pagePixels, uncertain: viewportUncertain } = getViewportPixels(params.page, { scale: params.viewportScale });
     if (viewportUncertain) {
         return { decision: 'skip', reason: 'stageB.viewportUncertain', metrics: { budgetBytes, scan, operators } };
     }
 
+    // Stage A only records image dimensions it can parse directly from `/Width` and `/Height`.
+    // When PDF image dictionaries use indirect references, `scan.maxImagePixels` can be 0 and this estimate relies on
+    // operator metrics plus the thumbnail-scale viewport pixels.
+
+    // XObject images can be painted repeatedly (same id across many ops). When available, use unique xObject ids for
+    // non-inline paint ops so repeated paints do not multiply the estimate. If ids cannot be extracted, fall back to
+    // counting xObject + mask ops.
     const nonInlinePaintOps =
         operators.uniqueXObjectIds !== null ? operators.uniqueXObjectIds : operators.xObjectPaintOps + operators.maskPaintOps;
     const effectivePaintOps = nonInlinePaintOps + operators.inlinePaintOps;
