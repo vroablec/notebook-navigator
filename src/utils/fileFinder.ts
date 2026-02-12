@@ -408,44 +408,74 @@ export function getFilesForTag(
     app: App,
     tagTreeService: ITagTreeProvider | null
 ): TFile[] {
-    // Get all files based on visibility setting, with proper filtering
-    let allFiles: TFile[] = [];
     const hiddenTags = getActiveHiddenTags(settings);
     const hiddenFileTags = getActiveHiddenFileTags(settings);
+    const excludedFolderPatterns = getActiveHiddenFolders(settings);
+    const excludedFileProperties = getActiveHiddenFileProperties(settings);
+    const excludedFileNamePatterns = getActiveHiddenFileNames(settings);
     const fileVisibility = getActiveFileVisibility(settings);
+    const fileNameMatcher = createHiddenFileNameMatcherForVisibility(excludedFileNamePatterns, visibility.showHiddenItems);
     const hiddenTagVisibility = createHiddenTagVisibility(hiddenTags, visibility.showHiddenItems);
     const shouldFilterHiddenTags = hiddenTagVisibility.shouldFilterHiddenTags;
     const hiddenFileTagVisibility = createHiddenTagVisibility(hiddenFileTags, visibility.showHiddenItems);
     const shouldFilterHiddenFileTags = hiddenFileTagVisibility.hasHiddenRules && !visibility.showHiddenItems;
+    const db = getDBInstanceOrNull();
+    let baseFilesCache: TFile[] | null = null;
 
-    if (fileVisibility === FILE_VISIBILITY.DOCUMENTS) {
-        // Only document files (markdown, canvas, base)
-        allFiles = getFilteredDocumentFiles(app, settings, { showHiddenItems: visibility.showHiddenItems });
-    } else {
-        // Get all files with filtering
-        allFiles = getFilteredFiles(app, settings, { showHiddenItems: visibility.showHiddenItems });
-    }
+    const getBaseFiles = (): TFile[] => {
+        if (baseFilesCache) {
+            return baseFilesCache;
+        }
 
-    const excludedFolderPatterns = getActiveHiddenFolders(settings);
-    // For tag views, exclude files in excluded folders only when hidden items are not shown
-    // When showing hidden items, include files from excluded folders to match the tag tree
-    const baseFiles = visibility.showHiddenItems
-        ? allFiles
-        : allFiles.filter(
-              (file: TFile) => excludedFolderPatterns.length === 0 || !isPathInExcludedFolder(file.path, excludedFolderPatterns)
-          );
+        const allFiles =
+            fileVisibility === FILE_VISIBILITY.DOCUMENTS
+                ? getFilteredDocumentFiles(app, settings, { showHiddenItems: visibility.showHiddenItems })
+                : getFilteredFiles(app, settings, { showHiddenItems: visibility.showHiddenItems });
+
+        // For tag views, exclude files in excluded folders only when hidden items are not shown.
+        // When showing hidden items, include files from excluded folders to match the tag tree.
+        baseFilesCache = visibility.showHiddenItems
+            ? allFiles
+            : allFiles.filter(
+                  (file: TFile) => excludedFolderPatterns.length === 0 || !isPathInExcludedFolder(file.path, excludedFolderPatterns)
+              );
+        return baseFilesCache;
+    };
+
+    const getMarkdownFiles = (): TFile[] => {
+        return getBaseFiles().filter(file => file.extension === 'md');
+    };
+
+    const matchesCurrentVisibility = (file: TFile): boolean => {
+        if (!visibility.showHiddenItems && excludedFolderPatterns.length > 0 && isPathInExcludedFolder(file.path, excludedFolderPatterns)) {
+            return false;
+        }
+
+        if (!visibility.showHiddenItems && excludedFileProperties.length > 0 && shouldExcludeFile(file, excludedFileProperties, app)) {
+            return false;
+        }
+
+        if (fileNameMatcher && fileNameMatcher.matches(file)) {
+            return false;
+        }
+
+        if (shouldFilterHiddenFileTags) {
+            const fileData = db?.getFile(file.path) ?? null;
+            const tags = getCachedFileTags({ app, file, db, fileData });
+            if (tags.some(tagValue => !hiddenFileTagVisibility.isTagVisible(tagValue))) {
+                return false;
+            }
+        }
+
+        return true;
+    };
 
     let filteredFiles: TFile[] = [];
-
-    const db = getDBInstanceOrNull();
 
     // Special case for untagged files
     if (tag === UNTAGGED_TAG_ID) {
         // Only show markdown files in untagged section since only they can be tagged
-        filteredFiles = baseFiles.filter(file => {
-            if (file.extension !== 'md') {
-                return false;
-            }
+        filteredFiles = getMarkdownFiles().filter(file => {
             // Check if the markdown file has tags using our cache
             const fileTags = getCachedFileTags({ app, file, db });
             return fileTags.length === 0;
@@ -456,7 +486,7 @@ export function getFilesForTag(
         }
 
         // Include markdown files that have at least one tag, respecting hidden tag visibility
-        const markdownFiles = baseFiles.filter(file => file.extension === 'md');
+        const markdownFiles = getMarkdownFiles();
         filteredFiles = markdownFiles.filter(file => {
             const fileTags = getCachedFileTags({ app, file, db });
             if (fileTags.length === 0) {
@@ -474,17 +504,14 @@ export function getFilesForTag(
             return fileTags.some(tagValue => hiddenTagVisibility.isTagVisible(normalizeTagPathValue(tagValue)));
         });
     } else {
-        // For regular tags, only consider markdown files since only they can have tags
-        const markdownFiles = baseFiles.filter(file => file.extension === 'md');
+        const selectedNode = tagTreeService?.findTagNode(tag) ?? null;
+        const normalizedSelectedTagPath = normalizeTagPathValue(tag);
+        if (!normalizedSelectedTagPath) {
+            filteredFiles = [];
+        } else {
+            const selectedTagPath = selectedNode?.path ?? normalizedSelectedTagPath;
 
-        // Find the selected tag node using the tag tree provider
-        const selectedNode = tagTreeService?.findTagNode(tag) || null;
-
-        if (selectedNode) {
-            const selectedTagPath = selectedNode.path;
-
-            // Filter files that match the selected tag path (and descendants when enabled).
-            filteredFiles = markdownFiles.filter(file => {
+            const matchesSelectedTagPath = (file: TFile): boolean => {
                 const fileTags = getCachedFileTags({ app, file, db });
                 if (fileTags.length === 0) {
                     return false;
@@ -494,8 +521,8 @@ export function getFilesForTag(
                     return false;
                 }
 
-                return fileTags.some(tag => {
-                    const normalizedTag = normalizeTagPathValue(tag);
+                return fileTags.some(tagValue => {
+                    const normalizedTag = normalizeTagPathValue(tagValue);
                     if (!matchesPathSelection(normalizedTag, selectedTagPath, visibility.includeDescendantNotes)) {
                         return false;
                     }
@@ -504,10 +531,34 @@ export function getFilesForTag(
                     }
                     return hiddenTagVisibility.isTagVisible(normalizedTag);
                 });
-            });
-        } else {
-            // Fallback to empty if tag not found
-            filteredFiles = [];
+            };
+
+            const candidateMarkdownFiles = (() => {
+                if (!tagTreeService || !tagTreeService.hasNodes()) {
+                    return null;
+                }
+
+                const candidatePaths = tagTreeService.collectTagFilePaths(selectedTagPath);
+                if (candidatePaths.length === 0 && !selectedNode) {
+                    return null;
+                }
+
+                const files: TFile[] = [];
+                candidatePaths.forEach(path => {
+                    const file = app.vault.getFileByPath(path);
+                    if (!file || file.extension !== 'md') {
+                        return;
+                    }
+                    if (!matchesCurrentVisibility(file)) {
+                        return;
+                    }
+                    files.push(file);
+                });
+                return files;
+            })();
+
+            const markdownFiles = candidateMarkdownFiles ?? getMarkdownFiles();
+            filteredFiles = markdownFiles.filter(matchesSelectedTagPath);
         }
     }
 
