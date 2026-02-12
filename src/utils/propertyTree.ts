@@ -23,6 +23,7 @@ import type { NotebookNavigatorSettings } from '../settings';
 import { isPathInExcludedFolder } from './fileFilters';
 import { getCachedCommaSeparatedList } from './commaSeparatedListUtils';
 import { casefold } from './recordUtils';
+import { naturalCompare } from './sortUtils';
 import { isRecord } from './typeGuards';
 
 export interface BuildPropertyTreeOptions {
@@ -230,6 +231,71 @@ export function isPropertyFeatureEnabled(settings: NotebookNavigatorSettings): b
 
 function normalizePropertyTreeKey(value: string): string {
     return casefold(value);
+}
+
+function normalizeIncludedPropertyKeySet(includedPropertyKeys: Set<string> | undefined): Set<string> {
+    const normalizedKeys = new Set<string>();
+    if (!includedPropertyKeys || includedPropertyKeys.size === 0) {
+        return normalizedKeys;
+    }
+
+    includedPropertyKeys.forEach(propertyKey => {
+        const normalizedPropertyKey = normalizePropertyTreeKey(propertyKey);
+        if (!normalizedPropertyKey) {
+            return;
+        }
+        normalizedKeys.add(normalizedPropertyKey);
+    });
+
+    return normalizedKeys;
+}
+
+function compareCanonicalPropertySegments(left: string, right: string): number {
+    const naturalResult = naturalCompare(left, right);
+    if (naturalResult !== 0) {
+        return naturalResult;
+    }
+
+    return left.localeCompare(right);
+}
+
+function sortPropertyValueChildren(children: Map<string, PropertyTreeNode>): Map<string, PropertyTreeNode> {
+    if (children.size <= 1) {
+        return children;
+    }
+
+    const sortedNodes = Array.from(children.values()).sort((leftNode, rightNode) => {
+        const leftPath = leftNode.valuePath ?? '';
+        const rightPath = rightNode.valuePath ?? '';
+        const pathCompare = compareCanonicalPropertySegments(leftPath, rightPath);
+        if (pathCompare !== 0) {
+            return pathCompare;
+        }
+        return leftNode.id.localeCompare(rightNode.id);
+    });
+
+    const sortedChildren = new Map<string, PropertyTreeNode>();
+    sortedNodes.forEach(node => {
+        sortedChildren.set(node.id, node);
+    });
+    return sortedChildren;
+}
+
+function sortPropertyTreeNodes(tree: Map<string, PropertyTreeNode>): Map<string, PropertyTreeNode> {
+    const sortedNodes = Array.from(tree.values()).sort((leftNode, rightNode) => {
+        const keyCompare = compareCanonicalPropertySegments(leftNode.key, rightNode.key);
+        if (keyCompare !== 0) {
+            return keyCompare;
+        }
+        return leftNode.id.localeCompare(rightNode.id);
+    });
+
+    const sortedTree = new Map<string, PropertyTreeNode>();
+    sortedNodes.forEach(node => {
+        node.children = sortPropertyValueChildren(node.children);
+        sortedTree.set(node.key, node);
+    });
+    return sortedTree;
 }
 
 function getConfiguredPropertyKeySet(settings: NotebookNavigatorSettings): ReadonlySet<string> {
@@ -477,8 +543,9 @@ export function buildPropertyTreeFromDatabase(
     const excludedFolderPatterns = options.excludedFolderPatterns ?? [];
     const hasExcludedFolders = excludedFolderPatterns.length > 0;
     const includedPaths = options.includedPaths;
-    const includedPropertyKeys = options.includedPropertyKeys;
-    const shouldFilterPropertyKeys = Boolean(includedPropertyKeys && includedPropertyKeys.size > 0);
+    const hasIncludedPropertyFilter = options.includedPropertyKeys !== undefined && options.includedPropertyKeys.size > 0;
+    const includedPropertyKeys = normalizeIncludedPropertyKeySet(options.includedPropertyKeys);
+    const shouldFilterPropertyKeys = hasIncludedPropertyFilter;
 
     db.forEachFile((path, fileData) => {
         if (includedPaths && !includedPaths.has(path)) {
@@ -500,7 +567,7 @@ export function buildPropertyTreeFromDatabase(
                 continue;
             }
 
-            if (shouldFilterPropertyKeys && includedPropertyKeys && !includedPropertyKeys.has(normalizedKey)) {
+            if (shouldFilterPropertyKeys && !includedPropertyKeys.has(normalizedKey)) {
                 continue;
             }
 
@@ -558,5 +625,5 @@ export function buildPropertyTreeFromDatabase(
         }
     });
 
-    return tree;
+    return sortPropertyTreeNodes(tree);
 }

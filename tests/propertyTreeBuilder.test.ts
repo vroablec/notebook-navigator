@@ -141,6 +141,107 @@ describe('buildPropertyTreeFromDatabase', () => {
         expect(tree.has('priority')).toBe(false);
     });
 
+    it('normalizes included property keys before filtering', () => {
+        const db = createMockDb([
+            {
+                path: 'notes/status.md',
+                customProperty: [{ fieldKey: 'Status', value: 'Open' }]
+            },
+            {
+                path: 'notes/priority.md',
+                customProperty: [{ fieldKey: 'Priority', value: 'High' }]
+            },
+            {
+                path: 'notes/mood.md',
+                customProperty: [{ fieldKey: 'Mood', value: 'Calm' }]
+            }
+        ]);
+
+        const tree = buildPropertyTreeFromDatabase(db, {
+            includedPropertyKeys: new Set([' status ', 'PRIORITY'])
+        });
+
+        expect(Array.from(tree.keys())).toEqual(['priority', 'status']);
+        expect(tree.has('mood')).toBe(false);
+    });
+
+    it('returns an empty tree when all included property keys normalize to empty values', () => {
+        const db = createMockDb([
+            {
+                path: 'notes/status.md',
+                customProperty: [{ fieldKey: 'Status', value: 'Open' }]
+            },
+            {
+                path: 'notes/priority.md',
+                customProperty: [{ fieldKey: 'Priority', value: 'High' }]
+            }
+        ]);
+
+        const tree = buildPropertyTreeFromDatabase(db, {
+            includedPropertyKeys: new Set(['   '])
+        });
+
+        expect(tree.size).toBe(0);
+    });
+
+    it('filters by normalized included property keys when some entries normalize to empty values', () => {
+        const db = createMockDb([
+            {
+                path: 'notes/status.md',
+                customProperty: [{ fieldKey: 'Status', value: 'Open' }]
+            },
+            {
+                path: 'notes/priority.md',
+                customProperty: [{ fieldKey: 'Priority', value: 'High' }]
+            }
+        ]);
+
+        const tree = buildPropertyTreeFromDatabase(db, {
+            includedPropertyKeys: new Set(['   ', ' Status '])
+        });
+
+        expect(Array.from(tree.keys())).toEqual(['status']);
+        expect(tree.has('priority')).toBe(false);
+    });
+
+    it('orders key nodes and value nodes deterministically', () => {
+        const db = createMockDb([
+            {
+                path: 'notes/status-zeta.md',
+                customProperty: [{ fieldKey: 'Status', value: 'Work/Zeta' }]
+            },
+            {
+                path: 'notes/zeta.md',
+                customProperty: [{ fieldKey: 'Zeta', value: 'One' }]
+            },
+            {
+                path: 'notes/alpha.md',
+                customProperty: [{ fieldKey: 'Alpha', value: 'Two' }]
+            },
+            {
+                path: 'notes/status-alpha.md',
+                customProperty: [{ fieldKey: 'status', value: 'Work/Alpha' }]
+            }
+        ]);
+
+        const tree = buildPropertyTreeFromDatabase(db, {
+            includedPropertyKeys: new Set(['STATUS', 'zeta', 'alpha'])
+        });
+
+        expect(Array.from(tree.keys())).toEqual(['alpha', 'status', 'zeta']);
+
+        const statusNode = tree.get('status');
+        expect(statusNode).toBeDefined();
+        if (!statusNode) {
+            return;
+        }
+
+        expect(Array.from(statusNode.children.keys())).toEqual([
+            buildPropertyValueNodeId('status', normalizePropertyTreeValuePath('Work/Alpha')),
+            buildPropertyValueNodeId('status', normalizePropertyTreeValuePath('Work/Zeta'))
+        ]);
+    });
+
     it('keeps key nodes for empty values without creating value nodes', () => {
         const db = createMockDb([
             {
