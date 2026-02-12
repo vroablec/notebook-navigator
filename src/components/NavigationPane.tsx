@@ -1653,11 +1653,8 @@ export const NavigationPane = React.memo(
                         event.preventDefault();
                         event.stopPropagation();
                     }
-                    onModifySearchWithProperty(
-                        propertyNode.kind === 'key' ? propertyNode.name : propertyNode.key,
-                        propertyNode.kind === 'value' ? propertyNode.displayPath : null,
-                        operator
-                    );
+                    const valuePath = propertyNode.kind === 'value' && propertyNode.valuePath ? propertyNode.valuePath : null;
+                    onModifySearchWithProperty(propertyNode.key, valuePath, operator);
                     return;
                 }
 
