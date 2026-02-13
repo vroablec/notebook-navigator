@@ -532,6 +532,14 @@ export const STRINGS_ZH_CN = {
                 remove: '移除标签'
             }
         },
+        propertySuggest: {
+            placeholder: '选择属性键...',
+            instructions: {
+                navigate: '导航',
+                select: '添加属性',
+                dismiss: '取消'
+            }
+        },
         welcome: {
             title: '欢迎使用 {pluginName}',
             introText: '您好！在开始之前，强烈建议您观看下面视频的前五分钟，以了解面板和开关"显示子文件夹中的笔记"是如何工作的。',
@@ -1296,6 +1304,22 @@ export const STRINGS_ZH_CN = {
                 name: '在精简模式中显示文件标签',
                 desc: '当日期、预览和图像被隐藏时显示标签。'
             },
+            showFileProperties: {
+                name: '显示文件属性',
+                desc: '在文件项中显示已配置的属性值。'
+            },
+            colorFileProperties: {
+                name: '为文件属性着色',
+                desc: '将属性颜色应用到文件项的属性徽章上。'
+            },
+            prioritizeColoredFileProperties: {
+                name: '优先显示彩色属性',
+                desc: '在文件项中将彩色属性排列在其他属性之前。'
+            },
+            showFilePropertiesInCompactMode: {
+                name: '在精简模式中显示属性',
+                desc: '精简模式启用时显示属性。'
+            },
             notePropertyType: {
                 name: '笔记属性',
                 desc: '选择要在文件项中显示的笔记属性。',
@@ -1308,15 +1332,13 @@ export const STRINGS_ZH_CN = {
             propertyFields: {
                 name: '要显示的属性',
                 desc: '以逗号分隔的 frontmatter 属性列表，用于在导航窗格和文件项中作为徽章显示。列表值属性每个值显示一个徽章。',
-                placeholder: '状态, 类型, 分类'
+                placeholder: '状态, 类型, 分类',
+                addButtonTooltip: '添加属性键',
+                emptySelectorNotice: '在元数据缓存中未找到属性键。'
             },
             showPropertiesOnSeparateRows: {
                 name: '在单独的行中显示属性',
                 desc: '将每个属性显示在单独的行中。'
-            },
-            showNotePropertyInCompactMode: {
-                name: '在紧凑模式下显示属性',
-                desc: '紧凑模式启用时显示属性。'
             },
             dateFormat: {
                 name: '日期格式',
@@ -1510,6 +1532,10 @@ export const STRINGS_ZH_CN = {
             showPropertyIcons: {
                 name: '显示属性图标',
                 desc: '在导航窗格中属性旁边显示图标。'
+            },
+            inheritPropertyColors: {
+                name: '继承属性颜色',
+                desc: '属性值继承其属性键的颜色和背景色。'
             },
             propertySortOrder: {
                 name: '属性排序方式',

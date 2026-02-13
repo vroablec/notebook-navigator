@@ -532,6 +532,14 @@ export const STRINGS_TH = {
                 remove: 'เพื่อนำแท็กออก'
             }
         },
+        propertySuggest: {
+            placeholder: 'เลือกคีย์คุณสมบัติ...',
+            instructions: {
+                navigate: 'เพื่อนำทาง',
+                select: 'เพื่อเพิ่มคุณสมบัติ',
+                dismiss: 'เพื่อปิด'
+            }
+        },
         welcome: {
             title: 'ยินดีต้อนรับสู่ {pluginName}',
             introText:
@@ -1296,6 +1304,22 @@ export const STRINGS_TH = {
                 name: 'แสดงแท็กไฟล์ในโหมดกะทัดรัด',
                 desc: 'แสดงแท็กเมื่อวันที่ ตัวอย่าง และรูปภาพถูกซ่อน'
             },
+            showFileProperties: {
+                name: 'แสดงคุณสมบัติไฟล์',
+                desc: 'แสดงค่าคุณสมบัติที่กำหนดไว้ในรายการไฟล์'
+            },
+            colorFileProperties: {
+                name: 'ระบายสีคุณสมบัติไฟล์',
+                desc: 'ใช้สีคุณสมบัติกับป้ายคุณสมบัติบนรายการไฟล์'
+            },
+            prioritizeColoredFileProperties: {
+                name: 'แสดงคุณสมบัติที่มีสีก่อน',
+                desc: 'เรียงคุณสมบัติที่มีสีก่อนคุณสมบัติอื่นบนรายการไฟล์'
+            },
+            showFilePropertiesInCompactMode: {
+                name: 'แสดงคุณสมบัติในโหมดกะทัดรัด',
+                desc: 'แสดงคุณสมบัติเมื่อโหมดกะทัดรัดเปิดใช้งาน'
+            },
             notePropertyType: {
                 name: 'คุณสมบัติโน้ต',
                 desc: 'เลือกคุณสมบัติโน้ตที่จะแสดงในรายการไฟล์',
@@ -1308,15 +1332,13 @@ export const STRINGS_TH = {
             propertyFields: {
                 name: 'คุณสมบัติที่จะแสดง',
                 desc: 'รายการคุณสมบัติ frontmatter คั่นด้วยเครื่องหมายจุลภาค เพื่อแสดงในแผงนำทางและเป็นป้ายในรายการไฟล์ คุณสมบัติที่เป็นรายการจะแสดงหนึ่งป้ายต่อค่า',
-                placeholder: 'สถานะ, ประเภท, หมวดหมู่'
+                placeholder: 'สถานะ, ประเภท, หมวดหมู่',
+                addButtonTooltip: 'เพิ่มคีย์คุณสมบัติ',
+                emptySelectorNotice: 'ไม่พบคีย์คุณสมบัติในแคชเมตาดาต้า'
             },
             showPropertiesOnSeparateRows: {
                 name: 'แสดงคุณสมบัติแยกเป็นบรรทัด',
                 desc: 'แสดงแต่ละคุณสมบัติในบรรทัดของตัวเอง'
-            },
-            showNotePropertyInCompactMode: {
-                name: 'แสดงคุณสมบัติในโหมดกะทัดรัด',
-                desc: 'แสดงคุณสมบัติเมื่อโหมดกะทัดรัดเปิดใช้งาน'
             },
             dateFormat: {
                 name: 'รูปแบบวันที่',
@@ -1510,6 +1532,10 @@ export const STRINGS_TH = {
             showPropertyIcons: {
                 name: 'แสดงไอคอนคุณสมบัติ',
                 desc: 'แสดงไอคอนข้างคุณสมบัติในแผงนำทาง'
+            },
+            inheritPropertyColors: {
+                name: 'สืบทอดสีคุณสมบัติ',
+                desc: 'ค่าคุณสมบัติจะสืบทอดสีและพื้นหลังจากคีย์คุณสมบัติ'
             },
             propertySortOrder: {
                 name: 'ลำดับการเรียงคุณสมบัติ',

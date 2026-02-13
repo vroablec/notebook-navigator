@@ -532,6 +532,14 @@ export const STRINGS_IT = {
                 remove: 'per rimuovere tag'
             }
         },
+        propertySuggest: {
+            placeholder: 'Seleziona chiave proprietà...',
+            instructions: {
+                navigate: 'per navigare',
+                select: 'per aggiungere proprietà',
+                dismiss: 'per chiudere'
+            }
+        },
         welcome: {
             title: 'Benvenuto in {pluginName}',
             introText:
@@ -1299,6 +1307,22 @@ export const STRINGS_IT = {
                 name: 'Mostra tag file in modalità compatta',
                 desc: 'Visualizza tag quando data, anteprima e immagine sono nascosti.'
             },
+            showFileProperties: {
+                name: 'Mostra proprietà file',
+                desc: 'Visualizza i valori delle proprietà configurate negli elementi file.'
+            },
+            colorFileProperties: {
+                name: 'Colora proprietà file',
+                desc: 'Applica i colori delle proprietà ai badge delle proprietà negli elementi file.'
+            },
+            prioritizeColoredFileProperties: {
+                name: 'Mostra proprietà colorate prima',
+                desc: 'Ordina le proprietà colorate prima delle altre proprietà negli elementi file.'
+            },
+            showFilePropertiesInCompactMode: {
+                name: 'Mostra proprietà in modalità compatta',
+                desc: 'Visualizza le proprietà quando la modalità compatta è attiva.'
+            },
             notePropertyType: {
                 name: 'Proprietà della nota',
                 desc: 'Seleziona la proprietà della nota da visualizzare negli elementi file.',
@@ -1311,15 +1335,13 @@ export const STRINGS_IT = {
             propertyFields: {
                 name: 'Proprietà da visualizzare',
                 desc: 'Elenco di proprietà dei metadati separati da virgola da visualizzare nel pannello di navigazione e come badge negli elementi file. Le proprietà con valori multipli mostrano un badge per valore.',
-                placeholder: 'stato, tipo, categoria'
+                placeholder: 'stato, tipo, categoria',
+                addButtonTooltip: 'Aggiungi chiave proprietà',
+                emptySelectorNotice: 'Nessuna chiave di proprietà trovata nella cache dei metadati.'
             },
             showPropertiesOnSeparateRows: {
                 name: 'Mostra proprietà su righe separate',
                 desc: 'Mostra ogni proprietà sulla propria riga.'
-            },
-            showNotePropertyInCompactMode: {
-                name: 'Mostra proprietà in modalità compatta',
-                desc: 'Visualizza le proprietà quando la modalità compatta è attiva.'
             },
             dateFormat: {
                 name: 'Formato data',
@@ -1513,6 +1535,10 @@ export const STRINGS_IT = {
             showPropertyIcons: {
                 name: 'Mostra icone proprietà',
                 desc: 'Visualizza le icone accanto alle proprietà nel pannello di navigazione.'
+            },
+            inheritPropertyColors: {
+                name: 'Eredita colori proprietà',
+                desc: 'I valori delle proprietà ereditano colore e sfondo dalla loro chiave di proprietà.'
             },
             propertySortOrder: {
                 name: 'Ordine di ordinamento proprietà',

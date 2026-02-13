@@ -532,6 +532,14 @@ export const STRINGS_AR = {
                 remove: 'لإزالة وسم'
             }
         },
+        propertySuggest: {
+            placeholder: 'اختر مفتاح خاصية...',
+            instructions: {
+                navigate: 'للتنقل',
+                select: 'لإضافة خاصية',
+                dismiss: 'للإغلاق'
+            }
+        },
         welcome: {
             title: 'مرحباً بك في {pluginName}',
             introText:
@@ -1296,6 +1304,22 @@ export const STRINGS_AR = {
                 name: 'إظهار وسوم الملفات في الوضع المضغوط',
                 desc: 'عرض الوسوم عند إخفاء التاريخ والمعاينة والصورة.'
             },
+            showFileProperties: {
+                name: 'إظهار خصائص الملفات',
+                desc: 'عرض قيم الخصائص المُعدَّة في عناصر الملفات.'
+            },
+            colorFileProperties: {
+                name: 'تلوين خصائص الملفات',
+                desc: 'تطبيق ألوان الخصائص على شارات الخصائص في عناصر الملفات.'
+            },
+            prioritizeColoredFileProperties: {
+                name: 'إظهار الخصائص الملونة أولاً',
+                desc: 'ترتيب الخصائص الملونة قبل الخصائص الأخرى في عناصر الملفات.'
+            },
+            showFilePropertiesInCompactMode: {
+                name: 'إظهار الخصائص في الوضع المضغوط',
+                desc: 'عرض الخصائص عند تفعيل الوضع المضغوط.'
+            },
             notePropertyType: {
                 name: 'خاصية الملاحظة',
                 desc: 'حدد خاصية الملاحظة لعرضها في عناصر الملفات.',
@@ -1308,15 +1332,13 @@ export const STRINGS_AR = {
             propertyFields: {
                 name: 'الخصائص للعرض',
                 desc: 'قائمة خصائص الواجهة الأمامية مفصولة بفواصل لعرضها في لوحة التنقل وكشارات في عناصر الملفات. الخصائص ذات القوائم تعرض شارة واحدة لكل قيمة.',
-                placeholder: 'الحالة، النوع، الفئة'
+                placeholder: 'الحالة، النوع، الفئة',
+                addButtonTooltip: 'إضافة مفتاح خاصية',
+                emptySelectorNotice: 'لم يتم العثور على مفاتيح خصائص في ذاكرة البيانات الوصفية.'
             },
             showPropertiesOnSeparateRows: {
                 name: 'إظهار الخصائص في صفوف منفصلة',
                 desc: 'عرض كل خاصية في صف منفصل.'
-            },
-            showNotePropertyInCompactMode: {
-                name: 'إظهار الخصائص في الوضع المضغوط',
-                desc: 'عرض الخصائص عند تفعيل الوضع المضغوط.'
             },
             dateFormat: {
                 name: 'تنسيق التاريخ',
@@ -1510,6 +1532,10 @@ export const STRINGS_AR = {
             showPropertyIcons: {
                 name: 'إظهار أيقونات الخصائص',
                 desc: 'عرض الأيقونات بجانب الخصائص في لوحة التنقل.'
+            },
+            inheritPropertyColors: {
+                name: 'وراثة ألوان الخصائص',
+                desc: 'قيم الخصائص ترث اللون والخلفية من مفتاح الخاصية.'
             },
             propertySortOrder: {
                 name: 'ترتيب فرز الخصائص',

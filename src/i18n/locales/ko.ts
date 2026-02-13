@@ -532,6 +532,14 @@ export const STRINGS_KO = {
                 remove: '태그 제거'
             }
         },
+        propertySuggest: {
+            placeholder: '속성 키 선택...',
+            instructions: {
+                navigate: '이동',
+                select: '속성 추가',
+                dismiss: '닫기'
+            }
+        },
         welcome: {
             title: '{pluginName}에 오신 것을 환영합니다',
             introText:
@@ -1297,6 +1305,22 @@ export const STRINGS_KO = {
                 name: '슬림 모드에서 파일 태그 표시',
                 desc: '날짜, 미리보기, 이미지가 숨겨져 있을 때 태그를 표시합니다.'
             },
+            showFileProperties: {
+                name: '파일 속성 표시',
+                desc: '파일 항목에 설정된 속성 값을 표시합니다.'
+            },
+            colorFileProperties: {
+                name: '파일 속성에 색상 적용',
+                desc: '파일 항목의 속성 배지에 속성 색상을 적용합니다.'
+            },
+            prioritizeColoredFileProperties: {
+                name: '색상 속성을 먼저 표시',
+                desc: '파일 항목에서 색상 속성을 다른 속성보다 먼저 정렬합니다.'
+            },
+            showFilePropertiesInCompactMode: {
+                name: '간결 모드에서 속성 표시',
+                desc: '간결 모드가 활성화되면 속성을 표시합니다.'
+            },
             notePropertyType: {
                 name: '노트 속성',
                 desc: '파일 항목에 표시할 노트 속성을 선택합니다.',
@@ -1309,15 +1333,13 @@ export const STRINGS_KO = {
             propertyFields: {
                 name: '표시할 속성들',
                 desc: '탐색 창과 파일 항목의 배지로 표시할 프론트매터 속성의 쉼표로 구분된 목록. 목록 값 속성은 값당 하나의 배지를 표시합니다.',
-                placeholder: '상태, 유형, 카테고리'
+                placeholder: '상태, 유형, 카테고리',
+                addButtonTooltip: '속성 키 추가',
+                emptySelectorNotice: '메타데이터 캐시에서 속성 키를 찾을 수 없습니다.'
             },
             showPropertiesOnSeparateRows: {
                 name: '속성을 별도 행에 표시',
                 desc: '각 속성을 개별 행에 표시합니다.'
-            },
-            showNotePropertyInCompactMode: {
-                name: '간결 모드에서 속성 표시',
-                desc: '간결 모드가 활성화되면 속성을 표시합니다.'
             },
             dateFormat: {
                 name: '날짜 형식',
@@ -1511,6 +1533,10 @@ export const STRINGS_KO = {
             showPropertyIcons: {
                 name: '속성 아이콘 표시',
                 desc: '탐색 창에서 속성 옆에 아이콘을 표시합니다.'
+            },
+            inheritPropertyColors: {
+                name: '속성 색상 상속',
+                desc: '속성 값이 속성 키의 색상과 배경색을 상속합니다.'
             },
             propertySortOrder: {
                 name: '속성 정렬 순서',

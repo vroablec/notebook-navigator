@@ -532,6 +532,14 @@ export const STRINGS_JA = {
                 remove: 'タグを削除'
             }
         },
+        propertySuggest: {
+            placeholder: 'プロパティキーを選択...',
+            instructions: {
+                navigate: 'でナビゲート',
+                select: 'プロパティを追加',
+                dismiss: 'でキャンセル'
+            }
+        },
         welcome: {
             title: '{pluginName}へようこそ',
             introText:
@@ -1299,6 +1307,22 @@ export const STRINGS_JA = {
                 name: 'スリムモードでファイルタグを表示',
                 desc: '日付、プレビュー、画像が非表示のときにタグを表示します。'
             },
+            showFileProperties: {
+                name: 'ファイルプロパティを表示',
+                desc: '設定されたプロパティ値をファイル項目に表示します。'
+            },
+            colorFileProperties: {
+                name: 'ファイルプロパティに色を付ける',
+                desc: 'ファイル項目のプロパティバッジにプロパティの色を適用します。'
+            },
+            prioritizeColoredFileProperties: {
+                name: '色付きプロパティを先に表示',
+                desc: 'ファイル項目で色付きプロパティを他のプロパティより前に並べ替えます。'
+            },
+            showFilePropertiesInCompactMode: {
+                name: 'コンパクトモードでプロパティを表示',
+                desc: 'コンパクトモードが有効な時にプロパティを表示します。'
+            },
             notePropertyType: {
                 name: 'ノートプロパティ',
                 desc: 'ファイル項目に表示するノートプロパティを選択します。',
@@ -1311,15 +1335,13 @@ export const STRINGS_JA = {
             propertyFields: {
                 name: '表示するプロパティ',
                 desc: 'ナビゲーションペインとファイル項目のバッジとして表示するフロントマタープロパティのカンマ区切りリスト。リスト値のプロパティは値ごとに1つのバッジを表示します。',
-                placeholder: 'ステータス, タイプ, カテゴリ'
+                placeholder: 'ステータス, タイプ, カテゴリ',
+                addButtonTooltip: 'プロパティキーを追加',
+                emptySelectorNotice: 'メタデータキャッシュにプロパティキーが見つかりません。'
             },
             showPropertiesOnSeparateRows: {
                 name: 'プロパティを別の行に表示',
                 desc: '各プロパティを個別の行に表示します。'
-            },
-            showNotePropertyInCompactMode: {
-                name: 'コンパクトモードでプロパティを表示',
-                desc: 'コンパクトモードが有効な時にプロパティを表示します。'
             },
             dateFormat: {
                 name: '日付形式',
@@ -1513,6 +1535,10 @@ export const STRINGS_JA = {
             showPropertyIcons: {
                 name: 'プロパティアイコンを表示',
                 desc: 'ナビゲーションペインのプロパティの横にアイコンを表示します。'
+            },
+            inheritPropertyColors: {
+                name: 'プロパティの色を継承',
+                desc: 'プロパティ値がプロパティキーの色と背景色を継承します。'
             },
             propertySortOrder: {
                 name: 'プロパティの並べ替え順',

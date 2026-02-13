@@ -685,6 +685,62 @@ export function renderNotesTab(context: SettingsTabContext): void {
             })
         );
 
+    const showFilePropertiesSetting = notePropertyGroup.addSetting(setting => {
+        setting.setName(strings.settings.items.showFileProperties.name).setDesc(strings.settings.items.showFileProperties.desc);
+    });
+
+    const filePropertiesSubSettingsEl = wireToggleSettingWithSubSettings(
+        showFilePropertiesSetting,
+        () => plugin.settings.showFileProperties,
+        async value => {
+            plugin.settings.showFileProperties = value;
+            await plugin.saveSettingsAndUpdate();
+        }
+    );
+
+    const colorFilePropertiesSetting = new Setting(filePropertiesSubSettingsEl)
+        .setName(strings.settings.items.colorFileProperties.name)
+        .setDesc(strings.settings.items.colorFileProperties.desc);
+
+    const colorFilePropertiesSubSettingsEl = wireToggleSettingWithSubSettings(
+        colorFilePropertiesSetting,
+        () => plugin.settings.colorFileProperties,
+        async value => {
+            plugin.settings.colorFileProperties = value;
+            await plugin.saveSettingsAndUpdate();
+        }
+    );
+
+    new Setting(colorFilePropertiesSubSettingsEl)
+        .setName(strings.settings.items.prioritizeColoredFileProperties.name)
+        .setDesc(strings.settings.items.prioritizeColoredFileProperties.desc)
+        .addToggle(toggle =>
+            toggle.setValue(plugin.settings.prioritizeColoredFileProperties).onChange(async value => {
+                plugin.settings.prioritizeColoredFileProperties = value;
+                await plugin.saveSettingsAndUpdate();
+            })
+        );
+
+    new Setting(filePropertiesSubSettingsEl)
+        .setName(strings.settings.items.showFilePropertiesInCompactMode.name)
+        .setDesc(strings.settings.items.showFilePropertiesInCompactMode.desc)
+        .addToggle(toggle =>
+            toggle.setValue(plugin.settings.showFilePropertiesInCompactMode).onChange(async value => {
+                plugin.settings.showFilePropertiesInCompactMode = value;
+                await plugin.saveSettingsAndUpdate();
+            })
+        );
+
+    new Setting(filePropertiesSubSettingsEl)
+        .setName(strings.settings.items.showPropertiesOnSeparateRows.name)
+        .setDesc(strings.settings.items.showPropertiesOnSeparateRows.desc)
+        .addToggle(toggle =>
+            toggle.setValue(plugin.settings.showPropertiesOnSeparateRows).onChange(async value => {
+                plugin.settings.showPropertiesOnSeparateRows = value;
+                await plugin.saveSettingsAndUpdate();
+            })
+        );
+
     notePropertyGroup.addSetting(setting => {
         setting.setName(strings.settings.items.notePropertyType.name).setDesc(strings.settings.items.notePropertyType.desc);
         setting.addDropdown(dropdown =>
@@ -696,30 +752,6 @@ export function renderNotesTab(context: SettingsTabContext): void {
                     plugin.settings.notePropertyType = value === 'wordCount' ? 'wordCount' : 'none';
                     await plugin.saveSettingsAndUpdate();
                 })
-        );
-    });
-
-    notePropertyGroup.addSetting(setting => {
-        setting
-            .setName(strings.settings.items.showNotePropertyInCompactMode.name)
-            .setDesc(strings.settings.items.showNotePropertyInCompactMode.desc);
-        setting.addToggle(toggle =>
-            toggle.setValue(plugin.settings.showNotePropertyInCompactMode).onChange(async value => {
-                plugin.settings.showNotePropertyInCompactMode = value;
-                await plugin.saveSettingsAndUpdate();
-            })
-        );
-    });
-
-    notePropertyGroup.addSetting(setting => {
-        setting
-            .setName(strings.settings.items.showPropertiesOnSeparateRows.name)
-            .setDesc(strings.settings.items.showPropertiesOnSeparateRows.desc);
-        setting.addToggle(toggle =>
-            toggle.setValue(plugin.settings.showPropertiesOnSeparateRows).onChange(async value => {
-                plugin.settings.showPropertiesOnSeparateRows = value;
-                await plugin.saveSettingsAndUpdate();
-            })
         );
     });
 

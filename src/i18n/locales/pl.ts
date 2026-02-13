@@ -534,6 +534,14 @@ export const STRINGS_PL = {
                 remove: 'aby usunąć tag'
             }
         },
+        propertySuggest: {
+            placeholder: 'Wybierz klucz właściwości...',
+            instructions: {
+                navigate: 'aby nawigować',
+                select: 'aby dodać właściwość',
+                dismiss: 'aby anulować'
+            }
+        },
         welcome: {
             title: 'Witaj w {pluginName}',
             introText:
@@ -1300,6 +1308,22 @@ export const STRINGS_PL = {
                 name: 'Pokaż tagi plików w trybie kompaktowym',
                 desc: 'Wyświetl tagi, gdy data, podgląd i obraz są ukryte.'
             },
+            showFileProperties: {
+                name: 'Pokaż właściwości plików',
+                desc: 'Wyświetl skonfigurowane wartości właściwości w elementach plików.'
+            },
+            colorFileProperties: {
+                name: 'Koloruj właściwości plików',
+                desc: 'Zastosuj kolory właściwości do odznak właściwości w elementach plików.'
+            },
+            prioritizeColoredFileProperties: {
+                name: 'Wyświetl kolorowe właściwości jako pierwsze',
+                desc: 'Sortuj kolorowe właściwości przed pozostałymi właściwościami w elementach plików.'
+            },
+            showFilePropertiesInCompactMode: {
+                name: 'Pokaż właściwości w trybie kompaktowym',
+                desc: 'Wyświetlaj właściwości gdy tryb kompaktowy jest aktywny.'
+            },
             notePropertyType: {
                 name: 'Właściwość notatki',
                 desc: 'Wybierz właściwość notatki do wyświetlenia w elementach plików.',
@@ -1312,15 +1336,13 @@ export const STRINGS_PL = {
             propertyFields: {
                 name: 'Właściwości do wyświetlenia',
                 desc: 'Rozdzielona przecinkami lista właściwości frontmatter do wyświetlenia w panelu nawigacji i jako odznaki w elementach plików. Właściwości z wieloma wartościami wyświetlają jedną odznakę na wartość.',
-                placeholder: 'status, typ, kategoria'
+                placeholder: 'status, typ, kategoria',
+                addButtonTooltip: 'Dodaj klucz właściwości',
+                emptySelectorNotice: 'Nie znaleziono kluczy właściwości w pamięci podręcznej metadanych.'
             },
             showPropertiesOnSeparateRows: {
                 name: 'Pokaż właściwości w osobnych wierszach',
                 desc: 'Wyświetl każdą właściwość w osobnym wierszu.'
-            },
-            showNotePropertyInCompactMode: {
-                name: 'Pokaż właściwości w trybie kompaktowym',
-                desc: 'Wyświetlaj właściwości gdy tryb kompaktowy jest aktywny.'
             },
             dateFormat: {
                 name: 'Format daty',
@@ -1514,6 +1536,10 @@ export const STRINGS_PL = {
             showPropertyIcons: {
                 name: 'Pokaż ikony właściwości',
                 desc: 'Wyświetl ikony obok właściwości w panelu nawigacji.'
+            },
+            inheritPropertyColors: {
+                name: 'Dziedzicz kolory właściwości',
+                desc: 'Wartości właściwości dziedziczą kolor i tło od swojego klucza właściwości.'
             },
             propertySortOrder: {
                 name: 'Kolejność sortowania właściwości',

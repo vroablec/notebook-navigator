@@ -534,6 +534,14 @@ export const STRINGS_FR = {
                 remove: "pour supprimer l'étiquette"
             }
         },
+        propertySuggest: {
+            placeholder: 'Sélectionner une clé de propriété...',
+            instructions: {
+                navigate: 'pour naviguer',
+                select: 'pour ajouter la propriété',
+                dismiss: 'pour annuler'
+            }
+        },
         welcome: {
             title: 'Bienvenue dans {pluginName}',
             introText:
@@ -1303,6 +1311,22 @@ export const STRINGS_FR = {
                 name: 'Afficher les tags de fichier en mode compact',
                 desc: "Afficher les tags lorsque la date, l'aperçu et l'image sont masqués."
             },
+            showFileProperties: {
+                name: 'Afficher les propriétés de fichier',
+                desc: 'Afficher les valeurs de propriétés configurées dans les éléments de fichier.'
+            },
+            colorFileProperties: {
+                name: 'Colorer les propriétés de fichier',
+                desc: 'Appliquer les couleurs de propriété aux badges de propriété dans les éléments de fichier.'
+            },
+            prioritizeColoredFileProperties: {
+                name: 'Afficher les propriétés colorées en premier',
+                desc: 'Trier les propriétés colorées avant les autres propriétés dans les éléments de fichier.'
+            },
+            showFilePropertiesInCompactMode: {
+                name: 'Afficher les propriétés en mode compact',
+                desc: 'Afficher les propriétés lorsque le mode compact est actif.'
+            },
             notePropertyType: {
                 name: 'Propriété de note',
                 desc: 'Sélectionnez la propriété de note à afficher dans les éléments de fichier.',
@@ -1315,15 +1339,13 @@ export const STRINGS_FR = {
             propertyFields: {
                 name: 'Propriétés à afficher',
                 desc: 'Liste de propriétés de métadonnées séparées par des virgules à afficher dans le panneau de navigation et sous forme de badges dans les éléments de fichier. Les propriétés de liste affichent un badge par valeur.',
-                placeholder: 'statut, type, catégorie'
+                placeholder: 'statut, type, catégorie',
+                addButtonTooltip: 'Ajouter une clé de propriété',
+                emptySelectorNotice: 'Aucune clé de propriété trouvée dans le cache de métadonnées.'
             },
             showPropertiesOnSeparateRows: {
                 name: 'Afficher les propriétés sur des lignes séparées',
                 desc: 'Afficher chaque propriété sur sa propre ligne.'
-            },
-            showNotePropertyInCompactMode: {
-                name: 'Afficher les propriétés en mode compact',
-                desc: 'Afficher les propriétés lorsque le mode compact est actif.'
             },
             dateFormat: {
                 name: 'Format de date',
@@ -1517,6 +1539,10 @@ export const STRINGS_FR = {
             showPropertyIcons: {
                 name: 'Afficher les icônes de propriétés',
                 desc: 'Afficher les icônes à côté des propriétés dans le panneau de navigation.'
+            },
+            inheritPropertyColors: {
+                name: 'Hériter des couleurs de propriété',
+                desc: 'Les valeurs de propriété héritent de la couleur et du fond de leur clé de propriété.'
             },
             propertySortOrder: {
                 name: 'Ordre de tri des propriétés',

@@ -533,6 +533,14 @@ export const STRINGS_VI = {
                 remove: 'để gỡ thẻ'
             }
         },
+        propertySuggest: {
+            placeholder: 'Chọn khóa thuộc tính...',
+            instructions: {
+                navigate: 'để điều hướng',
+                select: 'để thêm thuộc tính',
+                dismiss: 'để đóng'
+            }
+        },
         welcome: {
             title: 'Chào mừng đến với {pluginName}',
             introText:
@@ -1297,6 +1305,22 @@ export const STRINGS_VI = {
                 name: 'Hiện thẻ tệp ở chế độ gọn',
                 desc: 'Hiển thị thẻ khi ngày, xem trước và ảnh bị ẩn.'
             },
+            showFileProperties: {
+                name: 'Hiện thuộc tính tệp',
+                desc: 'Hiển thị các giá trị thuộc tính đã cấu hình trong mục tệp.'
+            },
+            colorFileProperties: {
+                name: 'Tô màu thuộc tính tệp',
+                desc: 'Áp dụng màu thuộc tính cho huy hiệu thuộc tính trên mục tệp.'
+            },
+            prioritizeColoredFileProperties: {
+                name: 'Hiện thuộc tính có màu trước',
+                desc: 'Sắp xếp thuộc tính có màu trước các thuộc tính khác trên mục tệp.'
+            },
+            showFilePropertiesInCompactMode: {
+                name: 'Hiện thuộc tính ở chế độ gọn',
+                desc: 'Hiển thị thuộc tính khi chế độ gọn đang hoạt động.'
+            },
             notePropertyType: {
                 name: 'Thuộc tính ghi chú',
                 desc: 'Chọn thuộc tính ghi chú để hiển thị trong các mục tệp.',
@@ -1309,15 +1333,13 @@ export const STRINGS_VI = {
             propertyFields: {
                 name: 'Các thuộc tính để hiển thị',
                 desc: 'Danh sách thuộc tính frontmatter phân cách bằng dấu phẩy để hiển thị trong bảng điều hướng và dưới dạng huy hiệu trong các mục tệp. Thuộc tính dạng danh sách hiển thị một huy hiệu cho mỗi giá trị.',
-                placeholder: 'trạng thái, loại, danh mục'
+                placeholder: 'trạng thái, loại, danh mục',
+                addButtonTooltip: 'Thêm khóa thuộc tính',
+                emptySelectorNotice: 'Không tìm thấy khóa thuộc tính trong bộ nhớ đệm siêu dữ liệu.'
             },
             showPropertiesOnSeparateRows: {
                 name: 'Hiển thị thuộc tính trên các dòng riêng',
                 desc: 'Hiển thị mỗi thuộc tính trên một dòng riêng.'
-            },
-            showNotePropertyInCompactMode: {
-                name: 'Hiển thị thuộc tính trong chế độ thu gọn',
-                desc: 'Hiển thị thuộc tính khi chế độ thu gọn đang hoạt động.'
             },
             dateFormat: {
                 name: 'Định dạng ngày',
@@ -1511,6 +1533,10 @@ export const STRINGS_VI = {
             showPropertyIcons: {
                 name: 'Hiển thị biểu tượng thuộc tính',
                 desc: 'Hiển thị biểu tượng bên cạnh thuộc tính trong bảng điều hướng.'
+            },
+            inheritPropertyColors: {
+                name: 'Kế thừa màu thuộc tính',
+                desc: 'Giá trị thuộc tính kế thừa màu sắc và nền từ khóa thuộc tính.'
             },
             propertySortOrder: {
                 name: 'Thứ tự sắp xếp thuộc tính',

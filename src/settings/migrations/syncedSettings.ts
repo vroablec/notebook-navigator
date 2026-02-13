@@ -153,11 +153,23 @@ export function migrateLegacySyncedSettings(params: {
     }
     delete mutableSettings['showCustomPropertiesOnSeparateRows'];
 
-    const legacyShowNotePropertyInCompactMode = mutableSettings['showCustomPropertyInCompactMode'];
-    if (typeof storedData?.['showNotePropertyInCompactMode'] === 'undefined' && typeof legacyShowNotePropertyInCompactMode === 'boolean') {
-        settings.showNotePropertyInCompactMode = legacyShowNotePropertyInCompactMode;
+    const legacyShowFilePropertiesInCompactMode = mutableSettings['showCustomPropertyInCompactMode'];
+    if (
+        typeof storedData?.['showFilePropertiesInCompactMode'] === 'undefined' &&
+        typeof legacyShowFilePropertiesInCompactMode === 'boolean'
+    ) {
+        settings.showFilePropertiesInCompactMode = legacyShowFilePropertiesInCompactMode;
     }
     delete mutableSettings['showCustomPropertyInCompactMode'];
+
+    const previousShowFilePropertiesInCompactMode = mutableSettings['showNotePropertyInCompactMode'];
+    if (
+        typeof storedData?.['showFilePropertiesInCompactMode'] === 'undefined' &&
+        typeof previousShowFilePropertiesInCompactMode === 'boolean'
+    ) {
+        settings.showFilePropertiesInCompactMode = previousShowFilePropertiesInCompactMode;
+    }
+    delete mutableSettings['showNotePropertyInCompactMode'];
 
     if (!isNotePropertyType(settings.notePropertyType)) {
         settings.notePropertyType = defaultSettings.notePropertyType;
@@ -174,8 +186,20 @@ export function migrateLegacySyncedSettings(params: {
     delete mutableSettings['customPropertyColorFields'];
     delete mutableSettings['customPropertyColorMap'];
 
-    if (typeof settings.showNotePropertyInCompactMode !== 'boolean') {
-        settings.showNotePropertyInCompactMode = defaultSettings.showNotePropertyInCompactMode;
+    if (typeof settings.showFilePropertiesInCompactMode !== 'boolean') {
+        settings.showFilePropertiesInCompactMode = defaultSettings.showFilePropertiesInCompactMode;
+    }
+
+    if (typeof settings.showFileProperties !== 'boolean') {
+        settings.showFileProperties = defaultSettings.showFileProperties;
+    }
+
+    if (typeof settings.colorFileProperties !== 'boolean') {
+        settings.colorFileProperties = defaultSettings.colorFileProperties;
+    }
+
+    if (typeof settings.prioritizeColoredFileProperties !== 'boolean') {
+        settings.prioritizeColoredFileProperties = defaultSettings.prioritizeColoredFileProperties;
     }
 
     if (typeof settings.showProperties !== 'boolean') {
@@ -184,6 +208,10 @@ export function migrateLegacySyncedSettings(params: {
 
     if (typeof settings.showPropertyIcons !== 'boolean') {
         settings.showPropertyIcons = defaultSettings.showPropertyIcons;
+    }
+
+    if (typeof settings.inheritPropertyColors !== 'boolean') {
+        settings.inheritPropertyColors = defaultSettings.inheritPropertyColors;
     }
 
     if (typeof settings.showAllPropertiesFolder !== 'boolean') {

@@ -533,6 +533,14 @@ export const STRINGS_ID = {
                 remove: 'untuk menghapus tag'
             }
         },
+        propertySuggest: {
+            placeholder: 'Pilih kunci properti...',
+            instructions: {
+                navigate: 'untuk navigasi',
+                select: 'untuk menambah properti',
+                dismiss: 'untuk menutup'
+            }
+        },
         welcome: {
             title: 'Selamat datang di {pluginName}',
             introText:
@@ -1298,6 +1306,22 @@ export const STRINGS_ID = {
                 name: 'Tampilkan tag file dalam mode kompak',
                 desc: 'Tampilkan tag saat tanggal, pratinjau, dan gambar disembunyikan.'
             },
+            showFileProperties: {
+                name: 'Tampilkan properti file',
+                desc: 'Tampilkan nilai properti yang dikonfigurasi di item file.'
+            },
+            colorFileProperties: {
+                name: 'Warnai properti file',
+                desc: 'Terapkan warna properti pada lencana properti di item file.'
+            },
+            prioritizeColoredFileProperties: {
+                name: 'Tampilkan properti berwarna terlebih dahulu',
+                desc: 'Urutkan properti berwarna sebelum properti lain di item file.'
+            },
+            showFilePropertiesInCompactMode: {
+                name: 'Tampilkan properti dalam mode kompak',
+                desc: 'Tampilkan properti saat mode kompak aktif.'
+            },
             notePropertyType: {
                 name: 'Properti catatan',
                 desc: 'Pilih properti catatan untuk ditampilkan di item file.',
@@ -1310,15 +1334,13 @@ export const STRINGS_ID = {
             propertyFields: {
                 name: 'Properti-properti untuk ditampilkan',
                 desc: 'Daftar properti frontmatter dipisahkan koma untuk ditampilkan di panel navigasi dan sebagai lencana di item file. Properti bernilai daftar menampilkan satu lencana per nilai.',
-                placeholder: 'status, tipe, kategori'
+                placeholder: 'status, tipe, kategori',
+                addButtonTooltip: 'Tambah kunci properti',
+                emptySelectorNotice: 'Tidak ditemukan kunci properti dalam cache metadata.'
             },
             showPropertiesOnSeparateRows: {
                 name: 'Tampilkan properti pada baris terpisah',
                 desc: 'Tampilkan setiap properti pada barisnya sendiri.'
-            },
-            showNotePropertyInCompactMode: {
-                name: 'Tampilkan properti dalam mode ringkas',
-                desc: 'Tampilkan properti saat mode ringkas aktif.'
             },
             dateFormat: {
                 name: 'Format tanggal',
@@ -1512,6 +1534,10 @@ export const STRINGS_ID = {
             showPropertyIcons: {
                 name: 'Tampilkan ikon properti',
                 desc: 'Tampilkan ikon di samping properti di panel navigasi.'
+            },
+            inheritPropertyColors: {
+                name: 'Warisi warna properti',
+                desc: 'Nilai properti mewarisi warna dan latar belakang dari kunci propertinya.'
             },
             propertySortOrder: {
                 name: 'Urutan sortir properti',

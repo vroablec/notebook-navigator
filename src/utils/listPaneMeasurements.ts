@@ -109,16 +109,16 @@ export function shouldShowFeatureImageArea({
 
 export function shouldShowPropertyRow({
     notePropertyType,
-    showProperties,
-    showNotePropertyInCompactMode,
+    showFileProperties,
+    showFilePropertiesInCompactMode,
     isCompactMode,
     file,
     wordCount,
     properties
 }: {
     notePropertyType: NotePropertyType;
-    showProperties: boolean;
-    showNotePropertyInCompactMode: boolean;
+    showFileProperties: boolean;
+    showFilePropertiesInCompactMode: boolean;
     isCompactMode: boolean;
     file: TFile | null;
     wordCount: FileData['wordCount'] | undefined;
@@ -128,30 +128,30 @@ export function shouldShowPropertyRow({
         return false;
     }
 
-    if (isCompactMode && !showNotePropertyInCompactMode) {
+    if (isCompactMode && !showFilePropertiesInCompactMode) {
         return false;
     }
 
     const hasWordCount = notePropertyType === 'wordCount' && typeof wordCount === 'number' && Number.isFinite(wordCount) && wordCount > 0;
-    const hasPropertyValues = showProperties && Boolean(properties && properties.some(entry => entry.value.trim().length > 0));
+    const hasPropertyValues = showFileProperties && Boolean(properties && properties.some(entry => entry.value.trim().length > 0));
 
     return hasWordCount || hasPropertyValues;
 }
 
 export function getPropertyRowCount({
     notePropertyType,
-    showProperties,
+    showFileProperties,
     showPropertiesOnSeparateRows,
-    showNotePropertyInCompactMode,
+    showFilePropertiesInCompactMode,
     isCompactMode,
     file,
     wordCount,
     properties
 }: {
     notePropertyType: NotePropertyType;
-    showProperties: boolean;
+    showFileProperties: boolean;
     showPropertiesOnSeparateRows: boolean;
-    showNotePropertyInCompactMode: boolean;
+    showFilePropertiesInCompactMode: boolean;
     isCompactMode: boolean;
     file: TFile | null;
     wordCount: FileData['wordCount'] | undefined;
@@ -161,8 +161,8 @@ export function getPropertyRowCount({
     // This is used by the list pane virtualizer height estimator and must stay consistent with FileItem rendering.
     const shouldShow = shouldShowPropertyRow({
         notePropertyType,
-        showProperties,
-        showNotePropertyInCompactMode,
+        showFileProperties,
+        showFilePropertiesInCompactMode,
         isCompactMode,
         file,
         wordCount,
@@ -179,7 +179,7 @@ export function getPropertyRowCount({
     const wordCountPillCount = wordCountEnabled ? 1 : 0;
 
     const propertyRowCount =
-        showProperties && properties
+        showFileProperties && properties
             ? new Set(properties.filter(entry => entry.value.trim().length > 0).map(entry => entry.fieldKey.trim())).size
             : 0;
     const totalRowCount = wordCountPillCount + propertyRowCount;

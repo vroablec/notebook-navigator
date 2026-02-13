@@ -532,6 +532,14 @@ export const STRINGS_ZH_TW = {
                 remove: '移除標籤'
             }
         },
+        propertySuggest: {
+            placeholder: '選擇屬性鍵...',
+            instructions: {
+                navigate: '導覽',
+                select: '新增屬性',
+                dismiss: '取消'
+            }
+        },
         welcome: {
             title: '歡迎使用 {pluginName}',
             introText: '您好！在開始之前，強烈建議您觀看下方影片的前五分鐘，以了解面板和「顯示子資料夾中的筆記」開關是如何運作的。',
@@ -1295,6 +1303,22 @@ export const STRINGS_ZH_TW = {
                 name: '在精簡模式中顯示檔案標籤',
                 desc: '當日期、預覽和圖片被隱藏時顯示標籤。'
             },
+            showFileProperties: {
+                name: '顯示檔案屬性',
+                desc: '在檔案項目中顯示已設定的屬性值。'
+            },
+            colorFileProperties: {
+                name: '為檔案屬性著色',
+                desc: '將屬性顏色套用到檔案項目的屬性徽章上。'
+            },
+            prioritizeColoredFileProperties: {
+                name: '優先顯示彩色屬性',
+                desc: '在檔案項目中將彩色屬性排列在其他屬性之前。'
+            },
+            showFilePropertiesInCompactMode: {
+                name: '在精簡模式中顯示屬性',
+                desc: '精簡模式啟用時顯示屬性。'
+            },
             notePropertyType: {
                 name: '筆記屬性',
                 desc: '選擇要在檔案項目中顯示的筆記屬性。',
@@ -1307,15 +1331,13 @@ export const STRINGS_ZH_TW = {
             propertyFields: {
                 name: '要顯示的屬性',
                 desc: '以逗號分隔的 frontmatter 屬性清單，用於在導覽面板和檔案項目中作為徽章顯示。清單值屬性每個值顯示一個徽章。',
-                placeholder: 'status, type, category'
+                placeholder: 'status, type, category',
+                addButtonTooltip: '新增屬性鍵',
+                emptySelectorNotice: '在中繼資料快取中未找到屬性鍵。'
             },
             showPropertiesOnSeparateRows: {
                 name: '在個別行中顯示屬性',
                 desc: '將每個屬性顯示在個別行中。'
-            },
-            showNotePropertyInCompactMode: {
-                name: '在精簡模式下顯示屬性',
-                desc: '精簡模式啟用時顯示屬性。'
             },
             dateFormat: {
                 name: '日期格式',
@@ -1509,6 +1531,10 @@ export const STRINGS_ZH_TW = {
             showPropertyIcons: {
                 name: '顯示屬性圖示',
                 desc: '在導覽面板中屬性旁邊顯示圖示。'
+            },
+            inheritPropertyColors: {
+                name: '繼承屬性顏色',
+                desc: '屬性值繼承其屬性鍵的顏色和背景色。'
             },
             propertySortOrder: {
                 name: '屬性排序方式',

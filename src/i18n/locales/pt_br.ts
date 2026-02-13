@@ -535,6 +535,14 @@ export const STRINGS_PT_BR = {
                 remove: 'para remover tag'
             }
         },
+        propertySuggest: {
+            placeholder: 'Selecionar chave de propriedade...',
+            instructions: {
+                navigate: 'para navegar',
+                select: 'para adicionar propriedade',
+                dismiss: 'para descartar'
+            }
+        },
         welcome: {
             title: 'Bem-vindo ao {pluginName}',
             introText:
@@ -1303,6 +1311,22 @@ export const STRINGS_PT_BR = {
                 name: 'Mostrar tags de arquivo no modo compacto',
                 desc: 'Exibir tags quando data, visualização e imagem estão ocultas.'
             },
+            showFileProperties: {
+                name: 'Mostrar propriedades de arquivo',
+                desc: 'Exibir valores de propriedades configuradas nos itens de arquivo.'
+            },
+            colorFileProperties: {
+                name: 'Colorir propriedades de arquivo',
+                desc: 'Aplicar cores de propriedade aos emblemas de propriedade nos itens de arquivo.'
+            },
+            prioritizeColoredFileProperties: {
+                name: 'Mostrar propriedades coloridas primeiro',
+                desc: 'Ordenar propriedades coloridas antes de outras propriedades nos itens de arquivo.'
+            },
+            showFilePropertiesInCompactMode: {
+                name: 'Mostrar propriedades no modo compacto',
+                desc: 'Exibir propriedades quando o modo compacto está ativo.'
+            },
             notePropertyType: {
                 name: 'Propriedade da nota',
                 desc: 'Selecione a propriedade da nota para exibir nos itens de arquivo.',
@@ -1315,15 +1339,13 @@ export const STRINGS_PT_BR = {
             propertyFields: {
                 name: 'Propriedades a exibir',
                 desc: 'Lista de propriedades de metadados separada por vírgulas para exibir no painel de navegação e como emblemas nos itens de arquivo. Propriedades com múltiplos valores exibem um emblema por valor.',
-                placeholder: 'status, tipo, categoria'
+                placeholder: 'status, tipo, categoria',
+                addButtonTooltip: 'Adicionar chave de propriedade',
+                emptySelectorNotice: 'Nenhuma chave de propriedade encontrada no cache de metadados.'
             },
             showPropertiesOnSeparateRows: {
                 name: 'Mostrar propriedades em linhas separadas',
                 desc: 'Mostrar cada propriedade na sua própria linha.'
-            },
-            showNotePropertyInCompactMode: {
-                name: 'Mostrar propriedades no modo compacto',
-                desc: 'Exibir propriedades quando o modo compacto está ativo.'
             },
             dateFormat: {
                 name: 'Formato de data',
@@ -1517,6 +1539,10 @@ export const STRINGS_PT_BR = {
             showPropertyIcons: {
                 name: 'Mostrar ícones de propriedades',
                 desc: 'Exibir ícones ao lado das propriedades no painel de navegação.'
+            },
+            inheritPropertyColors: {
+                name: 'Herdar cores de propriedade',
+                desc: 'Os valores de propriedade herdam a cor e o fundo da sua chave de propriedade.'
             },
             propertySortOrder: {
                 name: 'Ordem de classificação de propriedades',

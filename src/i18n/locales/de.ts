@@ -534,6 +534,14 @@ export const STRINGS_DE = {
                 remove: 'zum Entfernen des Tags'
             }
         },
+        propertySuggest: {
+            placeholder: 'Eigenschaftsschlüssel auswählen...',
+            instructions: {
+                navigate: 'zum Navigieren',
+                select: 'zum Hinzufügen der Eigenschaft',
+                dismiss: 'zum Abbrechen'
+            }
+        },
         welcome: {
             title: 'Willkommen bei {pluginName}',
             introText:
@@ -1301,6 +1309,22 @@ export const STRINGS_DE = {
                 name: 'Datei-Tags im schlanken Modus anzeigen',
                 desc: 'Tags anzeigen, wenn Datum, Vorschau und Bild ausgeblendet sind.'
             },
+            showFileProperties: {
+                name: 'Datei-Eigenschaften anzeigen',
+                desc: 'Konfigurierte Eigenschaftswerte in Datei-Elementen anzeigen.'
+            },
+            colorFileProperties: {
+                name: 'Datei-Eigenschaften einfärben',
+                desc: 'Eigenschaftsfarben auf Eigenschafts-Badges in Datei-Elementen anwenden.'
+            },
+            prioritizeColoredFileProperties: {
+                name: 'Farbige Eigenschaften zuerst anzeigen',
+                desc: 'Farbige Eigenschaften vor anderen Eigenschaften in Datei-Elementen sortieren.'
+            },
+            showFilePropertiesInCompactMode: {
+                name: 'Eigenschaften im Kompaktmodus anzeigen',
+                desc: 'Eigenschaften anzeigen, wenn der Kompaktmodus aktiv ist.'
+            },
             notePropertyType: {
                 name: 'Notiz-Eigenschaft',
                 desc: 'Wählen Sie die Notiz-Eigenschaft, die in Datei-Elementen angezeigt werden soll.',
@@ -1313,15 +1337,13 @@ export const STRINGS_DE = {
             propertyFields: {
                 name: 'Anzuzeigende Eigenschaften',
                 desc: 'Kommagetrennte Liste von Frontmatter-Eigenschaften zur Anzeige im Navigationsbereich und als Badges in Datei-Elementen. Listen-Eigenschaften zeigen ein Badge pro Wert.',
-                placeholder: 'status, typ, kategorie'
+                placeholder: 'status, typ, kategorie',
+                addButtonTooltip: 'Eigenschaftsschlüssel hinzufügen',
+                emptySelectorNotice: 'Keine Eigenschaftsschlüssel im Metadaten-Cache gefunden.'
             },
             showPropertiesOnSeparateRows: {
                 name: 'Eigenschaften in separaten Zeilen anzeigen',
                 desc: 'Jede Eigenschaft in einer eigenen Zeile anzeigen.'
-            },
-            showNotePropertyInCompactMode: {
-                name: 'Eigenschaften im Kompaktmodus anzeigen',
-                desc: 'Eigenschaften anzeigen, wenn der Kompaktmodus aktiv ist.'
             },
             dateFormat: {
                 name: 'Datumsformat',
@@ -1514,6 +1536,10 @@ export const STRINGS_DE = {
             showPropertyIcons: {
                 name: 'Eigenschafts-Symbole anzeigen',
                 desc: 'Symbole neben Eigenschaften im Navigationsbereich anzeigen.'
+            },
+            inheritPropertyColors: {
+                name: 'Eigenschaftsfarben vererben',
+                desc: 'Eigenschaftswerte erben Farbe und Hintergrund von ihrem Eigenschaftsschlüssel.'
             },
             propertySortOrder: {
                 name: 'Sortierreihenfolge der Eigenschaften',

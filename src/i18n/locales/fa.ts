@@ -533,6 +533,14 @@ export const STRINGS_FA = {
                 remove: 'برای حذف برچسب'
             }
         },
+        propertySuggest: {
+            placeholder: 'انتخاب کلید ویژگی...',
+            instructions: {
+                navigate: 'برای ناوبری',
+                select: 'برای افزودن ویژگی',
+                dismiss: 'برای بستن'
+            }
+        },
         welcome: {
             title: 'به {pluginName} خوش آمدید',
             introText:
@@ -1297,6 +1305,22 @@ export const STRINGS_FA = {
                 name: 'نمایش برچسب‌های فایل در حالت فشرده',
                 desc: 'برچسب‌ها را هنگامی که تاریخ، پیش‌نمایش و تصویر مخفی هستند نمایش دهید.'
             },
+            showFileProperties: {
+                name: 'نمایش ویژگی‌های فایل',
+                desc: 'مقادیر ویژگی‌های پیکربندی‌شده را در آیتم‌های فایل نمایش دهید.'
+            },
+            colorFileProperties: {
+                name: 'رنگ‌آمیزی ویژگی‌های فایل',
+                desc: 'رنگ‌های ویژگی را روی نشان‌های ویژگی در آیتم‌های فایل اعمال کنید.'
+            },
+            prioritizeColoredFileProperties: {
+                name: 'نمایش ویژگی‌های رنگی در اولویت',
+                desc: 'ویژگی‌های رنگی را قبل از ویژگی‌های دیگر روی آیتم‌های فایل مرتب کنید.'
+            },
+            showFilePropertiesInCompactMode: {
+                name: 'نمایش ویژگی‌ها در حالت فشرده',
+                desc: 'نمایش ویژگی‌ها هنگام فعال بودن حالت فشرده.'
+            },
             notePropertyType: {
                 name: 'ویژگی یادداشت',
                 desc: 'ویژگی یادداشت را برای نمایش در موارد فایل انتخاب کنید.',
@@ -1309,15 +1333,13 @@ export const STRINGS_FA = {
             propertyFields: {
                 name: 'ویژگی‌ها برای نمایش',
                 desc: 'فهرست ویژگی‌های فرانت‌متر جدا شده با کاما برای نمایش در پنل ناوبری و به عنوان نشان در موارد فایل. ویژگی‌های فهرستی یک نشان به ازای هر مقدار نمایش می‌دهند.',
-                placeholder: 'وضعیت، نوع، دسته‌بندی'
+                placeholder: 'وضعیت، نوع، دسته‌بندی',
+                addButtonTooltip: 'افزودن کلید ویژگی',
+                emptySelectorNotice: 'کلید ویژگی‌ای در حافظه نهان فراداده یافت نشد.'
             },
             showPropertiesOnSeparateRows: {
                 name: 'نمایش ویژگی‌ها در ردیف‌های جداگانه',
                 desc: 'هر ویژگی را در ردیف جداگانه نمایش می‌دهد.'
-            },
-            showNotePropertyInCompactMode: {
-                name: 'نمایش ویژگی‌ها در حالت فشرده',
-                desc: 'نمایش ویژگی‌ها هنگام فعال بودن حالت فشرده.'
             },
             dateFormat: {
                 name: 'قالب تاریخ',
@@ -1511,6 +1533,10 @@ export const STRINGS_FA = {
             showPropertyIcons: {
                 name: 'نمایش نمادهای ویژگی',
                 desc: 'نمایش نمادها در کنار ویژگی‌ها در پنل ناوبری.'
+            },
+            inheritPropertyColors: {
+                name: 'ارث‌بری رنگ‌های ویژگی',
+                desc: 'مقادیر ویژگی رنگ و پس‌زمینه را از کلید ویژگی به ارث می‌برند.'
             },
             propertySortOrder: {
                 name: 'ترتیب مرتب‌سازی ویژگی‌ها',

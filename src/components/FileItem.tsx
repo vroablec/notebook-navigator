@@ -94,6 +94,53 @@ const sortTagsAlphabetically = (tags: string[]): void => {
     tags.sort((firstTag, secondTag) => naturalCompare(firstTag, secondTag));
 };
 
+const sortPropertyPillsAlphabetically = (pills: PropertyPill[]): void => {
+    pills.sort((firstPill, secondPill) => {
+        const labelCompare = naturalCompare(firstPill.label, secondPill.label);
+        if (labelCompare !== 0) {
+            return labelCompare;
+        }
+
+        const valueCompare = naturalCompare(firstPill.value, secondPill.value);
+        if (valueCompare !== 0) {
+            return valueCompare;
+        }
+
+        return naturalCompare(firstPill.fieldKey ?? '', secondPill.fieldKey ?? '');
+    });
+};
+
+const sortPropertyPillGroup = (pills: readonly PropertyPill[], prioritizeColoredPills: boolean): PropertyPill[] => {
+    if (pills.length <= 1) {
+        return [...pills];
+    }
+
+    if (!prioritizeColoredPills) {
+        const sortedPills = [...pills];
+        sortPropertyPillsAlphabetically(sortedPills);
+        return sortedPills;
+    }
+
+    const coloredPills: PropertyPill[] = [];
+    const regularPills: PropertyPill[] = [];
+
+    pills.forEach(pill => {
+        const hasColor = typeof pill.color === 'string' && pill.color.trim().length > 0;
+        const hasBackground = typeof pill.background === 'string' && pill.background.trim().length > 0;
+        if (hasColor || hasBackground) {
+            coloredPills.push(pill);
+            return;
+        }
+
+        regularPills.push(pill);
+    });
+
+    sortPropertyPillsAlphabetically(coloredPills);
+    sortPropertyPillsAlphabetically(regularPills);
+
+    return [...coloredPills, ...regularPills];
+};
+
 type PropertyPill = {
     value: string;
     label: string;
@@ -633,12 +680,13 @@ export const FileItem = React.memo(function FileItem({
     }, [categorizedTags, isCompactMode, settings.showFileTags, settings.showFileTagsInCompactMode, settings.showTags]);
 
     const propertyColorSignature = useMemo(() => {
-        if (!settings.showProperties || !properties || properties.length === 0) {
+        if (!settings.showFileProperties || !settings.colorFileProperties || !properties || properties.length === 0) {
             return '';
         }
 
         const colorRecord = settings.propertyColors;
         const backgroundRecord = settings.propertyBackgroundColors;
+        const inheritSignature = settings.inheritPropertyColors ? 'inherit:1' : 'inherit:0';
         const signatures: string[] = [];
         const seenValueNodeIds = new Set<string>();
         const seenKeyNodeIds = new Set<string>();
@@ -665,18 +713,32 @@ export const FileItem = React.memo(function FileItem({
             signatures.push(`k:${keyNodeId}\u0000${colorRecord?.[keyNodeId] ?? ''}\u0000${backgroundRecord?.[keyNodeId] ?? ''}`);
         }
 
-        if (signatures.length <= 1) {
-            return signatures[0] ?? '';
+        if (signatures.length === 0) {
+            return inheritSignature;
+        }
+
+        if (signatures.length === 1) {
+            return `${inheritSignature}\u0001${signatures[0] ?? ''}`;
         }
 
         signatures.sort();
-        return signatures.join('\u0001');
-    }, [properties, settings.propertyBackgroundColors, settings.propertyColors, settings.showProperties]);
+        return `${inheritSignature}\u0001${signatures.join('\u0001')}`;
+    }, [
+        properties,
+        settings.colorFileProperties,
+        settings.inheritPropertyColors,
+        settings.propertyBackgroundColors,
+        settings.propertyColors,
+        settings.showFileProperties
+    ]);
 
     const propertyPills = useMemo<PropertyPill[]>(() => {
         void propertyColorSignature;
 
         const pills: PropertyPill[] = [];
+        const frontmatterPills: PropertyPill[] = [];
+        const colorFileProperties = settings.colorFileProperties;
+        const prioritizeColoredFileProperties = settings.prioritizeColoredFileProperties;
 
         if (appearanceSettings.notePropertyType === 'wordCount') {
             // Don't show `0`: it can mean "no words", a huge file (content read skipped), or an Excalidraw document.
@@ -686,7 +748,7 @@ export const FileItem = React.memo(function FileItem({
             }
         }
 
-        if (!settings.showProperties) {
+        if (!settings.showFileProperties) {
             return pills;
         }
 
@@ -710,12 +772,16 @@ export const FileItem = React.memo(function FileItem({
             const cacheKey = `${entry.fieldKey}\u0000${rawValue}`;
             let colorData = colorLookupCache.get(cacheKey);
             if (!colorData) {
-                const propertyNodeId = buildPropertyValueNodeId(entry.fieldKey, rawValue);
-                colorData = metadataService.getPropertyColorData(propertyNodeId);
+                if (colorFileProperties) {
+                    const propertyNodeId = buildPropertyValueNodeId(entry.fieldKey, rawValue);
+                    colorData = metadataService.getPropertyColorData(propertyNodeId);
+                } else {
+                    colorData = {};
+                }
                 colorLookupCache.set(cacheKey, colorData);
             }
 
-            pills.push({
+            frontmatterPills.push({
                 value: rawValue,
                 label,
                 wikiLink,
@@ -725,8 +791,46 @@ export const FileItem = React.memo(function FileItem({
             });
         }
 
+        const prioritizeColoredPills = prioritizeColoredFileProperties && colorFileProperties;
+        const groupedPills = new Map<string, PropertyPill[]>();
+        const groupOrder: string[] = [];
+
+        frontmatterPills.forEach(pill => {
+            const key = pill.fieldKey ?? '';
+            const existingGroup = groupedPills.get(key);
+            if (existingGroup) {
+                existingGroup.push(pill);
+                return;
+            }
+
+            groupedPills.set(key, [pill]);
+            groupOrder.push(key);
+        });
+
+        groupOrder.forEach(groupKey => {
+            const group = groupedPills.get(groupKey);
+            if (!group || group.length === 0) {
+                return;
+            }
+
+            pills.push(...sortPropertyPillGroup(group, prioritizeColoredPills));
+        });
+
+        if (groupOrder.length > 0) {
+            return pills;
+        }
+
         return pills;
-    }, [appearanceSettings.notePropertyType, propertyColorSignature, properties, metadataService, settings.showProperties, wordCount]);
+    }, [
+        appearanceSettings.notePropertyType,
+        metadataService,
+        properties,
+        propertyColorSignature,
+        settings.colorFileProperties,
+        settings.prioritizeColoredFileProperties,
+        settings.showFileProperties,
+        wordCount
+    ]);
 
     const propertyColorData = useMemo(() => {
         // Precompute per-token styles so each pill render is O(1).
@@ -781,8 +885,8 @@ export const FileItem = React.memo(function FileItem({
     const shouldShowProperty = useMemo(() => {
         return shouldShowPropertyRow({
             notePropertyType: appearanceSettings.notePropertyType,
-            showProperties: settings.showProperties,
-            showNotePropertyInCompactMode: settings.showNotePropertyInCompactMode,
+            showFileProperties: settings.showFileProperties,
+            showFilePropertiesInCompactMode: settings.showFilePropertiesInCompactMode,
             isCompactMode,
             file,
             wordCount,
@@ -793,8 +897,8 @@ export const FileItem = React.memo(function FileItem({
         properties,
         file,
         isCompactMode,
-        settings.showNotePropertyInCompactMode,
-        settings.showProperties,
+        settings.showFileProperties,
+        settings.showFilePropertiesInCompactMode,
         wordCount
     ]);
 
@@ -806,11 +910,11 @@ export const FileItem = React.memo(function FileItem({
     const propertyPillIconId = useMemo(() => {
         const hasWordCountPill = appearanceSettings.notePropertyType === 'wordCount';
         const hasFrontmatterPills = Boolean(
-            settings.showProperties && properties && properties.some(entry => entry.value.trim().length > 0)
+            settings.showFileProperties && properties && properties.some(entry => entry.value.trim().length > 0)
         );
         const icon = hasWordCountPill && !hasFrontmatterPills ? 'file-word-count' : 'file-property';
         return resolveUXIcon(settings.interfaceIcons, icon);
-    }, [appearanceSettings.notePropertyType, properties, settings.interfaceIcons, settings.showProperties]);
+    }, [appearanceSettings.notePropertyType, properties, settings.interfaceIcons, settings.showFileProperties]);
 
     const propertyRows = useMemo((): PropertyPill[][] => {
         if (!settings.showPropertiesOnSeparateRows) {

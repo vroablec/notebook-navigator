@@ -534,6 +534,14 @@ export const STRINGS_NL = {
                 remove: 'om tag te verwijderen'
             }
         },
+        propertySuggest: {
+            placeholder: 'Eigenschap selecteren...',
+            instructions: {
+                navigate: 'om te navigeren',
+                select: 'om eigenschap toe te voegen',
+                dismiss: 'om te sluiten'
+            }
+        },
         welcome: {
             title: 'Welkom bij {pluginName}',
             introText:
@@ -1301,6 +1309,22 @@ export const STRINGS_NL = {
                 name: 'Bestandstags tonen in compacte modus',
                 desc: 'Tags weergeven wanneer datum, voorbeeld en afbeelding verborgen zijn.'
             },
+            showFileProperties: {
+                name: 'Bestandseigenschappen tonen',
+                desc: 'Geconfigureerde eigenschapwaarden weergeven in bestandsitems.'
+            },
+            colorFileProperties: {
+                name: 'Bestandseigenschappen kleuren',
+                desc: 'Eigenschapkleuren toepassen op eigenschapbadges in bestandsitems.'
+            },
+            prioritizeColoredFileProperties: {
+                name: 'Gekleurde eigenschappen eerst tonen',
+                desc: 'Gekleurde eigenschappen sorteren vóór andere eigenschappen in bestandsitems.'
+            },
+            showFilePropertiesInCompactMode: {
+                name: 'Eigenschappen tonen in compacte modus',
+                desc: 'Eigenschappen weergeven wanneer de compacte modus actief is.'
+            },
             notePropertyType: {
                 name: 'Notitie-eigenschap',
                 desc: 'Selecteer de notitie-eigenschap om weer te geven in bestandsitems.',
@@ -1313,15 +1337,13 @@ export const STRINGS_NL = {
             propertyFields: {
                 name: 'Weer te geven eigenschappen',
                 desc: "Door komma's gescheiden lijst van frontmatter-eigenschappen om weer te geven in het navigatiepaneel en als badges in bestandsitems. Lijst-eigenschappen tonen één badge per waarde.",
-                placeholder: 'status, type, categorie'
+                placeholder: 'status, type, categorie',
+                addButtonTooltip: 'Eigenschap toevoegen',
+                emptySelectorNotice: 'Geen eigenschappen gevonden in de metadatacache.'
             },
             showPropertiesOnSeparateRows: {
                 name: 'Eigenschappen op afzonderlijke regels tonen',
                 desc: 'Toon elke eigenschap op een eigen regel.'
-            },
-            showNotePropertyInCompactMode: {
-                name: 'Eigenschappen tonen in compacte modus',
-                desc: 'Eigenschappen weergeven wanneer de compacte modus actief is.'
             },
             dateFormat: {
                 name: 'Datumformaat',
@@ -1515,6 +1537,10 @@ export const STRINGS_NL = {
             showPropertyIcons: {
                 name: 'Eigenschapspictogrammen tonen',
                 desc: 'Pictogrammen naast eigenschappen in het navigatiepaneel tonen.'
+            },
+            inheritPropertyColors: {
+                name: 'Eigenschapkleuren overnemen',
+                desc: 'Eigenschapwaarden nemen de kleur en achtergrond over van hun eigenschapsleutel.'
             },
             propertySortOrder: {
                 name: 'Sorteervolgorde eigenschappen',

@@ -286,9 +286,9 @@ export function useListPaneScroll({
             // `getPropertyRowCount` applies the same trimming rules and separate-row behavior.
             const propertyRowCount = getPropertyRowCount({
                 notePropertyType: folderSettings.notePropertyType,
-                showProperties: settings.showProperties,
+                showFileProperties: settings.showFileProperties,
                 showPropertiesOnSeparateRows: settings.showPropertiesOnSeparateRows,
-                showNotePropertyInCompactMode: settings.showNotePropertyInCompactMode,
+                showFilePropertiesInCompactMode: settings.showFilePropertiesInCompactMode,
                 isCompactMode,
                 file,
                 wordCount: fileRecord?.wordCount ?? undefined,
@@ -738,8 +738,9 @@ export function useListPaneScroll({
         settings.showFeatureImage,
         settings.fileNameRows,
         settings.previewRows,
+        settings.showFileProperties,
         settings.showPropertiesOnSeparateRows,
-        settings.showNotePropertyInCompactMode,
+        settings.showFilePropertiesInCompactMode,
         settings.showParentFolder,
         settings.showTags,
         settings.showFileTags,

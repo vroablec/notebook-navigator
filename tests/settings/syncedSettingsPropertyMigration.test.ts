@@ -33,7 +33,7 @@ describe('migrateLegacySyncedSettings property key migration', () => {
 
         delete settingsRecord['notePropertyType'];
         delete settingsRecord['propertyFields'];
-        delete settingsRecord['showNotePropertyInCompactMode'];
+        delete settingsRecord['showFilePropertiesInCompactMode'];
         delete settingsRecord['showPropertiesOnSeparateRows'];
 
         settingsRecord['customPropertyType'] = 'wordCount';
@@ -50,7 +50,7 @@ describe('migrateLegacySyncedSettings property key migration', () => {
 
         expect(settings.notePropertyType).toBe('wordCount');
         expect(settings.propertyFields).toBe('status, type');
-        expect(settings.showNotePropertyInCompactMode).toBe(true);
+        expect(settings.showFilePropertiesInCompactMode).toBe(true);
         expect(settings.showPropertiesOnSeparateRows).toBe(false);
 
         expect(Object.prototype.hasOwnProperty.call(settingsRecord, 'customPropertyType')).toBe(false);

@@ -534,6 +534,14 @@ export const STRINGS_TR = {
                 remove: 'etiketi kaldırmak için'
             }
         },
+        propertySuggest: {
+            placeholder: 'Özellik anahtarı seç...',
+            instructions: {
+                navigate: 'gezinmek için',
+                select: 'özellik eklemek için',
+                dismiss: 'kapatmak için'
+            }
+        },
         welcome: {
             title: '{pluginName} uygulamasına hoş geldiniz',
             introText:
@@ -1298,6 +1306,22 @@ export const STRINGS_TR = {
                 name: 'Kompakt modda dosya etiketlerini göster',
                 desc: 'Tarih, önizleme ve görsel gizlendiğinde etiketleri görüntüle.'
             },
+            showFileProperties: {
+                name: 'Dosya özelliklerini göster',
+                desc: 'Dosya öğelerinde yapılandırılmış özellik değerlerini görüntüle.'
+            },
+            colorFileProperties: {
+                name: 'Dosya özelliklerini renklendir',
+                desc: 'Dosya öğelerindeki özellik rozetlerine özellik renklerini uygula.'
+            },
+            prioritizeColoredFileProperties: {
+                name: 'Renkli özellikleri önce göster',
+                desc: 'Dosya öğelerinde renkli özellikleri diğer özelliklerden önce sırala.'
+            },
+            showFilePropertiesInCompactMode: {
+                name: 'Kompakt modda özellikleri göster',
+                desc: 'Kompakt mod etkinken özellikleri görüntüle.'
+            },
             notePropertyType: {
                 name: 'Not özelliği',
                 desc: 'Dosya öğelerinde görüntülenecek not özelliğini seçin.',
@@ -1310,15 +1334,13 @@ export const STRINGS_TR = {
             propertyFields: {
                 name: 'Görüntülenecek özellikler',
                 desc: 'Gezinme panelinde ve dosya öğelerinde rozet olarak görüntülenecek virgülle ayrılmış ön bilgi özellikleri listesi. Liste değerli özellikler değer başına bir rozet gösterir.',
-                placeholder: 'durum, tür, kategori'
+                placeholder: 'durum, tür, kategori',
+                addButtonTooltip: 'Özellik anahtarı ekle',
+                emptySelectorNotice: 'Meta veri önbelleğinde özellik anahtarı bulunamadı.'
             },
             showPropertiesOnSeparateRows: {
                 name: 'Özellikleri ayrı satırlarda göster',
                 desc: 'Her özelliği kendi satırında göster.'
-            },
-            showNotePropertyInCompactMode: {
-                name: 'Kompakt modda özellikleri göster',
-                desc: 'Kompakt mod etkinken özellikleri görüntüle.'
             },
             dateFormat: {
                 name: 'Tarih formatı',
@@ -1512,6 +1534,10 @@ export const STRINGS_TR = {
             showPropertyIcons: {
                 name: 'Özellik simgelerini göster',
                 desc: 'Gezinme panelinde özelliklerin yanında simgeleri görüntüle.'
+            },
+            inheritPropertyColors: {
+                name: 'Özellik renklerini devral',
+                desc: 'Özellik değerleri, özellik anahtarından renk ve arka planı devralır.'
             },
             propertySortOrder: {
                 name: 'Özellik sıralama düzeni',

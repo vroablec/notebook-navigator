@@ -532,6 +532,14 @@ export const STRINGS_EN = {
                 remove: 'to remove tag'
             }
         },
+        propertySuggest: {
+            placeholder: 'Select property key...',
+            instructions: {
+                navigate: 'to navigate',
+                select: 'to add property',
+                dismiss: 'to dismiss'
+            }
+        },
         welcome: {
             title: 'Welcome to {pluginName}',
             introText:
@@ -1295,6 +1303,22 @@ export const STRINGS_EN = {
                 name: 'Show file tags in compact mode',
                 desc: 'Display tags when date, preview, and image are hidden.'
             },
+            showFileProperties: {
+                name: 'Show file properties',
+                desc: 'Display configured property values in file items.'
+            },
+            colorFileProperties: {
+                name: 'Color file properties',
+                desc: 'Apply property colors to property badges on file items.'
+            },
+            prioritizeColoredFileProperties: {
+                name: 'Show colored properties first',
+                desc: 'Sort colored properties before other properties on file items.'
+            },
+            showFilePropertiesInCompactMode: {
+                name: 'Show properties in compact mode',
+                desc: 'Display properties when compact mode is active.'
+            },
             notePropertyType: {
                 name: 'Note property',
                 desc: 'Select the note property to display in file items.',
@@ -1307,15 +1331,13 @@ export const STRINGS_EN = {
             propertyFields: {
                 name: 'Properties to display',
                 desc: 'Comma-separated list of frontmatter properties to display in the navigation pane and as badges in file items. List-valued properties render one badge per value.',
-                placeholder: 'status, type, category'
+                placeholder: 'status, type, category',
+                addButtonTooltip: 'Add property key',
+                emptySelectorNotice: 'No property keys found in metadata cache.'
             },
             showPropertiesOnSeparateRows: {
                 name: 'Show properties on separate rows',
                 desc: 'Display each property on its own row.'
-            },
-            showNotePropertyInCompactMode: {
-                name: 'Show properties in compact mode',
-                desc: 'Display properties when compact mode is active.'
             },
             dateFormat: {
                 name: 'Date format',
@@ -1508,6 +1530,10 @@ export const STRINGS_EN = {
             showPropertyIcons: {
                 name: 'Show property icons',
                 desc: 'Display icons next to properties in the navigation pane.'
+            },
+            inheritPropertyColors: {
+                name: 'Inherit property colors',
+                desc: 'Property values inherit color and background from their property key.'
             },
             propertySortOrder: {
                 name: 'Property sort order',

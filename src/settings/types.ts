@@ -322,6 +322,7 @@ export interface NotebookNavigatorSettings {
     // Properties tab
     showProperties: boolean;
     showPropertyIcons: boolean;
+    inheritPropertyColors: boolean;
     propertySortOrder: TagSortOrder;
     showAllPropertiesFolder: boolean;
     propertyFields: string;
@@ -379,8 +380,11 @@ export interface NotebookNavigatorSettings {
     prioritizeColoredFileTags: boolean;
     showFileTagAncestors: boolean;
     showFileTagsInCompactMode: boolean;
+    showFileProperties: boolean;
+    colorFileProperties: boolean;
+    prioritizeColoredFileProperties: boolean;
     notePropertyType: NotePropertyType;
-    showNotePropertyInCompactMode: boolean;
+    showFilePropertiesInCompactMode: boolean;
     showPropertiesOnSeparateRows: boolean;
     showFileDate: boolean;
     alphabeticalDateMode: AlphabeticalDateMode;

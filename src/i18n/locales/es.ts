@@ -534,6 +534,14 @@ export const STRINGS_ES = {
                 remove: 'para eliminar etiqueta'
             }
         },
+        propertySuggest: {
+            placeholder: 'Seleccionar clave de propiedad...',
+            instructions: {
+                navigate: 'para navegar',
+                select: 'para añadir propiedad',
+                dismiss: 'para cancelar'
+            }
+        },
         welcome: {
             title: 'Bienvenido a {pluginName}',
             introText:
@@ -1301,6 +1309,22 @@ export const STRINGS_ES = {
                 name: 'Mostrar etiquetas de archivo en modo compacto',
                 desc: 'Mostrar etiquetas cuando la fecha, vista previa e imagen están ocultas.'
             },
+            showFileProperties: {
+                name: 'Mostrar propiedades de archivo',
+                desc: 'Mostrar valores de propiedades configuradas en los elementos de archivo.'
+            },
+            colorFileProperties: {
+                name: 'Colorear propiedades de archivo',
+                desc: 'Aplicar colores de propiedad a las insignias de propiedad en los elementos de archivo.'
+            },
+            prioritizeColoredFileProperties: {
+                name: 'Mostrar primero las propiedades coloreadas',
+                desc: 'Ordenar las propiedades coloreadas antes que otras propiedades en los elementos de archivo.'
+            },
+            showFilePropertiesInCompactMode: {
+                name: 'Mostrar propiedades en modo compacto',
+                desc: 'Mostrar propiedades cuando el modo compacto está activo.'
+            },
             notePropertyType: {
                 name: 'Propiedad de nota',
                 desc: 'Seleccione la propiedad de nota a mostrar en los elementos de archivo.',
@@ -1313,15 +1337,13 @@ export const STRINGS_ES = {
             propertyFields: {
                 name: 'Propiedades a mostrar',
                 desc: 'Lista separada por comas de propiedades de metadatos para mostrar en el panel de navegación y como insignias en los elementos de archivo. Las propiedades de lista muestran una insignia por valor.',
-                placeholder: 'estado, tipo, categoría'
+                placeholder: 'estado, tipo, categoría',
+                addButtonTooltip: 'Añadir clave de propiedad',
+                emptySelectorNotice: 'No se encontraron claves de propiedad en la caché de metadatos.'
             },
             showPropertiesOnSeparateRows: {
                 name: 'Mostrar propiedades en filas separadas',
                 desc: 'Mostrar cada propiedad en su propia fila.'
-            },
-            showNotePropertyInCompactMode: {
-                name: 'Mostrar propiedades en modo compacto',
-                desc: 'Mostrar propiedades cuando el modo compacto está activo.'
             },
             dateFormat: {
                 name: 'Formato de fecha',
@@ -1515,6 +1537,10 @@ export const STRINGS_ES = {
             showPropertyIcons: {
                 name: 'Mostrar iconos de propiedades',
                 desc: 'Mostrar iconos junto a las propiedades en el panel de navegación.'
+            },
+            inheritPropertyColors: {
+                name: 'Heredar colores de propiedad',
+                desc: 'Los valores de propiedad heredan el color y el fondo de su clave de propiedad.'
             },
             propertySortOrder: {
                 name: 'Orden de clasificación de propiedades',

@@ -81,7 +81,11 @@ export class PropertyMetadataService extends BaseMetadataService {
         let resolvedColor = includeColor ? this.getEntityColor(ItemType.PROPERTY, normalizedNodeId) : undefined;
         let resolvedBackground = includeBackground ? this.getEntityBackgroundColor(ItemType.PROPERTY, normalizedNodeId) : undefined;
 
-        if ((!includeColor || resolvedColor) && (!includeBackground || resolvedBackground)) {
+        const shouldInherit =
+            this.settingsProvider.settings.inheritPropertyColors &&
+            ((includeColor && !resolvedColor) || (includeBackground && !resolvedBackground));
+
+        if (!shouldInherit) {
             return { color: resolvedColor, background: resolvedBackground };
         }
 

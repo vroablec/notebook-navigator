@@ -163,3 +163,51 @@ describe('PropertyMetadataService cleanupWithValidators', () => {
         expect(settings.propertyTreeSortOverrides).toEqual({});
     });
 });
+
+describe('PropertyMetadataService color inheritance', () => {
+    const app = new App();
+
+    it('inherits key color data for value nodes when inheritance is enabled', () => {
+        const keyNodeId = buildPropertyKeyNodeId('status');
+        const valueNodeId = buildPropertyValueNodeId('status', 'todo');
+
+        const settings = createSettings();
+        settings.inheritPropertyColors = true;
+        settings.propertyColors = {
+            [keyNodeId]: '#111111'
+        };
+        settings.propertyBackgroundColors = {
+            [keyNodeId]: '#222222'
+        };
+
+        const provider = new TestSettingsProvider(settings);
+        const service = new PropertyMetadataService(app, provider);
+
+        expect(service.getPropertyColorData(valueNodeId)).toEqual({
+            color: '#111111',
+            background: '#222222'
+        });
+    });
+
+    it('does not inherit key color data for value nodes when inheritance is disabled', () => {
+        const keyNodeId = buildPropertyKeyNodeId('status');
+        const valueNodeId = buildPropertyValueNodeId('status', 'todo');
+
+        const settings = createSettings();
+        settings.inheritPropertyColors = false;
+        settings.propertyColors = {
+            [keyNodeId]: '#111111'
+        };
+        settings.propertyBackgroundColors = {
+            [keyNodeId]: '#222222'
+        };
+
+        const provider = new TestSettingsProvider(settings);
+        const service = new PropertyMetadataService(app, provider);
+
+        expect(service.getPropertyColorData(valueNodeId)).toEqual({
+            color: undefined,
+            background: undefined
+        });
+    });
+});

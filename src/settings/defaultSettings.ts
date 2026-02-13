@@ -201,6 +201,7 @@ export const DEFAULT_SETTINGS: NotebookNavigatorSettings = {
     // Properties tab
     showProperties: true,
     showPropertyIcons: true,
+    inheritPropertyColors: true,
     propertySortOrder: 'alpha-asc',
     showAllPropertiesFolder: true,
     propertyFields: '',
@@ -258,8 +259,11 @@ export const DEFAULT_SETTINGS: NotebookNavigatorSettings = {
     prioritizeColoredFileTags: true,
     showFileTagAncestors: false,
     showFileTagsInCompactMode: false,
+    showFileProperties: true,
+    colorFileProperties: true,
+    prioritizeColoredFileProperties: true,
     notePropertyType: 'none',
-    showNotePropertyInCompactMode: false,
+    showFilePropertiesInCompactMode: false,
     showPropertiesOnSeparateRows: true,
     showFileDate: true,
     // Default to showing modified date when sorting alphabetically
