@@ -758,7 +758,6 @@ export const STRINGS_ZH_CN = {
             },
             navigation: {
                 appearance: '外观',
-                shortcutsAndRecent: '快捷方式和最近项目',
                 leftSidebar: '左侧边栏',
                 calendarIntegration: '日历集成'
             },

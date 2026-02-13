@@ -762,7 +762,6 @@ export const STRINGS_NL = {
             },
             navigation: {
                 appearance: 'Uiterlijk',
-                shortcutsAndRecent: 'Snelkoppelingen en recente items',
                 leftSidebar: 'Linkerzijbalk',
                 calendarIntegration: 'Kalenderintegratie'
             },

@@ -102,45 +102,6 @@ export const DEFAULT_SETTINGS: NotebookNavigatorSettings = {
     timeFormat: 'h:mm a',
     calendarTemplateFolder: '',
 
-    // Navigation pane tab - Behavior
-    pinRecentNotesWithShortcuts: false,
-    collapseBehavior: 'all',
-    smartCollapse: true,
-
-    // Navigation pane tab - Shortcuts & recent items
-    showSectionIcons: true,
-    showShortcuts: true,
-    shortcutBadgeDisplay: 'index',
-    skipAutoScroll: false,
-    showRecentNotes: true,
-    recentNotesCount: 5,
-
-    // Calendar tab - Calendar
-    calendarPlacement: 'left-sidebar',
-    calendarConfirmBeforeCreate: true,
-    calendarLocale: 'system-default',
-    calendarWeekendDays: 'sat-sun',
-    calendarHighlightToday: true,
-    calendarShowFeatureImage: true,
-    calendarShowWeekNumber: false,
-    calendarShowQuarter: false,
-    calendarShowYearCalendar: true,
-    calendarLeftPlacement: 'navigation',
-    calendarWeeksToShow: 1,
-
-    // Calendar tab - Calendar integration
-    calendarIntegrationMode: 'notebook-navigator',
-    calendarCustomFilePattern: DEFAULT_CALENDAR_CUSTOM_FILE_PATTERN,
-    calendarCustomWeekPattern: DEFAULT_CALENDAR_CUSTOM_WEEK_PATTERN,
-    calendarCustomMonthPattern: DEFAULT_CALENDAR_CUSTOM_MONTH_PATTERN,
-    calendarCustomQuarterPattern: DEFAULT_CALENDAR_CUSTOM_QUARTER_PATTERN,
-    calendarCustomYearPattern: DEFAULT_CALENDAR_CUSTOM_YEAR_PATTERN,
-    calendarCustomFileTemplate: null,
-    calendarCustomWeekTemplate: null,
-    calendarCustomMonthTemplate: null,
-    calendarCustomQuarterTemplate: null,
-    calendarCustomYearTemplate: null,
-
     // Navigation pane tab - Appearance
     colorIconOnly: false,
     toolbarVisibility: {
@@ -170,12 +131,51 @@ export const DEFAULT_SETTINGS: NotebookNavigatorSettings = {
     navItemHeight: NAVPANE_MEASUREMENTS.defaultItemHeight,
     navItemHeightScaleText: true,
 
-    // Folders tab
+    // Navigation pane tab - Behavior
+    collapseBehavior: 'all',
+    smartCollapse: true,
     autoSelectFirstFileOnFocusChange: false,
     autoExpandNavItems: false,
     springLoadedFolders: true,
     springLoadedFoldersInitialDelay: 0.5,
     springLoadedFoldersSubsequentDelay: 0.5,
+
+    // Shortcuts tab
+    showSectionIcons: true,
+    showShortcuts: true,
+    shortcutBadgeDisplay: 'index',
+    skipAutoScroll: false,
+    showRecentNotes: true,
+    pinRecentNotesWithShortcuts: false,
+    recentNotesCount: 5,
+
+    // Calendar tab - Calendar
+    calendarPlacement: 'left-sidebar',
+    calendarConfirmBeforeCreate: true,
+    calendarLocale: 'system-default',
+    calendarWeekendDays: 'sat-sun',
+    calendarHighlightToday: true,
+    calendarShowFeatureImage: true,
+    calendarShowWeekNumber: false,
+    calendarShowQuarter: false,
+    calendarShowYearCalendar: true,
+    calendarLeftPlacement: 'navigation',
+    calendarWeeksToShow: 1,
+
+    // Calendar tab - Calendar integration
+    calendarIntegrationMode: 'notebook-navigator',
+    calendarCustomFilePattern: DEFAULT_CALENDAR_CUSTOM_FILE_PATTERN,
+    calendarCustomWeekPattern: DEFAULT_CALENDAR_CUSTOM_WEEK_PATTERN,
+    calendarCustomMonthPattern: DEFAULT_CALENDAR_CUSTOM_MONTH_PATTERN,
+    calendarCustomQuarterPattern: DEFAULT_CALENDAR_CUSTOM_QUARTER_PATTERN,
+    calendarCustomYearPattern: DEFAULT_CALENDAR_CUSTOM_YEAR_PATTERN,
+    calendarCustomFileTemplate: null,
+    calendarCustomWeekTemplate: null,
+    calendarCustomMonthTemplate: null,
+    calendarCustomQuarterTemplate: null,
+    calendarCustomYearTemplate: null,
+
+    // Folders tab
     showFolderIcons: true,
     showRootFolder: true,
     inheritFolderColors: false,
@@ -227,7 +227,7 @@ export const DEFAULT_SETTINGS: NotebookNavigatorSettings = {
     quickActionPinNote: true,
     quickActionOpenInNewTab: false,
 
-    // Notes tab
+    // Frontmatter tab
     useFrontmatterMetadata: false,
     frontmatterIconField: 'icon',
     frontmatterColorField: 'color',
@@ -236,6 +236,8 @@ export const DEFAULT_SETTINGS: NotebookNavigatorSettings = {
     frontmatterModifiedField: '',
     frontmatterDateFormat: '',
     saveMetadataToFrontmatter: false,
+
+    // Notes tab
     showFileIcons: true,
     showFileIconUnfinishedTask: false,
     showFilenameMatchIcons: false,

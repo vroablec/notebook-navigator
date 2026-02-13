@@ -29,13 +29,13 @@ import {
     type MetadataParsingStatistics
 } from './storage/statistics';
 import { renderGeneralTab } from './settings/tabs/GeneralTab';
-import { renderNavigationPaneTab } from './settings/tabs/NavigationPaneTab';
+import { renderNavigationPaneTab, renderShortcutsTab } from './settings/tabs/NavigationPaneTab';
 import { renderCalendarTab } from './settings/tabs/CalendarTab';
 import { renderFoldersTab } from './settings/tabs/FoldersTab';
 import { renderTagsTab } from './settings/tabs/TagsTab';
 import { renderPropertiesTab } from './settings/tabs/PropertiesTab';
 import { renderListPaneTab } from './settings/tabs/ListPaneTab';
-import { renderNotesTab } from './settings/tabs/NotesTab';
+import { renderFrontmatterTab, renderNotesTab } from './settings/tabs/NotesTab';
 import { renderIconPacksTab } from './settings/tabs/IconPacksTab';
 import { renderAdvancedTab } from './settings/tabs/AdvancedTab';
 import type {
@@ -52,11 +52,13 @@ import { getDBInstanceOrNull } from './storage/fileOperations';
 type SettingsPaneId =
     | 'general'
     | 'navigation-pane'
+    | 'shortcuts'
     | 'calendar'
     | 'folders'
     | 'tags'
     | 'properties'
     | 'list-pane'
+    | 'frontmatter'
     | 'notes'
     | 'icon-packs'
     | 'advanced';
@@ -68,8 +70,8 @@ const SETTINGS_GROUP_IDS: SettingsGroupId[] = ['general', 'navigation-pane', 'li
 
 const SETTINGS_GROUP_SECONDARY_TAB_IDS: Record<SettingsGroupId, SettingsPaneId[]> = {
     general: ['icon-packs', 'advanced'],
-    'navigation-pane': ['folders', 'tags', 'properties'],
-    'list-pane': ['notes'],
+    'navigation-pane': ['shortcuts', 'folders', 'tags', 'properties'],
+    'list-pane': ['frontmatter', 'notes'],
     calendar: []
 };
 
@@ -78,10 +80,12 @@ const SETTINGS_TAB_GROUP_MAP: Record<SettingsPaneId, SettingsGroupId> = {
     'icon-packs': 'general',
     advanced: 'general',
     'navigation-pane': 'navigation-pane',
+    shortcuts: 'navigation-pane',
     folders: 'navigation-pane',
     tags: 'navigation-pane',
     properties: 'navigation-pane',
     'list-pane': 'list-pane',
+    frontmatter: 'list-pane',
     notes: 'list-pane',
     calendar: 'calendar'
 };
@@ -104,6 +108,7 @@ const SETTINGS_PANE_DEFINITIONS: SettingsPaneDefinition[] = [
     { id: 'general', getLabel: () => strings.settings.sections.general, render: renderGeneralTab },
     { id: 'calendar', getLabel: () => strings.settings.sections.calendar, render: renderCalendarTab },
     { id: 'navigation-pane', getLabel: () => strings.settings.sections.navigationPane, render: renderNavigationPaneTab },
+    { id: 'shortcuts', getLabel: () => strings.navigationPane.shortcutsHeader, render: renderShortcutsTab },
     {
         id: 'folders',
         getLabel: () => strings.settings.sections.folders,
@@ -112,6 +117,7 @@ const SETTINGS_PANE_DEFINITIONS: SettingsPaneDefinition[] = [
     { id: 'tags', getLabel: () => strings.settings.sections.tags, render: renderTagsTab },
     { id: 'properties', getLabel: () => strings.navigationPane.properties, render: renderPropertiesTab },
     { id: 'list-pane', getLabel: () => strings.settings.sections.listPane, render: renderListPaneTab },
+    { id: 'frontmatter', getLabel: () => strings.settings.groups.notes.frontmatter, render: renderFrontmatterTab },
     { id: 'notes', getLabel: () => strings.settings.sections.notes, render: renderNotesTab },
     { id: 'icon-packs', getLabel: () => strings.settings.sections.icons, render: renderIconPacksTab },
     { id: 'advanced', getLabel: () => strings.settings.sections.advanced, render: renderAdvancedTab }
@@ -162,6 +168,10 @@ export class NotebookNavigatorSettingTab extends PluginSettingTab {
 
     private getGroupIdForTab(tabId: SettingsPaneId): SettingsGroupId {
         return SETTINGS_TAB_GROUP_MAP[tabId];
+    }
+
+    private isMetadataInfoTab(tabId: SettingsPaneId | null): boolean {
+        return tabId === 'frontmatter';
     }
 
     private updateTabNavigation(activeTabId: SettingsPaneId): void {
@@ -517,7 +527,7 @@ export class NotebookNavigatorSettingTab extends PluginSettingTab {
     }
 
     private async updateMetadataInfo(): Promise<void> {
-        if (this.lastActiveTabId !== 'notes') {
+        if (!this.isMetadataInfoTab(this.lastActiveTabId)) {
             return;
         }
         const metadataInfoEl = this.metadataInfoEl;
@@ -536,7 +546,7 @@ export class NotebookNavigatorSettingTab extends PluginSettingTab {
         this.isUpdatingMetadataInfo = true;
         try {
             const stats = await calculateMetadataParsingStatistics(this.plugin.settings, this.plugin.getUXPreferences().showHiddenItems);
-            if (this.lastActiveTabId !== 'notes' || this.metadataInfoEl !== metadataInfoEl) {
+            if (!this.isMetadataInfoTab(this.lastActiveTabId) || this.metadataInfoEl !== metadataInfoEl) {
                 return;
             }
             if (!this.plugin.settings.useFrontmatterMetadata) {
@@ -614,7 +624,7 @@ export class NotebookNavigatorSettingTab extends PluginSettingTab {
     private requestStatisticsRefresh(): void {
         // Tabs can request a refresh while inactive; persist the request and run on activation.
         this.pendingStatisticsRefreshRequested = true;
-        if (this.lastActiveTabId !== 'advanced' && this.lastActiveTabId !== 'notes') {
+        if (this.lastActiveTabId !== 'advanced' && !this.isMetadataInfoTab(this.lastActiveTabId)) {
             return;
         }
         this.pendingStatisticsRefreshRequested = false;
@@ -626,7 +636,7 @@ export class NotebookNavigatorSettingTab extends PluginSettingTab {
         if (this.lastActiveTabId === 'advanced') {
             return this.updateCacheStatistics();
         }
-        if (this.lastActiveTabId === 'notes') {
+        if (this.isMetadataInfoTab(this.lastActiveTabId)) {
             return this.updateMetadataInfo();
         }
         return Promise.resolve();
@@ -636,8 +646,8 @@ export class NotebookNavigatorSettingTab extends PluginSettingTab {
      * Renders the settings tab UI
      * Organizes settings into grouped tabs:
      * - General: General, Icon packs, Advanced
-     * - Navigation pane: Navigation pane, Folders, Tags, Properties
-     * - List pane: List pane, Notes
+     * - Navigation pane: Navigation pane, Shortcuts, Folders, Tags, Properties
+     * - List pane: List pane, Frontmatter, Notes
      * - Calendar: Calendar
      */
     display(): void {
@@ -808,14 +818,14 @@ export class NotebookNavigatorSettingTab extends PluginSettingTab {
             this.stopStatisticsInterval();
         }
 
-        if (id === 'notes') {
+        if (this.isMetadataInfoTab(id)) {
             this.ensureMetadataInfoListener();
             runAsyncAction(() => this.updateMetadataInfo());
         } else {
             this.stopMetadataInfoListener();
         }
 
-        if (this.pendingStatisticsRefreshRequested && (id === 'advanced' || id === 'notes')) {
+        if (this.pendingStatisticsRefreshRequested && (id === 'advanced' || this.isMetadataInfoTab(id))) {
             this.pendingStatisticsRefreshRequested = false;
             runAsyncAction(() => this.updateActiveTabInfo());
             this.scheduleDeferredStatisticsRefresh();
@@ -865,7 +875,7 @@ export class NotebookNavigatorSettingTab extends PluginSettingTab {
         }
 
         this.metadataInfoChangeUnsubscribe = db.onContentChange(changes => {
-            if (this.lastActiveTabId !== 'notes') {
+            if (!this.isMetadataInfoTab(this.lastActiveTabId)) {
                 return;
             }
             if (!this.metadataInfoEl || !this.plugin.settings.useFrontmatterMetadata) {

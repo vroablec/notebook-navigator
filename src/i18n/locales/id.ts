@@ -760,7 +760,6 @@ export const STRINGS_ID = {
             },
             navigation: {
                 appearance: 'Tampilan',
-                shortcutsAndRecent: 'Pintasan & item terbaru',
                 leftSidebar: 'Bilah sisi kiri',
                 calendarIntegration: 'Integrasi kalender'
             },

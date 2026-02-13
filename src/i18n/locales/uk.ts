@@ -760,7 +760,6 @@ export const STRINGS_UK = {
             },
             navigation: {
                 appearance: 'Вигляд',
-                shortcutsAndRecent: 'Ярлики та нещодавні елементи',
                 leftSidebar: 'Ліва бічна панель',
                 calendarIntegration: 'Інтеграція з календарем'
             },

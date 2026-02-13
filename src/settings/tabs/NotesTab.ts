@@ -74,12 +74,12 @@ function parseFileNameIconMapText(value: string): IconMapParseResult {
     return parseIconMapText(value, normalizeFileNameIconMapKey);
 }
 
-/** Renders the notes settings tab */
-export function renderNotesTab(context: SettingsTabContext): void {
+/** Renders the frontmatter settings tab */
+export function renderFrontmatterTab(context: SettingsTabContext): void {
     const { app, containerEl, plugin } = context;
 
     const createGroup = createSettingGroupFactory(containerEl);
-    const frontmatterGroup = createGroup(strings.settings.groups.notes.frontmatter);
+    const frontmatterGroup = createGroup(undefined);
 
     const useFrontmatterSetting = frontmatterGroup.addSetting(setting => {
         setting.setName(strings.settings.items.useFrontmatterDates.name).setDesc(strings.settings.items.useFrontmatterDates.desc);
@@ -297,7 +297,13 @@ export function renderNotesTab(context: SettingsTabContext): void {
         cls: 'setting-item-description'
     });
     context.registerMetadataInfoElement(metadataInfoEl);
+}
 
+/** Renders the notes settings tab */
+export function renderNotesTab(context: SettingsTabContext): void {
+    const { app, containerEl, plugin } = context;
+
+    const createGroup = createSettingGroupFactory(containerEl);
     const iconGroup = createGroup(strings.settings.groups.notes.icon);
     const titleGroup = createGroup(strings.settings.groups.notes.title);
     const previewTextGroup = createGroup(strings.settings.groups.notes.previewText);
@@ -829,6 +835,4 @@ export function renderNotesTab(context: SettingsTabContext): void {
     context.registerShowTagsListener(visible => {
         setGroupVisible(tagsGroup.rootEl, visible);
     });
-
-    context.requestStatisticsRefresh();
 }

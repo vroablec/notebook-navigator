@@ -29,7 +29,7 @@ export function renderTagsTab(context: SettingsTabContext): void {
     const { containerEl, plugin } = context;
     const createGroup = createSettingGroupFactory(containerEl);
 
-    const tagsGroup = createGroup(strings.settings.sections.tags);
+    const tagsGroup = createGroup(undefined);
 
     const showTagsSetting = tagsGroup.addSetting(setting => {
         setting.setName(strings.settings.items.showTags.name).setDesc(strings.settings.items.showTags.desc);

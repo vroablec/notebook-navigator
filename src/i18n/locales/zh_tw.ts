@@ -758,7 +758,6 @@ export const STRINGS_ZH_TW = {
             },
             navigation: {
                 appearance: '外觀',
-                shortcutsAndRecent: '捷徑和最近項目',
                 leftSidebar: '左側邊欄',
                 calendarIntegration: '行事曆整合'
             },

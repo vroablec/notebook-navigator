@@ -761,7 +761,6 @@ export const STRINGS_TR = {
             },
             navigation: {
                 appearance: 'Görünüm',
-                shortcutsAndRecent: 'Kısayollar ve son öğeler',
                 leftSidebar: 'Sol kenar çubuğu',
                 calendarIntegration: 'Takvim entegrasyonu'
             },

@@ -762,7 +762,6 @@ export const STRINGS_FR = {
             },
             navigation: {
                 appearance: 'Apparence',
-                shortcutsAndRecent: 'Raccourcis et éléments récents',
                 leftSidebar: 'Barre latérale gauche',
                 calendarIntegration: 'Intégration du calendrier'
             },

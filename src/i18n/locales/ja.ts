@@ -760,7 +760,6 @@ export const STRINGS_JA = {
             },
             navigation: {
                 appearance: '外観',
-                shortcutsAndRecent: 'ショートカットと最近の項目',
                 leftSidebar: '左サイドバー',
                 calendarIntegration: 'カレンダー連携'
             },

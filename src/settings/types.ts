@@ -240,17 +240,34 @@ export interface NotebookNavigatorSettings {
     timeFormat: string;
     calendarTemplateFolder: string;
 
+    // Navigation pane tab - Appearance
+    colorIconOnly: boolean;
+    toolbarVisibility: ToolbarVisibilitySettings;
+    pinNavigationBanner: boolean;
+    showNoteCount: boolean;
+    separateNoteCounts: boolean;
+    showIndentGuides: boolean;
+    rootLevelSpacing: number;
+    navIndent: number;
+    navItemHeight: number;
+    navItemHeightScaleText: boolean;
+
     // Navigation pane tab - Behavior
-    pinRecentNotesWithShortcuts: boolean;
     collapseBehavior: ItemScope;
     smartCollapse: boolean;
+    autoSelectFirstFileOnFocusChange: boolean;
+    autoExpandNavItems: boolean;
+    springLoadedFolders: boolean;
+    springLoadedFoldersInitialDelay: number;
+    springLoadedFoldersSubsequentDelay: number;
 
-    // Navigation pane tab - Shortcuts & recent items
+    // Shortcuts tab
     showSectionIcons: boolean;
     showShortcuts: boolean;
     shortcutBadgeDisplay: ShortcutBadgeDisplayMode;
     skipAutoScroll: boolean;
     showRecentNotes: boolean;
+    pinRecentNotesWithShortcuts: boolean;
     recentNotesCount: number;
 
     // Calendar tab - Calendar
@@ -279,24 +296,7 @@ export interface NotebookNavigatorSettings {
     calendarCustomQuarterTemplate: string | null;
     calendarCustomYearTemplate: string | null;
 
-    // Navigation pane tab - Appearance
-    colorIconOnly: boolean;
-    toolbarVisibility: ToolbarVisibilitySettings;
-    pinNavigationBanner: boolean;
-    showNoteCount: boolean;
-    separateNoteCounts: boolean;
-    showIndentGuides: boolean;
-    rootLevelSpacing: number;
-    navIndent: number;
-    navItemHeight: number;
-    navItemHeightScaleText: boolean;
-
     // Folders tab
-    autoSelectFirstFileOnFocusChange: boolean;
-    autoExpandNavItems: boolean;
-    springLoadedFolders: boolean;
-    springLoadedFoldersInitialDelay: number;
-    springLoadedFoldersSubsequentDelay: number;
     showFolderIcons: boolean;
     showRootFolder: boolean;
     inheritFolderColors: boolean;
@@ -348,7 +348,7 @@ export interface NotebookNavigatorSettings {
     quickActionPinNote: boolean;
     quickActionOpenInNewTab: boolean;
 
-    // Notes tab
+    // Frontmatter tab
     useFrontmatterMetadata: boolean;
     frontmatterIconField: string;
     frontmatterColorField: string;
@@ -357,6 +357,8 @@ export interface NotebookNavigatorSettings {
     frontmatterModifiedField: string;
     frontmatterDateFormat: string;
     saveMetadataToFrontmatter: boolean;
+
+    // Notes tab
     showFileIcons: boolean;
     showFileIconUnfinishedTask: boolean;
     showFilenameMatchIcons: boolean;

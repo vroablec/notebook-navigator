@@ -760,7 +760,6 @@ export const STRINGS_KO = {
             },
             navigation: {
                 appearance: '모양',
-                shortcutsAndRecent: '바로가기 및 최근 항목',
                 leftSidebar: '왼쪽 사이드바',
                 calendarIntegration: '캘린더 연동'
             },

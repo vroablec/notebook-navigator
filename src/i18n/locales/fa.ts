@@ -760,7 +760,6 @@ export const STRINGS_FA = {
             },
             navigation: {
                 appearance: 'ظاهر',
-                shortcutsAndRecent: 'میانبرها و موارد اخیر',
                 leftSidebar: 'نوار کناری چپ',
                 calendarIntegration: 'یکپارچه‌سازی تقویم'
             },

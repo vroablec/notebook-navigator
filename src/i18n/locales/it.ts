@@ -759,7 +759,6 @@ export const STRINGS_IT = {
             },
             navigation: {
                 appearance: 'Aspetto',
-                shortcutsAndRecent: 'Scorciatoie ed elementi recenti',
                 leftSidebar: 'Barra laterale sinistra',
                 calendarIntegration: 'Integrazione calendario'
             },

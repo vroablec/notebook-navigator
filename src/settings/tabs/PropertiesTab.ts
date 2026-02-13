@@ -118,7 +118,7 @@ export function renderPropertiesTab(context: SettingsTabContext): void {
     const { containerEl, plugin, app } = context;
     const createGroup = createSettingGroupFactory(containerEl);
 
-    const propertiesGroup = createGroup(strings.navigationPane.properties);
+    const propertiesGroup = createGroup(undefined);
 
     const showPropertiesSetting = propertiesGroup.addSetting(setting => {
         setting.setName(strings.settings.items.showProperties.name).setDesc(strings.settings.items.showProperties.desc);

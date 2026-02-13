@@ -759,7 +759,6 @@ export const STRINGS_AR = {
             },
             navigation: {
                 appearance: 'المظهر',
-                shortcutsAndRecent: 'الاختصارات والعناصر الأخيرة',
                 leftSidebar: 'الشريط الجانبي الأيسر',
                 calendarIntegration: 'تكامل التقويم'
             },

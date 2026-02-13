@@ -759,7 +759,6 @@ export const STRINGS_TH = {
             },
             navigation: {
                 appearance: 'ลักษณะ',
-                shortcutsAndRecent: 'ทางลัดและรายการล่าสุด',
                 leftSidebar: 'แถบด้านซ้าย',
                 calendarIntegration: 'การรวมปฏิทิน'
             },

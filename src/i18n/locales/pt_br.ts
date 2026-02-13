@@ -763,7 +763,6 @@ export const STRINGS_PT_BR = {
             },
             navigation: {
                 appearance: 'Aparência',
-                shortcutsAndRecent: 'Atalhos e itens recentes',
                 leftSidebar: 'Barra lateral esquerda',
                 calendarIntegration: 'Integração do calendário'
             },

@@ -760,7 +760,6 @@ export const STRINGS_VI = {
             },
             navigation: {
                 appearance: 'Giao diện',
-                shortcutsAndRecent: 'Phím tắt và mục gần đây',
                 leftSidebar: 'Thanh bên trái',
                 calendarIntegration: 'Tích hợp lịch'
             },

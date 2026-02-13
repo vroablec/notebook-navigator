@@ -759,7 +759,6 @@ export const STRINGS_EN = {
             },
             navigation: {
                 appearance: 'Appearance',
-                shortcutsAndRecent: 'Shortcuts & recent items',
                 leftSidebar: 'Left sidebar',
                 calendarIntegration: 'Calendar integration'
             },
