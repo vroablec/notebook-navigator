@@ -203,7 +203,7 @@ export const DEFAULT_SETTINGS: NotebookNavigatorSettings = {
     showPropertyIcons: true,
     propertySortOrder: 'alpha-asc',
     showAllPropertiesFolder: true,
-    customPropertyFields: '',
+    propertyFields: '',
 
     // List pane tab
     defaultListMode: 'standard',
@@ -258,9 +258,9 @@ export const DEFAULT_SETTINGS: NotebookNavigatorSettings = {
     prioritizeColoredFileTags: true,
     showFileTagAncestors: false,
     showFileTagsInCompactMode: false,
-    customPropertyType: 'none',
-    showCustomPropertyInCompactMode: false,
-    showCustomPropertiesOnSeparateRows: true,
+    notePropertyType: 'none',
+    showNotePropertyInCompactMode: false,
+    showPropertiesOnSeparateRows: true,
     showFileDate: true,
     // Default to showing modified date when sorting alphabetically
     alphabeticalDateMode: 'modified',

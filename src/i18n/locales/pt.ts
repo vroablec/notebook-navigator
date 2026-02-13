@@ -188,12 +188,12 @@ export const STRINGS_PT = {
                 properties: {
                     title: 'Propriedades',
                     items: [
-                        '`.key` Incluir notas com chave de propriedade personalizada.',
-                        '`.key=value` Incluir notas com valor de propriedade personalizada.',
+                        '`.key` Incluir notas com chave de propriedade.',
+                        '`.key=value` Incluir notas com valor de propriedade.',
                         '`."Reading Status"` Incluir notas com uma chave de propriedade que contém espaços.',
                         '`."Reading Status"="In Progress"` Chaves e valores com espaços devem estar entre aspas duplas.',
-                        '`-.key` Excluir notas com chave de propriedade personalizada.',
-                        '`-.key=value` Excluir notas com valor de propriedade personalizada.',
+                        '`-.key` Excluir notas com chave de propriedade.',
+                        '`-.key=value` Excluir notas com valor de propriedade.',
                         'Cmd/Ctrl+Clique numa propriedade para adicionar com AND. Cmd/Ctrl+Shift+Clique para adicionar com OR.'
                     ]
                 },
@@ -410,7 +410,7 @@ export const STRINGS_PT = {
                 'list-pinned': 'Itens fixados',
                 'file-unfinished-task': 'Tarefas inacabadas',
                 'file-word-count': 'Contagem de palavras',
-                'file-custom-property': 'Propriedade personalizada'
+                'file-property': 'Propriedade'
             }
         },
         colorPicker: {
@@ -768,7 +768,7 @@ export const STRINGS_PT = {
                 previewText: 'Texto de pré-visualização',
                 featureImage: 'Imagem de destaque',
                 tags: 'Etiquetas',
-                customProperty: 'Propriedades',
+                properties: 'Propriedades',
                 date: 'Data',
                 parentFolder: 'Pasta superior'
             }
@@ -1301,7 +1301,7 @@ export const STRINGS_PT = {
                 name: 'Mostrar etiquetas de ficheiros no modo compacto',
                 desc: 'Exibir etiquetas quando data, pré-visualização e imagem estão ocultas.'
             },
-            customPropertyType: {
+            notePropertyType: {
                 name: 'Propriedade da nota',
                 desc: 'Selecione a propriedade da nota a exibir nos itens de ficheiro.',
                 options: {
@@ -1310,16 +1310,16 @@ export const STRINGS_PT = {
                     none: 'Nenhum'
                 }
             },
-            customPropertyFields: {
+            propertyFields: {
                 name: 'Propriedades a mostrar',
                 desc: 'Lista de propriedades de metadados separada por vírgulas para exibir no painel de navegação e como emblemas nos itens de ficheiro. Propriedades com múltiplos valores exibem um emblema por valor.',
                 placeholder: 'estado, tipo, categoria'
             },
-            showCustomPropertiesOnSeparateRows: {
+            showPropertiesOnSeparateRows: {
                 name: 'Mostrar propriedades em linhas separadas',
                 desc: 'Mostrar cada propriedade na sua própria linha.'
             },
-            showCustomPropertyInCompactMode: {
+            showNotePropertyInCompactMode: {
                 name: 'Mostrar propriedades no modo compacto',
                 desc: 'Exibir propriedades quando o modo compacto está ativo.'
             },

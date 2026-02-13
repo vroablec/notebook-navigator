@@ -906,6 +906,6 @@ export type {
     MultiSelectModifier,
     ListPaneTitleOption,
     AlphabeticalDateMode,
-    CustomPropertyType
+    NotePropertyType
 } from './settings/types';
 export { DEFAULT_SETTINGS } from './settings/defaultSettings';

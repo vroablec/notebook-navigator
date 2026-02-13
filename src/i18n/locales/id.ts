@@ -188,12 +188,12 @@ export const STRINGS_ID = {
                 properties: {
                     title: 'Properti',
                     items: [
-                        '`.key` Sertakan catatan dengan kunci properti kustom.',
-                        '`.key=value` Sertakan catatan dengan nilai properti kustom.',
+                        '`.key` Sertakan catatan dengan kunci properti.',
+                        '`.key=value` Sertakan catatan dengan nilai properti.',
                         '`."Reading Status"` Sertakan catatan dengan kunci properti yang mengandung spasi.',
                         '`."Reading Status"="In Progress"` Kunci dan nilai yang mengandung spasi harus diapit tanda kutip ganda.',
-                        '`-.key` Kecualikan catatan dengan kunci properti kustom.',
-                        '`-.key=value` Kecualikan catatan dengan nilai properti kustom.',
+                        '`-.key` Kecualikan catatan dengan kunci properti.',
+                        '`-.key=value` Kecualikan catatan dengan nilai properti.',
                         'Cmd/Ctrl+Klik properti untuk menambahkan dengan AND. Cmd/Ctrl+Shift+Klik untuk menambahkan dengan OR.'
                     ]
                 },
@@ -410,7 +410,7 @@ export const STRINGS_ID = {
                 'list-pinned': 'Item tersemat',
                 'file-unfinished-task': 'Tugas belum selesai',
                 'file-word-count': 'Jumlah kata',
-                'file-custom-property': 'Properti kustom'
+                'file-property': 'Properti'
             }
         },
         colorPicker: {
@@ -767,7 +767,7 @@ export const STRINGS_ID = {
                 previewText: 'Teks pratinjau',
                 featureImage: 'Gambar fitur',
                 tags: 'Tag',
-                customProperty: 'Properti',
+                properties: 'Properti',
                 date: 'Tanggal',
                 parentFolder: 'Folder induk'
             }
@@ -1298,7 +1298,7 @@ export const STRINGS_ID = {
                 name: 'Tampilkan tag file dalam mode kompak',
                 desc: 'Tampilkan tag saat tanggal, pratinjau, dan gambar disembunyikan.'
             },
-            customPropertyType: {
+            notePropertyType: {
                 name: 'Properti catatan',
                 desc: 'Pilih properti catatan untuk ditampilkan di item file.',
                 options: {
@@ -1307,16 +1307,16 @@ export const STRINGS_ID = {
                     none: 'Tidak ada'
                 }
             },
-            customPropertyFields: {
+            propertyFields: {
                 name: 'Properti-properti untuk ditampilkan',
                 desc: 'Daftar properti frontmatter dipisahkan koma untuk ditampilkan di panel navigasi dan sebagai lencana di item file. Properti bernilai daftar menampilkan satu lencana per nilai.',
                 placeholder: 'status, tipe, kategori'
             },
-            showCustomPropertiesOnSeparateRows: {
+            showPropertiesOnSeparateRows: {
                 name: 'Tampilkan properti pada baris terpisah',
                 desc: 'Tampilkan setiap properti pada barisnya sendiri.'
             },
-            showCustomPropertyInCompactMode: {
+            showNotePropertyInCompactMode: {
                 name: 'Tampilkan properti dalam mode ringkas',
                 desc: 'Tampilkan properti saat mode ringkas aktif.'
             },

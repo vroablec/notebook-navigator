@@ -186,12 +186,12 @@ export const STRINGS_JA = {
                 properties: {
                     title: 'プロパティ',
                     items: [
-                        '`.key` カスタムプロパティキーを持つノートを含める。',
-                        '`.key=value` カスタムプロパティ値を持つノートを含める。',
+                        '`.key` プロパティキーを持つノートを含める。',
+                        '`.key=value` プロパティ値を持つノートを含める。',
                         '`."Reading Status"` 空白を含むプロパティキーを持つノートを含める。',
                         '`."Reading Status"="In Progress"` 空白を含むキーと値はダブルクォートで囲む必要があります。',
-                        '`-.key` カスタムプロパティキーを持つノートを除外する。',
-                        '`-.key=value` カスタムプロパティ値を持つノートを除外する。',
+                        '`-.key` プロパティキーを持つノートを除外する。',
+                        '`-.key=value` プロパティ値を持つノートを除外する。',
                         'Cmd/Ctrl+クリックでプロパティをANDで追加。Cmd/Ctrl+Shift+クリックでORで追加。'
                     ]
                 },
@@ -409,7 +409,7 @@ export const STRINGS_JA = {
                 'list-pinned': 'ピン留め項目',
                 'file-unfinished-task': '未完了タスク',
                 'file-word-count': '単語数',
-                'file-custom-property': 'カスタムプロパティ'
+                'file-property': 'プロパティ'
             }
         },
         colorPicker: {
@@ -767,7 +767,7 @@ export const STRINGS_JA = {
                 previewText: 'プレビューテキスト',
                 featureImage: 'アイキャッチ画像',
                 tags: 'タグ',
-                customProperty: 'プロパティ',
+                properties: 'プロパティ',
                 date: '日付',
                 parentFolder: '親フォルダ'
             }
@@ -1299,7 +1299,7 @@ export const STRINGS_JA = {
                 name: 'スリムモードでファイルタグを表示',
                 desc: '日付、プレビュー、画像が非表示のときにタグを表示します。'
             },
-            customPropertyType: {
+            notePropertyType: {
                 name: 'ノートプロパティ',
                 desc: 'ファイル項目に表示するノートプロパティを選択します。',
                 options: {
@@ -1308,16 +1308,16 @@ export const STRINGS_JA = {
                     none: 'なし'
                 }
             },
-            customPropertyFields: {
+            propertyFields: {
                 name: '表示するプロパティ',
                 desc: 'ナビゲーションペインとファイル項目のバッジとして表示するフロントマタープロパティのカンマ区切りリスト。リスト値のプロパティは値ごとに1つのバッジを表示します。',
                 placeholder: 'ステータス, タイプ, カテゴリ'
             },
-            showCustomPropertiesOnSeparateRows: {
+            showPropertiesOnSeparateRows: {
                 name: 'プロパティを別の行に表示',
                 desc: '各プロパティを個別の行に表示します。'
             },
-            showCustomPropertyInCompactMode: {
+            showNotePropertyInCompactMode: {
                 name: 'コンパクトモードでプロパティを表示',
                 desc: 'コンパクトモードが有効な時にプロパティを表示します。'
             },

@@ -105,7 +105,7 @@ export function useDragAndDrop(containerRef: React.RefObject<HTMLElement | null>
     }, [settings.springLoadedFoldersSubsequentDelay]);
     const configuredPropertyDisplayByNodeId = useMemo(() => {
         const displayByNodeId = new Map<string, string>();
-        getCachedCommaSeparatedList(settings.customPropertyFields).forEach(fieldName => {
+        getCachedCommaSeparatedList(settings.propertyFields).forEach(fieldName => {
             const normalizedKey = casefold(fieldName);
             const displayName = fieldName.trim();
             if (!normalizedKey || !displayName) {
@@ -117,7 +117,7 @@ export function useDragAndDrop(containerRef: React.RefObject<HTMLElement | null>
             }
         });
         return displayByNodeId;
-    }, [settings.customPropertyFields]);
+    }, [settings.propertyFields]);
 
     /**
      * Sets or clears the drag payload in Obsidian's internal drag manager.

@@ -23,7 +23,7 @@ import type { FolderAppearance } from '../../hooks/useListPaneAppearance';
 import { localStorage } from '../../utils/localStorage';
 import { cloneShortcuts, DEFAULT_VAULT_PROFILE_ID } from '../../utils/vaultProfiles';
 import { ShortcutType, type ShortcutEntry } from '../../types/shortcuts';
-import { isCustomPropertyType, isTagSortOrder } from '../types';
+import { isNotePropertyType, isTagSortOrder } from '../types';
 import { normalizeCalendarCustomRootFolder } from '../../utils/calendarCustomNotePatterns';
 import { normalizeFolderNoteNamePattern } from '../../utils/folderNoteName';
 import { normalizeOptionalVaultFilePath } from '../../utils/pathUtils';
@@ -131,23 +131,51 @@ export function migrateLegacySyncedSettings(params: {
         settings.shortcutBadgeDisplay = defaultSettings.shortcutBadgeDisplay;
     }
 
-    if (!isCustomPropertyType(settings.customPropertyType)) {
-        settings.customPropertyType = defaultSettings.customPropertyType;
+    const legacyNotePropertyType = mutableSettings['customPropertyType'];
+    if (typeof storedData?.['notePropertyType'] === 'undefined' && typeof legacyNotePropertyType === 'string') {
+        if (legacyNotePropertyType === 'frontmatter') {
+            settings.notePropertyType = 'none';
+        } else if (isNotePropertyType(legacyNotePropertyType)) {
+            settings.notePropertyType = legacyNotePropertyType;
+        }
+    }
+    delete mutableSettings['customPropertyType'];
+
+    const legacyPropertyFields = mutableSettings['customPropertyFields'];
+    if (typeof storedData?.['propertyFields'] === 'undefined' && typeof legacyPropertyFields === 'string') {
+        settings.propertyFields = legacyPropertyFields;
+    }
+    delete mutableSettings['customPropertyFields'];
+
+    const legacyShowPropertiesOnSeparateRows = mutableSettings['showCustomPropertiesOnSeparateRows'];
+    if (typeof storedData?.['showPropertiesOnSeparateRows'] === 'undefined' && typeof legacyShowPropertiesOnSeparateRows === 'boolean') {
+        settings.showPropertiesOnSeparateRows = legacyShowPropertiesOnSeparateRows;
+    }
+    delete mutableSettings['showCustomPropertiesOnSeparateRows'];
+
+    const legacyShowNotePropertyInCompactMode = mutableSettings['showCustomPropertyInCompactMode'];
+    if (typeof storedData?.['showNotePropertyInCompactMode'] === 'undefined' && typeof legacyShowNotePropertyInCompactMode === 'boolean') {
+        settings.showNotePropertyInCompactMode = legacyShowNotePropertyInCompactMode;
+    }
+    delete mutableSettings['showCustomPropertyInCompactMode'];
+
+    if (!isNotePropertyType(settings.notePropertyType)) {
+        settings.notePropertyType = defaultSettings.notePropertyType;
     }
 
-    if (typeof settings.customPropertyFields !== 'string') {
-        settings.customPropertyFields = defaultSettings.customPropertyFields;
+    if (typeof settings.propertyFields !== 'string') {
+        settings.propertyFields = defaultSettings.propertyFields;
     }
 
-    if (typeof settings.showCustomPropertiesOnSeparateRows !== 'boolean') {
-        settings.showCustomPropertiesOnSeparateRows = defaultSettings.showCustomPropertiesOnSeparateRows;
+    if (typeof settings.showPropertiesOnSeparateRows !== 'boolean') {
+        settings.showPropertiesOnSeparateRows = defaultSettings.showPropertiesOnSeparateRows;
     }
 
     delete mutableSettings['customPropertyColorFields'];
     delete mutableSettings['customPropertyColorMap'];
 
-    if (typeof settings.showCustomPropertyInCompactMode !== 'boolean') {
-        settings.showCustomPropertyInCompactMode = defaultSettings.showCustomPropertyInCompactMode;
+    if (typeof settings.showNotePropertyInCompactMode !== 'boolean') {
+        settings.showNotePropertyInCompactMode = defaultSettings.showNotePropertyInCompactMode;
     }
 
     if (typeof settings.showProperties !== 'boolean') {
@@ -202,16 +230,22 @@ export function migrateLegacySyncedSettings(params: {
         Object.entries(collection).forEach(([key, appearance]) => {
             const migratedAppearance = migrateLegacyAppearanceMode(appearance);
             if (migratedAppearance) {
-                const rawCustomPropertyType = (migratedAppearance as unknown as Record<string, unknown>)['customPropertyType'];
-                if (rawCustomPropertyType === 'frontmatter') {
-                    migratedAppearance.customPropertyType = 'none';
-                } else if (
-                    typeof rawCustomPropertyType === 'string' &&
-                    rawCustomPropertyType.length > 0 &&
-                    !isCustomPropertyType(rawCustomPropertyType)
-                ) {
-                    delete (migratedAppearance as unknown as Record<string, unknown>)['customPropertyType'];
+                const appearanceRecord = migratedAppearance as unknown as Record<string, unknown>;
+                const rawNotePropertyType = appearanceRecord['notePropertyType'];
+                const rawLegacyNotePropertyType = appearanceRecord['customPropertyType'];
+                const effectiveRawType =
+                    typeof rawNotePropertyType === 'string' && rawNotePropertyType.length > 0
+                        ? rawNotePropertyType
+                        : rawLegacyNotePropertyType;
+
+                if (effectiveRawType === 'frontmatter') {
+                    migratedAppearance.notePropertyType = 'none';
+                } else if (typeof effectiveRawType === 'string' && effectiveRawType.length > 0 && !isNotePropertyType(effectiveRawType)) {
+                    delete appearanceRecord['notePropertyType'];
+                } else if (typeof effectiveRawType === 'string' && isNotePropertyType(effectiveRawType)) {
+                    migratedAppearance.notePropertyType = effectiveRawType;
                 }
+                delete appearanceRecord['customPropertyType'];
                 collection[key] = migratedAppearance;
             }
         });

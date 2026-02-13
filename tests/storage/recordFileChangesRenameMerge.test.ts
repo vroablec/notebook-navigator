@@ -56,7 +56,7 @@ function createFileData(overrides: Partial<FileData>): FileData {
         wordCount: null,
         taskTotal: 0,
         taskUnfinished: 0,
-        customProperty: null,
+        properties: null,
         previewStatus: 'unprocessed',
         featureImage: null,
         featureImageStatus: 'unprocessed',
@@ -82,7 +82,7 @@ describe('recordFileChanges rename merge', () => {
             taskTotal: 3,
             taskUnfinished: 1,
             // Stored custom property items include the source field key and value.
-            customProperty: [{ fieldKey: 'status', value: 'destination' }],
+            properties: [{ fieldKey: 'status', value: 'destination' }],
             previewStatus: 'none',
             featureImageStatus: 'none',
             featureImageKey: '',
@@ -99,7 +99,7 @@ describe('recordFileChanges rename merge', () => {
             taskTotal: 7,
             taskUnfinished: 2,
             // Stored custom property items include the source field key and value.
-            customProperty: [{ fieldKey: 'status', value: 'source' }],
+            properties: [{ fieldKey: 'status', value: 'source' }],
             previewStatus: 'has',
             featureImageStatus: 'has',
             featureImageKey: 'f:images/cover.png@123',
@@ -124,7 +124,7 @@ describe('recordFileChanges rename merge', () => {
         expect(updated.wordCount).toBe(42);
         expect(updated.taskTotal).toBe(7);
         expect(updated.taskUnfinished).toBe(2);
-        expect(updated.customProperty).toEqual([{ fieldKey: 'status', value: 'source' }]);
+        expect(updated.properties).toEqual([{ fieldKey: 'status', value: 'source' }]);
         expect(updated.previewStatus).toBe('has');
         expect(updated.featureImageStatus).toBe('has');
         expect(updated.featureImageKey).toBe('f:images/cover.png@123');

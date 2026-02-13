@@ -881,7 +881,7 @@ export function useNavigationPaneData({
         keyNodes: PropertyTreeNode[];
         collectionCount: NoteCountInfo | undefined;
     } => {
-        const hasConfiguredFields = getCachedCommaSeparatedList(settings.customPropertyFields).length > 0;
+        const hasConfiguredFields = getCachedCommaSeparatedList(settings.propertyFields).length > 0;
         if (!settings.showProperties) {
             return {
                 propertiesSectionActive: false,
@@ -927,7 +927,7 @@ export function useNavigationPaneData({
         };
     }, [
         includeDescendantNotes,
-        settings.customPropertyFields,
+        settings.propertyFields,
         settings.propertySortOrder,
         settings.showNoteCount,
         settings.showProperties,

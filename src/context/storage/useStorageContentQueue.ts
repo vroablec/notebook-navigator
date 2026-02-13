@@ -22,7 +22,7 @@ import type { ContentProviderType, FileContentType } from '../../interfaces/ICon
 import type { ContentProviderRegistry } from '../../services/content/ContentProviderRegistry';
 import type { NotebookNavigatorSettings } from '../../settings';
 import { getDBInstance } from '../../storage/fileOperations';
-import { hasCustomPropertyFrontmatterFields } from '../../utils/customPropertyUtils';
+import { hasPropertyFrontmatterFields } from '../../utils/propertyUtils';
 import { isPdfFile } from '../../utils/fileTypeUtils';
 import { filterFilesRequiringMetadataSources, filterPdfFilesRequiringThumbnails } from '../storageQueueFilters';
 import { getMetadataDependentTypes } from './storageContentTypes';
@@ -87,7 +87,7 @@ export function useStorageContentQueue(params: {
             }
 
             const metadataDependentTypes = getMetadataDependentTypes(settings);
-            const hasCustomProperties = hasCustomPropertyFrontmatterFields(settings);
+            const hasCustomProperties = hasPropertyFrontmatterFields(settings);
             const contentEnabled =
                 settings.showFilePreview || settings.showFeatureImage || hasCustomProperties || metadataDependentTypes.length > 0;
 
@@ -136,7 +136,7 @@ export function useStorageContentQueue(params: {
                         contentTypesToCheck.push('metadata');
                     }
                     if (hasCustomProperties) {
-                        contentTypesToCheck.push('customProperty');
+                        contentTypesToCheck.push('properties');
                     }
 
                     const pathsNeedingContent = db.getFilesNeedingAnyContent(contentTypesToCheck);

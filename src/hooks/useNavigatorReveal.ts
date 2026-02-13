@@ -404,7 +404,7 @@ export function useNavigatorReveal({
                 const fileData = getDB().getFile(file.path);
                 const resolvedProperty = settings.showProperties
                     ? determinePropertyToReveal(
-                          fileData?.customProperty ?? null,
+                          fileData?.properties ?? null,
                           selectionState.selectedProperty,
                           settings,
                           includeDescendantNotes

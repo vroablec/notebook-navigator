@@ -241,7 +241,7 @@ export function useListActions() {
         const otherOverrides =
             appearance.titleRows !== undefined ||
             appearance.previewRows !== undefined ||
-            appearance.customPropertyType !== undefined ||
+            appearance.notePropertyType !== undefined ||
             appearance.groupBy !== undefined;
 
         return hasModeOverride || otherOverrides;

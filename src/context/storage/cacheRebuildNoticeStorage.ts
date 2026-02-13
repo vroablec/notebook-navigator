@@ -39,7 +39,7 @@ function isFileContentType(value: unknown): value is FileContentType {
         value === 'metadata' ||
         value === 'wordCount' ||
         value === 'tasks' ||
-        value === 'customProperty'
+        value === 'properties'
     );
 }
 

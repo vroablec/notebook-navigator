@@ -53,10 +53,10 @@ import { ListPaneItemType, OVERSCAN } from '../types';
 import { Align, ListScrollIntent, getListAlign, rankListPending } from '../types/scroll';
 import type { ListPaneItem } from '../types/virtualization';
 import type { NotebookNavigatorSettings } from '../settings';
-import type { CustomPropertyType } from '../settings/types';
+import type { NotePropertyType } from '../settings/types';
 import type { SelectionState } from '../context/SelectionContext';
 import { calculateCompactListMetrics } from '../utils/listPaneMetrics';
-import { getCustomPropertyRowCount, getListPaneMeasurements, shouldShowFeatureImageArea } from '../utils/listPaneMeasurements';
+import { getPropertyRowCount, getListPaneMeasurements, shouldShowFeatureImageArea } from '../utils/listPaneMeasurements';
 import type { PropertySelectionNodeId } from '../utils/propertyTree';
 
 /**
@@ -81,7 +81,7 @@ interface UseListPaneScrollParams {
     folderSettings: {
         titleRows: number;
         previewRows: number;
-        customPropertyType: CustomPropertyType;
+        notePropertyType: NotePropertyType;
         showDate: boolean;
         showPreview: boolean;
         showImage: boolean;
@@ -282,20 +282,20 @@ export function useListPaneScroll({
                 featureImageStatus
             });
 
-            // Keep the height estimator aligned with FileItem custom property rendering.
-            // `getCustomPropertyRowCount` applies the same trimming rules and separate-row behavior.
-            const customPropertyRowCount = getCustomPropertyRowCount({
-                customPropertyType: folderSettings.customPropertyType,
+            // Keep the height estimator aligned with FileItem property rendering.
+            // `getPropertyRowCount` applies the same trimming rules and separate-row behavior.
+            const propertyRowCount = getPropertyRowCount({
+                notePropertyType: folderSettings.notePropertyType,
                 showProperties: settings.showProperties,
-                showCustomPropertiesOnSeparateRows: settings.showCustomPropertiesOnSeparateRows,
-                showCustomPropertyInCompactMode: settings.showCustomPropertyInCompactMode,
+                showPropertiesOnSeparateRows: settings.showPropertiesOnSeparateRows,
+                showNotePropertyInCompactMode: settings.showNotePropertyInCompactMode,
                 isCompactMode,
                 file,
                 wordCount: fileRecord?.wordCount ?? undefined,
-                customProperty: fileRecord?.customProperty ?? undefined
+                properties: fileRecord?.properties ?? undefined
             });
 
-            const hasVisiblePillRows = hasTagRow || customPropertyRowCount > 0;
+            const hasVisiblePillRows = hasTagRow || propertyRowCount > 0;
             const shouldSuppressEmptyPreviewLines = !hasPreviewContent && hasVisiblePillRows;
 
             // Note: Preview rows are calculated differently based on context
@@ -381,9 +381,9 @@ export function useListPaneScroll({
                 textContentHeight += heights.tagRowHeight;
             }
 
-            if (customPropertyRowCount > 0) {
+            if (propertyRowCount > 0) {
                 // `tagRowHeight` mirrors the combined CSS row height + margin-top gap for pill rows.
-                textContentHeight += heights.tagRowHeight * customPropertyRowCount;
+                textContentHeight += heights.tagRowHeight * propertyRowCount;
             }
 
             // Apply min-height constraint AFTER including all content (but not in compact mode)
@@ -674,7 +674,7 @@ export function useListPaneScroll({
                     change.changes.featureImageKey !== undefined ||
                     change.changes.featureImageStatus !== undefined ||
                     change.changes.metadata !== undefined ||
-                    change.changes.customProperty !== undefined
+                    change.changes.properties !== undefined
                 ) {
                     return true;
                 }
@@ -738,8 +738,8 @@ export function useListPaneScroll({
         settings.showFeatureImage,
         settings.fileNameRows,
         settings.previewRows,
-        settings.showCustomPropertiesOnSeparateRows,
-        settings.showCustomPropertyInCompactMode,
+        settings.showPropertiesOnSeparateRows,
+        settings.showNotePropertyInCompactMode,
         settings.showParentFolder,
         settings.showTags,
         settings.showFileTags,

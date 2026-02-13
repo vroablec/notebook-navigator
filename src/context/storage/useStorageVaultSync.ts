@@ -41,7 +41,7 @@ import { getCacheRebuildProgressTypes, getContentWorkTotal, getMetadataDependent
  *   storage as ready.
  * - Live updates: listen to vault events (create/delete/rename/modify) and reconcile the database via diffs.
  * - Derived content: queue content providers for files that changed or still need content (tags, preview text,
- *   feature images, metadata, custom properties).
+ *   feature images, metadata, properties).
  *
  * Design notes:
  * - Vault events can arrive in bursts or in multi-step sequences (especially renames/moves). A shared debouncer

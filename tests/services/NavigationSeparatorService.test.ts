@@ -55,7 +55,7 @@ class TestSettingsProvider implements ISettingsProvider {
 
 function createSettings(): NotebookNavigatorSettings {
     const settings = structuredClone(DEFAULT_SETTINGS);
-    settings.customPropertyFields = 'status';
+    settings.propertyFields = 'status';
     settings.navigationSeparators = {};
     return settings;
 }
@@ -71,7 +71,7 @@ function createValidators(dbFiles: CleanupValidators['dbFiles']): CleanupValidat
 
 function createMarkdownFileWithProperty(path: string, fieldKey: string, value: string): CleanupValidators['dbFiles'][number] {
     const data = createDefaultFileData({ path, mtime: 1 });
-    data.customProperty = [
+    data.properties = [
         {
             fieldKey,
             value,

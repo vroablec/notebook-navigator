@@ -157,11 +157,11 @@ export type ListNoteGroupingOption = 'none' | 'date' | 'folder';
 /** Date source to display when alphabetical sorting is active */
 export type AlphabeticalDateMode = 'created' | 'modified';
 
-/** Available custom property types displayed in file items */
-export type CustomPropertyType = 'none' | 'wordCount';
+/** Available note property types displayed in file items */
+export type NotePropertyType = 'none' | 'wordCount';
 
-/** Type guard for validating custom property type values */
-export function isCustomPropertyType(value: string): value is CustomPropertyType {
+/** Type guard for validating note property type values */
+export function isNotePropertyType(value: string): value is NotePropertyType {
     return value === 'none' || value === 'wordCount';
 }
 
@@ -324,7 +324,7 @@ export interface NotebookNavigatorSettings {
     showPropertyIcons: boolean;
     propertySortOrder: TagSortOrder;
     showAllPropertiesFolder: boolean;
-    customPropertyFields: string;
+    propertyFields: string;
 
     // List pane tab
     defaultListMode: ListDisplayMode;
@@ -379,9 +379,9 @@ export interface NotebookNavigatorSettings {
     prioritizeColoredFileTags: boolean;
     showFileTagAncestors: boolean;
     showFileTagsInCompactMode: boolean;
-    customPropertyType: CustomPropertyType;
-    showCustomPropertyInCompactMode: boolean;
-    showCustomPropertiesOnSeparateRows: boolean;
+    notePropertyType: NotePropertyType;
+    showNotePropertyInCompactMode: boolean;
+    showPropertiesOnSeparateRows: boolean;
     showFileDate: boolean;
     alphabeticalDateMode: AlphabeticalDateMode;
     showParentFolder: boolean;

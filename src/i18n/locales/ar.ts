@@ -187,12 +187,12 @@ export const STRINGS_AR = {
                 properties: {
                     title: 'الخصائص',
                     items: [
-                        '`.key` تضمين الملاحظات التي تحتوي على مفتاح خاصية مخصص.',
-                        '`.key=value` تضمين الملاحظات التي تحتوي على قيمة خاصية مخصصة.',
+                        '`.key` تضمين الملاحظات التي تحتوي على مفتاح خاصية.',
+                        '`.key=value` تضمين الملاحظات التي تحتوي على قيمة خاصية.',
                         '`."Reading Status"` تضمين الملاحظات التي تحتوي على مفتاح خاصية يتضمن مسافات.',
                         '`."Reading Status"="In Progress"` المفاتيح والقيم التي تحتوي على مسافات يجب وضعها بين علامات اقتباس مزدوجة.',
-                        '`-.key` استبعاد الملاحظات التي تحتوي على مفتاح خاصية مخصص.',
-                        '`-.key=value` استبعاد الملاحظات التي تحتوي على قيمة خاصية مخصصة.',
+                        '`-.key` استبعاد الملاحظات التي تحتوي على مفتاح خاصية.',
+                        '`-.key=value` استبعاد الملاحظات التي تحتوي على قيمة خاصية.',
                         'Cmd/Ctrl+انقر على خاصية للإضافة بـ AND. Cmd/Ctrl+Shift+انقر للإضافة بـ OR.'
                     ]
                 },
@@ -409,7 +409,7 @@ export const STRINGS_AR = {
                 'list-pinned': 'العناصر المثبتة',
                 'file-unfinished-task': 'مهام غير مكتملة',
                 'file-word-count': 'عدد الكلمات',
-                'file-custom-property': 'خاصية مخصصة'
+                'file-property': 'خاصية'
             }
         },
         colorPicker: {
@@ -766,7 +766,7 @@ export const STRINGS_AR = {
                 previewText: 'نص المعاينة',
                 featureImage: 'الصورة المميزة',
                 tags: 'الوسوم',
-                customProperty: 'الخصائص',
+                properties: 'الخصائص',
                 date: 'التاريخ',
                 parentFolder: 'المجلد الأصلي'
             }
@@ -1296,7 +1296,7 @@ export const STRINGS_AR = {
                 name: 'إظهار وسوم الملفات في الوضع المضغوط',
                 desc: 'عرض الوسوم عند إخفاء التاريخ والمعاينة والصورة.'
             },
-            customPropertyType: {
+            notePropertyType: {
                 name: 'خاصية الملاحظة',
                 desc: 'حدد خاصية الملاحظة لعرضها في عناصر الملفات.',
                 options: {
@@ -1305,16 +1305,16 @@ export const STRINGS_AR = {
                     none: 'لا شيء'
                 }
             },
-            customPropertyFields: {
+            propertyFields: {
                 name: 'الخصائص للعرض',
                 desc: 'قائمة خصائص الواجهة الأمامية مفصولة بفواصل لعرضها في لوحة التنقل وكشارات في عناصر الملفات. الخصائص ذات القوائم تعرض شارة واحدة لكل قيمة.',
                 placeholder: 'الحالة، النوع، الفئة'
             },
-            showCustomPropertiesOnSeparateRows: {
+            showPropertiesOnSeparateRows: {
                 name: 'إظهار الخصائص في صفوف منفصلة',
                 desc: 'عرض كل خاصية في صف منفصل.'
             },
-            showCustomPropertyInCompactMode: {
+            showNotePropertyInCompactMode: {
                 name: 'إظهار الخصائص في الوضع المضغوط',
                 desc: 'عرض الخصائص عند تفعيل الوضع المضغوط.'
             },

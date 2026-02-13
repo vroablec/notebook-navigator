@@ -46,7 +46,7 @@ export interface PropertyTreeDatabaseLike {
     forEachFile: (callback: (path: string, fileData: FileData) => void) => void;
 }
 
-type PropertyTreeFilePropertyEntry = NonNullable<FileData['customProperty']>[number];
+type PropertyTreeFilePropertyEntry = NonNullable<FileData['properties']>[number];
 export type PropertyNodeSourceFile = { data: FileData };
 
 let propertyKeyDirectPathCache: WeakMap<PropertyTreeNode, Set<string>> | null = null;
@@ -194,20 +194,20 @@ export function isPropertyFeatureEnabled(settings: NotebookNavigatorSettings): b
         return false;
     }
 
-    return getConfiguredPropertyKeySet(settings.customPropertyFields).size > 0;
+    return getConfiguredPropertyKeySet(settings.propertyFields).size > 0;
 }
 
 export function determinePropertyToReveal(
-    customProperty: FileData['customProperty'],
+    properties: FileData['properties'],
     currentSelection: PropertySelectionNodeId | null,
     settings: NotebookNavigatorSettings,
     includeDescendantNotes: boolean
 ): PropertySelectionNodeId | null {
-    if (!customProperty || customProperty.length === 0) {
+    if (!properties || properties.length === 0) {
         return null;
     }
 
-    const configuredKeys = getConfiguredPropertyKeySet(settings.customPropertyFields);
+    const configuredKeys = getConfiguredPropertyKeySet(settings.propertyFields);
     if (configuredKeys.size === 0) {
         return null;
     }
@@ -232,7 +232,7 @@ export function determinePropertyToReveal(
         orderedCandidates.push(nodeId);
     };
 
-    for (const entry of customProperty) {
+    for (const entry of properties) {
         const normalizedKey = normalizePropertyTreeKey(entry.fieldKey);
         if (!normalizedKey || !configuredKeys.has(normalizedKey)) {
             continue;
@@ -372,14 +372,14 @@ function sortPropertyTreeNodes(tree: Map<string, PropertyTreeNode>): Map<string,
     return sortedTree;
 }
 
-export function getConfiguredPropertyKeySet(customPropertyFields: string): ReadonlySet<string> {
-    const cached = configuredPropertyKeyCache.get(customPropertyFields);
+export function getConfiguredPropertyKeySet(propertyFields: string): ReadonlySet<string> {
+    const cached = configuredPropertyKeyCache.get(propertyFields);
     if (cached) {
         return cached;
     }
 
     const keys = new Set<string>();
-    for (const fieldName of getCachedCommaSeparatedList(customPropertyFields)) {
+    for (const fieldName of getCachedCommaSeparatedList(propertyFields)) {
         const normalized = casefold(fieldName);
         if (!normalized) {
             continue;
@@ -387,7 +387,7 @@ export function getConfiguredPropertyKeySet(customPropertyFields: string): Reado
         keys.add(normalized);
     }
 
-    configuredPropertyKeyCache.set(customPropertyFields, keys);
+    configuredPropertyKeyCache.set(propertyFields, keys);
     return keys;
 }
 
@@ -419,7 +419,7 @@ function buildConfiguredPropertyNodeIdSet(
 
     const nodeIds = new Set<string>();
     dbFiles.forEach(file => {
-        const properties = file.data.customProperty;
+        const properties = file.data.properties;
         if (!properties || properties.length === 0) {
             return;
         }
@@ -455,12 +455,12 @@ function buildConfiguredPropertyNodeIdSet(
  * Returns null when no validator can be created from the provided inputs.
  */
 export function createConfiguredPropertyNodeValidator(params: {
-    customPropertyFields: string;
+    propertyFields: string;
     dbFiles?: readonly PropertyNodeSourceFile[] | null;
     propertyTreeProvider?: Pick<IPropertyTreeProvider, 'findNode' | 'hasNodes'> | null;
 }): ((nodeId: string) => boolean) | null {
-    const { customPropertyFields, dbFiles, propertyTreeProvider } = params;
-    const configuredKeys = getConfiguredPropertyKeySet(customPropertyFields);
+    const { propertyFields, dbFiles, propertyTreeProvider } = params;
+    const configuredKeys = getConfiguredPropertyKeySet(propertyFields);
     if (configuredKeys.size === 0) {
         return () => false;
     }
@@ -490,7 +490,7 @@ export function isPropertySelectionNodeIdConfigured(
         return false;
     }
 
-    return getConfiguredPropertyKeySet(settings.customPropertyFields).has(parsed.key);
+    return getConfiguredPropertyKeySet(settings.propertyFields).has(parsed.key);
 }
 
 /**
@@ -788,12 +788,12 @@ export function buildPropertyTreeFromDatabase(
             return;
         }
 
-        const customProperty = fileData.customProperty;
-        if (!customProperty || customProperty.length === 0) {
+        const properties = fileData.properties;
+        if (!properties || properties.length === 0) {
             return;
         }
 
-        for (const propertyEntry of customProperty) {
+        for (const propertyEntry of properties) {
             const normalizedKey = normalizePropertyTreeKey(propertyEntry.fieldKey);
             if (!normalizedKey) {
                 continue;

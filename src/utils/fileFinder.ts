@@ -606,7 +606,7 @@ export function getFilesForProperty(
     propertyTreeService: IPropertyTreeProvider | null = null
 ): TFile[] {
     const includesAnyProperty = propertyNodeId === PROPERTIES_ROOT_VIRTUAL_FOLDER_ID;
-    const configuredPropertyKeys = getConfiguredPropertyKeySet(settings.customPropertyFields);
+    const configuredPropertyKeys = getConfiguredPropertyKeySet(settings.propertyFields);
 
     if (includesAnyProperty && configuredPropertyKeys.size === 0) {
         return [];
@@ -687,8 +687,8 @@ export function getFilesForProperty(
 
         return markdownFiles.filter(file => {
             const fileData = db?.getFile(file.path) ?? null;
-            const customProperty = fileData?.customProperty;
-            if (!customProperty || customProperty.length === 0) {
+            const properties = fileData?.properties;
+            if (!properties || properties.length === 0) {
                 return false;
             }
 
@@ -700,12 +700,12 @@ export function getFilesForProperty(
             }
 
             if (includesAnyProperty) {
-                return customProperty.some(entry => configuredPropertyKeys.has(casefold(entry.fieldKey)));
+                return properties.some(entry => configuredPropertyKeys.has(casefold(entry.fieldKey)));
             }
 
             let hasMatchingKey = false;
             let hasDirectMatchingKey = false;
-            for (const entry of customProperty) {
+            for (const entry of properties) {
                 if (casefold(entry.fieldKey) !== selectedPropertyKey) {
                     continue;
                 }

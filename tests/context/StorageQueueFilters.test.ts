@@ -60,7 +60,7 @@ function createFileData(overrides: Partial<FileData>): FileData {
         wordCount: null,
         taskTotal: 0,
         taskUnfinished: 0,
-        customProperty: null,
+        properties: null,
         previewStatus: 'unprocessed',
         featureImage: null,
         featureImageStatus: 'unprocessed',
@@ -113,7 +113,7 @@ describe('Storage queue filters', () => {
                 previewStatus: 'has',
                 featureImageStatus: 'has',
                 // Stored custom property items include the source field key and value.
-                customProperty: [{ fieldKey: 'status', value: '1' }]
+                properties: [{ fieldKey: 'status', value: '1' }]
             })
         );
 
@@ -138,7 +138,7 @@ describe('Storage queue filters', () => {
                 featureImageStatus: 'none',
                 featureImageKey: null,
                 // Stored custom property items include the source field key and value.
-                customProperty: [{ fieldKey: 'status', value: '1' }]
+                properties: [{ fieldKey: 'status', value: '1' }]
             })
         );
 
@@ -170,7 +170,7 @@ describe('Storage queue filters', () => {
             })
         );
 
-        settings = { ...settings, showFilePreview: false, showFeatureImage: false, customPropertyFields: '' };
+        settings = { ...settings, showFilePreview: false, showFeatureImage: false, propertyFields: '' };
 
         const types: ContentProviderType[] = ['markdownPipeline'];
         const result = filterFilesRequiringMetadataSources([file], types, settings);

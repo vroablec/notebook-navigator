@@ -45,7 +45,7 @@ function shouldEnablePropertyTree(settings: NotebookNavigatorSettings): boolean 
 
 function buildConfiguredPropertyDisplayByKey(settings: NotebookNavigatorSettings): Map<string, string> {
     const displayByKey = new Map<string, string>();
-    for (const fieldName of getCachedCommaSeparatedList(settings.customPropertyFields)) {
+    for (const fieldName of getCachedCommaSeparatedList(settings.propertyFields)) {
         const displayName = fieldName.trim();
         const normalizedField = casefold(fieldName);
         if (!displayName || !normalizedField || displayByKey.has(normalizedField)) {
@@ -261,7 +261,7 @@ export function usePropertyTreeSync(params: {
         hiddenFileTags,
         fileVisibility,
         profileId,
-        settings.customPropertyFields,
+        settings.propertyFields,
         settings.showProperties
     ]);
 
@@ -283,7 +283,7 @@ export function usePropertyTreeSync(params: {
             let activeFileResolved = false;
 
             for (const change of changes) {
-                const hasPropertyChange = change.changes.customProperty !== undefined;
+                const hasPropertyChange = change.changes.properties !== undefined;
                 const hasTagVisibilityChange = shouldRebuildOnTagVisibilityChanges && change.changes.tags !== undefined;
                 if (!hasPropertyChange && !hasTagVisibilityChange) {
                     continue;

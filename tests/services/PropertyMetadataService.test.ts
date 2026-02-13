@@ -54,7 +54,7 @@ class TestSettingsProvider implements ISettingsProvider {
 
 function createSettings(): NotebookNavigatorSettings {
     const settings = structuredClone(DEFAULT_SETTINGS);
-    settings.customPropertyFields = 'status';
+    settings.propertyFields = 'status';
     settings.propertyColors = {};
     settings.propertyBackgroundColors = {};
     settings.propertyIcons = {};
@@ -73,7 +73,7 @@ function createValidators(dbFiles: CleanupValidators['dbFiles']): CleanupValidat
 
 function createMarkdownFileWithProperty(path: string, fieldKey: string, value: string): CleanupValidators['dbFiles'][number] {
     const data = createDefaultFileData({ path, mtime: 1 });
-    data.customProperty = [
+    data.properties = [
         {
             fieldKey,
             value,
@@ -136,7 +136,7 @@ describe('PropertyMetadataService cleanupWithValidators', () => {
         const valueNodeId = buildPropertyValueNodeId('status', 'todo');
 
         const settings = createSettings();
-        settings.customPropertyFields = '';
+        settings.propertyFields = '';
         settings.propertyColors = {
             [keyNodeId]: '#111111'
         };

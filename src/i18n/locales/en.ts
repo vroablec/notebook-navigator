@@ -187,12 +187,12 @@ export const STRINGS_EN = {
                 properties: {
                     title: 'Properties',
                     items: [
-                        '`.key` Include notes with custom property key.',
-                        '`.key=value` Include notes with custom property value.',
+                        '`.key` Include notes with property key.',
+                        '`.key=value` Include notes with property value.',
                         '`."Reading Status"` Include notes with a property key that contains whitespace.',
                         '`."Reading Status"="In Progress"` Keys and values with whitespace must be double-quoted.',
-                        '`-.key` Exclude notes with custom property key.',
-                        '`-.key=value` Exclude notes with custom property value.',
+                        '`-.key` Exclude notes with property key.',
+                        '`-.key=value` Exclude notes with property value.',
                         'Cmd/Ctrl+Click a property to add with AND. Cmd/Ctrl+Shift+Click to add with OR.'
                     ]
                 },
@@ -409,7 +409,7 @@ export const STRINGS_EN = {
                 'list-pinned': 'Pinned items',
                 'file-unfinished-task': 'Unfinished tasks',
                 'file-word-count': 'Word count',
-                'file-custom-property': 'Custom property'
+                'file-property': 'Property'
             }
         },
         colorPicker: {
@@ -766,7 +766,7 @@ export const STRINGS_EN = {
                 previewText: 'Preview text',
                 featureImage: 'Feature image',
                 tags: 'Tags',
-                customProperty: 'Properties',
+                properties: 'Properties',
                 date: 'Date',
                 parentFolder: 'Parent folder'
             }
@@ -1295,7 +1295,7 @@ export const STRINGS_EN = {
                 name: 'Show file tags in compact mode',
                 desc: 'Display tags when date, preview, and image are hidden.'
             },
-            customPropertyType: {
+            notePropertyType: {
                 name: 'Note property',
                 desc: 'Select the note property to display in file items.',
                 options: {
@@ -1304,16 +1304,16 @@ export const STRINGS_EN = {
                     none: 'None'
                 }
             },
-            customPropertyFields: {
+            propertyFields: {
                 name: 'Properties to display',
                 desc: 'Comma-separated list of frontmatter properties to display in the navigation pane and as badges in file items. List-valued properties render one badge per value.',
                 placeholder: 'status, type, category'
             },
-            showCustomPropertiesOnSeparateRows: {
+            showPropertiesOnSeparateRows: {
                 name: 'Show properties on separate rows',
                 desc: 'Display each property on its own row.'
             },
-            showCustomPropertyInCompactMode: {
+            showNotePropertyInCompactMode: {
                 name: 'Show properties in compact mode',
                 desc: 'Display properties when compact mode is active.'
             },

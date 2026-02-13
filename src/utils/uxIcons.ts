@@ -47,7 +47,7 @@ export type UXIconId =
     | 'list-pinned'
     | 'file-unfinished-task'
     | 'file-word-count'
-    | 'file-custom-property';
+    | 'file-property';
 
 export type UXIconCategory = 'navigationPane' | 'listPane' | 'fileItems';
 
@@ -85,7 +85,7 @@ export const UX_ICON_DEFINITIONS: UXIconDefinition[] = [
     { id: 'list-pinned', category: 'listPane', defaultIconId: 'pin' },
     { id: 'file-unfinished-task', category: 'fileItems', defaultIconId: 'circle-alert' },
     { id: 'file-word-count', category: 'fileItems', defaultIconId: 'case-sensitive' },
-    { id: 'file-custom-property', category: 'fileItems', defaultIconId: 'align-left' }
+    { id: 'file-property', category: 'fileItems', defaultIconId: 'align-left' }
 ];
 
 const UX_ICON_ID_SET: ReadonlySet<string> = new Set(UX_ICON_DEFINITIONS.map(definition => definition.id));

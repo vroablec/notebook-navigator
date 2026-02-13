@@ -449,7 +449,7 @@ export async function runClearFileContent(
 
 export async function runBatchClearAllFileContent(
     deps: ContentMutationOperationDeps,
-    params: { type: 'preview' | 'featureImage' | 'metadata' | 'tags' | 'customProperty' | 'all' }
+    params: { type: 'preview' | 'featureImage' | 'metadata' | 'tags' | 'properties' | 'all' }
 ): Promise<void> {
     const { type } = params;
     const transaction = deps.db.transaction([STORE_NAME, FEATURE_IMAGE_STORE_NAME, PREVIEW_STORE_NAME], 'readwrite');
@@ -551,9 +551,9 @@ export async function runBatchClearAllFileContent(
                         hasChanges = true;
                     }
                 }
-                if ((type === 'customProperty' || type === 'all') && updated.customProperty !== null) {
-                    updated.customProperty = null;
-                    changes.customProperty = null;
+                if ((type === 'properties' || type === 'all') && updated.properties !== null) {
+                    updated.properties = null;
+                    changes.properties = null;
                     hasChanges = true;
                 }
 
@@ -579,7 +579,7 @@ export async function runBatchClearAllFileContent(
                         changes.preview === null ||
                         changes.featureImageKey === null ||
                         changes.featureImageStatus !== undefined ||
-                        changes.customProperty === null;
+                        changes.properties === null;
                     const hasMetadataCleared = changes.metadata === null || changes.tags !== undefined;
                     const clearType = hasContentCleared && hasMetadataCleared ? 'both' : hasContentCleared ? 'content' : 'metadata';
                     changeNotifications.push({ path, changes, changeType: clearType });
@@ -773,7 +773,7 @@ export async function runBatchClearFeatureImageContent(
 
 export async function runBatchClearFileContent(
     deps: ContentMutationOperationDeps,
-    params: { paths: string[]; type: 'preview' | 'featureImage' | 'metadata' | 'tags' | 'customProperty' | 'all' }
+    params: { paths: string[]; type: 'preview' | 'featureImage' | 'metadata' | 'tags' | 'properties' | 'all' }
 ): Promise<void> {
     const { paths, type } = params;
     const transaction = deps.db.transaction([STORE_NAME, FEATURE_IMAGE_STORE_NAME, PREVIEW_STORE_NAME], 'readwrite');
@@ -843,9 +843,9 @@ export async function runBatchClearFileContent(
                     changes.tags = null;
                     hasChanges = true;
                 }
-                if ((type === 'customProperty' || type === 'all') && file.customProperty !== null) {
-                    file.customProperty = null;
-                    changes.customProperty = null;
+                if ((type === 'properties' || type === 'all') && file.properties !== null) {
+                    file.properties = null;
+                    changes.properties = null;
                     hasChanges = true;
                 }
                 if (hasChanges) {
@@ -879,7 +879,7 @@ export async function runBatchClearFileContent(
                         changes.preview === null ||
                         changes.featureImageKey === null ||
                         changes.featureImageStatus !== undefined ||
-                        changes.customProperty === null;
+                        changes.properties === null;
                     const hasMetadataCleared = changes.metadata === null || changes.tags !== undefined;
                     const clearType = hasContentCleared && hasMetadataCleared ? 'both' : hasContentCleared ? 'content' : 'metadata';
                     changeNotifications.push({ path, changes, changeType: clearType });

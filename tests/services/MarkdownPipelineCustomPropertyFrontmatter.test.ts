@@ -24,9 +24,9 @@ import type { FileData } from '../../src/storage/IndexedDBStorage';
 import { deriveFileMetadata } from '../utils/pathMetadata';
 
 class TestMarkdownPipelineContentProvider extends MarkdownPipelineContentProvider {
-    async runCustomProperty(file: TFile, settings: NotebookNavigatorSettings): Promise<FileData['customProperty'] | null> {
+    async runCustomProperty(file: TFile, settings: NotebookNavigatorSettings): Promise<FileData['properties'] | null> {
         const result = await this.processFile({ file, path: file.path }, null, settings);
-        return result.update?.customProperty ?? null;
+        return result.update?.properties ?? null;
     }
 }
 
@@ -35,7 +35,7 @@ function createSettings(overrides: Partial<NotebookNavigatorSettings>): Notebook
         ...DEFAULT_SETTINGS,
         showFilePreview: false,
         showFeatureImage: false,
-        customPropertyType: 'none',
+        notePropertyType: 'none',
         ...overrides
     };
 }
@@ -69,7 +69,7 @@ describe('MarkdownPipelineContentProvider frontmatter custom properties', () => 
     // Custom property items persist the source field key, raw value, and value kind; styling is derived at render time.
     it('returns multiple properties as pills', async () => {
         const context = createApp();
-        const settings = createSettings({ customPropertyFields: 'status, type' });
+        const settings = createSettings({ propertyFields: 'status, type' });
         const provider = new TestMarkdownPipelineContentProvider(context.app);
         const file = createFile('notes/note.md');
 
@@ -84,7 +84,7 @@ describe('MarkdownPipelineContentProvider frontmatter custom properties', () => 
 
     it('flattens list values into multiple pills', async () => {
         const context = createApp();
-        const settings = createSettings({ customPropertyFields: 'status, type' });
+        const settings = createSettings({ propertyFields: 'status, type' });
         const provider = new TestMarkdownPipelineContentProvider(context.app);
         const file = createFile('notes/note.md');
 
@@ -101,7 +101,7 @@ describe('MarkdownPipelineContentProvider frontmatter custom properties', () => 
     it('does not persist presentation data in custom property items', async () => {
         const context = createApp();
         const settings = createSettings({
-            customPropertyFields: 'status, type'
+            propertyFields: 'status, type'
         });
         const provider = new TestMarkdownPipelineContentProvider(context.app);
         const file = createFile('notes/note.md');
@@ -117,7 +117,7 @@ describe('MarkdownPipelineContentProvider frontmatter custom properties', () => 
 
     it('preserves value kind metadata for string and boolean literals', async () => {
         const context = createApp();
-        const settings = createSettings({ customPropertyFields: 'status, flag' });
+        const settings = createSettings({ propertyFields: 'status, flag' });
         const provider = new TestMarkdownPipelineContentProvider(context.app);
         const file = createFile('notes/note.md');
 

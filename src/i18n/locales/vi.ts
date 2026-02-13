@@ -187,12 +187,12 @@ export const STRINGS_VI = {
                 properties: {
                     title: 'Thuộc tính',
                     items: [
-                        '`.key` Bao gồm ghi chú có khóa thuộc tính tùy chỉnh.',
-                        '`.key=value` Bao gồm ghi chú có giá trị thuộc tính tùy chỉnh.',
+                        '`.key` Bao gồm ghi chú có khóa thuộc tính.',
+                        '`.key=value` Bao gồm ghi chú có giá trị thuộc tính.',
                         '`."Reading Status"` Bao gồm ghi chú có khóa thuộc tính chứa khoảng trắng.',
                         '`."Reading Status"="In Progress"` Khóa và giá trị có khoảng trắng phải được đặt trong dấu ngoặc kép.',
-                        '`-.key` Loại trừ ghi chú có khóa thuộc tính tùy chỉnh.',
-                        '`-.key=value` Loại trừ ghi chú có giá trị thuộc tính tùy chỉnh.',
+                        '`-.key` Loại trừ ghi chú có khóa thuộc tính.',
+                        '`-.key=value` Loại trừ ghi chú có giá trị thuộc tính.',
                         'Cmd/Ctrl+Nhấp vào thuộc tính để thêm với AND. Cmd/Ctrl+Shift+Nhấp để thêm với OR.'
                     ]
                 },
@@ -409,7 +409,7 @@ export const STRINGS_VI = {
                 'list-pinned': 'Mục đã ghim',
                 'file-unfinished-task': 'Nhiệm vụ chưa hoàn thành',
                 'file-word-count': 'Số từ',
-                'file-custom-property': 'Thuộc tính tùy chỉnh'
+                'file-property': 'Thuộc tính'
             }
         },
         colorPicker: {
@@ -767,7 +767,7 @@ export const STRINGS_VI = {
                 previewText: 'Văn bản xem trước',
                 featureImage: 'Hình ảnh nổi bật',
                 tags: 'Thẻ',
-                customProperty: 'Thuộc tính',
+                properties: 'Thuộc tính',
                 date: 'Ngày',
                 parentFolder: 'Thư mục cha'
             }
@@ -1297,7 +1297,7 @@ export const STRINGS_VI = {
                 name: 'Hiện thẻ tệp ở chế độ gọn',
                 desc: 'Hiển thị thẻ khi ngày, xem trước và ảnh bị ẩn.'
             },
-            customPropertyType: {
+            notePropertyType: {
                 name: 'Thuộc tính ghi chú',
                 desc: 'Chọn thuộc tính ghi chú để hiển thị trong các mục tệp.',
                 options: {
@@ -1306,16 +1306,16 @@ export const STRINGS_VI = {
                     none: 'Không'
                 }
             },
-            customPropertyFields: {
+            propertyFields: {
                 name: 'Các thuộc tính để hiển thị',
                 desc: 'Danh sách thuộc tính frontmatter phân cách bằng dấu phẩy để hiển thị trong bảng điều hướng và dưới dạng huy hiệu trong các mục tệp. Thuộc tính dạng danh sách hiển thị một huy hiệu cho mỗi giá trị.',
                 placeholder: 'trạng thái, loại, danh mục'
             },
-            showCustomPropertiesOnSeparateRows: {
+            showPropertiesOnSeparateRows: {
                 name: 'Hiển thị thuộc tính trên các dòng riêng',
                 desc: 'Hiển thị mỗi thuộc tính trên một dòng riêng.'
             },
-            showCustomPropertyInCompactMode: {
+            showNotePropertyInCompactMode: {
                 name: 'Hiển thị thuộc tính trong chế độ thu gọn',
                 desc: 'Hiển thị thuộc tính khi chế độ thu gọn đang hoạt động.'
             },

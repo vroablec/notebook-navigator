@@ -188,12 +188,12 @@ export const STRINGS_TR = {
                 properties: {
                     title: 'Özellikler',
                     items: [
-                        '`.key` Özel özellik anahtarına sahip notları dahil et.',
-                        '`.key=value` Özel özellik değerine sahip notları dahil et.',
+                        '`.key` Özellik anahtarına sahip notları dahil et.',
+                        '`.key=value` Özellik değerine sahip notları dahil et.',
                         '`."Reading Status"` Boşluk içeren özellik anahtarına sahip notları dahil et.',
                         '`."Reading Status"="In Progress"` Boşluk içeren anahtarlar ve değerler çift tırnak içine alınmalıdır.',
-                        '`-.key` Özel özellik anahtarına sahip notları hariç tut.',
-                        '`-.key=value` Özel özellik değerine sahip notları hariç tut.',
+                        '`-.key` Özellik anahtarına sahip notları hariç tut.',
+                        '`-.key=value` Özellik değerine sahip notları hariç tut.',
                         'Cmd/Ctrl+Tıklayarak özelliği AND ile ekleyin. Cmd/Ctrl+Shift+Tıklayarak OR ile ekleyin.'
                     ]
                 },
@@ -410,7 +410,7 @@ export const STRINGS_TR = {
                 'list-pinned': 'Sabitlenmiş öğeler',
                 'file-unfinished-task': 'Tamamlanmamış görevler',
                 'file-word-count': 'Kelime sayısı',
-                'file-custom-property': 'Özel özellik'
+                'file-property': 'Özellik'
             }
         },
         colorPicker: {
@@ -768,7 +768,7 @@ export const STRINGS_TR = {
                 previewText: 'Önizleme metni',
                 featureImage: 'Öne çıkan görsel',
                 tags: 'Etiketler',
-                customProperty: 'Özellikler',
+                properties: 'Özellikler',
                 date: 'Tarih',
                 parentFolder: 'Üst klasör'
             }
@@ -1298,7 +1298,7 @@ export const STRINGS_TR = {
                 name: 'Kompakt modda dosya etiketlerini göster',
                 desc: 'Tarih, önizleme ve görsel gizlendiğinde etiketleri görüntüle.'
             },
-            customPropertyType: {
+            notePropertyType: {
                 name: 'Not özelliği',
                 desc: 'Dosya öğelerinde görüntülenecek not özelliğini seçin.',
                 options: {
@@ -1307,16 +1307,16 @@ export const STRINGS_TR = {
                     none: 'Hiçbiri'
                 }
             },
-            customPropertyFields: {
+            propertyFields: {
                 name: 'Görüntülenecek özellikler',
                 desc: 'Gezinme panelinde ve dosya öğelerinde rozet olarak görüntülenecek virgülle ayrılmış ön bilgi özellikleri listesi. Liste değerli özellikler değer başına bir rozet gösterir.',
                 placeholder: 'durum, tür, kategori'
             },
-            showCustomPropertiesOnSeparateRows: {
+            showPropertiesOnSeparateRows: {
                 name: 'Özellikleri ayrı satırlarda göster',
                 desc: 'Her özelliği kendi satırında göster.'
             },
-            showCustomPropertyInCompactMode: {
+            showNotePropertyInCompactMode: {
                 name: 'Kompakt modda özellikleri göster',
                 desc: 'Kompakt mod etkinken özellikleri görüntüle.'
             },

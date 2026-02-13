@@ -355,13 +355,13 @@ export class NavigationSeparatorService extends BaseMetadataService {
     ): ((nodeId: string) => boolean) | null {
         if (validators) {
             return createConfiguredPropertyNodeValidator({
-                customPropertyFields: targetSettings.customPropertyFields,
+                propertyFields: targetSettings.propertyFields,
                 dbFiles: validators.dbFiles
             });
         }
 
         const providerValidator = createConfiguredPropertyNodeValidator({
-            customPropertyFields: targetSettings.customPropertyFields,
+            propertyFields: targetSettings.propertyFields,
             propertyTreeProvider: this.getPropertyTreeProvider?.() ?? null
         });
         if (providerValidator) {
@@ -379,7 +379,7 @@ export class NavigationSeparatorService extends BaseMetadataService {
         }
 
         return createConfiguredPropertyNodeValidator({
-            customPropertyFields: targetSettings.customPropertyFields,
+            propertyFields: targetSettings.propertyFields,
             dbFiles
         });
     }

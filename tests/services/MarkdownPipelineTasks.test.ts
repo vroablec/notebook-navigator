@@ -50,8 +50,8 @@ function createSettings(overrides?: Partial<NotebookNavigatorSettings>): Noteboo
         ...DEFAULT_SETTINGS,
         showFilePreview: false,
         showFeatureImage: false,
-        customPropertyFields: '',
-        customPropertyType: 'wordCount',
+        propertyFields: '',
+        notePropertyType: 'wordCount',
         ...overrides
     };
 }
@@ -139,7 +139,7 @@ function createFileData(overrides: Partial<FileData>): FileData {
         wordCount: 0,
         taskTotal: null,
         taskUnfinished: null,
-        customProperty: null,
+        properties: null,
         previewStatus: 'unprocessed',
         featureImage: null,
         featureImageStatus: 'unprocessed',

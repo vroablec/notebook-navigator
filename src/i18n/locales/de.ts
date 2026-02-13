@@ -187,12 +187,12 @@ export const STRINGS_DE = {
                 properties: {
                     title: 'Eigenschaften',
                     items: [
-                        '`.key` Notizen mit benutzerdefiniertem Eigenschaftsschlüssel einschließen.',
-                        '`.key=value` Notizen mit benutzerdefiniertem Eigenschaftswert einschließen.',
+                        '`.key` Notizen mit Eigenschaftsschlüssel einschließen.',
+                        '`.key=value` Notizen mit Eigenschaftswert einschließen.',
                         '`."Reading Status"` Notizen mit einem Eigenschaftsschlüssel einschließen, der Leerzeichen enthält.',
                         '`."Reading Status"="In Progress"` Schlüssel und Werte mit Leerzeichen müssen in Anführungszeichen stehen.',
-                        '`-.key` Notizen mit benutzerdefiniertem Eigenschaftsschlüssel ausschließen.',
-                        '`-.key=value` Notizen mit benutzerdefiniertem Eigenschaftswert ausschließen.',
+                        '`-.key` Notizen mit Eigenschaftsschlüssel ausschließen.',
+                        '`-.key=value` Notizen mit Eigenschaftswert ausschließen.',
                         'Cmd/Ctrl+Klick auf eine Eigenschaft zum Hinzufügen mit AND. Cmd/Ctrl+Shift+Klick zum Hinzufügen mit OR.'
                     ]
                 },
@@ -410,7 +410,7 @@ export const STRINGS_DE = {
                 'list-pinned': 'Angeheftete Elemente',
                 'file-unfinished-task': 'Unerledigte Aufgaben',
                 'file-word-count': 'Wortanzahl',
-                'file-custom-property': 'Benutzerdefinierte Eigenschaft'
+                'file-property': 'Eigenschaft'
             }
         },
         colorPicker: {
@@ -769,7 +769,7 @@ export const STRINGS_DE = {
                 previewText: 'Vorschautext',
                 featureImage: 'Hauptbild',
                 tags: 'Tags',
-                customProperty: 'Eigenschaften',
+                properties: 'Eigenschaften',
                 date: 'Datum',
                 parentFolder: 'Übergeordneter Ordner'
             }
@@ -1301,7 +1301,7 @@ export const STRINGS_DE = {
                 name: 'Datei-Tags im schlanken Modus anzeigen',
                 desc: 'Tags anzeigen, wenn Datum, Vorschau und Bild ausgeblendet sind.'
             },
-            customPropertyType: {
+            notePropertyType: {
                 name: 'Notiz-Eigenschaft',
                 desc: 'Wählen Sie die Notiz-Eigenschaft, die in Datei-Elementen angezeigt werden soll.',
                 options: {
@@ -1310,16 +1310,16 @@ export const STRINGS_DE = {
                     none: 'Keine'
                 }
             },
-            customPropertyFields: {
+            propertyFields: {
                 name: 'Anzuzeigende Eigenschaften',
                 desc: 'Kommagetrennte Liste von Frontmatter-Eigenschaften zur Anzeige im Navigationsbereich und als Badges in Datei-Elementen. Listen-Eigenschaften zeigen ein Badge pro Wert.',
                 placeholder: 'status, typ, kategorie'
             },
-            showCustomPropertiesOnSeparateRows: {
+            showPropertiesOnSeparateRows: {
                 name: 'Eigenschaften in separaten Zeilen anzeigen',
                 desc: 'Jede Eigenschaft in einer eigenen Zeile anzeigen.'
             },
-            showCustomPropertyInCompactMode: {
+            showNotePropertyInCompactMode: {
                 name: 'Eigenschaften im Kompaktmodus anzeigen',
                 desc: 'Eigenschaften anzeigen, wenn der Kompaktmodus aktiv ist.'
             },

@@ -303,7 +303,7 @@ export function renderNotesTab(context: SettingsTabContext): void {
     const previewTextGroup = createGroup(strings.settings.groups.notes.previewText);
     const featureImageGroup = createGroup(strings.settings.groups.notes.featureImage);
     const tagsGroup = createGroup(strings.settings.groups.notes.tags);
-    const customPropertyGroup = createGroup(strings.settings.groups.notes.customProperty);
+    const notePropertyGroup = createGroup(strings.settings.groups.notes.properties);
     const dateGroup = createGroup(strings.settings.groups.notes.date);
     const parentFolderGroup = createGroup(strings.settings.groups.notes.parentFolder);
 
@@ -685,39 +685,39 @@ export function renderNotesTab(context: SettingsTabContext): void {
             })
         );
 
-    customPropertyGroup.addSetting(setting => {
-        setting.setName(strings.settings.items.customPropertyType.name).setDesc(strings.settings.items.customPropertyType.desc);
+    notePropertyGroup.addSetting(setting => {
+        setting.setName(strings.settings.items.notePropertyType.name).setDesc(strings.settings.items.notePropertyType.desc);
         setting.addDropdown(dropdown =>
             dropdown
-                .addOption('none', strings.settings.items.customPropertyType.options.none)
-                .addOption('wordCount', strings.settings.items.customPropertyType.options.wordCount)
-                .setValue(plugin.settings.customPropertyType)
+                .addOption('none', strings.settings.items.notePropertyType.options.none)
+                .addOption('wordCount', strings.settings.items.notePropertyType.options.wordCount)
+                .setValue(plugin.settings.notePropertyType)
                 .onChange(async value => {
-                    plugin.settings.customPropertyType = value === 'wordCount' ? 'wordCount' : 'none';
+                    plugin.settings.notePropertyType = value === 'wordCount' ? 'wordCount' : 'none';
                     await plugin.saveSettingsAndUpdate();
                 })
         );
     });
 
-    customPropertyGroup.addSetting(setting => {
+    notePropertyGroup.addSetting(setting => {
         setting
-            .setName(strings.settings.items.showCustomPropertyInCompactMode.name)
-            .setDesc(strings.settings.items.showCustomPropertyInCompactMode.desc);
+            .setName(strings.settings.items.showNotePropertyInCompactMode.name)
+            .setDesc(strings.settings.items.showNotePropertyInCompactMode.desc);
         setting.addToggle(toggle =>
-            toggle.setValue(plugin.settings.showCustomPropertyInCompactMode).onChange(async value => {
-                plugin.settings.showCustomPropertyInCompactMode = value;
+            toggle.setValue(plugin.settings.showNotePropertyInCompactMode).onChange(async value => {
+                plugin.settings.showNotePropertyInCompactMode = value;
                 await plugin.saveSettingsAndUpdate();
             })
         );
     });
 
-    customPropertyGroup.addSetting(setting => {
+    notePropertyGroup.addSetting(setting => {
         setting
-            .setName(strings.settings.items.showCustomPropertiesOnSeparateRows.name)
-            .setDesc(strings.settings.items.showCustomPropertiesOnSeparateRows.desc);
+            .setName(strings.settings.items.showPropertiesOnSeparateRows.name)
+            .setDesc(strings.settings.items.showPropertiesOnSeparateRows.desc);
         setting.addToggle(toggle =>
-            toggle.setValue(plugin.settings.showCustomPropertiesOnSeparateRows).onChange(async value => {
-                plugin.settings.showCustomPropertiesOnSeparateRows = value;
+            toggle.setValue(plugin.settings.showPropertiesOnSeparateRows).onChange(async value => {
+                plugin.settings.showPropertiesOnSeparateRows = value;
                 await plugin.saveSettingsAndUpdate();
             })
         );

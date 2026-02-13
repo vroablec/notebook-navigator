@@ -186,12 +186,12 @@ export const STRINGS_ZH_TW = {
                 properties: {
                     title: '屬性',
                     items: [
-                        '`.key` 包含具有自訂屬性鍵的筆記。',
-                        '`.key=value` 包含具有自訂屬性值的筆記。',
+                        '`.key` 包含具有屬性鍵的筆記。',
+                        '`.key=value` 包含具有屬性值的筆記。',
                         '`."Reading Status"` 包含屬性鍵包含空格的筆記。',
                         '`."Reading Status"="In Progress"` 包含空格的鍵和值必須用雙引號括起來。',
-                        '`-.key` 排除具有自訂屬性鍵的筆記。',
-                        '`-.key=value` 排除具有自訂屬性值的筆記。',
+                        '`-.key` 排除具有屬性鍵的筆記。',
+                        '`-.key=value` 排除具有屬性值的筆記。',
                         'Cmd/Ctrl+點擊屬性以 AND 方式新增。Cmd/Ctrl+Shift+點擊以 OR 方式新增。'
                     ]
                 },
@@ -409,7 +409,7 @@ export const STRINGS_ZH_TW = {
                 'list-pinned': '釘選項目',
                 'file-unfinished-task': '未完成任務',
                 'file-word-count': '字數統計',
-                'file-custom-property': '自訂屬性'
+                'file-property': '屬性'
             }
         },
         colorPicker: {
@@ -765,7 +765,7 @@ export const STRINGS_ZH_TW = {
                 previewText: '預覽文字',
                 featureImage: '特色圖片',
                 tags: '標籤',
-                customProperty: '屬性',
+                properties: '屬性',
                 date: '日期',
                 parentFolder: '父資料夾'
             }
@@ -1295,7 +1295,7 @@ export const STRINGS_ZH_TW = {
                 name: '在精簡模式中顯示檔案標籤',
                 desc: '當日期、預覽和圖片被隱藏時顯示標籤。'
             },
-            customPropertyType: {
+            notePropertyType: {
                 name: '筆記屬性',
                 desc: '選擇要在檔案項目中顯示的筆記屬性。',
                 options: {
@@ -1304,16 +1304,16 @@ export const STRINGS_ZH_TW = {
                     none: '無'
                 }
             },
-            customPropertyFields: {
+            propertyFields: {
                 name: '要顯示的屬性',
                 desc: '以逗號分隔的 frontmatter 屬性清單，用於在導覽面板和檔案項目中作為徽章顯示。清單值屬性每個值顯示一個徽章。',
                 placeholder: 'status, type, category'
             },
-            showCustomPropertiesOnSeparateRows: {
+            showPropertiesOnSeparateRows: {
                 name: '在個別行中顯示屬性',
                 desc: '將每個屬性顯示在個別行中。'
             },
-            showCustomPropertyInCompactMode: {
+            showNotePropertyInCompactMode: {
                 name: '在精簡模式下顯示屬性',
                 desc: '精簡模式啟用時顯示屬性。'
             },

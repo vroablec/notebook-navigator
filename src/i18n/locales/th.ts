@@ -187,12 +187,12 @@ export const STRINGS_TH = {
                 properties: {
                     title: 'คุณสมบัติ',
                     items: [
-                        '`.key` รวมโน้ตที่มีคีย์คุณสมบัติกำหนดเอง',
-                        '`.key=value` รวมโน้ตที่มีค่าคุณสมบัติกำหนดเอง',
+                        '`.key` รวมโน้ตที่มีคีย์คุณสมบัติ',
+                        '`.key=value` รวมโน้ตที่มีค่าคุณสมบัติ',
                         '`."Reading Status"` รวมโน้ตที่มีคีย์คุณสมบัติที่มีช่องว่าง',
                         '`."Reading Status"="In Progress"` คีย์และค่าที่มีช่องว่างต้องอยู่ในเครื่องหมายคำพูดคู่',
-                        '`-.key` ไม่รวมโน้ตที่มีคีย์คุณสมบัติกำหนดเอง',
-                        '`-.key=value` ไม่รวมโน้ตที่มีค่าคุณสมบัติกำหนดเอง',
+                        '`-.key` ไม่รวมโน้ตที่มีคีย์คุณสมบัติ',
+                        '`-.key=value` ไม่รวมโน้ตที่มีค่าคุณสมบัติ',
                         'Cmd/Ctrl+คลิกคุณสมบัติเพื่อเพิ่มด้วย AND Cmd/Ctrl+Shift+คลิกเพื่อเพิ่มด้วย OR'
                     ]
                 },
@@ -409,7 +409,7 @@ export const STRINGS_TH = {
                 'list-pinned': 'รายการที่ปักหมุด',
                 'file-unfinished-task': 'งานที่ยังไม่เสร็จ',
                 'file-word-count': 'จำนวนคำ',
-                'file-custom-property': 'คุณสมบัติที่กำหนดเอง'
+                'file-property': 'คุณสมบัติ'
             }
         },
         colorPicker: {
@@ -766,7 +766,7 @@ export const STRINGS_TH = {
                 previewText: 'ข้อความตัวอย่าง',
                 featureImage: 'รูปภาพเด่น',
                 tags: 'แท็ก',
-                customProperty: 'คุณสมบัติ',
+                properties: 'คุณสมบัติ',
                 date: 'วันที่',
                 parentFolder: 'โฟลเดอร์หลัก'
             }
@@ -1296,7 +1296,7 @@ export const STRINGS_TH = {
                 name: 'แสดงแท็กไฟล์ในโหมดกะทัดรัด',
                 desc: 'แสดงแท็กเมื่อวันที่ ตัวอย่าง และรูปภาพถูกซ่อน'
             },
-            customPropertyType: {
+            notePropertyType: {
                 name: 'คุณสมบัติโน้ต',
                 desc: 'เลือกคุณสมบัติโน้ตที่จะแสดงในรายการไฟล์',
                 options: {
@@ -1305,16 +1305,16 @@ export const STRINGS_TH = {
                     none: 'ไม่มี'
                 }
             },
-            customPropertyFields: {
+            propertyFields: {
                 name: 'คุณสมบัติที่จะแสดง',
                 desc: 'รายการคุณสมบัติ frontmatter คั่นด้วยเครื่องหมายจุลภาค เพื่อแสดงในแผงนำทางและเป็นป้ายในรายการไฟล์ คุณสมบัติที่เป็นรายการจะแสดงหนึ่งป้ายต่อค่า',
                 placeholder: 'สถานะ, ประเภท, หมวดหมู่'
             },
-            showCustomPropertiesOnSeparateRows: {
+            showPropertiesOnSeparateRows: {
                 name: 'แสดงคุณสมบัติแยกเป็นบรรทัด',
                 desc: 'แสดงแต่ละคุณสมบัติในบรรทัดของตัวเอง'
             },
-            showCustomPropertyInCompactMode: {
+            showNotePropertyInCompactMode: {
                 name: 'แสดงคุณสมบัติในโหมดกะทัดรัด',
                 desc: 'แสดงคุณสมบัติเมื่อโหมดกะทัดรัดเปิดใช้งาน'
             },

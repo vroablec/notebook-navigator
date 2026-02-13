@@ -187,12 +187,12 @@ export const STRINGS_PL = {
                 properties: {
                     title: 'Właściwości',
                     items: [
-                        '`.key` Uwzględnij notatki z niestandardowym kluczem właściwości.',
-                        '`.key=value` Uwzględnij notatki z niestandardową wartością właściwości.',
+                        '`.key` Uwzględnij notatki z kluczem właściwości.',
+                        '`.key=value` Uwzględnij notatki z wartością właściwości.',
                         '`."Reading Status"` Uwzględnij notatki z kluczem właściwości zawierającym spacje.',
                         '`."Reading Status"="In Progress"` Klucze i wartości ze spacjami muszą być ujęte w podwójne cudzysłowy.',
-                        '`-.key` Wyklucz notatki z niestandardowym kluczem właściwości.',
-                        '`-.key=value` Wyklucz notatki z niestandardową wartością właściwości.',
+                        '`-.key` Wyklucz notatki z kluczem właściwości.',
+                        '`-.key=value` Wyklucz notatki z wartością właściwości.',
                         'Cmd/Ctrl+Kliknij właściwość, aby dodać z AND. Cmd/Ctrl+Shift+Kliknij, aby dodać z OR.'
                     ]
                 },
@@ -411,7 +411,7 @@ export const STRINGS_PL = {
                 'list-pinned': 'Przypięte elementy',
                 'file-unfinished-task': 'Nieukończone zadania',
                 'file-word-count': 'Liczba słów',
-                'file-custom-property': 'Właściwość niestandardowa'
+                'file-property': 'Właściwość'
             }
         },
         colorPicker: {
@@ -769,7 +769,7 @@ export const STRINGS_PL = {
                 previewText: 'Tekst podglądu',
                 featureImage: 'Obraz wyróżniający',
                 tags: 'Tagi',
-                customProperty: 'Właściwości',
+                properties: 'Właściwości',
                 date: 'Data',
                 parentFolder: 'Folder nadrzędny'
             }
@@ -1300,7 +1300,7 @@ export const STRINGS_PL = {
                 name: 'Pokaż tagi plików w trybie kompaktowym',
                 desc: 'Wyświetl tagi, gdy data, podgląd i obraz są ukryte.'
             },
-            customPropertyType: {
+            notePropertyType: {
                 name: 'Właściwość notatki',
                 desc: 'Wybierz właściwość notatki do wyświetlenia w elementach plików.',
                 options: {
@@ -1309,16 +1309,16 @@ export const STRINGS_PL = {
                     none: 'Brak'
                 }
             },
-            customPropertyFields: {
+            propertyFields: {
                 name: 'Właściwości do wyświetlenia',
                 desc: 'Rozdzielona przecinkami lista właściwości frontmatter do wyświetlenia w panelu nawigacji i jako odznaki w elementach plików. Właściwości z wieloma wartościami wyświetlają jedną odznakę na wartość.',
                 placeholder: 'status, typ, kategoria'
             },
-            showCustomPropertiesOnSeparateRows: {
+            showPropertiesOnSeparateRows: {
                 name: 'Pokaż właściwości w osobnych wierszach',
                 desc: 'Wyświetl każdą właściwość w osobnym wierszu.'
             },
-            showCustomPropertyInCompactMode: {
+            showNotePropertyInCompactMode: {
                 name: 'Pokaż właściwości w trybie kompaktowym',
                 desc: 'Wyświetlaj właściwości gdy tryb kompaktowy jest aktywny.'
             },

@@ -186,12 +186,12 @@ export const STRINGS_KO = {
                 properties: {
                     title: '속성',
                     items: [
-                        '`.key` 사용자 정의 속성 키가 있는 노트를 포함합니다.',
-                        '`.key=value` 사용자 정의 속성 값이 있는 노트를 포함합니다.',
+                        '`.key` 속성 키가 있는 노트를 포함합니다.',
+                        '`.key=value` 속성 값이 있는 노트를 포함합니다.',
                         '`."Reading Status"` 공백이 포함된 속성 키가 있는 노트를 포함합니다.',
                         '`."Reading Status"="In Progress"` 공백이 포함된 키와 값은 큰따옴표로 묶어야 합니다.',
-                        '`-.key` 사용자 정의 속성 키가 있는 노트를 제외합니다.',
-                        '`-.key=value` 사용자 정의 속성 값이 있는 노트를 제외합니다.',
+                        '`-.key` 속성 키가 있는 노트를 제외합니다.',
+                        '`-.key=value` 속성 값이 있는 노트를 제외합니다.',
                         'Cmd/Ctrl+클릭으로 속성을 AND로 추가. Cmd/Ctrl+Shift+클릭으로 OR로 추가.'
                     ]
                 },
@@ -408,7 +408,7 @@ export const STRINGS_KO = {
                 'list-pinned': '고정 항목',
                 'file-unfinished-task': '미완료 작업',
                 'file-word-count': '단어 수',
-                'file-custom-property': '사용자 지정 속성'
+                'file-property': '속성'
             }
         },
         colorPicker: {
@@ -767,7 +767,7 @@ export const STRINGS_KO = {
                 previewText: '미리보기 텍스트',
                 featureImage: '대표 이미지',
                 tags: '태그',
-                customProperty: '속성',
+                properties: '속성',
                 date: '날짜',
                 parentFolder: '상위 폴더'
             }
@@ -1297,7 +1297,7 @@ export const STRINGS_KO = {
                 name: '슬림 모드에서 파일 태그 표시',
                 desc: '날짜, 미리보기, 이미지가 숨겨져 있을 때 태그를 표시합니다.'
             },
-            customPropertyType: {
+            notePropertyType: {
                 name: '노트 속성',
                 desc: '파일 항목에 표시할 노트 속성을 선택합니다.',
                 options: {
@@ -1306,16 +1306,16 @@ export const STRINGS_KO = {
                     none: '없음'
                 }
             },
-            customPropertyFields: {
+            propertyFields: {
                 name: '표시할 속성들',
                 desc: '탐색 창과 파일 항목의 배지로 표시할 프론트매터 속성의 쉼표로 구분된 목록. 목록 값 속성은 값당 하나의 배지를 표시합니다.',
                 placeholder: '상태, 유형, 카테고리'
             },
-            showCustomPropertiesOnSeparateRows: {
+            showPropertiesOnSeparateRows: {
                 name: '속성을 별도 행에 표시',
                 desc: '각 속성을 개별 행에 표시합니다.'
             },
-            showCustomPropertyInCompactMode: {
+            showNotePropertyInCompactMode: {
                 name: '간결 모드에서 속성 표시',
                 desc: '간결 모드가 활성화되면 속성을 표시합니다.'
             },

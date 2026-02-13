@@ -189,12 +189,12 @@ export const STRINGS_NL = {
                 properties: {
                     title: 'Eigenschappen',
                     items: [
-                        '`.key` Notities met aangepaste eigenschapssleutel opnemen.',
-                        '`.key=value` Notities met aangepaste eigenschapswaarde opnemen.',
+                        '`.key` Notities met eigenschapssleutel opnemen.',
+                        '`.key=value` Notities met eigenschapswaarde opnemen.',
                         '`."Reading Status"` Notities opnemen met een eigenschapssleutel die spaties bevat.',
                         '`."Reading Status"="In Progress"` Sleutels en waarden met spaties moeten tussen dubbele aanhalingstekens staan.',
-                        '`-.key` Notities met aangepaste eigenschapssleutel uitsluiten.',
-                        '`-.key=value` Notities met aangepaste eigenschapswaarde uitsluiten.',
+                        '`-.key` Notities met eigenschapssleutel uitsluiten.',
+                        '`-.key=value` Notities met eigenschapswaarde uitsluiten.',
                         'Cmd/Ctrl+Klik op een eigenschap om toe te voegen met AND. Cmd/Ctrl+Shift+Klik om toe te voegen met OR.'
                     ]
                 },
@@ -411,7 +411,7 @@ export const STRINGS_NL = {
                 'list-pinned': 'Vastgezette items',
                 'file-unfinished-task': 'Onvoltooide taken',
                 'file-word-count': 'Aantal woorden',
-                'file-custom-property': 'Aangepaste eigenschap'
+                'file-property': 'Eigenschap'
             }
         },
         colorPicker: {
@@ -769,7 +769,7 @@ export const STRINGS_NL = {
                 previewText: 'Voorbeeldtekst',
                 featureImage: 'Uitgelichte afbeelding',
                 tags: 'Tags',
-                customProperty: 'Eigenschappen',
+                properties: 'Eigenschappen',
                 date: 'Datum',
                 parentFolder: 'Bovenliggende map'
             }
@@ -1301,7 +1301,7 @@ export const STRINGS_NL = {
                 name: 'Bestandstags tonen in compacte modus',
                 desc: 'Tags weergeven wanneer datum, voorbeeld en afbeelding verborgen zijn.'
             },
-            customPropertyType: {
+            notePropertyType: {
                 name: 'Notitie-eigenschap',
                 desc: 'Selecteer de notitie-eigenschap om weer te geven in bestandsitems.',
                 options: {
@@ -1310,16 +1310,16 @@ export const STRINGS_NL = {
                     none: 'Geen'
                 }
             },
-            customPropertyFields: {
+            propertyFields: {
                 name: 'Weer te geven eigenschappen',
                 desc: "Door komma's gescheiden lijst van frontmatter-eigenschappen om weer te geven in het navigatiepaneel en als badges in bestandsitems. Lijst-eigenschappen tonen één badge per waarde.",
                 placeholder: 'status, type, categorie'
             },
-            showCustomPropertiesOnSeparateRows: {
+            showPropertiesOnSeparateRows: {
                 name: 'Eigenschappen op afzonderlijke regels tonen',
                 desc: 'Toon elke eigenschap op een eigen regel.'
             },
-            showCustomPropertyInCompactMode: {
+            showNotePropertyInCompactMode: {
                 name: 'Eigenschappen tonen in compacte modus',
                 desc: 'Eigenschappen weergeven wanneer de compacte modus actief is.'
             },

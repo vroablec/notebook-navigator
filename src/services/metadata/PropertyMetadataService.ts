@@ -188,7 +188,7 @@ export class PropertyMetadataService extends BaseMetadataService {
     ): (nodeId: string) => boolean {
         return (
             createConfiguredPropertyNodeValidator({
-                customPropertyFields: targetSettings.customPropertyFields,
+                propertyFields: targetSettings.propertyFields,
                 dbFiles: validators.dbFiles
             }) ?? (() => false)
         );

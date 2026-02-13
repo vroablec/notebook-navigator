@@ -17,17 +17,17 @@
  */
 
 import type { NotebookNavigatorSettings } from '../settings';
-import type { CustomPropertyItem } from '../storage/IndexedDBStorage';
+import type { PropertyItem } from '../storage/IndexedDBStorage';
 import { getCachedCommaSeparatedList } from './commaSeparatedListUtils';
 
 export type WikiLinkTarget = { target: string; displayText: string };
 
-export function hasCustomPropertyFrontmatterFields(settings: NotebookNavigatorSettings): boolean {
-    return getCachedCommaSeparatedList(settings.customPropertyFields).length > 0;
+export function hasPropertyFrontmatterFields(settings: NotebookNavigatorSettings): boolean {
+    return getCachedCommaSeparatedList(settings.propertyFields).length > 0;
 }
 
 export function parseStrictWikiLink(value: string): WikiLinkTarget | null {
-    // Custom property pills are clickable only when the full value is a single wiki link token.
+    // Property pills are clickable only when the full value is a single wiki link token.
     const trimmed = value.trim();
     if (!trimmed.startsWith('[[') || !trimmed.endsWith(']]')) {
         return null;
@@ -77,20 +77,17 @@ export function isSupportedCssColor(value: string): boolean {
     );
 }
 
-// Clones custom property data so React state can compare and update safely without mutating cache objects.
-export function cloneCustomPropertyItems(values: readonly CustomPropertyItem[] | null): CustomPropertyItem[] | null {
+// Clones property data so React state can compare and update safely without mutating cache objects.
+export function clonePropertyItems(values: readonly PropertyItem[] | null): PropertyItem[] | null {
     if (!values) {
         return null;
     }
     return values.map(entry => ({ ...entry }));
 }
 
-// Compares custom property items by field key + value, preserving order.
+// Compares property items by field key + value, preserving order.
 // Order is significant so the UI matches the configured field list and frontmatter value order.
-export function areCustomPropertyItemsEqual(
-    first: readonly CustomPropertyItem[] | null,
-    second: readonly CustomPropertyItem[] | null
-): boolean {
+export function arePropertyItemsEqual(first: readonly PropertyItem[] | null, second: readonly PropertyItem[] | null): boolean {
     if (first === second) {
         return true;
     }

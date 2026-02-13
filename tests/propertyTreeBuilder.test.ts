@@ -17,7 +17,7 @@
  */
 
 import { describe, expect, it } from 'vitest';
-import type { CustomPropertyItem, FileData } from '../src/storage/IndexedDBStorage';
+import type { PropertyItem, FileData } from '../src/storage/IndexedDBStorage';
 import { PROPERTIES_ROOT_VIRTUAL_FOLDER_ID } from '../src/types';
 import {
     type PropertyTreeDatabaseLike,
@@ -36,10 +36,10 @@ import {
 
 interface MockFile {
     path: string;
-    customProperty: CustomPropertyItem[] | null;
+    properties: PropertyItem[] | null;
 }
 
-function createFileData(customProperty: CustomPropertyItem[] | null): FileData {
+function createFileData(properties: PropertyItem[] | null): FileData {
     return {
         mtime: 0,
         markdownPipelineMtime: 0,
@@ -50,7 +50,7 @@ function createFileData(customProperty: CustomPropertyItem[] | null): FileData {
         wordCount: null,
         taskTotal: 0,
         taskUnfinished: 0,
-        customProperty,
+        properties,
         previewStatus: 'unprocessed',
         featureImage: null,
         featureImageStatus: 'unprocessed',
@@ -62,7 +62,7 @@ function createFileData(customProperty: CustomPropertyItem[] | null): FileData {
 function createMockDb(files: MockFile[]): PropertyTreeDatabaseLike {
     const payload = files.map(file => ({
         path: file.path,
-        data: createFileData(file.customProperty)
+        data: createFileData(file.properties)
     }));
 
     return {
@@ -77,11 +77,11 @@ describe('buildPropertyTreeFromDatabase', () => {
         const db = createMockDb([
             {
                 path: 'notes/a.md',
-                customProperty: [{ fieldKey: 'Status', value: 'Work/Finished' }]
+                properties: [{ fieldKey: 'Status', value: 'Work/Finished' }]
             },
             {
                 path: 'notes/b.md',
-                customProperty: [{ fieldKey: 'status', value: 'work/Started' }]
+                properties: [{ fieldKey: 'status', value: 'work/Started' }]
             }
         ]);
 
@@ -109,15 +109,15 @@ describe('buildPropertyTreeFromDatabase', () => {
         const db = createMockDb([
             {
                 path: 'notes/keep.md',
-                customProperty: [{ fieldKey: 'Status', value: '  Work // Done / ' }]
+                properties: [{ fieldKey: 'Status', value: '  Work // Done / ' }]
             },
             {
                 path: 'notes/skip-key.md',
-                customProperty: [{ fieldKey: 'Priority', value: 'High' }]
+                properties: [{ fieldKey: 'Priority', value: 'High' }]
             },
             {
                 path: 'archive/hidden.md',
-                customProperty: [{ fieldKey: 'Status', value: 'Hidden/Value' }]
+                properties: [{ fieldKey: 'Status', value: 'Hidden/Value' }]
             }
         ]);
 
@@ -145,11 +145,11 @@ describe('buildPropertyTreeFromDatabase', () => {
         const db = createMockDb([
             {
                 path: 'notes/first.md',
-                customProperty: [{ fieldKey: 'Status', value: '  Work // Done / ' }]
+                properties: [{ fieldKey: 'Status', value: '  Work // Done / ' }]
             },
             {
                 path: 'notes/second.md',
-                customProperty: [{ fieldKey: 'status', value: 'work // done /' }]
+                properties: [{ fieldKey: 'status', value: 'work // done /' }]
             }
         ]);
 
@@ -168,15 +168,15 @@ describe('buildPropertyTreeFromDatabase', () => {
         const db = createMockDb([
             {
                 path: 'notes/status.md',
-                customProperty: [{ fieldKey: 'Status', value: 'Open' }]
+                properties: [{ fieldKey: 'Status', value: 'Open' }]
             },
             {
                 path: 'notes/priority.md',
-                customProperty: [{ fieldKey: 'Priority', value: 'High' }]
+                properties: [{ fieldKey: 'Priority', value: 'High' }]
             },
             {
                 path: 'notes/mood.md',
-                customProperty: [{ fieldKey: 'Mood', value: 'Calm' }]
+                properties: [{ fieldKey: 'Mood', value: 'Calm' }]
             }
         ]);
 
@@ -192,11 +192,11 @@ describe('buildPropertyTreeFromDatabase', () => {
         const db = createMockDb([
             {
                 path: 'notes/status.md',
-                customProperty: [{ fieldKey: 'Status', value: 'Open' }]
+                properties: [{ fieldKey: 'Status', value: 'Open' }]
             },
             {
                 path: 'notes/priority.md',
-                customProperty: [{ fieldKey: 'Priority', value: 'High' }]
+                properties: [{ fieldKey: 'Priority', value: 'High' }]
             }
         ]);
 
@@ -211,11 +211,11 @@ describe('buildPropertyTreeFromDatabase', () => {
         const db = createMockDb([
             {
                 path: 'notes/status.md',
-                customProperty: [{ fieldKey: 'Status', value: 'Open' }]
+                properties: [{ fieldKey: 'Status', value: 'Open' }]
             },
             {
                 path: 'notes/priority.md',
-                customProperty: [{ fieldKey: 'Priority', value: 'High' }]
+                properties: [{ fieldKey: 'Priority', value: 'High' }]
             }
         ]);
 
@@ -231,19 +231,19 @@ describe('buildPropertyTreeFromDatabase', () => {
         const db = createMockDb([
             {
                 path: 'notes/status-zeta.md',
-                customProperty: [{ fieldKey: 'Status', value: 'Work/Zeta' }]
+                properties: [{ fieldKey: 'Status', value: 'Work/Zeta' }]
             },
             {
                 path: 'notes/zeta.md',
-                customProperty: [{ fieldKey: 'Zeta', value: 'One' }]
+                properties: [{ fieldKey: 'Zeta', value: 'One' }]
             },
             {
                 path: 'notes/alpha.md',
-                customProperty: [{ fieldKey: 'Alpha', value: 'Two' }]
+                properties: [{ fieldKey: 'Alpha', value: 'Two' }]
             },
             {
                 path: 'notes/status-alpha.md',
-                customProperty: [{ fieldKey: 'status', value: 'Work/Alpha' }]
+                properties: [{ fieldKey: 'status', value: 'Work/Alpha' }]
             }
         ]);
 
@@ -269,7 +269,7 @@ describe('buildPropertyTreeFromDatabase', () => {
         const db = createMockDb([
             {
                 path: 'notes/empty.md',
-                customProperty: [{ fieldKey: 'Status', value: '   ' }]
+                properties: [{ fieldKey: 'Status', value: '   ' }]
             }
         ]);
 
@@ -289,11 +289,11 @@ describe('buildPropertyTreeFromDatabase', () => {
         const db = createMockDb([
             {
                 path: 'notes/true.md',
-                customProperty: [{ fieldKey: 'Status', value: 'true', valueKind: 'boolean' }]
+                properties: [{ fieldKey: 'Status', value: 'true', valueKind: 'boolean' }]
             },
             {
                 path: 'notes/false.md',
-                customProperty: [{ fieldKey: 'Status', value: 'false', valueKind: 'boolean' }]
+                properties: [{ fieldKey: 'Status', value: 'false', valueKind: 'boolean' }]
             }
         ]);
 
@@ -310,11 +310,11 @@ describe('buildPropertyTreeFromDatabase', () => {
         const db = createMockDb([
             {
                 path: 'notes/true-string.md',
-                customProperty: [{ fieldKey: 'Status', value: 'true', valueKind: 'string' }]
+                properties: [{ fieldKey: 'Status', value: 'true', valueKind: 'string' }]
             },
             {
                 path: 'notes/false-string.md',
-                customProperty: [{ fieldKey: 'Status', value: 'false', valueKind: 'string' }]
+                properties: [{ fieldKey: 'Status', value: 'false', valueKind: 'string' }]
             }
         ]);
 
@@ -338,27 +338,27 @@ describe('property value matching', () => {
         const db = createMockDb([
             {
                 path: 'notes/a.md',
-                customProperty: [{ fieldKey: 'Status', value: 'Work/Done' }]
+                properties: [{ fieldKey: 'Status', value: 'Work/Done' }]
             },
             {
                 path: 'notes/b.md',
-                customProperty: [{ fieldKey: 'Status', value: 'Work/Blocked' }]
+                properties: [{ fieldKey: 'Status', value: 'Work/Blocked' }]
             },
             {
                 path: 'notes/c.md',
-                customProperty: [{ fieldKey: 'Status', value: 'Work' }]
+                properties: [{ fieldKey: 'Status', value: 'Work' }]
             },
             {
                 path: 'notes/d.md',
-                customProperty: [{ fieldKey: 'Status', value: 'Personal/Home' }]
+                properties: [{ fieldKey: 'Status', value: 'Personal/Home' }]
             },
             {
                 path: 'notes/e.md',
-                customProperty: [{ fieldKey: 'Status', value: '   ' }]
+                properties: [{ fieldKey: 'Status', value: '   ' }]
             },
             {
                 path: 'notes/f.md',
-                customProperty: [
+                properties: [
                     { fieldKey: 'Status', value: 'true', valueKind: 'boolean' },
                     { fieldKey: 'Status', value: 'Work/Done' }
                 ]
@@ -395,11 +395,11 @@ describe('property value matching', () => {
         const db = createMockDb([
             {
                 path: 'notes/a.md',
-                customProperty: [{ fieldKey: 'Status', value: 'Work/Done' }]
+                properties: [{ fieldKey: 'Status', value: 'Work/Done' }]
             },
             {
                 path: 'notes/b.md',
-                customProperty: [{ fieldKey: 'Status', value: 'Work/Blocked' }]
+                properties: [{ fieldKey: 'Status', value: 'Work/Blocked' }]
             }
         ]);
 
@@ -448,7 +448,7 @@ describe('property selection resolution', () => {
         const db = createMockDb([
             {
                 path: 'notes/a.md',
-                customProperty: [{ fieldKey: 'Status', value: 'true', valueKind: 'boolean' }]
+                properties: [{ fieldKey: 'Status', value: 'true', valueKind: 'boolean' }]
             }
         ]);
         const tree = buildPropertyTreeFromDatabase(db, {
@@ -474,7 +474,7 @@ describe('property selection resolution', () => {
         const db = createMockDb([
             {
                 path: 'notes/a.md',
-                customProperty: [{ fieldKey: 'Status', value: 'true', valueKind: 'string' }]
+                properties: [{ fieldKey: 'Status', value: 'true', valueKind: 'string' }]
             }
         ]);
         const tree = buildPropertyTreeFromDatabase(db, {

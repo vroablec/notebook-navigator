@@ -18,7 +18,7 @@
 
 import type { TFile } from 'obsidian';
 import type { FeatureImageStatus, FileData } from '../storage/IndexedDBStorage';
-import type { CustomPropertyType } from '../settings/types';
+import type { NotePropertyType } from '../settings/types';
 import { isImageFile } from './fileTypeUtils';
 
 /**
@@ -107,89 +107,89 @@ export function shouldShowFeatureImageArea({
     return featureImageStatus === 'has';
 }
 
-export function shouldShowCustomPropertyRow({
-    customPropertyType,
+export function shouldShowPropertyRow({
+    notePropertyType,
     showProperties,
-    showCustomPropertyInCompactMode,
+    showNotePropertyInCompactMode,
     isCompactMode,
     file,
     wordCount,
-    customProperty
+    properties
 }: {
-    customPropertyType: CustomPropertyType;
+    notePropertyType: NotePropertyType;
     showProperties: boolean;
-    showCustomPropertyInCompactMode: boolean;
+    showNotePropertyInCompactMode: boolean;
     isCompactMode: boolean;
     file: TFile | null;
     wordCount: FileData['wordCount'] | undefined;
-    customProperty: FileData['customProperty'] | undefined;
+    properties: FileData['properties'] | undefined;
 }): boolean {
     if (!file || file.extension !== 'md') {
         return false;
     }
 
-    if (isCompactMode && !showCustomPropertyInCompactMode) {
+    if (isCompactMode && !showNotePropertyInCompactMode) {
         return false;
     }
 
-    const hasWordCount = customPropertyType === 'wordCount' && typeof wordCount === 'number' && Number.isFinite(wordCount) && wordCount > 0;
-    const hasPropertyValues = showProperties && Boolean(customProperty && customProperty.some(entry => entry.value.trim().length > 0));
+    const hasWordCount = notePropertyType === 'wordCount' && typeof wordCount === 'number' && Number.isFinite(wordCount) && wordCount > 0;
+    const hasPropertyValues = showProperties && Boolean(properties && properties.some(entry => entry.value.trim().length > 0));
 
     return hasWordCount || hasPropertyValues;
 }
 
-export function getCustomPropertyRowCount({
-    customPropertyType,
+export function getPropertyRowCount({
+    notePropertyType,
     showProperties,
-    showCustomPropertiesOnSeparateRows,
-    showCustomPropertyInCompactMode,
+    showPropertiesOnSeparateRows,
+    showNotePropertyInCompactMode,
     isCompactMode,
     file,
     wordCount,
-    customProperty
+    properties
 }: {
-    customPropertyType: CustomPropertyType;
+    notePropertyType: NotePropertyType;
     showProperties: boolean;
-    showCustomPropertiesOnSeparateRows: boolean;
-    showCustomPropertyInCompactMode: boolean;
+    showPropertiesOnSeparateRows: boolean;
+    showNotePropertyInCompactMode: boolean;
     isCompactMode: boolean;
     file: TFile | null;
     wordCount: FileData['wordCount'] | undefined;
-    customProperty: FileData['customProperty'] | undefined;
+    properties: FileData['properties'] | undefined;
 }): number {
-    // Computes the number of visual rows the custom property area will occupy.
+    // Computes the number of visual rows the property area will occupy.
     // This is used by the list pane virtualizer height estimator and must stay consistent with FileItem rendering.
-    const shouldShow = shouldShowCustomPropertyRow({
-        customPropertyType,
+    const shouldShow = shouldShowPropertyRow({
+        notePropertyType,
         showProperties,
-        showCustomPropertyInCompactMode,
+        showNotePropertyInCompactMode,
         isCompactMode,
         file,
         wordCount,
-        customProperty
+        properties
     });
 
     if (!shouldShow) {
-        // No custom property row will be rendered.
+        // No property row will be rendered.
         return 0;
     }
 
     const wordCountEnabled =
-        customPropertyType === 'wordCount' && typeof wordCount === 'number' && Number.isFinite(wordCount) && wordCount > 0;
+        notePropertyType === 'wordCount' && typeof wordCount === 'number' && Number.isFinite(wordCount) && wordCount > 0;
     const wordCountPillCount = wordCountEnabled ? 1 : 0;
 
     const propertyRowCount =
-        showProperties && customProperty
-            ? new Set(customProperty.filter(entry => entry.value.trim().length > 0).map(entry => entry.fieldKey.trim())).size
+        showProperties && properties
+            ? new Set(properties.filter(entry => entry.value.trim().length > 0).map(entry => entry.fieldKey.trim())).size
             : 0;
     const totalRowCount = wordCountPillCount + propertyRowCount;
     if (totalRowCount === 0) {
         return 0;
     }
 
-    const shouldUseSeparateRows = showCustomPropertiesOnSeparateRows;
+    const shouldUseSeparateRows = showPropertiesOnSeparateRows;
     if (!shouldUseSeparateRows) {
-        // Custom property values are rendered as pills on a single row when separate-row mode is disabled.
+        // Property values are rendered as pills on a single row when separate-row mode is disabled.
         return 1;
     }
 

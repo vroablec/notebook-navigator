@@ -469,20 +469,20 @@ export function useListPaneData({
 
         const resolveNormalizedProperties = (
             path: string,
-            customProperty: { fieldKey: string; value: string }[] | null
+            properties: { fieldKey: string; value: string }[] | null
         ): Map<string, string[]> => {
             const cached = normalizedPropertyCache.get(path);
             if (cached) {
                 return cached;
             }
 
-            if (!customProperty || customProperty.length === 0) {
+            if (!properties || properties.length === 0) {
                 normalizedPropertyCache.set(path, emptyProperties);
                 return emptyProperties;
             }
 
             const normalizedValues = new Map<string, Set<string>>();
-            customProperty.forEach(entry => {
+            properties.forEach(entry => {
                 const normalizedKey = casefold(entry.fieldKey);
                 if (!normalizedKey) {
                     return;
@@ -529,7 +529,7 @@ export function useListPaneData({
             }
 
             if (needsPropertyLookup) {
-                const propertyValuesByKey = resolveNormalizedProperties(file.path, fileData?.customProperty ?? null);
+                const propertyValuesByKey = resolveNormalizedProperties(file.path, fileData?.properties ?? null);
                 if (matchOptions) {
                     matchOptions = { ...matchOptions, propertyValuesByKey };
                 } else {
@@ -1179,7 +1179,7 @@ export function useListPaneData({
 
             // React to tag/property changes that affect the current view
             const hasTagChanges = changes.some(change => change.changes.tags !== undefined);
-            const hasPropertyChanges = changes.some(change => change.changes.customProperty !== undefined);
+            const hasPropertyChanges = changes.some(change => change.changes.properties !== undefined);
             if (hasTagChanges || hasPropertyChanges) {
                 const isTagView = selectionType === ItemType.TAG && selectedTag;
                 const isFolderView = selectionType === ItemType.FOLDER && selectedFolder;

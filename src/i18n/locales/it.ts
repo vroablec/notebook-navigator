@@ -187,12 +187,12 @@ export const STRINGS_IT = {
                 properties: {
                     title: 'Proprietà',
                     items: [
-                        '`.key` Includi note con chiave di proprietà personalizzata.',
-                        '`.key=value` Includi note con valore di proprietà personalizzata.',
+                        '`.key` Includi note con chiave di proprietà.',
+                        '`.key=value` Includi note con valore di proprietà.',
                         '`."Reading Status"` Includi note con una chiave di proprietà che contiene spazi.',
                         '`."Reading Status"="In Progress"` Chiavi e valori con spazi devono essere racchiusi tra virgolette doppie.',
-                        '`-.key` Escludi note con chiave di proprietà personalizzata.',
-                        '`-.key=value` Escludi note con valore di proprietà personalizzata.',
+                        '`-.key` Escludi note con chiave di proprietà.',
+                        '`-.key=value` Escludi note con valore di proprietà.',
                         'Cmd/Ctrl+Clic su una proprietà per aggiungere con AND. Cmd/Ctrl+Shift+Clic per aggiungere con OR.'
                     ]
                 },
@@ -409,7 +409,7 @@ export const STRINGS_IT = {
                 'list-pinned': 'Elementi fissati',
                 'file-unfinished-task': 'Attività incomplete',
                 'file-word-count': 'Conteggio parole',
-                'file-custom-property': 'Proprietà personalizzata'
+                'file-property': 'Proprietà'
             }
         },
         colorPicker: {
@@ -766,7 +766,7 @@ export const STRINGS_IT = {
                 previewText: 'Testo anteprima',
                 featureImage: 'Immagine in evidenza',
                 tags: 'Tag',
-                customProperty: 'Proprietà',
+                properties: 'Proprietà',
                 date: 'Data',
                 parentFolder: 'Cartella superiore'
             }
@@ -1299,7 +1299,7 @@ export const STRINGS_IT = {
                 name: 'Mostra tag file in modalità compatta',
                 desc: 'Visualizza tag quando data, anteprima e immagine sono nascosti.'
             },
-            customPropertyType: {
+            notePropertyType: {
                 name: 'Proprietà della nota',
                 desc: 'Seleziona la proprietà della nota da visualizzare negli elementi file.',
                 options: {
@@ -1308,16 +1308,16 @@ export const STRINGS_IT = {
                     none: 'Nessuno'
                 }
             },
-            customPropertyFields: {
+            propertyFields: {
                 name: 'Proprietà da visualizzare',
                 desc: 'Elenco di proprietà dei metadati separati da virgola da visualizzare nel pannello di navigazione e come badge negli elementi file. Le proprietà con valori multipli mostrano un badge per valore.',
                 placeholder: 'stato, tipo, categoria'
             },
-            showCustomPropertiesOnSeparateRows: {
+            showPropertiesOnSeparateRows: {
                 name: 'Mostra proprietà su righe separate',
                 desc: 'Mostra ogni proprietà sulla propria riga.'
             },
-            showCustomPropertyInCompactMode: {
+            showNotePropertyInCompactMode: {
                 name: 'Mostra proprietà in modalità compatta',
                 desc: 'Visualizza le proprietà quando la modalità compatta è attiva.'
             },

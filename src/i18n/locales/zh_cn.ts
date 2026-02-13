@@ -186,12 +186,12 @@ export const STRINGS_ZH_CN = {
                 properties: {
                     title: '属性',
                     items: [
-                        '`.key` 包含具有自定义属性键的笔记。',
-                        '`.key=value` 包含具有自定义属性值的笔记。',
+                        '`.key` 包含具有属性键的笔记。',
+                        '`.key=value` 包含具有属性值的笔记。',
                         '`."Reading Status"` 包含属性键包含空格的笔记。',
                         '`."Reading Status"="In Progress"` 包含空格的键和值必须用双引号括起来。',
-                        '`-.key` 排除具有自定义属性键的笔记。',
-                        '`-.key=value` 排除具有自定义属性值的笔记。',
+                        '`-.key` 排除具有属性键的笔记。',
+                        '`-.key=value` 排除具有属性值的笔记。',
                         'Cmd/Ctrl+点击属性以 AND 方式添加。Cmd/Ctrl+Shift+点击以 OR 方式添加。'
                     ]
                 },
@@ -409,7 +409,7 @@ export const STRINGS_ZH_CN = {
                 'list-pinned': '固定项目',
                 'file-unfinished-task': '未完成任务',
                 'file-word-count': '字数统计',
-                'file-custom-property': '自定义属性'
+                'file-property': '属性'
             }
         },
         colorPicker: {
@@ -765,7 +765,7 @@ export const STRINGS_ZH_CN = {
                 previewText: '预览文本',
                 featureImage: '特色图片',
                 tags: '标签',
-                customProperty: '属性',
+                properties: '属性',
                 date: '日期',
                 parentFolder: '父文件夹'
             }
@@ -1296,7 +1296,7 @@ export const STRINGS_ZH_CN = {
                 name: '在精简模式中显示文件标签',
                 desc: '当日期、预览和图像被隐藏时显示标签。'
             },
-            customPropertyType: {
+            notePropertyType: {
                 name: '笔记属性',
                 desc: '选择要在文件项中显示的笔记属性。',
                 options: {
@@ -1305,16 +1305,16 @@ export const STRINGS_ZH_CN = {
                     none: '无'
                 }
             },
-            customPropertyFields: {
+            propertyFields: {
                 name: '要显示的属性',
                 desc: '以逗号分隔的 frontmatter 属性列表，用于在导航窗格和文件项中作为徽章显示。列表值属性每个值显示一个徽章。',
                 placeholder: '状态, 类型, 分类'
             },
-            showCustomPropertiesOnSeparateRows: {
+            showPropertiesOnSeparateRows: {
                 name: '在单独的行中显示属性',
                 desc: '将每个属性显示在单独的行中。'
             },
-            showCustomPropertyInCompactMode: {
+            showNotePropertyInCompactMode: {
                 name: '在紧凑模式下显示属性',
                 desc: '紧凑模式启用时显示属性。'
             },

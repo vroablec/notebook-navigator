@@ -187,12 +187,12 @@ export const STRINGS_FA = {
                 properties: {
                     title: 'ویژگی‌ها',
                     items: [
-                        '`.key` شامل کردن یادداشت‌هایی با کلید ویژگی سفارشی.',
-                        '`.key=value` شامل کردن یادداشت‌هایی با مقدار ویژگی سفارشی.',
+                        '`.key` شامل کردن یادداشت‌هایی با کلید ویژگی.',
+                        '`.key=value` شامل کردن یادداشت‌هایی با مقدار ویژگی.',
                         '`."Reading Status"` شامل کردن یادداشت‌هایی با کلید ویژگی حاوی فاصله.',
                         '`."Reading Status"="In Progress"` کلیدها و مقادیر حاوی فاصله باید در گیومه دوتایی قرار گیرند.',
-                        '`-.key` حذف یادداشت‌هایی با کلید ویژگی سفارشی.',
-                        '`-.key=value` حذف یادداشت‌هایی با مقدار ویژگی سفارشی.',
+                        '`-.key` حذف یادداشت‌هایی با کلید ویژگی.',
+                        '`-.key=value` حذف یادداشت‌هایی با مقدار ویژگی.',
                         'Cmd/Ctrl+کلیک روی ویژگی برای افزودن با AND. Cmd/Ctrl+Shift+کلیک برای افزودن با OR.'
                     ]
                 },
@@ -409,7 +409,7 @@ export const STRINGS_FA = {
                 'list-pinned': 'آیتم‌های سنجاق شده',
                 'file-unfinished-task': 'وظایف ناتمام',
                 'file-word-count': 'تعداد کلمات',
-                'file-custom-property': 'ویژگی سفارشی'
+                'file-property': 'ویژگی'
             }
         },
         colorPicker: {
@@ -767,7 +767,7 @@ export const STRINGS_FA = {
                 previewText: 'متن پیش‌نمایش',
                 featureImage: 'تصویر ویژه',
                 tags: 'برچسب‌ها',
-                customProperty: 'ویژگی‌ها',
+                properties: 'ویژگی‌ها',
                 date: 'تاریخ',
                 parentFolder: 'پوشه والد'
             }
@@ -1297,7 +1297,7 @@ export const STRINGS_FA = {
                 name: 'نمایش برچسب‌های فایل در حالت فشرده',
                 desc: 'برچسب‌ها را هنگامی که تاریخ، پیش‌نمایش و تصویر مخفی هستند نمایش دهید.'
             },
-            customPropertyType: {
+            notePropertyType: {
                 name: 'ویژگی یادداشت',
                 desc: 'ویژگی یادداشت را برای نمایش در موارد فایل انتخاب کنید.',
                 options: {
@@ -1306,16 +1306,16 @@ export const STRINGS_FA = {
                     none: 'هیچ‌کدام'
                 }
             },
-            customPropertyFields: {
+            propertyFields: {
                 name: 'ویژگی‌ها برای نمایش',
                 desc: 'فهرست ویژگی‌های فرانت‌متر جدا شده با کاما برای نمایش در پنل ناوبری و به عنوان نشان در موارد فایل. ویژگی‌های فهرستی یک نشان به ازای هر مقدار نمایش می‌دهند.',
                 placeholder: 'وضعیت، نوع، دسته‌بندی'
             },
-            showCustomPropertiesOnSeparateRows: {
+            showPropertiesOnSeparateRows: {
                 name: 'نمایش ویژگی‌ها در ردیف‌های جداگانه',
                 desc: 'هر ویژگی را در ردیف جداگانه نمایش می‌دهد.'
             },
-            showCustomPropertyInCompactMode: {
+            showNotePropertyInCompactMode: {
                 name: 'نمایش ویژگی‌ها در حالت فشرده',
                 desc: 'نمایش ویژگی‌ها هنگام فعال بودن حالت فشرده.'
             },

@@ -47,12 +47,12 @@ export function renderPropertiesTab(context: SettingsTabContext): void {
 
     const propertyFieldsSetting = context.createDebouncedTextSetting(
         propertiesSubSettingsEl,
-        strings.settings.items.customPropertyFields.name,
-        strings.settings.items.customPropertyFields.desc,
-        strings.settings.items.customPropertyFields.placeholder,
-        () => plugin.settings.customPropertyFields,
+        strings.settings.items.propertyFields.name,
+        strings.settings.items.propertyFields.desc,
+        strings.settings.items.propertyFields.placeholder,
+        () => plugin.settings.propertyFields,
         value => {
-            plugin.settings.customPropertyFields = normalizeCommaSeparatedList(value);
+            plugin.settings.propertyFields = normalizeCommaSeparatedList(value);
         }
     );
     propertyFieldsSetting.controlEl.addClass('nn-setting-wide-input');

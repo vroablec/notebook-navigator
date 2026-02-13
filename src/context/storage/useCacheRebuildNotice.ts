@@ -76,7 +76,7 @@ export function useCacheRebuildNotice(params: { app: App; stoppedRef: RefObject<
             const trackMetadata = enabledTypes.includes('metadata');
             const trackWordCount = enabledTypes.includes('wordCount');
             const trackTasks = enabledTypes.includes('tasks');
-            const trackCustomProperty = enabledTypes.includes('customProperty');
+            const trackProperties = enabledTypes.includes('properties');
 
             let progressBarEl: HTMLProgressElement | null = null;
             let lastProgressValue: number | null = null;
@@ -165,7 +165,7 @@ export function useCacheRebuildNotice(params: { app: App; stoppedRef: RefObject<
                     const needsMetadata = trackMetadata && isMarkdown && data.metadata === null;
                     const needsWordCount = trackWordCount && isMarkdown && data.wordCount === null;
                     const needsTasks = trackTasks && isMarkdown && (data.taskTotal === null || data.taskUnfinished === null);
-                    const needsCustomProperty = trackCustomProperty && isMarkdown && data.customProperty === null;
+                    const needsProperties = trackProperties && isMarkdown && data.properties === null;
 
                     if (
                         !needsPreview &&
@@ -174,7 +174,7 @@ export function useCacheRebuildNotice(params: { app: App; stoppedRef: RefObject<
                         !needsMetadata &&
                         !needsWordCount &&
                         !needsTasks &&
-                        !needsCustomProperty
+                        !needsProperties
                     ) {
                         return;
                     }
@@ -200,7 +200,7 @@ export function useCacheRebuildNotice(params: { app: App; stoppedRef: RefObject<
                         (needsPreview ||
                             needsWordCount ||
                             needsTasks ||
-                            needsCustomProperty ||
+                            needsProperties ||
                             (needsFeatureImage && isMarkdown) ||
                             needsTags ||
                             needsMetadata);
