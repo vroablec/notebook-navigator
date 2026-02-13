@@ -728,7 +728,7 @@ export const STRINGS_FR = {
         sections: {
             general: 'Général',
             notes: 'Notes',
-            navigationPane: 'Panneau de navigation',
+            navigationPane: 'Navigation',
             calendar: 'Calendrier',
             icons: "Packs d'icônes",
             tags: 'Étiquettes',
@@ -736,7 +736,7 @@ export const STRINGS_FR = {
             folderNotes: 'Notes de dossier',
             foldersAndTags: 'Dossiers',
             tagsAndProperties: 'Tags et propriétés',
-            listPane: 'Panneau de liste',
+            listPane: 'Liste',
             advanced: 'Avancé'
         },
         groups: {

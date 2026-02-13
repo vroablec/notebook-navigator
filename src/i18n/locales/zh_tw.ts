@@ -724,7 +724,7 @@ export const STRINGS_ZH_TW = {
         sections: {
             general: '一般',
             notes: '筆記',
-            navigationPane: '導覽窗格',
+            navigationPane: '導覽',
             calendar: '導覽日曆',
             icons: '圖示包',
             tags: '標籤',
@@ -732,7 +732,7 @@ export const STRINGS_ZH_TW = {
             folderNotes: '資料夾筆記',
             foldersAndTags: '資料夾',
             tagsAndProperties: '標籤與屬性',
-            listPane: '列表窗格',
+            listPane: '列表',
             advanced: '進階'
         },
         groups: {

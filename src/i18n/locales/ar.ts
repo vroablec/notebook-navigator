@@ -724,7 +724,7 @@ export const STRINGS_AR = {
         },
         sections: {
             general: 'عام',
-            navigationPane: 'لوحة التنقل',
+            navigationPane: 'التنقل',
             calendar: 'التقويم',
             icons: 'حزم الأيقونات',
             folders: 'مجلدات',
@@ -732,7 +732,7 @@ export const STRINGS_AR = {
             foldersAndTags: 'مجلدات',
             tagsAndProperties: 'الوسوم والخصائص',
             tags: 'وسوم',
-            listPane: 'لوحة القائمة',
+            listPane: 'القائمة',
             notes: 'ملاحظات',
             advanced: 'متقدم'
         },

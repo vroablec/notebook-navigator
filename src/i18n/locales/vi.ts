@@ -725,7 +725,7 @@ export const STRINGS_VI = {
         },
         sections: {
             general: 'Chung',
-            navigationPane: 'Ngăn điều hướng',
+            navigationPane: 'Điều hướng',
             calendar: 'Lịch',
             icons: 'Gói biểu tượng',
             folders: 'Thư mục',
@@ -733,7 +733,7 @@ export const STRINGS_VI = {
             foldersAndTags: 'Thư mục',
             tagsAndProperties: 'Thẻ và thuộc tính',
             tags: 'Thẻ',
-            listPane: 'Ngăn danh sách',
+            listPane: 'Danh sách',
             notes: 'Ghi chú',
             advanced: 'Nâng cao'
         },

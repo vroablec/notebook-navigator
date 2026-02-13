@@ -725,7 +725,7 @@ export const STRINGS_KO = {
         },
         sections: {
             general: '일반',
-            navigationPane: '탐색 창',
+            navigationPane: '탐색',
             calendar: '달력',
             icons: '아이콘 팩',
             folders: '폴더',
@@ -733,7 +733,7 @@ export const STRINGS_KO = {
             foldersAndTags: '폴더',
             tagsAndProperties: '태그 및 속성',
             tags: '태그',
-            listPane: '목록 창',
+            listPane: '목록',
             notes: '노트',
             advanced: '고급'
         },

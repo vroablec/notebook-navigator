@@ -727,7 +727,7 @@ export const STRINGS_NL = {
         },
         sections: {
             general: 'Algemeen',
-            navigationPane: 'Navigatiepaneel',
+            navigationPane: 'Navigatie',
             calendar: 'Kalender',
             icons: 'Pictogrampakketten',
             folders: 'Mappen',
@@ -735,7 +735,7 @@ export const STRINGS_NL = {
             foldersAndTags: 'Mappen',
             tagsAndProperties: 'Tags & eigenschappen',
             tags: 'Tags',
-            listPane: 'Lijstpaneel',
+            listPane: 'Lijst',
             notes: 'Notities',
             advanced: 'Geavanceerd'
         },

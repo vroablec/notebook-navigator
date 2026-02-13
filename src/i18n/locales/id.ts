@@ -725,7 +725,7 @@ export const STRINGS_ID = {
         },
         sections: {
             general: 'Umum',
-            navigationPane: 'Panel navigasi',
+            navigationPane: 'Navigasi',
             calendar: 'Kalender',
             icons: 'Paket ikon',
             folders: 'Folder',
@@ -733,7 +733,7 @@ export const STRINGS_ID = {
             foldersAndTags: 'Folder',
             tagsAndProperties: 'Tag & properti',
             tags: 'Tag',
-            listPane: 'Panel daftar',
+            listPane: 'Daftar',
             notes: 'Catatan',
             advanced: 'Lanjutan'
         },

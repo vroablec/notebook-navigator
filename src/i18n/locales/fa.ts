@@ -725,7 +725,7 @@ export const STRINGS_FA = {
         },
         sections: {
             general: 'عمومی',
-            navigationPane: 'پنل ناوبری',
+            navigationPane: 'ناوبری',
             calendar: 'تقویم',
             icons: 'بسته‌های آیکون',
             folders: 'پوشه‌ها',
@@ -733,7 +733,7 @@ export const STRINGS_FA = {
             foldersAndTags: 'پوشه‌ها',
             tagsAndProperties: 'برچسب‌ها و ویژگی‌ها',
             tags: 'برچسب‌ها',
-            listPane: 'پنل لیست',
+            listPane: 'لیست',
             notes: 'یادداشت‌ها',
             advanced: 'پیشرفته'
         },

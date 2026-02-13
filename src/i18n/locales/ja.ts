@@ -726,7 +726,7 @@ export const STRINGS_JA = {
         sections: {
             general: '一般設定',
             notes: 'ノート表示',
-            navigationPane: 'フォルダ表示',
+            navigationPane: 'ナビゲーション',
             calendar: 'カレンダー',
             icons: 'アイコンパック',
             tags: 'タグ表示',
@@ -734,7 +734,7 @@ export const STRINGS_JA = {
             folderNotes: 'フォルダノート',
             foldersAndTags: 'フォルダ',
             tagsAndProperties: 'タグとプロパティ',
-            listPane: 'リストペイン',
+            listPane: 'リスト',
             advanced: '詳細設定'
         },
         groups: {

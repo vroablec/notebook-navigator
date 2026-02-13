@@ -726,7 +726,7 @@ export const STRINGS_TR = {
         },
         sections: {
             general: 'Genel',
-            navigationPane: 'Gezinme bölmesi',
+            navigationPane: 'Gezinme',
             calendar: 'Takvim',
             icons: 'Simge paketleri',
             folders: 'Klasörler',
@@ -734,7 +734,7 @@ export const STRINGS_TR = {
             foldersAndTags: 'Klasörler',
             tagsAndProperties: 'Etiketler ve özellikler',
             tags: 'Etiketler',
-            listPane: 'Liste bölmesi',
+            listPane: 'Liste',
             notes: 'Notlar',
             advanced: 'Gelişmiş'
         },

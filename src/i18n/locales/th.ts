@@ -724,7 +724,7 @@ export const STRINGS_TH = {
         },
         sections: {
             general: 'ทั่วไป',
-            navigationPane: 'แผงนำทาง',
+            navigationPane: 'นำทาง',
             calendar: 'ปฏิทิน',
             icons: 'ชุดไอคอน',
             folders: 'โฟลเดอร์',
@@ -732,7 +732,7 @@ export const STRINGS_TH = {
             foldersAndTags: 'โฟลเดอร์',
             tagsAndProperties: 'แท็กและคุณสมบัติ',
             tags: 'แท็ก',
-            listPane: 'แผงรายการ',
+            listPane: 'รายการ',
             notes: 'โน้ต',
             advanced: 'ขั้นสูง'
         },

@@ -725,7 +725,7 @@ export const STRINGS_UK = {
         },
         sections: {
             general: 'Загальне',
-            navigationPane: 'Панель навігації',
+            navigationPane: 'Навігація',
             calendar: 'Календар',
             icons: 'Пакети іконок',
             folders: 'Папки',
@@ -733,7 +733,7 @@ export const STRINGS_UK = {
             foldersAndTags: 'Папки',
             tagsAndProperties: 'Теги та властивості',
             tags: 'Теги',
-            listPane: 'Панель списку',
+            listPane: 'Список',
             notes: 'Нотатки',
             advanced: 'Розширені'
         },

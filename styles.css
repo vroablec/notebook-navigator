@@ -5776,10 +5776,24 @@ body.nn-resizing {
 
 .nn-settings-tabs-nav {
     display: flex;
-    flex-wrap: wrap;
+    flex-direction: column;
     gap: var(--size-2-3);
     flex-shrink: 0;
     margin-bottom: var(--size-4-4);
+}
+
+.nn-settings-tabs-nav-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--size-2-3);
+}
+
+.nn-settings-tabs-nav-row.is-hidden {
+    display: none;
+}
+
+.nn-settings-tabs-nav-secondary {
+    gap: var(--size-2-2);
 }
 
 .nn-settings-tab-button {
@@ -5788,6 +5802,33 @@ body.nn-resizing {
     justify-content: center;
     padding: 6px 12px;
     font-size: var(--font-ui-small);
+}
+
+.nn-settings-tab-button.is-hidden {
+    display: none;
+}
+
+.nn-settings-tab-button-primary.is-group-active {
+    background-color: transparent;
+    box-shadow: inset 0 0 0 1px var(--interactive-accent);
+    color: var(--interactive-accent);
+    opacity: 0.85;
+}
+
+.nn-settings-tab-button-primary.is-group-active:hover {
+    background-color: var(--background-modifier-hover);
+    opacity: 1;
+}
+
+.nn-settings-tab-button-secondary {
+    padding: 5px 10px;
+}
+
+.nn-settings-tab-button-secondary.is-active {
+    background-color: var(--background-modifier-hover);
+    box-shadow: inset 0 0 0 1px var(--interactive-accent);
+    color: var(--text-normal);
+    font-weight: var(--font-semibold);
 }
 
 .nn-settings-tabs-content {
