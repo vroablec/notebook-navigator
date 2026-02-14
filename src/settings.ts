@@ -29,13 +29,15 @@ import {
     type MetadataParsingStatistics
 } from './storage/statistics';
 import { renderGeneralTab } from './settings/tabs/GeneralTab';
-import { renderNavigationPaneTab, renderShortcutsTab } from './settings/tabs/NavigationPaneTab';
+import { renderNavigationPaneTab } from './settings/tabs/NavigationTab';
+import { renderShortcutsTab } from './settings/tabs/ShortcutsTab';
 import { renderCalendarTab } from './settings/tabs/CalendarTab';
 import { renderFoldersTab } from './settings/tabs/FoldersTab';
 import { renderTagsTab } from './settings/tabs/TagsTab';
 import { renderPropertiesTab } from './settings/tabs/PropertiesTab';
-import { renderListPaneTab } from './settings/tabs/ListPaneTab';
-import { renderFrontmatterTab, renderNotesTab } from './settings/tabs/NotesTab';
+import { renderListPaneTab } from './settings/tabs/ListTab';
+import { renderFrontmatterTab } from './settings/tabs/FrontmatterTab';
+import { renderNotesTab } from './settings/tabs/NotesTab';
 import { renderIconPacksTab } from './settings/tabs/IconPacksTab';
 import { renderAdvancedTab } from './settings/tabs/AdvancedTab';
 import type {
