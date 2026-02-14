@@ -102,11 +102,11 @@ If you do not use a sync service, the sync toggle has no practical effect since 
 
 ## 6 Search
 
-Notebook Navigator has two search modes: filter search and Omnisearch. Switch between them using the up/down arrow keys or by clicking the search icon. Combine file names, tags, and dates in one query (e.g., `meeting #work @thisweek`).
+Notebook Navigator has two search modes: filter search and Omnisearch. Switch between them using the up/down arrow keys or by clicking the search icon. Combine file names, properties, tags, dates, and filters in one query (e.g., `meeting .status=active #work @thisweek`).
 
 ### 6.1 Filter search
 
-Filters files by name and tags within the current folder and subfolders. Default search mode.
+Filters files by name, tags, properties, dates, folders, extensions, and tasks within the current folder and subfolders. Default search mode.
 
 **File names**
 
@@ -126,6 +126,29 @@ Filters files by name and tags within the current folder and subfolders. Default
 - `#a OR #b AND #c` - AND has higher precedence: matches `#a`, or both `#b` and `#c`
 - Cmd/Ctrl+Click a tag to add with AND. Cmd/Ctrl+Shift+Click to add with OR
 
+**Properties**
+
+- `.key` - Include notes with property key
+- `.key=value` - Include notes with property value
+- `."Reading Status"` - Property key with whitespace (double-quoted)
+- `."Reading Status"="In Progress"` - Keys and values with whitespace must be double-quoted
+- `-.key` - Exclude notes with property key
+- `-.key=value` - Exclude notes with property value
+- Cmd/Ctrl+Click a property to add with AND. Cmd/Ctrl+Shift+Click to add with OR
+
+**Filters**
+
+- `has:task` - Include notes with unfinished tasks
+- `-has:task` - Exclude notes with unfinished tasks
+- `folder:meetings` - Include notes where a folder name contains `meetings`
+- `folder:/work/meetings` - Include notes only in `work/meetings` (not subfolders)
+- `folder:/` - Include notes only in the vault root
+- `-folder:archive` - Exclude notes where a folder name contains `archive`
+- `-folder:/archive` - Exclude notes only in `archive` (not subfolders)
+- `ext:md` - Include notes with extension `md` (`ext:.md` is also supported)
+- `-ext:pdf` - Exclude notes with extension `pdf`
+- Combine with tags, names, and dates (e.g., `folder:/work/meetings ext:md @thisweek`)
+
 **Dates**
 
 - `@today` - Match notes from today using the default date field
@@ -141,6 +164,13 @@ Filters files by name and tags within the current folder and subfolders. Default
 - `-@...` - Exclude a date match
 
 The default date field follows the current sort order. When sorting by name, the date field is configured in Settings → Notes → Date → When sorting by name.
+
+**AND/OR behavior**
+
+`AND` and `OR` operators work in tag/property-only queries (queries that contain only `#tag`, `-#tag`, `#`, `-#`, `.key`, `-.key`, `.key=value`, or `-.key=value` filters). If the query also includes names, dates, task filters, folder filters, or extension filters, `AND` and `OR` are matched as file name words instead.
+
+- Operator query: `#work OR .status=started`
+- Mixed query: `#work OR ext:md` (`OR` is matched in file names)
 
 ### 6.2 Omnisearch
 
@@ -373,7 +403,7 @@ Set custom hotkeys for these commands in Obsidian's Hotkeys settings:
 
 ### 9.5 Productivity
 
-- **Search** - Filename and tag filtering with AND/OR/exclusions, tag multi-selection, fuzzy tag search
+- **Search** - Filter by file name, tags, properties, dates, folders, extensions, and tasks with AND/OR/exclusions
 - **Omnisearch integration** - Full-text search via [Omnisearch](https://github.com/scambier/obsidian-omnisearch)
 - **Drag and drop** - File moves, tagging, shortcut assignment, tag tree reparenting, spring-loaded folders
 - **Context menus** - Create notes/folders/canvases/bases/drawings and run file/tag actions
