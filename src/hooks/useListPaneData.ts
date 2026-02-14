@@ -1208,8 +1208,10 @@ export function useListPaneData({
                 } else if (isPropertyView) {
                     if (hasPropertyChanges) {
                         shouldRefresh = true;
-                    } else if (hasTagChanges && hiddenFileTags.length > 0 && !showHiddenItems) {
-                        shouldRefresh = true;
+                    } else if (hasTagChanges) {
+                        const hasTagChangesInCurrentList = changes.some(change => basePathSet.has(change.path));
+                        const shouldRefreshForTagVisibility = hiddenFileTags.length > 0 && !showHiddenItems;
+                        shouldRefresh = hasTagChangesInCurrentList || shouldRefreshForTagVisibility;
                     }
                 }
             }
