@@ -1343,7 +1343,8 @@ export function useNavigationPaneData({
                 if (!resolvedNode) {
                     const keyNode = propertyTree.get(parsed.key);
                     if (!keyNode) {
-                        const missingLabel = parsed.valuePath ? `${parsed.key} = ${parsed.valuePath}` : parsed.key;
+                        const valueLabel = parsed.valuePath?.trim();
+                        const missingLabel = valueLabel && valueLabel.length > 0 ? valueLabel : parsed.key;
                         items.push({
                             type: NavigationPaneItemType.SHORTCUT_PROPERTY,
                             key,
@@ -1357,8 +1358,8 @@ export function useNavigationPaneData({
                         return;
                     }
 
-                    const valueLabel = parsed.valuePath ?? '';
-                    const missingLabel = valueLabel ? `${keyNode.name} = ${valueLabel}` : keyNode.name;
+                    const valueLabel = parsed.valuePath?.trim();
+                    const missingLabel = valueLabel && valueLabel.length > 0 ? valueLabel : keyNode.name;
                     items.push({
                         type: NavigationPaneItemType.SHORTCUT_PROPERTY,
                         key,
@@ -1385,16 +1386,13 @@ export function useNavigationPaneData({
                     return;
                 }
 
-                const keyNode = propertyTree.get(propertyNode.key);
-                const keyLabel = keyNode?.name ?? propertyNode.key;
-
                 items.push({
                     type: NavigationPaneItemType.SHORTCUT_PROPERTY,
                     key,
                     level: itemLevel,
                     shortcut,
                     propertyNodeId: propertyNode.id,
-                    displayName: `${keyLabel} = ${propertyNode.name}`
+                    displayName: propertyNode.name
                 });
             }
         });
