@@ -23,6 +23,7 @@ import type { NotebookNavigatorSettings } from '../settings';
 import type { IPropertyTreeProvider } from '../interfaces/IPropertyTreeProvider';
 import { isPathInExcludedFolder } from './fileFilters';
 import { getCachedCommaSeparatedList } from './commaSeparatedListUtils';
+import { parseStrictWikiLink } from './propertyUtils';
 import { casefold } from './recordUtils';
 import { naturalCompare } from './sortUtils';
 import { isRecord } from './typeGuards';
@@ -532,7 +533,12 @@ export function resolvePropertySelectionNodeId(
         return keyNode.id;
     }
 
-    const valueNodeId = buildPropertyValueNodeId(parsed.key, parsed.valuePath);
+    const normalizedSelectionValuePath = normalizePropertyTreeValuePath(parsed.valuePath);
+    if (!normalizedSelectionValuePath) {
+        return keyNode.id;
+    }
+
+    const valueNodeId = buildPropertyValueNodeId(parsed.key, normalizedSelectionValuePath);
     if (keyNode.children.has(valueNodeId)) {
         return valueNodeId;
     }
@@ -574,7 +580,7 @@ export function normalizePropertyNodeId(nodeId: string): PropertyTreeNodeId | nu
         return buildPropertyKeyNodeId(normalizedKey);
     }
 
-    const normalizedValuePath = casefold(parsed.valuePath);
+    const normalizedValuePath = normalizePropertyTreeValuePath(parsed.valuePath);
     if (!normalizedValuePath) {
         return null;
     }
@@ -698,11 +704,26 @@ export function isPropertyTreeNodeId(value: string): value is PropertyTreeNodeId
 }
 
 export function normalizePropertyTreeValuePath(rawValue: string): string {
+    const wikiLink = parseStrictWikiLink(rawValue);
+    if (wikiLink) {
+        return casefold(wikiLink.displayText);
+    }
+
     return casefold(rawValue);
 }
 
 function normalizePropertyTreeDisplayValuePath(rawValue: string): string {
-    return rawValue.trim();
+    const trimmedValue = rawValue.trim();
+    if (!trimmedValue) {
+        return '';
+    }
+
+    const wikiLink = parseStrictWikiLink(trimmedValue);
+    if (wikiLink) {
+        return wikiLink.displayText;
+    }
+
+    return trimmedValue;
 }
 
 function getSelectedPropertyNodeId(selection: PropertySelectionValue | null): PropertySelectionNodeId | null {

@@ -34,7 +34,7 @@ import { EXCALIDRAW_BASENAME_SUFFIX } from '../utils/fileNameUtils';
 import { getVirtualTagCollection, VIRTUAL_TAG_COLLECTION_IDS } from '../utils/virtualTagCollections';
 import { getActiveHiddenFolders } from '../utils/vaultProfiles';
 import { resolveUXIcon } from '../utils/uxIcons';
-import { parsePropertyNodeId } from '../utils/propertyTree';
+import { buildPropertyKeyNodeId, parsePropertyNodeId, type PropertySelectionNodeId } from '../utils/propertyTree';
 
 const FOLDER_NOTE_EXTENSIONS = Object.values(FOLDER_NOTE_TYPE_EXTENSIONS);
 
@@ -60,14 +60,25 @@ function addFolderNoteCandidatePaths(
     target.add(`${prefix}${expectedName}${EXCALIDRAW_BASENAME_SUFFIX}.md`);
 }
 
-export type BreadcrumbTargetType = 'folder' | 'tag' | 'none';
-
-export interface BreadcrumbSegment {
-    label: string;
-    targetType: BreadcrumbTargetType;
-    targetPath?: string;
-    isLast: boolean;
-}
+export type BreadcrumbSegment =
+    | {
+          label: string;
+          targetType: 'none';
+          isLast: boolean;
+          targetPath?: undefined;
+      }
+    | {
+          label: string;
+          targetType: 'folder' | 'tag';
+          targetPath: string;
+          isLast: boolean;
+      }
+    | {
+          label: string;
+          targetType: 'property';
+          targetPath: PropertySelectionNodeId;
+          isLast: boolean;
+      };
 
 interface UseListPaneTitleResult {
     desktopTitle: string;
@@ -313,11 +324,21 @@ export function useListPaneTitle(): UseListPaneTitleResult {
             segments.forEach((segment, index) => {
                 currentPath = currentPath ? `${currentPath}/${segment}` : segment;
                 const isLast = index === segments.length - 1;
+                const label = getFolderDisplayName(currentPath, segment);
+                if (isLast) {
+                    breadcrumb.push({
+                        label,
+                        targetType: 'none',
+                        isLast: true
+                    });
+                    return;
+                }
+
                 breadcrumb.push({
-                    label: getFolderDisplayName(currentPath, segment),
-                    targetType: isLast ? 'none' : 'folder',
-                    targetPath: isLast ? undefined : currentPath,
-                    isLast
+                    label,
+                    targetType: 'folder',
+                    targetPath: currentPath,
+                    isLast: false
                 });
             });
 
@@ -362,13 +383,21 @@ export function useListPaneTitle(): UseListPaneTitleResult {
 
             const displayPath = getTagDisplayPath(tag);
             const segments = displayPath.split('/').filter(Boolean);
-            const breadcrumb: BreadcrumbSegment[] = segments.map((segment, index) => {
+            const breadcrumb: BreadcrumbSegment[] = segments.map((segment, index): BreadcrumbSegment => {
                 const isLast = index === segments.length - 1;
+                if (isLast) {
+                    return {
+                        label: segment,
+                        targetType: 'none',
+                        isLast: true
+                    };
+                }
+
                 return {
                     label: segment,
-                    targetType: isLast ? 'none' : 'tag',
-                    targetPath: isLast ? undefined : segments.slice(0, index + 1).join('/'),
-                    isLast
+                    targetType: 'tag',
+                    targetPath: segments.slice(0, index + 1).join('/'),
+                    isLast: false
                 };
             });
 
@@ -413,12 +442,13 @@ export function useListPaneTitle(): UseListPaneTitleResult {
             const keyNode = propertyTree.get(parsed.key) ?? null;
             const displayKey = keyNode?.name ?? parsed.key;
             const valueNode = parsed.valuePath ? (keyNode?.children.get(propertyNodeId) ?? null) : null;
+            const keyNodeId = buildPropertyKeyNodeId(parsed.key);
 
             return {
                 desktopTitle: parsed.valuePath ? (valueNode?.displayPath ?? parsed.valuePath) : displayKey,
                 breadcrumbSegments: parsed.valuePath
                     ? [
-                          { label: displayKey, targetType: 'none', isLast: false },
+                          { label: displayKey, targetType: 'property', targetPath: keyNodeId, isLast: false },
                           { label: valueNode?.displayPath ?? parsed.valuePath, targetType: 'none', isLast: true }
                       ]
                     : [{ label: displayKey, targetType: 'none', isLast: true }]

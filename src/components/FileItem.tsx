@@ -598,13 +598,9 @@ export const FileItem = React.memo(function FileItem({
         (event: React.MouseEvent, pill: PropertyPill) => {
             const propertyNodeId = pill.propertyNodeId;
             const propertySearchKey = pill.propertySearchKey;
-            if (!propertyNodeId || !propertySearchKey) {
-                return;
-            }
-
             event.stopPropagation();
 
-            if (onModifySearchWithProperty) {
+            if (onModifySearchWithProperty && propertySearchKey) {
                 const operator = getTagSearchModifierOperator(event, settings.multiSelectModifier, isMobile);
                 if (operator) {
                     event.preventDefault();
@@ -613,9 +609,20 @@ export const FileItem = React.memo(function FileItem({
                 }
             }
 
+            const wikiLinkTarget = pill.wikiLink?.target.trim();
+            if (wikiLinkTarget) {
+                event.preventDefault();
+                runAsyncAction(() => app.workspace.openLinkText(wikiLinkTarget, file.path, false));
+                return;
+            }
+
+            if (!propertyNodeId || !propertySearchKey) {
+                return;
+            }
+
             navigateToProperty(propertyNodeId, { preserveNavigationFocus: false });
         },
-        [isMobile, navigateToProperty, onModifySearchWithProperty, settings.multiSelectModifier]
+        [app.workspace, file.path, isMobile, navigateToProperty, onModifySearchWithProperty, settings.multiSelectModifier]
     );
 
     const getTagColorData = useCallback(

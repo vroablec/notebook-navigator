@@ -107,6 +107,51 @@ describe('buildPropertyTreeFromDatabase', () => {
         expect(startedNode?.notesWithValue).toEqual(new Set(['notes/b.md']));
     });
 
+    it('uses wiki-link display text for value node labels', () => {
+        const rawValue = '[[Tech Insights/2026/Tech Insights 2026 Week 7|Tech Insights 2026 Week 7]]';
+        const db = createMockDb([
+            {
+                path: 'notes/a.md',
+                properties: [{ fieldKey: 'Status', value: rawValue }]
+            }
+        ]);
+
+        const tree = buildPropertyTreeFromDatabase(db, {
+            includedPropertyKeys: new Set(['status'])
+        });
+        const keyNode = tree.get('status');
+        const valueNode = keyNode?.children.get(buildPropertyValueNodeId('status', normalizePropertyTreeValuePath(rawValue)));
+
+        expect(valueNode?.name).toBe('Tech Insights 2026 Week 7');
+        expect(valueNode?.displayPath).toBe('Tech Insights 2026 Week 7');
+    });
+
+    it('treats plain text and strict wiki-link aliases as the same canonical value', () => {
+        const plainValue = 'Tech Insights 2026 Week 7';
+        const wikiLinkValue = '[[Tech Insights/2026/Tech Insights 2026 Week 7|Tech Insights 2026 Week 7]]';
+        const db = createMockDb([
+            {
+                path: 'notes/plain.md',
+                properties: [{ fieldKey: 'Status', value: plainValue }]
+            },
+            {
+                path: 'notes/wikilink.md',
+                properties: [{ fieldKey: 'Status', value: wikiLinkValue }]
+            }
+        ]);
+
+        const tree = buildPropertyTreeFromDatabase(db, {
+            includedPropertyKeys: new Set(['status'])
+        });
+        const keyNode = tree.get('status');
+        const canonicalValueNodeId = buildPropertyValueNodeId('status', normalizePropertyTreeValuePath(plainValue));
+        const canonicalValueNode = keyNode?.children.get(canonicalValueNodeId);
+
+        expect(normalizePropertyTreeValuePath(plainValue)).toBe(normalizePropertyTreeValuePath(wikiLinkValue));
+        expect(keyNode?.children.size).toBe(1);
+        expect(canonicalValueNode?.notesWithValue).toEqual(new Set(['notes/plain.md', 'notes/wikilink.md']));
+    });
+
     it('respects included paths, excluded folders, and included property keys', () => {
         const db = createMockDb([
             {
@@ -486,6 +531,24 @@ describe('property selection resolution', () => {
         const valueSelection = buildPropertyValueNodeId('status', normalizePropertyTreeValuePath('true'));
         const resolved = resolvePropertySelectionNodeId(tree, valueSelection);
         expect(resolved).toBe(valueSelection);
+    });
+
+    it('resolves legacy wiki-link value selections to the canonical value node', () => {
+        const rawValue = '[[Tech Insights/2026/Tech Insights 2026 Week 7|Tech Insights 2026 Week 7]]';
+        const db = createMockDb([
+            {
+                path: 'notes/a.md',
+                properties: [{ fieldKey: 'Status', value: rawValue }]
+            }
+        ]);
+        const tree = buildPropertyTreeFromDatabase(db, {
+            includedPropertyKeys: new Set(['status'])
+        });
+
+        const legacySelection = buildPropertyValueNodeId('status', rawValue.toLowerCase());
+        const canonicalSelection = buildPropertyValueNodeId('status', normalizePropertyTreeValuePath(rawValue));
+        const resolved = resolvePropertySelectionNodeId(tree, legacySelection);
+        expect(resolved).toBe(canonicalSelection);
     });
 });
 
