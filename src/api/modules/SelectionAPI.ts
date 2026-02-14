@@ -22,8 +22,7 @@ import type { SelectionState, NavItem } from '../types';
 import { STORAGE_KEYS } from '../../types';
 import { localStorage } from '../../utils/localStorage';
 import {
-    isPropertyFeatureEnabled,
-    isPropertySelectionNodeIdConfigured,
+    canRestorePropertySelectionNodeId,
     parseStoredPropertySelectionNodeId,
     type PropertySelectionNodeId
 } from '../../utils/propertyTree';
@@ -67,9 +66,9 @@ export class SelectionAPI {
         try {
             const settings = this.api.getPlugin().settings;
 
-            if (isPropertyFeatureEnabled(settings)) {
+            if (settings.showProperties) {
                 const propertySelection = parseStoredPropertySelectionNodeId(localStorage.get<unknown>(STORAGE_KEYS.selectedPropertyKey));
-                if (propertySelection && isPropertySelectionNodeIdConfigured(settings, propertySelection)) {
+                if (propertySelection && canRestorePropertySelectionNodeId(settings, propertySelection)) {
                     this.selectionState.navigationProperty = propertySelection;
                     this.selectionState.navigationTag = null;
                     this.selectionState.navigationFolder = null;

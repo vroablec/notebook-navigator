@@ -128,6 +128,7 @@ import { useShortcuts } from '../context/ShortcutsContext';
 import { ShortcutItem } from './ShortcutItem';
 import { NavItemHoverActionSlot } from './NavItemHoverActionSlot';
 import { ConfirmModal } from '../modals/ConfirmModal';
+import { PropertyKeySuggestModal } from '../modals/PropertyKeySuggestModal';
 import {
     ShortcutEntry,
     ShortcutType,
@@ -161,6 +162,7 @@ import { getPathBaseName } from '../utils/pathUtils';
 import type { NavigateToFolderOptions, RevealPropertyOptions, RevealTagOptions } from '../hooks/useNavigatorReveal';
 import { isVirtualTagCollectionId } from '../utils/virtualTagCollections';
 import { compositeWithBase } from '../utils/colorUtils';
+import { normalizeCommaSeparatedList } from '../utils/commaSeparatedListUtils';
 import { useMeasuredElementHeight } from '../hooks/useMeasuredElementHeight';
 import { useSurfaceColorVariables } from '../hooks/useSurfaceColorVariables';
 import { NAVIGATION_PANE_SURFACE_COLOR_MAPPINGS } from '../constants/surfaceColorMappings';
@@ -169,6 +171,7 @@ import { SHORTCUT_POINTER_CONSTRAINT, verticalAxisOnly } from '../utils/dndConfi
 import { createHiddenFileNameMatcherForVisibility } from '../utils/fileFilters';
 import { createHiddenTagVisibility } from '../utils/tagPrefixMatcher';
 import { getDBInstanceOrNull } from '../storage/fileOperations';
+import { appendPropertyField, collectAvailablePropertyKeySuggestions } from '../utils/propertyUtils';
 import {
     getDirectPropertyKeyNoteCount,
     getTotalPropertyNoteCount,
@@ -2121,6 +2124,25 @@ export const NavigationPane = React.memo(
             ]
         );
 
+        const handleAddPropertyKeyFromSectionMenu = useCallback(() => {
+            const suggestions = collectAvailablePropertyKeySuggestions(app, plugin.settings.propertyFields);
+            if (suggestions.length === 0) {
+                showNotice(strings.settings.items.propertyFields.emptySelectorNotice, { variant: 'warning' });
+                return;
+            }
+
+            const modal = new PropertyKeySuggestModal(app, suggestions, async selectedKey => {
+                const nextValue = appendPropertyField(plugin.settings.propertyFields, selectedKey);
+                if (nextValue === plugin.settings.propertyFields) {
+                    return;
+                }
+
+                plugin.settings.propertyFields = normalizeCommaSeparatedList(nextValue);
+                await plugin.saveSettingsAndUpdate();
+            });
+            modal.open();
+        }, [app, plugin]);
+
         // Shows a context menu for navigation section headers with separator and shortcut actions
         const handleSectionContextMenu = useCallback(
             (event: React.MouseEvent<HTMLDivElement>, sectionId: NavigationSectionId, options?: { allowSeparator?: boolean }) => {
@@ -2128,11 +2150,25 @@ export const NavigationPane = React.memo(
                 event.stopPropagation();
 
                 const isShortcutsSection = sectionId === NavigationSectionId.SHORTCUTS;
+                const isTagSection = sectionId === NavigationSectionId.TAGS;
+                const isPropertySection = sectionId === NavigationSectionId.PROPERTIES;
                 const target = { type: 'section', id: sectionId } as const;
                 const allowSeparator = options?.allowSeparator ?? true;
                 const hasSeparator = allowSeparator ? metadataService.hasNavigationSeparator(target) : false;
                 const menu = new Menu();
                 let hasActions = false;
+
+                if (isPropertySection) {
+                    menu.addItem(item => {
+                        item.setTitle(strings.contextMenu.property.addKey)
+                            .setIcon('lucide-plus')
+                            .onClick(() => {
+                                handleAddPropertyKeyFromSectionMenu();
+                            });
+                    });
+                    hasActions = true;
+                    menu.addSeparator();
+                }
 
                 if (isShortcutsSection) {
                     menu.addItem(item => {
@@ -2215,15 +2251,16 @@ export const NavigationPane = React.memo(
                     hasActions = true;
                 }
 
-                if (sectionId === NavigationSectionId.TAGS || sectionId === NavigationSectionId.PROPERTIES) {
+                if (isTagSection || isPropertySection) {
                     if (hasActions) {
                         menu.addSeparator();
                     }
 
-                    const isTagSection = sectionId === NavigationSectionId.TAGS;
                     const commandId = isTagSection ? 'navigate-to-tag' : 'navigate-to-property';
                     const commandTitle = isTagSection ? strings.commands.navigateToTag : strings.commands.navigateToProperty;
-                    const commandIcon = isTagSection ? 'lucide-hash' : 'lucide-list-filter';
+                    const commandIcon = isTagSection
+                        ? resolveUXIconForMenu(settings.interfaceIcons, 'nav-tag', 'lucide-hash')
+                        : resolveUXIconForMenu(settings.interfaceIcons, 'nav-property', 'lucide-list-filter');
                     menu.addItem(item => {
                         item.setTitle(commandTitle)
                             .setIcon(commandIcon)
@@ -2245,9 +2282,11 @@ export const NavigationPane = React.memo(
                 app,
                 clearShortcuts,
                 handleShortcutSplitToggle,
+                handleAddPropertyKeyFromSectionMenu,
                 metadataService,
                 pinToggleLabel,
                 plugin.manifest.id,
+                settings.interfaceIcons,
                 shortcutsList.length,
                 uiState.pinShortcuts
             ]

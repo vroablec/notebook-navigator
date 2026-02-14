@@ -325,6 +325,10 @@ export const STRINGS_ZH_TW = {
             showTag: '顯示標籤',
             hideTag: '隱藏標籤'
         },
+        property: {
+            addKey: '新增屬性鍵',
+            removeKey: '移除屬性鍵'
+        },
         navigation: {
             addSeparator: '新增分隔線',
             removeSeparator: '移除分隔線'
@@ -403,7 +407,6 @@ export const STRINGS_ZH_TW = {
                 'list-new-note': '新建筆記',
                 'nav-folder-open': '資料夾開啟',
                 'nav-folder-closed': '資料夾關閉',
-                'nav-folder-note': '資料夾筆記',
                 'nav-tags': '標籤',
                 'nav-tag': '標籤',
                 'nav-properties': '屬性',

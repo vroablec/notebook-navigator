@@ -325,6 +325,10 @@ export const STRINGS_TH = {
             showTag: 'แสดงแท็ก',
             hideTag: 'ซ่อนแท็ก'
         },
+        property: {
+            addKey: 'เพิ่มคีย์คุณสมบัติ',
+            removeKey: 'ลบคีย์คุณสมบัติ'
+        },
         navigation: {
             addSeparator: 'เพิ่มตัวคั่น',
             removeSeparator: 'นำตัวคั่นออก'
@@ -403,7 +407,6 @@ export const STRINGS_TH = {
                 'list-new-note': 'โน้ตใหม่',
                 'nav-folder-open': 'โฟลเดอร์เปิด',
                 'nav-folder-closed': 'โฟลเดอร์ปิด',
-                'nav-folder-note': 'โน้ตโฟลเดอร์',
                 'nav-tags': 'แท็ก',
                 'nav-tag': 'แท็ก',
                 'nav-properties': 'คุณสมบัติ',

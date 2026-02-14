@@ -326,6 +326,10 @@ export const STRINGS_RU = {
             showTag: 'Показать тег',
             hideTag: 'Скрыть тег'
         },
+        property: {
+            addKey: 'Добавить ключ свойства',
+            removeKey: 'Удалить ключ свойства'
+        },
         navigation: {
             addSeparator: 'Добавить разделитель',
             removeSeparator: 'Удалить разделитель'
@@ -404,7 +408,6 @@ export const STRINGS_RU = {
                 'list-new-note': 'Новая заметка',
                 'nav-folder-open': 'Папка открыта',
                 'nav-folder-closed': 'Папка закрыта',
-                'nav-folder-note': 'Заметка папки',
                 'nav-tags': 'Теги',
                 'nav-tag': 'Тег',
                 'nav-properties': 'Свойства',

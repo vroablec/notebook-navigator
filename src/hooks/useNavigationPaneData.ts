@@ -100,7 +100,6 @@ import {
 import { resolveUXIcon } from '../utils/uxIcons';
 import type { MetadataService } from '../services/MetadataService';
 import { useSettingsDerived, type ActiveProfileState } from '../context/SettingsContext';
-import { getCachedCommaSeparatedList } from '../utils/commaSeparatedListUtils';
 
 // Checks if a navigation item is a shortcut-related item (virtual folder, shortcut, or header)
 const isShortcutNavigationItem = (item: CombinedNavigationItem): boolean => {
@@ -911,7 +910,6 @@ export function useNavigationPaneData({
         collectionCount: NoteCountInfo | undefined;
         resolvedRootPropertyKeys: string[];
     } => {
-        const hasConfiguredFields = getCachedCommaSeparatedList(settings.propertyFields).length > 0;
         if (!settings.showProperties) {
             return {
                 propertiesSectionActive: false,
@@ -921,15 +919,7 @@ export function useNavigationPaneData({
             };
         }
 
-        const keyNodes = hasConfiguredFields ? Array.from(propertyTree.values()) : [];
-        if (keyNodes.length === 0) {
-            return {
-                propertiesSectionActive: false,
-                keyNodes: [],
-                collectionCount: undefined,
-                resolvedRootPropertyKeys: []
-            };
-        }
+        const keyNodes = Array.from(propertyTree.values());
 
         const effectiveComparator: PropertyNodeComparator =
             rootPropertyOrderMap.size > 0
@@ -957,14 +947,7 @@ export function useNavigationPaneData({
             collectionCount,
             resolvedRootPropertyKeys: keyNodes.map(node => node.key)
         };
-    }, [
-        propertyKeyComparator,
-        propertyTree,
-        rootPropertyOrderMap,
-        settings.propertyFields,
-        settings.showNoteCount,
-        settings.showProperties
-    ]);
+    }, [propertyKeyComparator, propertyTree, rootPropertyOrderMap, settings.showNoteCount, settings.showProperties]);
 
     const { propertyItems, propertiesSectionActive } = useMemo((): {
         propertyItems: CombinedNavigationItem[];
@@ -980,7 +963,7 @@ export function useNavigationPaneData({
         const rootId = PROPERTIES_ROOT_VIRTUAL_FOLDER_ID;
         const keyNodes = propertySectionBase.keyNodes;
         const collectionCount = propertySectionBase.collectionCount;
-        const shouldShowRootFolder = settings.showAllPropertiesFolder && keyNodes.length > 0;
+        const shouldShowRootFolder = settings.showAllPropertiesFolder || keyNodes.length === 0;
         const rootLevel = shouldShowRootFolder ? 1 : 0;
         const childLevel = rootLevel + 1;
 
@@ -1674,7 +1657,7 @@ export function useNavigationPaneData({
                 if (descriptor.id === NavigationSectionId.TAGS && !settings.showAllTagsFolder) {
                     return;
                 }
-                if (descriptor.id === NavigationSectionId.PROPERTIES && (!settings.showAllPropertiesFolder || !propertiesSectionActive)) {
+                if (descriptor.id === NavigationSectionId.PROPERTIES && !propertiesSectionActive) {
                     return;
                 }
                 sectionSeparatorIds.add(descriptor.id);
@@ -1718,13 +1701,7 @@ export function useNavigationPaneData({
             useSectionSpacerForRootFolder,
             hasAnySeparators
         };
-    }, [
-        navigationSeparatorSnapshot,
-        propertiesSectionActive,
-        settings.showRootFolder,
-        settings.showAllTagsFolder,
-        settings.showAllPropertiesFolder
-    ]);
+    }, [navigationSeparatorSnapshot, propertiesSectionActive, settings.showRootFolder, settings.showAllTagsFolder]);
 
     const itemsWithSeparators = useMemo(() => {
         const {

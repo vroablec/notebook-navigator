@@ -214,6 +214,10 @@ type ExtractedPropertyValue = {
 // Converts frontmatter values into a list of pill strings.
 // Supports scalars and nested arrays; skips empty strings and non-finite numbers.
 function extractFrontmatterValues(value: unknown): ExtractedPropertyValue[] {
+    if (value === null) {
+        return [{ value: 'true', valueKind: 'boolean' }];
+    }
+
     if (typeof value === 'string') {
         const trimmed = value.trim();
         return trimmed.length > 0 ? [{ value: trimmed, valueKind: 'string' }] : [];

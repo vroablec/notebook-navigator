@@ -325,6 +325,10 @@ export const STRINGS_JA = {
             showTag: 'タグを表示',
             hideTag: 'タグを非表示'
         },
+        property: {
+            addKey: 'プロパティキーを追加',
+            removeKey: 'プロパティキーを削除'
+        },
         navigation: {
             addSeparator: '区切り線を追加',
             removeSeparator: '区切り線を削除'
@@ -403,7 +407,6 @@ export const STRINGS_JA = {
                 'list-new-note': '新規ノート',
                 'nav-folder-open': 'フォルダ（開）',
                 'nav-folder-closed': 'フォルダ（閉）',
-                'nav-folder-note': 'フォルダノート',
                 'nav-tags': 'タグ',
                 'nav-tag': 'タグ',
                 'nav-properties': 'プロパティ',

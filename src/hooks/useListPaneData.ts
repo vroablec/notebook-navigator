@@ -1022,8 +1022,8 @@ export function useListPaneData({
             if (!pendingRefreshRef.current) return;
             if (!operationActiveRef.current) {
                 pendingRefreshRef.current = false;
-                // Run any pending scheduled refresh immediately
-                scheduleRefresh.run();
+                // Queue a refresh after operation completion.
+                scheduleRefresh();
             }
         };
 

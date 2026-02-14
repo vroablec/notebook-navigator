@@ -326,6 +326,10 @@ export const STRINGS_ID = {
             showTag: 'Tampilkan tag',
             hideTag: 'Sembunyikan tag'
         },
+        property: {
+            addKey: 'Tambah kunci properti',
+            removeKey: 'Hapus kunci properti'
+        },
         navigation: {
             addSeparator: 'Tambah pemisah',
             removeSeparator: 'Hapus pemisah'
@@ -404,7 +408,6 @@ export const STRINGS_ID = {
                 'list-new-note': 'Catatan baru',
                 'nav-folder-open': 'Folder terbuka',
                 'nav-folder-closed': 'Folder tertutup',
-                'nav-folder-note': 'Catatan folder',
                 'nav-tags': 'Tag',
                 'nav-tag': 'Tag',
                 'nav-properties': 'Properti',

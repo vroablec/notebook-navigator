@@ -85,6 +85,12 @@ describe('filterSearch property evaluation', () => {
         expect(
             fileMatchesFilterTokens('note', [], keyOnlyTokens, { hasUnfinishedTasks: false, propertyValuesByKey: statusProperties })
         ).toBe(true);
+        expect(
+            fileMatchesFilterTokens('note', [], keyOnlyTokens, {
+                hasUnfinishedTasks: false,
+                propertyValuesByKey: new Map<string, string[]>([['status', []]])
+            })
+        ).toBe(true);
         expect(fileMatchesFilterTokens('note', [], keyOnlyTokens, { hasUnfinishedTasks: false, propertyValuesByKey: noProperties })).toBe(
             false
         );

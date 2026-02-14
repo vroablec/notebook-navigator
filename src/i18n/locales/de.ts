@@ -326,6 +326,10 @@ export const STRINGS_DE = {
             showTag: 'Tag anzeigen',
             hideTag: 'Tag ausblenden'
         },
+        property: {
+            addKey: 'Eigenschaftsschlüssel hinzufügen',
+            removeKey: 'Eigenschaftsschlüssel entfernen'
+        },
         navigation: {
             addSeparator: 'Trennlinie hinzufügen',
             removeSeparator: 'Trennlinie entfernen'
@@ -404,7 +408,6 @@ export const STRINGS_DE = {
                 'list-new-note': 'Neue Notiz',
                 'nav-folder-open': 'Ordner geöffnet',
                 'nav-folder-closed': 'Ordner geschlossen',
-                'nav-folder-note': 'Ordnernotiz',
                 'nav-tags': 'Tags',
                 'nav-tag': 'Tag',
                 'nav-properties': 'Eigenschaften',

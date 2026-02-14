@@ -493,6 +493,18 @@ export function isPropertySelectionNodeIdConfigured(
     return getConfiguredPropertyKeySet(settings.propertyFields).has(parsed.key);
 }
 
+export function canRestorePropertySelectionNodeId(settings: NotebookNavigatorSettings, selectionNodeId: PropertySelectionNodeId): boolean {
+    if (!settings.showProperties) {
+        return false;
+    }
+
+    if (selectionNodeId === PROPERTIES_ROOT_VIRTUAL_FOLDER_ID) {
+        return true;
+    }
+
+    return isPropertySelectionNodeIdConfigured(settings, selectionNodeId);
+}
+
 /**
  * Resolves a property selection id against the current property tree.
  * Falls back to the key node when a value node no longer exists.

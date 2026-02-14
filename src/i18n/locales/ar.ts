@@ -325,6 +325,10 @@ export const STRINGS_AR = {
             showTag: 'إظهار الوسم',
             hideTag: 'إخفاء الوسم'
         },
+        property: {
+            addKey: 'إضافة مفتاح خاصية',
+            removeKey: 'إزالة مفتاح خاصية'
+        },
         navigation: {
             addSeparator: 'إضافة فاصل',
             removeSeparator: 'إزالة الفاصل'
@@ -403,7 +407,6 @@ export const STRINGS_AR = {
                 'list-new-note': 'ملاحظة جديدة',
                 'nav-folder-open': 'مجلد مفتوح',
                 'nav-folder-closed': 'مجلد مغلق',
-                'nav-folder-note': 'ملاحظة المجلد',
                 'nav-tags': 'علامات',
                 'nav-tag': 'وسم',
                 'nav-properties': 'الخصائص',

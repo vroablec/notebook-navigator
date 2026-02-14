@@ -325,6 +325,10 @@ export const STRINGS_EN = {
             showTag: 'Show tag',
             hideTag: 'Hide tag'
         },
+        property: {
+            addKey: 'Add property key',
+            removeKey: 'Remove property key'
+        },
         navigation: {
             addSeparator: 'Add separator',
             removeSeparator: 'Remove separator'
@@ -403,7 +407,6 @@ export const STRINGS_EN = {
                 'list-new-note': 'New note',
                 'nav-folder-open': 'Folder open',
                 'nav-folder-closed': 'Folder closed',
-                'nav-folder-note': 'Folder note',
                 'nav-tags': 'Tags',
                 'nav-tag': 'Tag',
                 'nav-properties': 'Properties',

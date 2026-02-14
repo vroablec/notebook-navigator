@@ -324,6 +324,10 @@ export const STRINGS_KO = {
             showTag: '태그 표시',
             hideTag: '태그 숨기기'
         },
+        property: {
+            addKey: '속성 키 추가',
+            removeKey: '속성 키 제거'
+        },
         navigation: {
             addSeparator: '구분선 추가',
             removeSeparator: '구분선 제거'
@@ -402,7 +406,6 @@ export const STRINGS_KO = {
                 'list-new-note': '새 노트',
                 'nav-folder-open': '열린 폴더',
                 'nav-folder-closed': '닫힌 폴더',
-                'nav-folder-note': '폴더 노트',
                 'nav-tags': '태그',
                 'nav-tag': '태그',
                 'nav-properties': '속성',

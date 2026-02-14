@@ -327,6 +327,10 @@ export const STRINGS_NL = {
             showTag: 'Tag tonen',
             hideTag: 'Tag verbergen'
         },
+        property: {
+            addKey: 'Eigenschapssleutel toevoegen',
+            removeKey: 'Eigenschapssleutel verwijderen'
+        },
         navigation: {
             addSeparator: 'Scheidingslijn toevoegen',
             removeSeparator: 'Scheidingslijn verwijderen'
@@ -405,7 +409,6 @@ export const STRINGS_NL = {
                 'list-new-note': 'Nieuwe notitie',
                 'nav-folder-open': 'Map open',
                 'nav-folder-closed': 'Map gesloten',
-                'nav-folder-note': 'Mapnotitie',
                 'nav-tags': 'Tags',
                 'nav-tag': 'Tag',
                 'nav-properties': 'Eigenschappen',

@@ -325,6 +325,10 @@ export const STRINGS_VI = {
             showTag: 'Hiện thẻ',
             hideTag: 'Ẩn thẻ'
         },
+        property: {
+            addKey: 'Thêm khóa thuộc tính',
+            removeKey: 'Xóa khóa thuộc tính'
+        },
         navigation: {
             addSeparator: 'Thêm dấu phân cách',
             removeSeparator: 'Gỡ dấu phân cách'
@@ -403,7 +407,6 @@ export const STRINGS_VI = {
                 'list-new-note': 'Ghi chú mới',
                 'nav-folder-open': 'Thư mục mở',
                 'nav-folder-closed': 'Thư mục đóng',
-                'nav-folder-note': 'Ghi chú thư mục',
                 'nav-tags': 'Thẻ',
                 'nav-tag': 'Thẻ',
                 'nav-properties': 'Thuộc tính',

@@ -25,6 +25,8 @@ import { addShortcutRenameMenuItem } from './shortcutRenameMenuItem';
 import { addStyleMenu } from './styleMenuBuilder';
 import { resolveUXIconForMenu } from '../uxIcons';
 import { normalizePropertyNodeId, parsePropertyNodeId } from '../propertyTree';
+import { normalizeCommaSeparatedList } from '../commaSeparatedListUtils';
+import { removePropertyField } from '../propertyUtils';
 
 function resolvePropertyMenuLabel(params: { propertyNodeId: string; propertyNodeName?: string; keyNodeName?: string }): string {
     const { propertyNodeId, propertyNodeName, keyNodeName } = params;
@@ -47,7 +49,7 @@ function resolvePropertyMenuLabel(params: { propertyNodeId: string; propertyNode
  */
 export function buildPropertyMenu(params: PropertyMenuBuilderParams): void {
     const { propertyNodeId, menu, services, settings, options } = params;
-    const { app, metadataService, propertyTreeService, isMobile } = services;
+    const { app, metadataService, propertyTreeService, isMobile, plugin } = services;
 
     const normalizedNodeId = normalizePropertyNodeId(propertyNodeId);
     if (!normalizedNodeId) {
@@ -55,6 +57,7 @@ export function buildPropertyMenu(params: PropertyMenuBuilderParams): void {
     }
 
     const propertyNode = propertyTreeService?.findNode(normalizedNodeId);
+    const propertyKey = propertyNode?.kind === 'key' ? propertyNode.key : null;
     const keyNode = propertyNode?.kind === 'key' ? propertyNode : propertyNode ? propertyTreeService?.getKeyNode(propertyNode.key) : null;
     const label = resolvePropertyMenuLabel({
         propertyNodeId: normalizedNodeId,
@@ -259,6 +262,21 @@ export function buildPropertyMenu(params: PropertyMenuBuilderParams): void {
                     return;
                 }
                 await metadataService.addNavigationSeparator(propertySeparatorTarget);
+            });
+        });
+    }
+
+    if (propertyKey) {
+        menu.addSeparator();
+        menu.addItem((item: MenuItem) => {
+            setAsyncOnClick(item.setTitle(strings.contextMenu.property.removeKey).setIcon('lucide-trash-2'), async () => {
+                const nextPropertyFields = removePropertyField(plugin.settings.propertyFields, propertyKey);
+                if (nextPropertyFields === plugin.settings.propertyFields) {
+                    return;
+                }
+
+                plugin.settings.propertyFields = normalizeCommaSeparatedList(nextPropertyFields);
+                await plugin.saveSettingsAndUpdate();
             });
         });
     }

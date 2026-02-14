@@ -325,6 +325,10 @@ export const STRINGS_FA = {
             showTag: 'نمایش برچسب',
             hideTag: 'مخفی کردن برچسب'
         },
+        property: {
+            addKey: 'افزودن کلید ویژگی',
+            removeKey: 'حذف کلید ویژگی'
+        },
         navigation: {
             addSeparator: 'افزودن جداکننده',
             removeSeparator: 'حذف جداکننده'
@@ -403,7 +407,6 @@ export const STRINGS_FA = {
                 'list-new-note': 'یادداشت جدید',
                 'nav-folder-open': 'پوشه باز',
                 'nav-folder-closed': 'پوشه بسته',
-                'nav-folder-note': 'یادداشت پوشه',
                 'nav-tags': 'برچسب‌ها',
                 'nav-tag': 'برچسب',
                 'nav-properties': 'ویژگی‌ها',

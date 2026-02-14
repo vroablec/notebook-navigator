@@ -325,6 +325,10 @@ export const STRINGS_ZH_CN = {
             showTag: '显示标签',
             hideTag: '隐藏标签'
         },
+        property: {
+            addKey: '添加属性键',
+            removeKey: '删除属性键'
+        },
         navigation: {
             addSeparator: '添加分隔符',
             removeSeparator: '移除分隔符'
@@ -403,7 +407,6 @@ export const STRINGS_ZH_CN = {
                 'list-new-note': '新建笔记',
                 'nav-folder-open': '文件夹打开',
                 'nav-folder-closed': '文件夹关闭',
-                'nav-folder-note': '文件夹笔记',
                 'nav-tags': '标签',
                 'nav-tag': '标签',
                 'nav-properties': '属性',

@@ -62,7 +62,7 @@ import { getTemplaterCreateNewNoteFromTemplate } from '../../utils/templaterInte
 import { getLeafSplitLocation } from '../../utils/workspaceSplit';
 import { openFileInContext } from '../../utils/openFileInContext';
 import {
-    isPropertyFeatureEnabled,
+    canRestorePropertySelectionNodeId,
     isPropertySelectionNodeIdConfigured,
     isPropertyTreeNodeId,
     parseStoredPropertySelectionNodeId,
@@ -161,11 +161,11 @@ function resolveStoredCommandSelection(plugin: NotebookNavigatorPlugin, currentF
     let selectedTag: string | null = null;
     let selectedFolder: TFolder | null = null;
 
-    if (isPropertyFeatureEnabled(plugin.settings)) {
+    if (plugin.settings.showProperties) {
         try {
             const savedPropertyRaw = localStorage.get<unknown>(STORAGE_KEYS.selectedPropertyKey);
             selectedProperty = parseStoredPropertySelectionNodeId(savedPropertyRaw);
-            if (selectedProperty && !isPropertySelectionNodeIdConfigured(plugin.settings, selectedProperty)) {
+            if (selectedProperty && !canRestorePropertySelectionNodeId(plugin.settings, selectedProperty)) {
                 selectedProperty = null;
                 try {
                     localStorage.remove(STORAGE_KEYS.selectedPropertyKey);
@@ -315,7 +315,7 @@ function getSelectedTagForCommand(plugin: NotebookNavigatorPlugin): string | nul
 }
 
 function getSelectedPropertyForCommand(plugin: NotebookNavigatorPlugin): PropertySelectionNodeId | null {
-    if (!isPropertyFeatureEnabled(plugin.settings)) {
+    if (!plugin.settings.showProperties) {
         return null;
     }
 

@@ -326,6 +326,10 @@ export const STRINGS_TR = {
             showTag: 'Etiketi göster',
             hideTag: 'Etiketi gizle'
         },
+        property: {
+            addKey: 'Özellik anahtarı ekle',
+            removeKey: 'Özellik anahtarını kaldır'
+        },
         navigation: {
             addSeparator: 'Ayırıcı ekle',
             removeSeparator: 'Ayırıcıyı kaldır'
@@ -404,7 +408,6 @@ export const STRINGS_TR = {
                 'list-new-note': 'Yeni not',
                 'nav-folder-open': 'Klasör açık',
                 'nav-folder-closed': 'Klasör kapalı',
-                'nav-folder-note': 'Klasör notu',
                 'nav-tags': 'Etiketler',
                 'nav-tag': 'Etiket',
                 'nav-properties': 'Özellikler',

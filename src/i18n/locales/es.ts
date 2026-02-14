@@ -326,6 +326,10 @@ export const STRINGS_ES = {
             showTag: 'Mostrar etiqueta',
             hideTag: 'Ocultar etiqueta'
         },
+        property: {
+            addKey: 'Agregar clave de propiedad',
+            removeKey: 'Eliminar clave de propiedad'
+        },
         navigation: {
             addSeparator: 'Agregar separador',
             removeSeparator: 'Eliminar separador'
@@ -404,7 +408,6 @@ export const STRINGS_ES = {
                 'list-new-note': 'Nueva nota',
                 'nav-folder-open': 'Carpeta abierta',
                 'nav-folder-closed': 'Carpeta cerrada',
-                'nav-folder-note': 'Nota de carpeta',
                 'nav-tags': 'Etiquetas',
                 'nav-tag': 'Etiqueta',
                 'nav-properties': 'Propiedades',

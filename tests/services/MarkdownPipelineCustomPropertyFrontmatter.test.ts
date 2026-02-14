@@ -129,4 +129,19 @@ describe('MarkdownPipelineContentProvider frontmatter custom properties', () => 
             { fieldKey: 'flag', value: 'true', valueKind: 'boolean' }
         ]);
     });
+
+    it('treats null frontmatter values as boolean true', async () => {
+        const context = createApp();
+        const settings = createSettings({ propertyFields: 'status, type' });
+        const provider = new TestMarkdownPipelineContentProvider(context.app);
+        const file = createFile('notes/note.md');
+
+        setFrontmatter(context, file, { status: null, type: 'Project' });
+        const result = await provider.runCustomProperty(file, settings);
+
+        expect(result).toEqual([
+            { fieldKey: 'status', value: 'true', valueKind: 'boolean' },
+            { fieldKey: 'type', value: 'Project', valueKind: 'string' }
+        ]);
+    });
 });

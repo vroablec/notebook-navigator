@@ -30,6 +30,7 @@ import type { TagDeleteEventPayload, TagRenameEventPayload } from '../services/T
 import { useServices } from './ServicesContext';
 import { normalizeTagPath } from '../utils/tagUtils';
 import {
+    canRestorePropertySelectionNodeId,
     isPropertyFeatureEnabled,
     isPropertySelectionNodeIdConfigured,
     parseStoredPropertySelectionNodeId,
@@ -689,7 +690,7 @@ export function SelectionProvider({
         }
 
         let savedPropertySelection: PropertySelectionNodeId | null = null;
-        if (propertyFeatureEnabled) {
+        if (settings.showProperties) {
             try {
                 const savedPropertyRaw = localStorage.get<unknown>(STORAGE_KEYS.selectedPropertyKey);
                 savedPropertySelection = parseStoredPropertySelectionNodeId(savedPropertyRaw);
@@ -697,7 +698,7 @@ export function SelectionProvider({
                 console.error('Failed to load selected property from localStorage:', error);
             }
         }
-        if (savedPropertySelection && !isPropertySelectionNodeIdConfigured(settings, savedPropertySelection)) {
+        if (savedPropertySelection && !canRestorePropertySelectionNodeId(settings, savedPropertySelection)) {
             savedPropertySelection = null;
             try {
                 localStorage.remove(STORAGE_KEYS.selectedPropertyKey);
@@ -778,7 +779,7 @@ export function SelectionProvider({
             isFolderNavigation: false,
             revealSource: null
         };
-    }, [app.vault, propertyFeatureEnabled, settings]);
+    }, [app.vault, settings]);
 
     const [state, dispatch] = useReducer(
         (state: SelectionState, action: SelectionAction) => selectionReducer(state, action, app),
@@ -1022,10 +1023,13 @@ export function SelectionProvider({
 
     // Persist selected property to localStorage with error handling
     useEffect(() => {
-        if (!propertyFeatureEnabled && state.selectionType === 'property') {
+        const keepPropertiesRootSelection =
+            settings.showProperties && state.selectionType === 'property' && state.selectedProperty === PROPERTIES_ROOT_VIRTUAL_FOLDER_ID;
+
+        if (!propertyFeatureEnabled && state.selectionType === 'property' && !keepPropertiesRootSelection) {
             dispatch({ type: 'SET_SELECTED_FOLDER', folder: app.vault.getRoot() });
         }
-    }, [app.vault, dispatch, propertyFeatureEnabled, state.selectionType]);
+    }, [app.vault, dispatch, propertyFeatureEnabled, settings.showProperties, state.selectedProperty, state.selectionType]);
 
     useEffect(() => {
         if (!propertyFeatureEnabled) {

@@ -19,7 +19,9 @@
 import { describe, expect, it } from 'vitest';
 import type { PropertyItem, FileData } from '../src/storage/IndexedDBStorage';
 import { PROPERTIES_ROOT_VIRTUAL_FOLDER_ID } from '../src/types';
+import { DEFAULT_SETTINGS } from '../src/settings/defaultSettings';
 import {
+    canRestorePropertySelectionNodeId,
     type PropertyTreeDatabaseLike,
     buildPropertyKeyNodeId,
     buildPropertyTreeFromDatabase,
@@ -484,5 +486,27 @@ describe('property selection resolution', () => {
         const valueSelection = buildPropertyValueNodeId('status', normalizePropertyTreeValuePath('true'));
         const resolved = resolvePropertySelectionNodeId(tree, valueSelection);
         expect(resolved).toBe(valueSelection);
+    });
+});
+
+describe('property selection restore', () => {
+    it('allows restoring properties root when properties section is shown and no fields are configured', () => {
+        const settings = {
+            ...DEFAULT_SETTINGS,
+            showProperties: true,
+            propertyFields: ''
+        };
+
+        expect(canRestorePropertySelectionNodeId(settings, PROPERTIES_ROOT_VIRTUAL_FOLDER_ID)).toBe(true);
+    });
+
+    it('rejects restoring properties root when properties section is hidden', () => {
+        const settings = {
+            ...DEFAULT_SETTINGS,
+            showProperties: false,
+            propertyFields: 'status'
+        };
+
+        expect(canRestorePropertySelectionNodeId(settings, PROPERTIES_ROOT_VIRTUAL_FOLDER_ID)).toBe(false);
     });
 });

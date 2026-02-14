@@ -16,14 +16,115 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import type { App } from 'obsidian';
 import type { NotebookNavigatorSettings } from '../settings';
 import type { PropertyItem } from '../storage/IndexedDBStorage';
-import { getCachedCommaSeparatedList } from './commaSeparatedListUtils';
+import { formatCommaSeparatedList, getCachedCommaSeparatedList } from './commaSeparatedListUtils';
+import { casefold } from './recordUtils';
+import { naturalCompare } from './sortUtils';
+import { isRecord } from './typeGuards';
 
 export type WikiLinkTarget = { target: string; displayText: string };
+export interface PropertyKeySuggestion {
+    key: string;
+    noteCount: number;
+}
+
+interface PropertyKeyAggregate {
+    displayKey: string;
+    noteCount: number;
+}
 
 export function hasPropertyFrontmatterFields(settings: NotebookNavigatorSettings): boolean {
     return getCachedCommaSeparatedList(settings.propertyFields).length > 0;
+}
+
+export function collectAvailablePropertyKeySuggestions(app: App, propertyFields: string): PropertyKeySuggestion[] {
+    const keyMap = new Map<string, PropertyKeyAggregate>();
+    const configuredKeys = new Set<string>();
+    getCachedCommaSeparatedList(propertyFields).forEach(field => {
+        const normalizedField = casefold(field.trim());
+        if (!normalizedField) {
+            return;
+        }
+        configuredKeys.add(normalizedField);
+    });
+
+    const registerPropertyKey = (rawKey: string, incrementNoteCount: boolean): void => {
+        const trimmedKey = rawKey.trim();
+        const normalizedKey = casefold(trimmedKey);
+        if (!normalizedKey) {
+            return;
+        }
+        if (configuredKeys.has(normalizedKey)) {
+            return;
+        }
+
+        const existing = keyMap.get(normalizedKey);
+        if (existing) {
+            if (incrementNoteCount) {
+                existing.noteCount += 1;
+            }
+            return;
+        }
+
+        keyMap.set(normalizedKey, {
+            displayKey: trimmedKey,
+            noteCount: incrementNoteCount ? 1 : 0
+        });
+    };
+
+    app.vault.getMarkdownFiles().forEach(file => {
+        const frontmatter = app.metadataCache.getFileCache(file)?.frontmatter;
+        if (!isRecord(frontmatter)) {
+            return;
+        }
+
+        Object.keys(frontmatter).forEach(propertyKey => {
+            registerPropertyKey(propertyKey, true);
+        });
+    });
+
+    const suggestions = Array.from(keyMap.values()).map(value => ({ key: value.displayKey, noteCount: value.noteCount }));
+    suggestions.sort((left, right) => {
+        const naturalResult = naturalCompare(left.key, right.key);
+        if (naturalResult !== 0) {
+            return naturalResult;
+        }
+        return left.key.localeCompare(right.key);
+    });
+    return suggestions;
+}
+
+export function appendPropertyField(propertyFields: string, propertyKey: string): string {
+    const existingFields = getCachedCommaSeparatedList(propertyFields);
+    const normalizedFields = new Set<string>();
+    existingFields.forEach(field => {
+        const normalized = casefold(field);
+        if (!normalized) {
+            return;
+        }
+        normalizedFields.add(normalized);
+    });
+
+    const trimmedPropertyKey = propertyKey.trim();
+    const normalizedPropertyKey = casefold(trimmedPropertyKey);
+    if (!normalizedPropertyKey || normalizedFields.has(normalizedPropertyKey)) {
+        return formatCommaSeparatedList(existingFields);
+    }
+
+    return formatCommaSeparatedList([...existingFields, trimmedPropertyKey]);
+}
+
+export function removePropertyField(propertyFields: string, propertyKey: string): string {
+    const existingFields = getCachedCommaSeparatedList(propertyFields);
+    const normalizedPropertyKey = casefold(propertyKey.trim());
+    if (!normalizedPropertyKey) {
+        return formatCommaSeparatedList(existingFields);
+    }
+
+    const remainingFields = existingFields.filter(field => casefold(field.trim()) !== normalizedPropertyKey);
+    return formatCommaSeparatedList(remainingFields);
 }
 
 export function parseStrictWikiLink(value: string): WikiLinkTarget | null {
