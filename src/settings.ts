@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { App, ButtonComponent, PluginSettingTab, Setting, requireApiVersion } from 'obsidian';
+import { App, ButtonComponent, PluginSettingTab, Setting, requireApiVersion, setIcon } from 'obsidian';
 import NotebookNavigatorPlugin from './main';
 import { showNotice } from './utils/noticeUtils';
 import { strings } from './i18n';
@@ -70,12 +70,24 @@ type SettingsGroupId = 'general' | 'navigation-pane' | 'list-pane' | 'calendar';
 
 const SETTINGS_GROUP_IDS: SettingsGroupId[] = ['general', 'navigation-pane', 'list-pane', 'calendar'];
 
+/** Lucide icon IDs for the primary settings group buttons */
+const SETTINGS_GROUP_ICONS: Record<SettingsGroupId, string> = {
+    general: 'lucide-settings',
+    'navigation-pane': 'lucide-panel-left',
+    'list-pane': 'lucide-list',
+    calendar: 'lucide-calendar-days'
+};
+
 const SETTINGS_GROUP_SECONDARY_TAB_IDS: Record<SettingsGroupId, SettingsPaneId[]> = {
     general: ['icon-packs', 'advanced'],
     'navigation-pane': ['shortcuts', 'folders', 'tags', 'properties'],
     'list-pane': ['frontmatter', 'notes'],
     calendar: []
 };
+
+function isSettingsGroupId(tabId: SettingsPaneId): tabId is SettingsGroupId {
+    return tabId === 'general' || tabId === 'navigation-pane' || tabId === 'list-pane' || tabId === 'calendar';
+}
 
 const SETTINGS_TAB_GROUP_MAP: Record<SettingsPaneId, SettingsGroupId> = {
     general: 'general',
@@ -698,6 +710,15 @@ export class NotebookNavigatorSettingTab extends PluginSettingTab {
 
             const buttonComponent = new ButtonComponent(container);
             buttonComponent.setButtonText(definition.getLabel());
+            if (variant === 'primary' && isSettingsGroupId(tabId)) {
+                const iconId = SETTINGS_GROUP_ICONS[tabId];
+                if (iconId) {
+                    const iconEl = buttonComponent.buttonEl.createSpan('nn-settings-tab-icon');
+                    iconEl.setAttribute('aria-hidden', 'true');
+                    setIcon(iconEl, iconId);
+                    buttonComponent.buttonEl.prepend(iconEl);
+                }
+            }
             buttonComponent.removeCta();
             buttonComponent.buttonEl.addClass('nn-settings-tab-button');
             buttonComponent.buttonEl.addClass('clickable-icon');

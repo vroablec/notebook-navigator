@@ -5792,16 +5792,32 @@ body.nn-resizing {
     display: none;
 }
 
+/* Separator between primary and secondary tab rows */
 .nn-settings-tabs-nav-secondary {
     gap: var(--size-2-2);
+    border-top: 1px solid var(--background-modifier-border);
+    padding-top: var(--size-2-3);
 }
 
 .nn-settings-tab-button {
     display: inline-flex;
     align-items: center;
     justify-content: center;
+    gap: var(--size-2-2);
     padding: 6px 12px;
     font-size: var(--font-ui-small);
+}
+
+/* Icon inside primary tab buttons */
+.nn-settings-tab-icon {
+    display: inline-flex;
+    align-items: center;
+}
+
+.nn-settings-tab-icon svg {
+    width: 16px;
+    height: 16px;
+    stroke-width: 2;
 }
 
 .nn-settings-tab-button.is-hidden {
