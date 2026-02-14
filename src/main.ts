@@ -506,6 +506,10 @@ export default class NotebookNavigatorPlugin extends Plugin implements ISettings
             this.settings.rootTagOrder = [];
         }
 
+        if (!Array.isArray(this.settings.rootPropertyOrder)) {
+            this.settings.rootPropertyOrder = [];
+        }
+
         const migratedReleaseState = migrateReleaseCheckState({ settings: this.settings, storedData, keys: this.keys });
         const migratedRecentColors = migrateRecentColors({ settings: this.settings, storedData, keys: this.keys });
         const hadLocalValuesInSettings = Boolean(

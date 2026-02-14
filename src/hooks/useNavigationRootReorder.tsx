@@ -19,7 +19,7 @@
 import React, { useCallback, useMemo } from 'react';
 import { type App, type TFolder } from 'obsidian';
 import type { NotebookNavigatorSettings } from '../settings';
-import type { TagTreeNode } from '../types/storage';
+import type { PropertyTreeNode, TagTreeNode } from '../types/storage';
 import type { CombinedNavigationItem } from '../types/virtualization';
 import { NavigationPaneItemType, UNTAGGED_TAG_ID, STORAGE_KEYS, NavigationSectionId } from '../types';
 import { FILE_VISIBILITY } from '../utils/fileTypeUtils';
@@ -37,6 +37,7 @@ import { createHiddenTagMatcher, matchesHiddenTagPattern } from '../utils/tagPre
 import { NOTEBOOK_NAVIGATOR_ICON_ID } from '../constants/notebookNavigatorIcon';
 import { resolveUXIcon } from '../utils/uxIcons';
 import { resolveFolderDisplayName } from '../utils/folderDisplayName';
+import { buildPropertyKeyNodeId } from '../utils/propertyTree';
 
 export interface RootFolderDescriptor {
     key: string;
@@ -51,6 +52,12 @@ export interface RootTagDescriptor {
     isMissing?: boolean;
     isVirtualRoot?: boolean;
     isUntagged?: boolean;
+}
+
+export interface RootPropertyDescriptor {
+    key: string;
+    node: PropertyTreeNode | null;
+    isMissing?: boolean;
 }
 
 export type RootReorderRenderItem = {
@@ -78,34 +85,46 @@ export interface UseNavigationRootReorderOptions {
     resolvedRootTagKeys: string[];
     rootOrderingTagTree: Map<string, TagTreeNode>;
     missingRootTagPaths: string[];
+    resolvedRootPropertyKeys: string[];
+    rootOrderingPropertyTree: Map<string, PropertyTreeNode>;
+    missingRootPropertyKeys: string[];
     metadataService: MetadataService;
     foldersSectionExpanded: boolean;
     tagsSectionExpanded: boolean;
+    propertiesSectionExpanded: boolean;
     propertiesSectionActive: boolean;
     handleToggleFoldersSection: (event: React.MouseEvent<HTMLDivElement>) => void;
     handleToggleTagsSection: (event: React.MouseEvent<HTMLDivElement>) => void;
+    handleTogglePropertiesSection: (event: React.MouseEvent<HTMLDivElement>) => void;
     activeProfile: ActiveProfileState;
 }
 
 export interface NavigationRootReorderState {
     reorderableRootFolders: RootFolderDescriptor[];
     reorderableRootTags: RootTagDescriptor[];
+    reorderableRootProperties: RootPropertyDescriptor[];
     sectionReorderItems: SectionReorderRenderItem[];
     folderReorderItems: RootReorderRenderItem[];
     tagReorderItems: RootReorderRenderItem[];
+    propertyReorderItems: RootReorderRenderItem[];
     canReorderSections: boolean;
     canReorderRootFolders: boolean;
     canReorderRootTags: boolean;
+    canReorderRootProperties: boolean;
     canReorderRootItems: boolean;
     showRootFolderSection: boolean;
     showRootTagSection: boolean;
+    showRootPropertySection: boolean;
     resetRootTagOrderLabel: string;
+    resetRootPropertyOrderLabel: string;
     vaultRootDescriptor: RootFolderDescriptor | undefined;
     handleResetRootFolderOrder: () => Promise<void>;
     handleResetRootTagOrder: () => Promise<void>;
+    handleResetRootPropertyOrder: () => Promise<void>;
     reorderSectionOrder: (orderedKeys: NavigationSectionId[]) => Promise<void>;
     reorderRootFolderOrder: (orderedKeys: string[]) => Promise<void>;
     reorderRootTagOrder: (orderedKeys: string[]) => Promise<void>;
+    reorderRootPropertyOrder: (orderedKeys: string[]) => Promise<void>;
 }
 
 export function useNavigationRootReorder(options: UseNavigationRootReorderOptions): NavigationRootReorderState {
@@ -122,12 +141,17 @@ export function useNavigationRootReorder(options: UseNavigationRootReorderOption
         resolvedRootTagKeys,
         rootOrderingTagTree,
         missingRootTagPaths,
+        resolvedRootPropertyKeys,
+        rootOrderingPropertyTree,
+        missingRootPropertyKeys,
         metadataService,
         foldersSectionExpanded,
         tagsSectionExpanded,
+        propertiesSectionExpanded,
         propertiesSectionActive,
         handleToggleFoldersSection,
         handleToggleTagsSection,
+        handleTogglePropertiesSection,
         activeProfile
     } = options;
 
@@ -135,8 +159,10 @@ export function useNavigationRootReorder(options: UseNavigationRootReorderOption
         showRootFolder,
         rootFolderOrder,
         rootTagOrder,
+        rootPropertyOrder,
         showUntagged,
         tagSortOrder,
+        propertySortOrder,
         showShortcuts,
         showRecentNotes,
         showTags,
@@ -199,6 +225,13 @@ export function useNavigationRootReorder(options: UseNavigationRootReorderOption
         return strings.navigationPane.resetRootToAlpha;
     }, [tagSortOrder]);
 
+    const resetRootPropertyOrderLabel = useMemo(() => {
+        if (propertySortOrder === 'frequency-asc' || propertySortOrder === 'frequency-desc') {
+            return strings.navigationPane.resetRootToFrequency;
+        }
+        return strings.navigationPane.resetRootToAlpha;
+    }, [propertySortOrder]);
+
     const rootTagDescriptors = useMemo<RootTagDescriptor[]>(() => {
         const descriptors: RootTagDescriptor[] = [];
         const tagMap = new Map<string, TagTreeNode>();
@@ -256,6 +289,47 @@ export function useNavigationRootReorder(options: UseNavigationRootReorderOption
         return descriptors;
     }, [missingRootTagPaths, resolvedRootTagKeys, rootOrderingTagTree, rootTagOrder, showUntagged]);
 
+    const rootPropertyDescriptors = useMemo<RootPropertyDescriptor[]>(() => {
+        const descriptors: RootPropertyDescriptor[] = [];
+        const nodeMap = new Map<string, PropertyTreeNode>();
+        rootOrderingPropertyTree.forEach((node, key) => {
+            nodeMap.set(key, node);
+        });
+
+        const seen = new Set<string>();
+        const addDescriptor = (descriptor: RootPropertyDescriptor) => {
+            if (seen.has(descriptor.key)) {
+                return;
+            }
+            seen.add(descriptor.key);
+            descriptors.push(descriptor);
+        };
+
+        resolvedRootPropertyKeys.forEach(key => {
+            const node = nodeMap.get(key);
+            if (node) {
+                addDescriptor({ key: node.key, node });
+            }
+        });
+
+        rootPropertyOrder.forEach(key => {
+            if (seen.has(key)) {
+                return;
+            }
+            if (!nodeMap.has(key)) {
+                addDescriptor({ key, node: null, isMissing: true });
+            }
+        });
+
+        missingRootPropertyKeys.forEach(key => {
+            if (!seen.has(key)) {
+                addDescriptor({ key, node: null, isMissing: true });
+            }
+        });
+
+        return descriptors;
+    }, [missingRootPropertyKeys, resolvedRootPropertyKeys, rootOrderingPropertyTree, rootPropertyOrder]);
+
     const reorderableRootFolders = useMemo<RootFolderDescriptor[]>(() => {
         return rootFolderDescriptors.filter(entry => {
             if (entry.isVault) {
@@ -284,6 +358,10 @@ export function useNavigationRootReorder(options: UseNavigationRootReorderOption
             return true;
         });
     }, [hasHiddenTagRules, hiddenTagMatcher, rootTagDescriptors, showHiddenItems]);
+
+    const reorderableRootProperties = useMemo<RootPropertyDescriptor[]>(() => {
+        return rootPropertyDescriptors.slice();
+    }, [rootPropertyDescriptors]);
 
     const sectionOrderWithDefaults = useMemo<NavigationSectionId[]>(() => {
         return sanitizeNavigationSectionOrder(sectionOrder);
@@ -338,9 +416,11 @@ export function useNavigationRootReorder(options: UseNavigationRootReorderOption
 
     const canReorderRootFolders = reorderableRootFolders.length > 1;
     const canReorderRootTags = reorderableRootTags.length > 1;
-    const canReorderRootItems = canReorderSections || canReorderRootFolders || canReorderRootTags;
+    const canReorderRootProperties = reorderableRootProperties.length > 1;
+    const canReorderRootItems = canReorderSections || canReorderRootFolders || canReorderRootTags || canReorderRootProperties;
     const showRootFolderSection = reorderableRootFolders.length > 0;
     const showRootTagSection = reorderableRootTags.length > 0;
+    const showRootPropertySection = reorderableRootProperties.length > 0;
 
     const rootItemMaps = useMemo(() => {
         const folderIconMap = new Map<string, string | undefined>();
@@ -348,6 +428,8 @@ export function useNavigationRootReorder(options: UseNavigationRootReorderOption
         const folderDisplayNameMap = new Map<string, string | undefined>();
         const tagIconMap = new Map<string, string | undefined>();
         const tagColorMap = new Map<string, string | undefined>();
+        const propertyIconMap = new Map<string, string | undefined>();
+        const propertyColorMap = new Map<string, string | undefined>();
 
         items.forEach(item => {
             if (item.type === NavigationPaneItemType.FOLDER) {
@@ -361,6 +443,12 @@ export function useNavigationRootReorder(options: UseNavigationRootReorderOption
                 const path = item.data.path;
                 tagIconMap.set(path, item.icon);
                 tagColorMap.set(path, item.color);
+                return;
+            }
+            if (item.type === NavigationPaneItemType.PROPERTY_KEY) {
+                const key = item.data.key;
+                propertyIconMap.set(key, item.icon);
+                propertyColorMap.set(key, item.color);
             }
         });
 
@@ -369,11 +457,21 @@ export function useNavigationRootReorder(options: UseNavigationRootReorderOption
             rootFolderColorMap: folderColorMap,
             rootFolderDisplayNameMap: folderDisplayNameMap,
             rootTagIconMap: tagIconMap,
-            rootTagColorMap: tagColorMap
+            rootTagColorMap: tagColorMap,
+            rootPropertyIconMap: propertyIconMap,
+            rootPropertyColorMap: propertyColorMap
         };
     }, [items]);
 
-    const { rootFolderIconMap, rootFolderColorMap, rootFolderDisplayNameMap, rootTagIconMap, rootTagColorMap } = rootItemMaps;
+    const {
+        rootFolderIconMap,
+        rootFolderColorMap,
+        rootFolderDisplayNameMap,
+        rootTagIconMap,
+        rootTagColorMap,
+        rootPropertyIconMap,
+        rootPropertyColorMap
+    } = rootItemMaps;
     const vaultRootDescriptor = useMemo(() => rootFolderDescriptors.find(entry => entry.isVault), [rootFolderDescriptors]);
 
     const handleRootOrderChange = useCallback(
@@ -402,6 +500,19 @@ export function useNavigationRootReorder(options: UseNavigationRootReorderOption
         [rootTagOrder, updateSettings]
     );
 
+    const handleRootPropertyOrderChange = useCallback(
+        async (orderedKeys: string[]) => {
+            const normalizedOrder = orderedKeys.slice();
+            if (areStringArraysEqual(normalizedOrder, rootPropertyOrder)) {
+                return;
+            }
+            await updateSettings(current => {
+                current.rootPropertyOrder = normalizedOrder;
+            });
+        },
+        [rootPropertyOrder, updateSettings]
+    );
+
     const reorderRootFolderOrder = useCallback(
         async (orderedKeys: string[]) => {
             await handleRootOrderChange(orderedKeys);
@@ -414,6 +525,13 @@ export function useNavigationRootReorder(options: UseNavigationRootReorderOption
             await handleRootTagOrderChange(orderedKeys);
         },
         [handleRootTagOrderChange]
+    );
+
+    const reorderRootPropertyOrder = useCallback(
+        async (orderedKeys: string[]) => {
+            await handleRootPropertyOrderChange(orderedKeys);
+        },
+        [handleRootPropertyOrderChange]
     );
 
     const handleRemoveMissingRootFolder = useCallback(
@@ -449,6 +567,25 @@ export function useNavigationRootReorder(options: UseNavigationRootReorderOption
                     return;
                 }
                 current.rootTagOrder = current.rootTagOrder.filter(entry => entry !== path);
+            });
+        },
+        [updateSettings]
+    );
+
+    const handleRemoveMissingRootProperty = useCallback(
+        async (key: string) => {
+            if (!key) {
+                return;
+            }
+            await updateSettings(current => {
+                if (!Array.isArray(current.rootPropertyOrder)) {
+                    current.rootPropertyOrder = [];
+                    return;
+                }
+                if (!current.rootPropertyOrder.includes(key)) {
+                    return;
+                }
+                current.rootPropertyOrder = current.rootPropertyOrder.filter(entry => entry !== key);
             });
         },
         [updateSettings]
@@ -594,6 +731,44 @@ export function useNavigationRootReorder(options: UseNavigationRootReorderOption
         showHiddenItems
     ]);
 
+    const propertyReorderItems = useMemo<RootReorderRenderItem[]>(() => {
+        return reorderableRootProperties.map(entry => {
+            const isMissing = entry.isMissing === true;
+            const nodeId = entry.node?.id ?? buildPropertyKeyNodeId(entry.key);
+            const iconFromTree = rootPropertyIconMap.get(entry.key);
+            const colorFromTree = rootPropertyColorMap.get(entry.key);
+            const iconFromMetadata = metadataService.getPropertyIcon(nodeId);
+            const colorFromMetadata = metadataService.getPropertyColor(nodeId);
+            const displayIcon = iconFromTree ?? iconFromMetadata ?? resolveUXIcon(settings.interfaceIcons, 'nav-property');
+            const iconColor = colorFromTree ?? colorFromMetadata;
+            const label = entry.node ? entry.node.name : entry.key;
+            const removeAction = isMissing ? buildRemoveMissingAction(entry.key, handleRemoveMissingRootProperty) : undefined;
+
+            return {
+                key: entry.key,
+                props: {
+                    icon: displayIcon,
+                    color: iconColor,
+                    label,
+                    level: 1,
+                    dragHandlers: undefined,
+                    isDragSource: false,
+                    isMissing,
+                    itemType: 'property',
+                    trailingAccessory: removeAction
+                }
+            };
+        });
+    }, [
+        reorderableRootProperties,
+        rootPropertyIconMap,
+        rootPropertyColorMap,
+        metadataService,
+        settings.interfaceIcons,
+        buildRemoveMissingAction,
+        handleRemoveMissingRootProperty
+    ]);
+
     const sectionReorderItems = useMemo<SectionReorderRenderItem[]>(() => {
         return sectionDisplayOrder.map(identifier => {
             const isHidden =
@@ -641,6 +816,8 @@ export function useNavigationRootReorder(options: UseNavigationRootReorderOption
             } else if (identifier === NavigationSectionId.PROPERTIES) {
                 icon = resolveUXIcon(settings.interfaceIcons, 'nav-properties');
                 label = strings.navigationPane.properties;
+                chevronIcon = propertiesSectionExpanded ? 'lucide-chevron-down' : 'lucide-chevron-right';
+                onClick = handleTogglePropertiesSection;
             }
 
             return {
@@ -677,7 +854,9 @@ export function useNavigationRootReorder(options: UseNavigationRootReorderOption
         foldersSectionExpanded,
         tagsSectionExpanded,
         handleToggleFoldersSection,
-        handleToggleTagsSection
+        handleToggleTagsSection,
+        propertiesSectionExpanded,
+        handleTogglePropertiesSection
     ]);
 
     const handleResetRootFolderOrder = useCallback(async () => {
@@ -692,24 +871,37 @@ export function useNavigationRootReorder(options: UseNavigationRootReorderOption
         });
     }, [updateSettings]);
 
+    const handleResetRootPropertyOrder = useCallback(async () => {
+        await updateSettings(current => {
+            current.rootPropertyOrder = [];
+        });
+    }, [updateSettings]);
+
     return {
         reorderableRootFolders,
         reorderableRootTags,
+        reorderableRootProperties,
         sectionReorderItems,
         folderReorderItems,
         tagReorderItems,
+        propertyReorderItems,
         canReorderSections,
         canReorderRootFolders,
         canReorderRootTags,
+        canReorderRootProperties,
         canReorderRootItems,
         showRootFolderSection,
         showRootTagSection,
+        showRootPropertySection,
         resetRootTagOrderLabel,
+        resetRootPropertyOrderLabel,
         vaultRootDescriptor,
         handleResetRootFolderOrder,
         handleResetRootTagOrder,
+        handleResetRootPropertyOrder,
         reorderSectionOrder,
         reorderRootFolderOrder,
-        reorderRootTagOrder
+        reorderRootTagOrder,
+        reorderRootPropertyOrder
     };
 }

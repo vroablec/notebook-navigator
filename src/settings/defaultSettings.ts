@@ -316,5 +316,6 @@ export const DEFAULT_SETTINGS: NotebookNavigatorSettings = {
     lastShownVersion: '',
     lastAnnouncedRelease: '',
     rootFolderOrder: [],
-    rootTagOrder: []
+    rootTagOrder: [],
+    rootPropertyOrder: []
 };

@@ -65,13 +65,14 @@ import { shouldDisplayFile, FILE_VISIBILITY } from '../utils/fileTypeUtils';
 import { resolveFileIconId, type FileNameIconNeedle } from '../utils/fileIconUtils';
 // Use Obsidian's trailing debounce for vault-driven updates
 import { getTotalNoteCount, excludeFromTagTree, findTagNode } from '../utils/tagTree';
-import { flattenFolderTree, flattenTagTree, compareTagOrderWithFallback } from '../utils/treeFlattener';
+import { flattenFolderTree, flattenTagTree, comparePropertyOrderWithFallback, compareTagOrderWithFallback } from '../utils/treeFlattener';
 import { createHiddenTagVisibility, matchesHiddenTagPattern } from '../utils/tagPrefixMatcher';
 import { setNavigationIndex } from '../utils/navigationIndex';
 import { resolveCanonicalTagPath } from '../utils/tagUtils';
 import { getCachedFileTags } from '../utils/tagUtils';
 import { isFolderShortcut, isNoteShortcut, isSearchShortcut, isTagShortcut, isPropertyShortcut } from '../types/shortcuts';
 import { useRootFolderOrder } from './useRootFolderOrder';
+import { useRootPropertyOrder } from './useRootPropertyOrder';
 import { useRootTagOrder } from './useRootTagOrder';
 import { getFolderNoteDetectionSettings } from '../utils/folderNotes';
 import { getDBInstance, getDBInstanceOrNull } from '../storage/fileOperations';
@@ -517,6 +518,14 @@ interface UseNavigationPaneDataResult {
     rootTagOrderMap: Map<string, number>;
     /** Paths for tags in custom order that are not currently present */
     missingRootTagPaths: string[];
+    /** Final ordered keys used for rendering root-level properties in navigation */
+    resolvedRootPropertyKeys: string[];
+    /** Property tree used for ordering (includes configured keys) */
+    rootOrderingPropertyTree: Map<string, PropertyTreeNode>;
+    /** Map from property key to custom order index */
+    rootPropertyOrderMap: Map<string, number>;
+    /** Keys for properties in custom order that are not currently present */
+    missingRootPropertyKeys: string[];
     /** Version marker that bumps when vault files or metadata change */
     vaultChangeVersion: number;
     /** Path to the navigation banner from the active vault profile */
@@ -572,6 +581,8 @@ export function useNavigationPaneData({
 
     // Extract tag tree data from file cache
     const tagTree = useMemo(() => fileData.tagTree ?? new Map<string, TagTreeNode>(), [fileData.tagTree]);
+    // Extract property tree data from file cache
+    const propertyTree = useMemo(() => fileData.propertyTree ?? new Map<string, PropertyTreeNode>(), [fileData.propertyTree]);
     const untaggedCount = fileData.untagged;
 
     // Create matcher for hidden tag patterns (supports "archive", "temp*", "*draft")
@@ -621,6 +632,20 @@ export function useNavigationPaneData({
         settings,
         tagTree: tagTreeForOrdering,
         comparator: tagComparator ?? compareTagAlphabetically
+    });
+
+    const propertyKeyComparator = useMemo(() => {
+        return createPropertyComparator({
+            order: settings.propertySortOrder,
+            compareAlphabetically: comparePropertyKeyNodesAlphabetically,
+            getFrequency: node => (includeDescendantNotes ? node.notesWithValue.size : getDirectPropertyKeyNoteCount(node))
+        });
+    }, [includeDescendantNotes, settings.propertySortOrder]);
+
+    const { rootPropertyOrderMap, missingRootPropertyKeys } = useRootPropertyOrder({
+        settings,
+        propertyTree,
+        comparator: propertyKeyComparator
     });
 
     /**
@@ -884,32 +909,34 @@ export function useNavigationPaneData({
         propertiesSectionActive: boolean;
         keyNodes: PropertyTreeNode[];
         collectionCount: NoteCountInfo | undefined;
+        resolvedRootPropertyKeys: string[];
     } => {
         const hasConfiguredFields = getCachedCommaSeparatedList(settings.propertyFields).length > 0;
         if (!settings.showProperties) {
             return {
                 propertiesSectionActive: false,
                 keyNodes: [],
-                collectionCount: undefined
+                collectionCount: undefined,
+                resolvedRootPropertyKeys: []
             };
         }
 
-        const propertyTree = fileData.propertyTree ?? new Map<string, PropertyTreeNode>();
         const keyNodes = hasConfiguredFields ? Array.from(propertyTree.values()) : [];
         if (keyNodes.length === 0) {
             return {
                 propertiesSectionActive: false,
                 keyNodes: [],
-                collectionCount: undefined
+                collectionCount: undefined,
+                resolvedRootPropertyKeys: []
             };
         }
 
-        const keyComparator = createPropertyComparator({
-            order: settings.propertySortOrder,
-            compareAlphabetically: comparePropertyKeyNodesAlphabetically,
-            getFrequency: node => (includeDescendantNotes ? node.notesWithValue.size : getDirectPropertyKeyNoteCount(node))
-        });
-        keyNodes.sort(keyComparator);
+        const effectiveComparator: PropertyNodeComparator =
+            rootPropertyOrderMap.size > 0
+                ? (a, b) => comparePropertyOrderWithFallback(a, b, rootPropertyOrderMap, propertyKeyComparator)
+                : propertyKeyComparator;
+
+        keyNodes.sort(effectiveComparator);
 
         let collectionCount: NoteCountInfo | undefined;
         if (settings.showNoteCount && keyNodes.length > 0) {
@@ -927,15 +954,16 @@ export function useNavigationPaneData({
         return {
             propertiesSectionActive: true,
             keyNodes,
-            collectionCount
+            collectionCount,
+            resolvedRootPropertyKeys: keyNodes.map(node => node.key)
         };
     }, [
-        includeDescendantNotes,
+        propertyKeyComparator,
+        propertyTree,
+        rootPropertyOrderMap,
         settings.propertyFields,
-        settings.propertySortOrder,
         settings.showNoteCount,
-        settings.showProperties,
-        fileData.propertyTree
+        settings.showProperties
     ]);
 
     const { propertyItems, propertiesSectionActive } = useMemo((): {
@@ -2254,6 +2282,10 @@ export function useNavigationPaneData({
         rootOrderingTagTree: tagTreeForOrdering,
         rootTagOrderMap,
         missingRootTagPaths,
+        resolvedRootPropertyKeys: propertySectionBase.resolvedRootPropertyKeys,
+        rootOrderingPropertyTree: propertyTree,
+        rootPropertyOrderMap,
+        missingRootPropertyKeys,
         vaultChangeVersion: fileChangeVersion,
         navigationBannerPath
     };

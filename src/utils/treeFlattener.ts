@@ -19,7 +19,7 @@
 import { TFolder } from 'obsidian';
 import { naturalCompare } from './sortUtils';
 import { NavigationPaneItemType } from '../types';
-import { TagTreeNode } from '../types/storage';
+import { PropertyTreeNode, TagTreeNode } from '../types/storage';
 import type { FolderTreeItem, TagTreeItem } from '../types/virtualization';
 import { isFolderInExcludedFolder } from './fileFilters';
 import { matchesHiddenTagPattern, HiddenTagMatcher } from './tagPrefixMatcher';
@@ -97,6 +97,35 @@ export function compareTagOrderWithFallback(
 
     const orderA = orderMap.get(a.path);
     const orderB = orderMap.get(b.path);
+
+    if (orderA !== undefined && orderB !== undefined) {
+        return orderA - orderB;
+    }
+    if (orderA !== undefined) {
+        return -1;
+    }
+    if (orderB !== undefined) {
+        return 1;
+    }
+    return fallback ? fallback(a, b) : naturalCompare(a.name, b.name);
+}
+
+/**
+ * Compares property key nodes using custom order map with fallback comparator or natural order.
+ * Returns negative if a comes before b, positive if b comes before a, 0 if equal.
+ */
+export function comparePropertyOrderWithFallback(
+    a: PropertyTreeNode,
+    b: PropertyTreeNode,
+    orderMap?: Map<string, number>,
+    fallback?: (first: PropertyTreeNode, second: PropertyTreeNode) => number
+): number {
+    if (!orderMap || orderMap.size === 0) {
+        return fallback ? fallback(a, b) : naturalCompare(a.name, b.name);
+    }
+
+    const orderA = orderMap.get(a.key);
+    const orderB = orderMap.get(b.key);
 
     if (orderA !== undefined && orderB !== undefined) {
         return orderA - orderB;

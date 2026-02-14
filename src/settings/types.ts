@@ -437,4 +437,5 @@ export interface NotebookNavigatorSettings {
     lastAnnouncedRelease: string;
     rootFolderOrder: string[];
     rootTagOrder: string[];
+    rootPropertyOrder: string[];
 }

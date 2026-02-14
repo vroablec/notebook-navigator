@@ -614,6 +614,8 @@ export const NavigationPane = React.memo(
         const [foldersSectionExpanded, setFoldersSectionExpanded] = useState(true);
         // Tracks whether the tags section is expanded or collapsed
         const [tagsSectionExpanded, setTagsSectionExpanded] = useState(true);
+        // Tracks whether the properties section is expanded or collapsed
+        const [propertiesSectionExpanded, setPropertiesSectionExpanded] = useState(true);
         // Toggles the expanded state of the folders section
         const handleToggleFoldersSection = useCallback(() => {
             setFoldersSectionExpanded(prev => !prev);
@@ -622,6 +624,11 @@ export const NavigationPane = React.memo(
         // Toggles the expanded state of the tags section
         const handleToggleTagsSection = useCallback(() => {
             setTagsSectionExpanded(prev => !prev);
+        }, []);
+
+        // Toggles the expanded state of the properties section
+        const handleTogglePropertiesSection = useCallback(() => {
+            setPropertiesSectionExpanded(prev => !prev);
         }, []);
         // Trigger for forcing a re-render when shortcut note metadata changes in frontmatter
         const [, forceMetadataRefresh] = useReducer((value: number) => value + 1, 0);
@@ -1017,6 +1024,9 @@ export const NavigationPane = React.memo(
             resolvedRootTagKeys,
             rootOrderingTagTree,
             missingRootTagPaths,
+            resolvedRootPropertyKeys,
+            rootOrderingPropertyTree,
+            missingRootPropertyKeys,
             vaultChangeVersion,
             navigationBannerPath
         } = useNavigationPaneData({
@@ -1091,21 +1101,28 @@ export const NavigationPane = React.memo(
         const {
             reorderableRootFolders,
             reorderableRootTags,
+            reorderableRootProperties,
             sectionReorderItems,
             folderReorderItems,
             tagReorderItems,
+            propertyReorderItems,
             canReorderSections,
             canReorderRootFolders,
             canReorderRootTags,
+            canReorderRootProperties,
             canReorderRootItems,
             showRootFolderSection,
             showRootTagSection,
+            showRootPropertySection,
             resetRootTagOrderLabel,
+            resetRootPropertyOrderLabel,
             handleResetRootFolderOrder,
             handleResetRootTagOrder,
+            handleResetRootPropertyOrder,
             reorderSectionOrder,
             reorderRootFolderOrder,
-            reorderRootTagOrder
+            reorderRootTagOrder,
+            reorderRootPropertyOrder
         } = useNavigationRootReorder({
             app,
             items,
@@ -1119,12 +1136,17 @@ export const NavigationPane = React.memo(
             resolvedRootTagKeys,
             rootOrderingTagTree,
             missingRootTagPaths,
+            resolvedRootPropertyKeys,
+            rootOrderingPropertyTree,
+            missingRootPropertyKeys,
             metadataService,
             foldersSectionExpanded,
             tagsSectionExpanded,
+            propertiesSectionExpanded,
             propertiesSectionActive,
             handleToggleFoldersSection,
             handleToggleTagsSection,
+            handleTogglePropertiesSection,
             activeProfile
         });
 
@@ -1190,7 +1212,15 @@ export const NavigationPane = React.memo(
                 return;
             }
             rowVirtualizer.measure();
-        }, [isRootReorderMode, rowVirtualizer, sectionOrder, reorderableRootFolders, reorderableRootTags, navigationScrollMargin]);
+        }, [
+            isRootReorderMode,
+            rowVirtualizer,
+            sectionOrder,
+            reorderableRootFolders,
+            reorderableRootTags,
+            reorderableRootProperties,
+            navigationScrollMargin
+        ]);
 
         // Scroll to top when entering root reorder mode for better UX
         useEffect(() => {
@@ -1885,6 +1915,9 @@ export const NavigationPane = React.memo(
                 }
 
                 handlePropertyClick(propertyNode, undefined, { fromShortcut: true });
+                if (!settings.skipAutoScroll) {
+                    requestScroll(normalizedNodeId, { align: 'auto', itemType: ItemType.PROPERTY });
+                }
 
                 if (!uiState.singlePane) {
                     uiDispatch({ type: 'SET_FOCUSED_PANE', pane: 'navigation' });
@@ -1906,9 +1939,11 @@ export const NavigationPane = React.memo(
                 handlePropertyClick,
                 propertyTree,
                 propertyTreeService,
+                requestScroll,
                 rootContainerRef,
                 scheduleShortcutRelease,
                 selectionDispatch,
+                settings.skipAutoScroll,
                 settings.showAllPropertiesFolder,
                 setActiveShortcut,
                 uiDispatch,
@@ -3355,21 +3390,29 @@ export const NavigationPane = React.memo(
                                         sectionItems={sectionReorderItems}
                                         folderItems={folderReorderItems}
                                         tagItems={tagReorderItems}
+                                        propertyItems={propertyReorderItems}
                                         showRootFolderSection={showRootFolderSection}
                                         showRootTagSection={showRootTagSection}
+                                        showRootPropertySection={showRootPropertySection}
                                         foldersSectionExpanded={foldersSectionExpanded}
                                         tagsSectionExpanded={tagsSectionExpanded}
+                                        propertiesSectionExpanded={propertiesSectionExpanded}
                                         showRootFolderReset={settings.rootFolderOrder.length > 0}
                                         showRootTagReset={settings.rootTagOrder.length > 0}
+                                        showRootPropertyReset={settings.rootPropertyOrder.length > 0}
                                         resetRootTagOrderLabel={resetRootTagOrderLabel}
+                                        resetRootPropertyOrderLabel={resetRootPropertyOrderLabel}
                                         onResetRootFolderOrder={handleResetRootFolderOrder}
                                         onResetRootTagOrder={handleResetRootTagOrder}
+                                        onResetRootPropertyOrder={handleResetRootPropertyOrder}
                                         onReorderSections={reorderSectionOrder}
                                         onReorderFolders={reorderRootFolderOrder}
                                         onReorderTags={reorderRootTagOrder}
+                                        onReorderProperties={reorderRootPropertyOrder}
                                         canReorderSections={canReorderSections}
                                         canReorderFolders={canReorderRootFolders}
                                         canReorderTags={canReorderRootTags}
+                                        canReorderProperties={canReorderRootProperties}
                                         isMobile={isMobile}
                                     />
                                 ) : (
