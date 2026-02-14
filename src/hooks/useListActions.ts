@@ -24,7 +24,7 @@ import { useSettingsState, useSettingsUpdate } from '../context/SettingsContext'
 import { useUXPreferenceActions, useUXPreferences } from '../context/UXPreferencesContext';
 import { strings } from '../i18n';
 import type { SortOption } from '../settings';
-import { ItemType } from '../types';
+import { ItemType, TAGGED_TAG_ID, UNTAGGED_TAG_ID } from '../types';
 import { getEffectiveSortOption, getSortIcon as getSortIconName, isPropertySortOption, SORT_OPTIONS } from '../utils/sortUtils';
 import { showListPaneAppearanceMenu } from '../components/ListPaneAppearanceMenu';
 import { getDefaultListMode } from './useListPaneAppearance';
@@ -56,17 +56,33 @@ export function useListActions() {
     const metadataService = useMetadataService();
     const hasFolderSelection = selectionState.selectionType === ItemType.FOLDER && Boolean(selectionState.selectedFolder);
     const hasTagSelection = selectionState.selectionType === ItemType.TAG && Boolean(selectionState.selectedTag);
+    const hasCreatableTagSelection =
+        hasTagSelection && selectionState.selectedTag !== TAGGED_TAG_ID && selectionState.selectedTag !== UNTAGGED_TAG_ID;
     const hasFolderOrTagSelection = hasFolderSelection || hasTagSelection;
+    const canCreateNewFile = Boolean(selectionState.selectedFolder) || hasCreatableTagSelection;
 
     const handleNewFile = useCallback(async () => {
-        if (!selectionState.selectedFolder) return;
-
         try {
-            await fileSystemOps.createNewFile(selectionState.selectedFolder);
+            if (selectionState.selectedFolder) {
+                await fileSystemOps.createNewFile(selectionState.selectedFolder);
+                return;
+            }
+
+            if (hasCreatableTagSelection && selectionState.selectedTag) {
+                const sourcePath = selectionState.selectedFile?.path ?? app.workspace.getActiveFile()?.path ?? '';
+                await fileSystemOps.createNewFileForTag(selectionState.selectedTag, sourcePath);
+            }
         } catch {
             // Error is handled by FileSystemOperations with user notification
         }
-    }, [selectionState.selectedFolder, fileSystemOps]);
+    }, [
+        selectionState.selectedFolder,
+        selectionState.selectedTag,
+        selectionState.selectedFile,
+        hasCreatableTagSelection,
+        fileSystemOps,
+        app
+    ]);
 
     const getCurrentSortOption = useCallback((): SortOption => {
         return getEffectiveSortOption(settings, selectionState.selectionType, selectionState.selectedFolder, selectionState.selectedTag);
@@ -278,6 +294,7 @@ export function useListActions() {
 
     return {
         handleNewFile,
+        canCreateNewFile,
         handleAppearanceMenu,
         handleSortMenu,
         handleToggleDescendants,

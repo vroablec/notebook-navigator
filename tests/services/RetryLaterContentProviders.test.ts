@@ -133,6 +133,80 @@ describe('Content provider retry-later semantics', () => {
         expect(result.update).toEqual({ path: file.path, tags: [] });
     });
 
+    it('TagContentProvider defers initial empty tags for recently created files', async () => {
+        const app = new App();
+        app.metadataCache.getFileCache = () => ({});
+
+        const provider = new TestTagContentProvider(app);
+        const file = new TFile();
+        file.path = 'notes/recent.md';
+        file.extension = 'md';
+        file.stat.mtime = Date.now();
+        const settings: NotebookNavigatorSettings = { ...DEFAULT_SETTINGS, showTags: true };
+        const fileData: FileData = {
+            mtime: file.stat.mtime,
+            markdownPipelineMtime: file.stat.mtime,
+            tagsMtime: 0,
+            metadataMtime: file.stat.mtime,
+            fileThumbnailsMtime: file.stat.mtime,
+            tags: null,
+            wordCount: null,
+            taskTotal: 0,
+            taskUnfinished: 0,
+            properties: null,
+            previewStatus: 'none',
+            featureImage: null,
+            featureImageStatus: 'none',
+            featureImageKey: null,
+            metadata: {}
+        };
+
+        const first = await provider.runProcessFile(file, fileData, settings);
+        expect(first.processed).toBe(false);
+        expect(first.update).toBeNull();
+
+        const second = await provider.runProcessFile(file, fileData, settings);
+        expect(second.processed).toBe(false);
+        expect(second.update).toBeNull();
+
+        const third = await provider.runProcessFile(file, fileData, settings);
+        expect(third.processed).toBe(true);
+        expect(third.update).toEqual({ path: file.path, tags: [] });
+    });
+
+    it('TagContentProvider does not defer initial empty tags outside recent file window', async () => {
+        const app = new App();
+        app.metadataCache.getFileCache = () => ({});
+
+        const provider = new TestTagContentProvider(app);
+        const file = new TFile();
+        file.path = 'notes/older.md';
+        file.extension = 'md';
+        file.stat.mtime = Date.now() - 20_000;
+        const settings: NotebookNavigatorSettings = { ...DEFAULT_SETTINGS, showTags: true };
+        const fileData: FileData = {
+            mtime: file.stat.mtime,
+            markdownPipelineMtime: file.stat.mtime,
+            tagsMtime: 0,
+            metadataMtime: file.stat.mtime,
+            fileThumbnailsMtime: file.stat.mtime,
+            tags: null,
+            wordCount: null,
+            taskTotal: 0,
+            taskUnfinished: 0,
+            properties: null,
+            previewStatus: 'none',
+            featureImage: null,
+            featureImageStatus: 'none',
+            featureImageKey: null,
+            metadata: {}
+        };
+
+        const result = await provider.runProcessFile(file, fileData, settings);
+        expect(result.processed).toBe(true);
+        expect(result.update).toEqual({ path: file.path, tags: [] });
+    });
+
     it('MarkdownPipelineContentProvider returns processed:false when metadata cache is missing', async () => {
         const app = new App();
         app.metadataCache.getFileCache = () => null;

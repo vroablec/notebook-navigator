@@ -40,6 +40,7 @@ export function ListToolbar({ isSearchActive, onSearchToggle }: ListToolbarProps
     // Use the shared actions hook
     const {
         handleNewFile,
+        canCreateNewFile,
         handleAppearanceMenu,
         handleSortMenu,
         handleToggleDescendants,
@@ -134,7 +135,7 @@ export function ListToolbar({ isSearchActive, onSearchToggle }: ListToolbarProps
                             onClick={() => {
                                 runAsyncAction(() => handleNewFile());
                             }}
-                            disabled={!selectionState.selectedFolder}
+                            disabled={!canCreateNewFile}
                             tabIndex={-1}
                         >
                             <ServiceIcon iconId={resolveUXIcon(settings.interfaceIcons, 'list-new-note')} />

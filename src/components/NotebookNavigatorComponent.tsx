@@ -39,7 +39,15 @@ import { useUpdateNotice } from '../hooks/useUpdateNotice';
 import { FolderSuggestModal } from '../modals/FolderSuggestModal';
 import { buildPropertyNodeSuggestions, PropertyNodeSuggestModal } from '../modals/PropertyNodeSuggestModal';
 import { TagSuggestModal } from '../modals/TagSuggestModal';
-import { FILE_PANE_DIMENSIONS, ItemType, NAVPANE_MEASUREMENTS, type BackgroundMode, type DualPaneOrientation } from '../types';
+import {
+    FILE_PANE_DIMENSIONS,
+    ItemType,
+    NAVPANE_MEASUREMENTS,
+    TAGGED_TAG_ID,
+    UNTAGGED_TAG_ID,
+    type BackgroundMode,
+    type DualPaneOrientation
+} from '../types';
 import { getSelectedPath, getFilesForSelection } from '../utils/selectionUtils';
 import { normalizeNavigationPath } from '../utils/navigationIndex';
 import { deleteSelectedFiles, deleteSelectedFolder } from '../utils/deleteOperations';
@@ -670,13 +678,23 @@ export const NotebookNavigatorComponent = React.memo(
                     });
                 },
                 createNoteInSelectedFolder: async () => {
-                    if (!selectionState.selectedFolder) {
-                        showNotice(strings.fileSystem.errors.noFolderSelected, { variant: 'warning' });
+                    if (selectionState.selectedFolder) {
+                        await fileSystemOps.createNewFile(selectionState.selectedFolder);
                         return;
                     }
 
-                    // Use the same logic as the context menu
-                    await fileSystemOps.createNewFile(selectionState.selectedFolder);
+                    if (
+                        selectionState.selectionType === ItemType.TAG &&
+                        selectionState.selectedTag &&
+                        selectionState.selectedTag !== TAGGED_TAG_ID &&
+                        selectionState.selectedTag !== UNTAGGED_TAG_ID
+                    ) {
+                        const sourcePath = selectionState.selectedFile?.path ?? app.workspace.getActiveFile()?.path ?? '';
+                        await fileSystemOps.createNewFileForTag(selectionState.selectedTag, sourcePath);
+                        return;
+                    }
+
+                    showNotice(strings.fileSystem.errors.noFolderSelected, { variant: 'warning' });
                 },
                 createNoteFromTemplateInSelectedFolder: async () => {
                     if (!selectionState.selectedFolder) {

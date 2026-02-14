@@ -327,6 +327,12 @@ export function determineTagToReveal(
     storage: IndexedDBStorage,
     includeDescendantNotes: boolean
 ): string | null {
+    const fileData = storage.getFile(file.path);
+    if (!fileData || fileData.tags === null) {
+        // Tags are not indexed yet for this file. Keep the current tag selection.
+        return currentTag;
+    }
+
     // Check if file has no tags
     const fileTags = getNormalizedTagsForFile(file, storage);
     if (fileTags.length === 0) {
@@ -334,8 +340,7 @@ export function determineTagToReveal(
         return settings.showUntagged ? UNTAGGED_TAG_ID : null;
     }
 
-    const fileData = storage.getFile(file.path);
-    const originalTags = fileData?.tags;
+    const originalTags = fileData.tags;
 
     const getFirstFileTag = () => {
         if (originalTags && originalTags.length > 0) {
