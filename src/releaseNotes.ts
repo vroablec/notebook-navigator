@@ -91,7 +91,10 @@ const RELEASE_NOTES: ReleaseNote[] = [
         changed: [
             'Settings are now organized in a ==two-level hierarchy==. Main groups (General, Navigation Pane, List Pane, Calendar) now have subtabs for easier navigation.'
         ],
-        fixed: ['Fixed an issue where moving files did not update list pane until refreshing the view.']
+        fixed: [
+            'Fixed an issue where moving files did not update list pane until refreshing the view.',
+            'Fixed an issue where full month calendar in navigation pane always reserved 6 lines, even if month had 4 or 5 weeks.'
+        ]
     },
     {
         version: '2.3.1',
