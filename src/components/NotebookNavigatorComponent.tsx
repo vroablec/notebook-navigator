@@ -797,7 +797,6 @@ export const NotebookNavigatorComponent = React.memo(
                         },
                         strings.modals.tagSuggest.navigatePlaceholder,
                         strings.modals.tagSuggest.instructions.select,
-                        true, // Include untagged option
                         false // Do not allow creating tags for navigation
                     );
                     modal.open();

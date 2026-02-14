@@ -56,6 +56,10 @@ export class PropertyKeySuggestModal extends BaseSuggestModal<PropertyKeySuggest
     }
 
     protected renderAdditionalContent(item: PropertyKeySuggestion, itemEl: HTMLElement): void {
+        if (item.noteCount <= 0) {
+            return;
+        }
+
         itemEl.createSpan({
             text: ` (${item.noteCount.toLocaleString()})`,
             cls: 'nn-tag-suggest-count'

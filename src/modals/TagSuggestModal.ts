@@ -28,9 +28,7 @@ import { hasValidTagCharacters } from '../utils/tagUtils';
  * Uses Obsidian's FuzzySuggestModal for fuzzy search and familiar UI
  */
 export class TagSuggestModal extends BaseSuggestModal<TagTreeNode> {
-    private includeUntagged: boolean;
     private allowTagCreation: boolean;
-    private untaggedNode: TagTreeNode;
     private plugin: NotebookNavigatorPlugin;
     private currentInput: string = '';
     private createNewNode: TagTreeNode | null = null;
@@ -42,7 +40,6 @@ export class TagSuggestModal extends BaseSuggestModal<TagTreeNode> {
      * @param onChooseTag - Callback when a tag is selected
      * @param placeholderText - Placeholder text for the search input
      * @param actionText - Action text for the enter key instruction
-     * @param includeUntagged - Whether to include "Untagged" option
      * @param allowTagCreation - Whether to show the create-tag option for new inputs
      */
     constructor(
@@ -51,7 +48,6 @@ export class TagSuggestModal extends BaseSuggestModal<TagTreeNode> {
         onChooseTag: (tag: string) => void,
         placeholderText: string,
         actionText: string,
-        includeUntagged: boolean = true,
         allowTagCreation: boolean = true
     ) {
         // Pass tag node to base, but store the string callback separately
@@ -61,8 +57,6 @@ export class TagSuggestModal extends BaseSuggestModal<TagTreeNode> {
                 // Handle special cases
                 if (tagNode.path === '__create_new__' && this.currentInput) {
                     onChooseTag(this.currentInput);
-                } else if (tagNode.path === '__untagged__') {
-                    onChooseTag(tagNode.path);
                 } else {
                     // Use displayPath to preserve canonical casing
                     onChooseTag(tagNode.displayPath);
@@ -76,17 +70,7 @@ export class TagSuggestModal extends BaseSuggestModal<TagTreeNode> {
             }
         );
         this.plugin = plugin;
-        this.includeUntagged = includeUntagged;
         this.allowTagCreation = allowTagCreation;
-
-        // Create special untagged node
-        this.untaggedNode = {
-            name: strings.common.untagged,
-            path: '__untagged__',
-            displayPath: '__untagged__',
-            children: new Map(),
-            notesWithTag: new Set()
-        };
     }
 
     /**
@@ -136,13 +120,7 @@ export class TagSuggestModal extends BaseSuggestModal<TagTreeNode> {
      * @returns Array of tag nodes available for selection
      */
     getItems(): TagTreeNode[] {
-        const flattened = this.plugin.tagTreeService?.getFlattenedTagNodes() ?? [];
-
-        if (this.includeUntagged) {
-            return [this.untaggedNode, ...flattened];
-        }
-
-        return [...flattened];
+        return [...(this.plugin.tagTreeService?.getFlattenedTagNodes() ?? [])];
     }
 
     /**
@@ -152,9 +130,6 @@ export class TagSuggestModal extends BaseSuggestModal<TagTreeNode> {
      * @returns The display text
      */
     getItemText(tag: TagTreeNode): string {
-        if (tag.path === '__untagged__') {
-            return tag.name;
-        }
         if (tag.path === '__create_new__') {
             return this.currentInput; // Return the input for fuzzy matching
         }
@@ -168,9 +143,6 @@ export class TagSuggestModal extends BaseSuggestModal<TagTreeNode> {
      * @returns The path to display
      */
     protected getDisplayPath(tag: TagTreeNode): string {
-        if (tag.path === '__untagged__') {
-            return tag.name;
-        }
         if (tag.path === '__create_new__') {
             return tag.name; // Already contains the full text
         }
@@ -186,15 +158,28 @@ export class TagSuggestModal extends BaseSuggestModal<TagTreeNode> {
         return 'nn-tag-suggest-item';
     }
 
+    private resolveTagNoteCount(tag: TagTreeNode): number | null {
+        if (tag.path === '__create_new__') {
+            return null;
+        }
+
+        return tag.notesWithTag.size;
+    }
+
     /**
      * Renders additional content for a tag
      * @param tag - The tag being rendered
      * @param itemEl - The container element
      */
     protected renderAdditionalContent(tag: TagTreeNode, itemEl: HTMLElement): void {
-        // Special class for untagged
-        if (tag.path === '__untagged__') {
-            itemEl.addClass('nn-tag-suggest-untagged');
+        const noteCount = this.resolveTagNoteCount(tag);
+        if (noteCount === null || noteCount <= 0) {
+            return;
         }
+
+        itemEl.createSpan({
+            text: ` (${noteCount.toLocaleString()})`,
+            cls: 'nn-tag-suggest-count'
+        });
     }
 }

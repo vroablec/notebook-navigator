@@ -20,6 +20,7 @@ import { App } from 'obsidian';
 import { strings } from '../i18n';
 import type { PropertyTreeNode } from '../types/storage';
 import { type MaybePromise } from '../utils/async';
+import { getDirectPropertyKeyNoteCount } from '../utils/propertyTree';
 import { naturalCompare } from '../utils/sortUtils';
 import type { PropertySelectionNodeId } from '../utils/propertyTree';
 import { BaseSuggestModal } from './BaseSuggestModal';
@@ -28,6 +29,7 @@ export interface PropertyNodeSuggestion {
     nodeId: PropertySelectionNodeId;
     label: string;
     searchText: string;
+    noteCount: number;
 }
 
 export function buildPropertyNodeSuggestions(propertyTree: ReadonlyMap<string, PropertyTreeNode>): PropertyNodeSuggestion[] {
@@ -38,7 +40,8 @@ export function buildPropertyNodeSuggestions(propertyTree: ReadonlyMap<string, P
         suggestions.push({
             nodeId: keyNode.id,
             label: keyNode.displayPath,
-            searchText: keyNode.displayPath
+            searchText: keyNode.displayPath,
+            noteCount: getDirectPropertyKeyNoteCount(keyNode)
         });
 
         const valueNodes = Array.from(keyNode.children.values()).sort((a, b) => naturalCompare(a.displayPath, b.displayPath));
@@ -46,7 +49,8 @@ export function buildPropertyNodeSuggestions(propertyTree: ReadonlyMap<string, P
             suggestions.push({
                 nodeId: valueNode.id,
                 label: `${keyNode.displayPath}: ${valueNode.displayPath}`,
-                searchText: `${keyNode.displayPath} ${valueNode.displayPath}`
+                searchText: `${keyNode.displayPath} ${valueNode.displayPath}`,
+                noteCount: valueNode.notesWithValue.size
             });
         });
     });
@@ -83,5 +87,16 @@ export class PropertyNodeSuggestModal extends BaseSuggestModal<PropertyNodeSugge
 
     protected getItemClass(): string {
         return 'nn-property-suggest-item';
+    }
+
+    protected renderAdditionalContent(item: PropertyNodeSuggestion, itemEl: HTMLElement): void {
+        if (item.noteCount <= 0) {
+            return;
+        }
+
+        itemEl.createSpan({
+            text: ` (${item.noteCount.toLocaleString()})`,
+            cls: 'nn-tag-suggest-count'
+        });
     }
 }
