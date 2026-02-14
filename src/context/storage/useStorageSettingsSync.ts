@@ -44,8 +44,8 @@ import { getCacheRebuildProgressTypes, getMetadataDependentTypes, haveStringArra
  * It handles two categories of updates:
  * - Content provider settings: forwarded to `ContentProviderRegistry.handleSettingsChange()` and then used to queue
  *   any required regeneration work.
- * - Exclusions (hidden folders/file properties): triggers a diff so the database and tag tree reflect the new
- *   visibility rules.
+ * - Exclusions (hidden folders/file properties): triggers a diff so the database and navigation trees reflect the
+ *   new visibility rules.
  */
 export function useStorageSettingsSync(params: {
     settings: NotebookNavigatorSettings;
@@ -56,6 +56,7 @@ export function useStorageSettingsSync(params: {
     hiddenFileNames: string[];
     hiddenFileTags: string[];
     scheduleTagTreeRebuild: (options?: { flush?: boolean }) => void;
+    schedulePropertyTreeRebuild: (options?: { flush?: boolean }) => void;
     getIndexableFiles: () => TFile[];
     pendingRenameDataRef: RefObject<Map<string, DBFileData>>;
     queueMetadataContentWhenReady: (
@@ -77,6 +78,7 @@ export function useStorageSettingsSync(params: {
         hiddenFileNames,
         hiddenFileTags,
         scheduleTagTreeRebuild,
+        schedulePropertyTreeRebuild,
         getIndexableFiles,
         pendingRenameDataRef,
         queueMetadataContentWhenReady,
@@ -251,7 +253,7 @@ export function useStorageSettingsSync(params: {
         }
 
         // Exclusion settings influence which files exist in the cache. Folder/file changes require a diff-based
-        // resync. File name pattern changes currently affect visibility and tag tree counting, but do not require
+        // resync. File name and file tag pattern changes affect navigation visibility but do not require
         // rewriting file records.
         const previousHiddenFolders = getActiveHiddenFolders(previousSettings);
         const excludedFoldersChanged = haveStringArraysChanged(previousHiddenFolders, hiddenFolders);
@@ -279,6 +281,7 @@ export function useStorageSettingsSync(params: {
                     if (settings.showTags) {
                         scheduleTagTreeRebuild();
                     }
+                    schedulePropertyTreeRebuild();
 
                     queueIndexableFilesNeedingContentGeneration([...toAdd, ...toUpdate], allFiles, settings);
                 } catch (error: unknown) {
@@ -289,6 +292,7 @@ export function useStorageSettingsSync(params: {
             if (settings.showTags) {
                 scheduleTagTreeRebuild();
             }
+            schedulePropertyTreeRebuild();
         }
 
         prevSettingsRef.current = settings;
@@ -303,6 +307,7 @@ export function useStorageSettingsSync(params: {
         queueIndexableFilesNeedingContentGeneration,
         scheduleSettingsChanges,
         scheduleTagTreeRebuild,
+        schedulePropertyTreeRebuild,
         settings
     ]);
 
