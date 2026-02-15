@@ -1661,10 +1661,6 @@ export const STRINGS_PT = {
                 desc: 'Campo frontmatter para cores de ficheiros. Deixe vazio para usar cores guardadas nas definições.',
                 placeholder: 'color'
             },
-            frontmatterSaveMetadata: {
-                name: 'Guardar ícones e cores no frontmatter',
-                desc: 'Escrever automaticamente ícones e cores de ficheiros no frontmatter usando os campos configurados acima.'
-            },
             frontmatterMigration: {
                 name: 'Migrar ícones e cores das definições',
                 desc: 'Guardados nas definições: {icons} ícones, {colors} cores.',

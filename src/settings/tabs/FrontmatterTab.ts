@@ -62,6 +62,8 @@ function countMarkdownMetadataEntries(records: Record<string, string> | undefine
 /** Renders the frontmatter settings tab */
 export function renderFrontmatterTab(context: SettingsTabContext): void {
     const { app, containerEl, plugin } = context;
+    let migrateButton: ButtonComponent | null = null;
+    let updateMigrationDescription: (() => void) | null = null;
 
     const createGroup = createSettingGroupFactory(containerEl);
     const frontmatterGroup = createGroup(undefined);
@@ -76,12 +78,11 @@ export function renderFrontmatterTab(context: SettingsTabContext): void {
         async value => {
             plugin.settings.useFrontmatterMetadata = value;
             await plugin.saveSettingsAndUpdate();
+            updateMigrationDescription?.();
             // Use context directly to satisfy eslint exhaustive-deps requirements
             context.requestStatisticsRefresh();
         }
     );
-    // Function to update visibility of frontmatter save setting based on field values
-    let updateFrontmatterSaveVisibility: (() => void) | null = null;
 
     const frontmatterIconSetting = context.createDebouncedTextSetting(
         frontmatterSettingsEl,
@@ -91,7 +92,7 @@ export function renderFrontmatterTab(context: SettingsTabContext): void {
         () => plugin.settings.frontmatterIconField,
         value => {
             plugin.settings.frontmatterIconField = value || '';
-            updateFrontmatterSaveVisibility?.();
+            updateMigrationDescription?.();
         },
         undefined,
         () => context.requestStatisticsRefresh()
@@ -106,37 +107,12 @@ export function renderFrontmatterTab(context: SettingsTabContext): void {
         () => plugin.settings.frontmatterColorField,
         value => {
             plugin.settings.frontmatterColorField = value || '';
-            updateFrontmatterSaveVisibility?.();
+            updateMigrationDescription?.();
         },
         undefined,
         () => context.requestStatisticsRefresh()
     );
     frontmatterColorSetting.controlEl.addClass('nn-setting-wide-input');
-
-    // Setting to control whether metadata is saved to frontmatter
-    const frontmatterSaveSetting = new Setting(frontmatterSettingsEl)
-        .setName(strings.settings.items.frontmatterSaveMetadata.name)
-        .setDesc(strings.settings.items.frontmatterSaveMetadata.desc)
-        .addToggle(toggle =>
-            toggle.setValue(plugin.settings.saveMetadataToFrontmatter).onChange(async value => {
-                plugin.settings.saveMetadataToFrontmatter = value;
-                await plugin.saveSettingsAndUpdate();
-                updateMigrationDescription();
-                updateFrontmatterSaveVisibility?.();
-            })
-        );
-
-    // Show frontmatter save setting only when icon or color fields are configured
-    updateFrontmatterSaveVisibility = () => {
-        const hasIconField = plugin.settings.frontmatterIconField.trim().length > 0;
-        const hasColorField = plugin.settings.frontmatterColorField.trim().length > 0;
-        const canSaveMetadata = hasIconField || hasColorField;
-        setElementVisible(frontmatterSaveSetting.settingEl, canSaveMetadata);
-    };
-
-    updateFrontmatterSaveVisibility();
-
-    let migrateButton: ButtonComponent | null = null;
 
     const migrationSetting = new Setting(frontmatterSettingsEl).setName(strings.settings.items.frontmatterMigration.name);
 
@@ -156,7 +132,7 @@ export function renderFrontmatterTab(context: SettingsTabContext): void {
 
                 try {
                     const result = await plugin.metadataService.migrateFileMetadataToFrontmatter();
-                    updateMigrationDescription();
+                    updateMigrationDescription?.();
 
                     const { iconsBefore, colorsBefore, migratedIcons, migratedColors, failures } = result;
 
@@ -184,7 +160,7 @@ export function renderFrontmatterTab(context: SettingsTabContext): void {
                 } finally {
                     button.setButtonText(strings.settings.items.frontmatterMigration.button);
                     button.setDisabled(false);
-                    updateMigrationDescription();
+                    updateMigrationDescription?.();
                     context.requestStatisticsRefresh();
                 }
             });
@@ -192,21 +168,25 @@ export function renderFrontmatterTab(context: SettingsTabContext): void {
     });
 
     /** Updates the migration setting description based on pending migrations */
-    const updateMigrationDescription = () => {
+    updateMigrationDescription = () => {
         const descriptionEl = migrationSetting.descEl;
         descriptionEl.empty();
 
         const iconsBefore = countMarkdownMetadataEntries(plugin.settings.fileIcons, app);
         const colorsBefore = countMarkdownMetadataEntries(plugin.settings.fileColors, app);
         const noMigrationsPending = iconsBefore === 0 && colorsBefore === 0;
+        const hasIconField = plugin.settings.frontmatterIconField.trim().length > 0;
+        const hasColorField = plugin.settings.frontmatterColorField.trim().length > 0;
+        const canMigrateMetadata = hasIconField || hasColorField;
+        const isFrontmatterMetadataEnabled = plugin.settings.useFrontmatterMetadata;
 
         const descriptionText = strings.settings.items.frontmatterMigration.desc
             .replace('{icons}', iconsBefore.toString())
             .replace('{colors}', colorsBefore.toString());
 
         descriptionEl.createDiv({ text: descriptionText });
-        const shouldShow = !noMigrationsPending && plugin.settings.saveMetadataToFrontmatter;
-        migrateButton?.setDisabled(!plugin.settings.saveMetadataToFrontmatter || noMigrationsPending);
+        const shouldShow = !noMigrationsPending && canMigrateMetadata && isFrontmatterMetadataEnabled;
+        migrateButton?.setDisabled(!isFrontmatterMetadataEnabled || !canMigrateMetadata || noMigrationsPending);
         setElementVisible(migrationSetting.settingEl, shouldShow);
     };
 

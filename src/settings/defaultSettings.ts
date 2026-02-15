@@ -220,7 +220,6 @@ export const DEFAULT_SETTINGS: NotebookNavigatorSettings = {
     frontmatterCreatedField: '',
     frontmatterModifiedField: '',
     frontmatterDateFormat: '',
-    saveMetadataToFrontmatter: false,
 
     // Notes tab
     showFileIcons: true,

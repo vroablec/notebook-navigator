@@ -1657,10 +1657,6 @@ export const STRINGS_VI = {
                 desc: 'Trường frontmatter cho màu tệp. Để trống để dùng màu lưu trong cài đặt.',
                 placeholder: 'color'
             },
-            frontmatterSaveMetadata: {
-                name: 'Lưu biểu tượng và màu vào frontmatter',
-                desc: 'Tự động ghi biểu tượng và màu tệp vào frontmatter dùng các trường đã cấu hình ở trên.'
-            },
             frontmatterMigration: {
                 name: 'Di chuyển biểu tượng và màu từ cài đặt',
                 desc: 'Lưu trong cài đặt: {icons} biểu tượng, {colors} màu.',

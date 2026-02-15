@@ -445,6 +445,7 @@ export default class NotebookNavigatorPlugin extends Plugin implements ISettings
         const settingsRecord = this.settings as unknown as Record<string, unknown>;
         delete settingsRecord['showCalendar'];
         delete settingsRecord['calendarCustomPromptForTitle'];
+        delete settingsRecord['saveMetadataToFrontmatter'];
         // Validate and normalize keyboard shortcuts to use standard modifier names
         this.settings.keyboardShortcuts = sanitizeKeyboardShortcuts(this.settings.keyboardShortcuts);
         this.normalizeSyncModes({ storedData, isFirstLaunch });
@@ -2031,6 +2032,7 @@ export default class NotebookNavigatorPlugin extends Plugin implements ISettings
         delete rest.searchProvider;
         delete rest.showCalendar;
         delete rest.calendarCustomPromptForTitle;
+        delete rest.saveMetadataToFrontmatter;
         const syncModeRegistry = this.getSyncModeRegistry();
         SYNC_MODE_SETTING_IDS.forEach(settingId => {
             if (!this.isLocal(settingId)) {

@@ -58,11 +58,11 @@ export class FileMetadataService extends BaseMetadataService {
 
     /**
      * Checks if frontmatter storage is enabled for file metadata
-     * @returns True if both frontmatter metadata reading and saving are enabled
+     * @returns True if frontmatter metadata is enabled
      */
     private shouldUseFrontmatterForFiles(): boolean {
         const settings = this.settingsProvider.settings;
-        return settings.useFrontmatterMetadata && settings.saveMetadataToFrontmatter;
+        return settings.useFrontmatterMetadata;
     }
 
     /**

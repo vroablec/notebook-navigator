@@ -61,7 +61,6 @@ function createSettings(): NotebookNavigatorSettings {
     return {
         ...DEFAULT_SETTINGS,
         useFrontmatterMetadata: true,
-        saveMetadataToFrontmatter: true,
         frontmatterIconField: 'icon',
         fileIcons: {},
         fileColors: {}

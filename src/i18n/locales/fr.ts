@@ -1668,10 +1668,6 @@ export const STRINGS_FR = {
                 desc: 'Champ frontmatter pour les couleurs de fichier. Laisser vide pour utiliser les couleurs enregistrées dans les paramètres.',
                 placeholder: 'color'
             },
-            frontmatterSaveMetadata: {
-                name: 'Enregistrer les icônes et couleurs dans le frontmatter',
-                desc: 'Écrit automatiquement les icônes et couleurs de fichier dans le frontmatter via les champs configurés ci-dessus.'
-            },
             frontmatterMigration: {
                 name: 'Migrer les icônes et couleurs depuis les paramètres',
                 desc: 'Stocké dans les paramètres : {icons} icônes, {colors} couleurs.',

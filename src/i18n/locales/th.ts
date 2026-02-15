@@ -1656,10 +1656,6 @@ export const STRINGS_TH = {
                 desc: 'ฟิลด์ frontmatter สำหรับสีไฟล์ เว้นว่างเพื่อใช้สีที่เก็บในการตั้งค่า',
                 placeholder: 'color'
             },
-            frontmatterSaveMetadata: {
-                name: 'บันทึกไอคอนและสีไปยัง frontmatter',
-                desc: 'เขียนไอคอนและสีไฟล์ไปยัง frontmatter อัตโนมัติโดยใช้ฟิลด์ที่กำหนดค่าด้านบน'
-            },
             frontmatterMigration: {
                 name: 'ย้ายไอคอนและสีจากการตั้งค่า',
                 desc: 'เก็บในการตั้งค่า: {icons} ไอคอน, {colors} สี',

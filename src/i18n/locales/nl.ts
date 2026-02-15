@@ -1661,10 +1661,6 @@ export const STRINGS_NL = {
                 desc: 'Frontmatter-veld voor bestandskleuren. Laat leeg om kleuren te gebruiken die zijn opgeslagen in instellingen.',
                 placeholder: 'color'
             },
-            frontmatterSaveMetadata: {
-                name: 'Pictogrammen en kleuren opslaan in frontmatter',
-                desc: 'Bestandspictogrammen en -kleuren automatisch naar frontmatter schrijven met behulp van de hierboven geconfigureerde velden.'
-            },
             frontmatterMigration: {
                 name: 'Pictogrammen en kleuren migreren vanuit instellingen',
                 desc: 'Opgeslagen in instellingen: {icons} pictogrammen, {colors} kleuren.',

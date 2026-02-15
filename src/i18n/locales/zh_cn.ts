@@ -1660,10 +1660,6 @@ export const STRINGS_ZH_CN = {
                 desc: '文件颜色的前言字段。留空使用存储在设置中的颜色。',
                 placeholder: 'color'
             },
-            frontmatterSaveMetadata: {
-                name: '将图标和颜色保存到前言',
-                desc: '使用上面配置的字段自动将文件图标和颜色写入前言。'
-            },
             frontmatterMigration: {
                 name: '从设置迁移图标和颜色',
                 desc: '存储在设置中：{icons} 个图标，{colors} 种颜色。',

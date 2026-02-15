@@ -1661,10 +1661,6 @@ export const STRINGS_KO = {
                 desc: '파일 색상용 frontmatter 필드입니다. 설정에 저장된 색상을 사용하려면 비워 두세요.',
                 placeholder: 'color'
             },
-            frontmatterSaveMetadata: {
-                name: 'frontmatter에 아이콘과 색상 저장',
-                desc: '위에서 구성한 필드를 사용하여 파일 아이콘과 색상을 frontmatter에 자동으로 기록합니다.'
-            },
             frontmatterMigration: {
                 name: '설정에서 아이콘과 색상 이동',
                 desc: '설정에 저장됨: 아이콘 {icons}개, 색상 {colors}개.',

@@ -1666,10 +1666,6 @@ export const STRINGS_ES = {
                 desc: 'Campo del frontmatter para colores de archivo. Dejar vacío para usar colores guardados en los ajustes.',
                 placeholder: 'color'
             },
-            frontmatterSaveMetadata: {
-                name: 'Guardar iconos y colores en el frontmatter',
-                desc: 'Escribe automáticamente los iconos y colores de archivo en el frontmatter usando los campos configurados arriba.'
-            },
             frontmatterMigration: {
                 name: 'Migrar iconos y colores desde los ajustes',
                 desc: 'Guardado en los ajustes: {icons} iconos, {colors} colores.',

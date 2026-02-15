@@ -1665,10 +1665,6 @@ export const STRINGS_PL = {
                 desc: 'Pole frontmatter dla kolorów plików. Zostaw puste aby użyć kolorów zapisanych w ustawieniach.',
                 placeholder: 'color'
             },
-            frontmatterSaveMetadata: {
-                name: 'Zapisz ikony i kolory w frontmatter',
-                desc: 'Automatycznie zapisuje ikony i kolory plików w frontmatter przy użyciu skonfigurowanych powyżej pól.'
-            },
             frontmatterMigration: {
                 name: 'Migruj ikony i kolory z ustawień',
                 desc: 'Zapisane w ustawieniach: {icons} ikon, {colors} kolorów.',

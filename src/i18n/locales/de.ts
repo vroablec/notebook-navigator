@@ -1665,10 +1665,6 @@ export const STRINGS_DE = {
                 desc: 'Frontmatter-Feld für Dateifarben. Leer lassen, um Farben aus den Einstellungen zu verwenden.',
                 placeholder: 'color'
             },
-            frontmatterSaveMetadata: {
-                name: 'Icons und Farben im Frontmatter speichern',
-                desc: 'Schreibt Datei-Icons und Farben automatisch ins Frontmatter über die oben konfigurierten Felder.'
-            },
             frontmatterMigration: {
                 name: 'Icons und Farben aus Einstellungen migrieren',
                 desc: 'In Einstellungen gespeichert: {icons} Icons, {colors} Farben.',

@@ -341,7 +341,6 @@ export interface NotebookNavigatorSettings {
     frontmatterCreatedField: string;
     frontmatterModifiedField: string;
     frontmatterDateFormat: string;
-    saveMetadataToFrontmatter: boolean;
 
     // Notes tab
     showFileIcons: boolean;

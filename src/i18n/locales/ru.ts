@@ -1658,10 +1658,6 @@ export const STRINGS_RU = {
                 desc: 'Поле frontmatter для цветов файлов. Оставьте пустым для использования цветов из настроек.',
                 placeholder: 'color'
             },
-            frontmatterSaveMetadata: {
-                name: 'Сохранять иконки и цвета во frontmatter',
-                desc: 'Автоматически записывать иконки и цвета файлов во frontmatter, используя настроенные выше поля.'
-            },
             frontmatterMigration: {
                 name: 'Миграция иконок и цветов из настроек',
                 desc: 'Сохранено в настройках: {icons} иконок, {colors} цветов.',

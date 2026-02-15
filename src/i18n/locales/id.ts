@@ -1658,10 +1658,6 @@ export const STRINGS_ID = {
                 desc: 'Field frontmatter untuk warna file. Biarkan kosong untuk menggunakan warna yang disimpan di pengaturan.',
                 placeholder: 'color'
             },
-            frontmatterSaveMetadata: {
-                name: 'Simpan ikon dan warna ke frontmatter',
-                desc: 'Secara otomatis tulis ikon dan warna file ke frontmatter menggunakan field yang dikonfigurasi di atas.'
-            },
             frontmatterMigration: {
                 name: 'Migrasi ikon dan warna dari pengaturan',
                 desc: 'Disimpan di pengaturan: {icons} ikon, {colors} warna.',

@@ -1658,10 +1658,6 @@ export const STRINGS_TR = {
                 desc: 'Dosya renkleri için frontmatter alanı. Ayarlarda saklanan renkleri kullanmak için boş bırakın.',
                 placeholder: 'renk'
             },
-            frontmatterSaveMetadata: {
-                name: "Simgeleri ve renkleri frontmatter'a kaydet",
-                desc: "Yukarıda yapılandırılan alanları kullanarak dosya simgelerini ve renklerini otomatik olarak frontmatter'a yaz."
-            },
             frontmatterMigration: {
                 name: 'Simgeleri ve renkleri ayarlardan taşı',
                 desc: 'Ayarlarda saklanan: {icons} simge, {colors} renk.',

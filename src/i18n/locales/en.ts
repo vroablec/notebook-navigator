@@ -1654,10 +1654,6 @@ export const STRINGS_EN = {
                 desc: 'Frontmatter field for file colors. Leave empty to use colors stored in settings.',
                 placeholder: 'color'
             },
-            frontmatterSaveMetadata: {
-                name: 'Save icons and colors to frontmatter',
-                desc: 'Automatically write file icons and colors to frontmatter using the configured fields above.'
-            },
             frontmatterMigration: {
                 name: 'Migrate icons and colors from settings',
                 desc: 'Stored in settings: {icons} icons, {colors} colors.',

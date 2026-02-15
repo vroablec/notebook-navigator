@@ -1664,10 +1664,6 @@ export const STRINGS_JA = {
                 desc: 'ファイルカラー用のフロントマターフィールド。空のままにすると設定に保存された色を使用。',
                 placeholder: 'color'
             },
-            frontmatterSaveMetadata: {
-                name: 'フロントマターにアイコンと色を保存',
-                desc: '上記で設定したフィールドを使ってファイルのアイコンと色を自動的にフロントマターに書き込みます。'
-            },
             frontmatterMigration: {
                 name: '設定からアイコンと色を移行',
                 desc: '設定に保存: アイコン {icons} 個、色 {colors} 個。',
