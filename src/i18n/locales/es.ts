@@ -1666,6 +1666,11 @@ export const STRINGS_ES = {
                 desc: 'Campo del frontmatter para colores de archivo. Dejar vacío para usar colores guardados en los ajustes.',
                 placeholder: 'color'
             },
+            frontmatterBackgroundField: {
+                name: 'Campo de fondo',
+                desc: 'Campo del frontmatter para colores de fondo. Dejar vacío para usar colores de fondo guardados en los ajustes.',
+                placeholder: 'background'
+            },
             frontmatterMigration: {
                 name: 'Migrar iconos y colores desde los ajustes',
                 desc: 'Guardado en los ajustes: {icons} iconos, {colors} colores.',

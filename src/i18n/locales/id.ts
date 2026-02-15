@@ -1658,6 +1658,11 @@ export const STRINGS_ID = {
                 desc: 'Field frontmatter untuk warna file. Biarkan kosong untuk menggunakan warna yang disimpan di pengaturan.',
                 placeholder: 'color'
             },
+            frontmatterBackgroundField: {
+                name: 'Field latar belakang',
+                desc: 'Field frontmatter untuk warna latar belakang. Biarkan kosong untuk menggunakan warna latar belakang yang disimpan di pengaturan.',
+                placeholder: 'background'
+            },
             frontmatterMigration: {
                 name: 'Migrasi ikon dan warna dari pengaturan',
                 desc: 'Disimpan di pengaturan: {icons} ikon, {colors} warna.',

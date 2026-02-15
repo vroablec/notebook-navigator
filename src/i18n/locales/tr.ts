@@ -1658,6 +1658,11 @@ export const STRINGS_TR = {
                 desc: 'Dosya renkleri için frontmatter alanı. Ayarlarda saklanan renkleri kullanmak için boş bırakın.',
                 placeholder: 'renk'
             },
+            frontmatterBackgroundField: {
+                name: 'Arka plan alanı',
+                desc: 'Arka plan renkleri için frontmatter alanı. Ayarlarda saklanan arka plan renklerini kullanmak için boş bırakın.',
+                placeholder: 'arka plan'
+            },
             frontmatterMigration: {
                 name: 'Simgeleri ve renkleri ayarlardan taşı',
                 desc: 'Ayarlarda saklanan: {icons} simge, {colors} renk.',

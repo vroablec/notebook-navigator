@@ -1661,6 +1661,11 @@ export const STRINGS_KO = {
                 desc: '파일 색상용 frontmatter 필드입니다. 설정에 저장된 색상을 사용하려면 비워 두세요.',
                 placeholder: 'color'
             },
+            frontmatterBackgroundField: {
+                name: '배경 필드',
+                desc: '배경색용 frontmatter 필드입니다. 설정에 저장된 배경색을 사용하려면 비워 두세요.',
+                placeholder: 'background'
+            },
             frontmatterMigration: {
                 name: '설정에서 아이콘과 색상 이동',
                 desc: '설정에 저장됨: 아이콘 {icons}개, 색상 {colors}개.',

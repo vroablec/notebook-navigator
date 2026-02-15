@@ -114,6 +114,20 @@ export function renderFrontmatterTab(context: SettingsTabContext): void {
     );
     frontmatterColorSetting.controlEl.addClass('nn-setting-wide-input');
 
+    const frontmatterBackgroundSetting = context.createDebouncedTextSetting(
+        frontmatterSettingsEl,
+        strings.settings.items.frontmatterBackgroundField.name,
+        strings.settings.items.frontmatterBackgroundField.desc,
+        strings.settings.items.frontmatterBackgroundField.placeholder,
+        () => plugin.settings.frontmatterBackgroundField,
+        value => {
+            plugin.settings.frontmatterBackgroundField = value || '';
+        },
+        undefined,
+        () => context.requestStatisticsRefresh()
+    );
+    frontmatterBackgroundSetting.controlEl.addClass('nn-setting-wide-input');
+
     const migrationSetting = new Setting(frontmatterSettingsEl).setName(strings.settings.items.frontmatterMigration.name);
 
     migrationSetting.addButton(button => {

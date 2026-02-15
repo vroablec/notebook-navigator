@@ -216,6 +216,7 @@ export const DEFAULT_SETTINGS: NotebookNavigatorSettings = {
     useFrontmatterMetadata: false,
     frontmatterIconField: 'icon',
     frontmatterColorField: 'color',
+    frontmatterBackgroundField: 'background',
     frontmatterNameField: '',
     frontmatterCreatedField: '',
     frontmatterModifiedField: '',

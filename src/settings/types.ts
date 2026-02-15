@@ -337,6 +337,7 @@ export interface NotebookNavigatorSettings {
     useFrontmatterMetadata: boolean;
     frontmatterIconField: string;
     frontmatterColorField: string;
+    frontmatterBackgroundField: string;
     frontmatterNameField: string;
     frontmatterCreatedField: string;
     frontmatterModifiedField: string;

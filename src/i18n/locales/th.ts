@@ -1656,6 +1656,11 @@ export const STRINGS_TH = {
                 desc: 'ฟิลด์ frontmatter สำหรับสีไฟล์ เว้นว่างเพื่อใช้สีที่เก็บในการตั้งค่า',
                 placeholder: 'color'
             },
+            frontmatterBackgroundField: {
+                name: 'ฟิลด์พื้นหลัง',
+                desc: 'ฟิลด์ frontmatter สำหรับสีพื้นหลัง เว้นว่างเพื่อใช้สีพื้นหลังที่เก็บในการตั้งค่า',
+                placeholder: 'background'
+            },
             frontmatterMigration: {
                 name: 'ย้ายไอคอนและสีจากการตั้งค่า',
                 desc: 'เก็บในการตั้งค่า: {icons} ไอคอน, {colors} สี',

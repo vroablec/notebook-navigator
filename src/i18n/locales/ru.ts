@@ -1658,6 +1658,11 @@ export const STRINGS_RU = {
                 desc: 'Поле frontmatter для цветов файлов. Оставьте пустым для использования цветов из настроек.',
                 placeholder: 'color'
             },
+            frontmatterBackgroundField: {
+                name: 'Поле фона',
+                desc: 'Поле frontmatter для цветов фона. Оставьте пустым для использования цветов фона из настроек.',
+                placeholder: 'background'
+            },
             frontmatterMigration: {
                 name: 'Миграция иконок и цветов из настроек',
                 desc: 'Сохранено в настройках: {icons} иконок, {colors} цветов.',

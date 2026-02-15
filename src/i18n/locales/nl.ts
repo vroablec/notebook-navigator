@@ -1661,6 +1661,11 @@ export const STRINGS_NL = {
                 desc: 'Frontmatter-veld voor bestandskleuren. Laat leeg om kleuren te gebruiken die zijn opgeslagen in instellingen.',
                 placeholder: 'color'
             },
+            frontmatterBackgroundField: {
+                name: 'Achtergrondveld',
+                desc: 'Frontmatter-veld voor achtergrondkleuren. Laat leeg om achtergrondkleuren te gebruiken die zijn opgeslagen in instellingen.',
+                placeholder: 'background'
+            },
             frontmatterMigration: {
                 name: 'Pictogrammen en kleuren migreren vanuit instellingen',
                 desc: 'Opgeslagen in instellingen: {icons} pictogrammen, {colors} kleuren.',

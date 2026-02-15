@@ -1659,6 +1659,11 @@ export const STRINGS_ZH_TW = {
                 desc: '檔案顏色的前置欄位。留空使用儲存在設定中的顏色。',
                 placeholder: 'color'
             },
+            frontmatterBackgroundField: {
+                name: '背景欄位',
+                desc: '背景顏色的前置欄位。留空使用儲存在設定中的背景顏色。',
+                placeholder: 'background'
+            },
             frontmatterMigration: {
                 name: '從設定遷移圖示和顏色',
                 desc: '儲存在設定中：{icons} 個圖示，{colors} 種顏色。',

@@ -1659,6 +1659,11 @@ export const STRINGS_IT = {
                 desc: 'Campo frontmatter per colori file. Lascia vuoto per usare colori salvati nelle impostazioni.',
                 placeholder: 'color'
             },
+            frontmatterBackgroundField: {
+                name: 'Campo sfondo',
+                desc: 'Campo frontmatter per colori di sfondo. Lascia vuoto per usare colori di sfondo salvati nelle impostazioni.',
+                placeholder: 'background'
+            },
             frontmatterMigration: {
                 name: 'Migra icone e colori dalle impostazioni',
                 desc: 'Salvati nelle impostazioni: {icons} icone, {colors} colori.',

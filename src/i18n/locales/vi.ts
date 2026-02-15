@@ -1657,6 +1657,11 @@ export const STRINGS_VI = {
                 desc: 'Trường frontmatter cho màu tệp. Để trống để dùng màu lưu trong cài đặt.',
                 placeholder: 'color'
             },
+            frontmatterBackgroundField: {
+                name: 'Trường nền',
+                desc: 'Trường frontmatter cho màu nền. Để trống để dùng màu nền lưu trong cài đặt.',
+                placeholder: 'background'
+            },
             frontmatterMigration: {
                 name: 'Di chuyển biểu tượng và màu từ cài đặt',
                 desc: 'Lưu trong cài đặt: {icons} biểu tượng, {colors} màu.',

@@ -1668,6 +1668,11 @@ export const STRINGS_FR = {
                 desc: 'Champ frontmatter pour les couleurs de fichier. Laisser vide pour utiliser les couleurs enregistrées dans les paramètres.',
                 placeholder: 'color'
             },
+            frontmatterBackgroundField: {
+                name: 'Champ d\'arrière-plan',
+                desc: 'Champ frontmatter pour les couleurs d\'arrière-plan. Laisser vide pour utiliser les couleurs d\'arrière-plan enregistrées dans les paramètres.',
+                placeholder: 'background'
+            },
             frontmatterMigration: {
                 name: 'Migrer les icônes et couleurs depuis les paramètres',
                 desc: 'Stocké dans les paramètres : {icons} icônes, {colors} couleurs.',

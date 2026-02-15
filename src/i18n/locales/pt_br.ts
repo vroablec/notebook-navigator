@@ -1663,6 +1663,11 @@ export const STRINGS_PT_BR = {
                 desc: 'Campo do frontmatter para cores de arquivo. Deixe em branco para usar cores armazenadas nas configurações.',
                 placeholder: 'cor'
             },
+            frontmatterBackgroundField: {
+                name: 'Campo de fundo',
+                desc: 'Campo do frontmatter para cores de fundo. Deixe em branco para usar cores de fundo armazenadas nas configurações.',
+                placeholder: 'fundo'
+            },
             frontmatterMigration: {
                 name: 'Migrar ícones e cores das configurações',
                 desc: 'Armazenado nas configurações: {icons} ícones, {colors} cores.',

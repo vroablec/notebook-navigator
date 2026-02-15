@@ -1660,6 +1660,11 @@ export const STRINGS_ZH_CN = {
                 desc: '文件颜色的前言字段。留空使用存储在设置中的颜色。',
                 placeholder: 'color'
             },
+            frontmatterBackgroundField: {
+                name: '背景字段',
+                desc: '背景颜色的前言字段。留空使用存储在设置中的背景颜色。',
+                placeholder: 'background'
+            },
             frontmatterMigration: {
                 name: '从设置迁移图标和颜色',
                 desc: '存储在设置中：{icons} 个图标，{colors} 种颜色。',

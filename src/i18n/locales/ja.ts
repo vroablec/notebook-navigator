@@ -1664,6 +1664,11 @@ export const STRINGS_JA = {
                 desc: 'ファイルカラー用のフロントマターフィールド。空のままにすると設定に保存された色を使用。',
                 placeholder: 'color'
             },
+            frontmatterBackgroundField: {
+                name: '背景フィールド',
+                desc: '背景色用のフロントマターフィールド。空のままにすると設定に保存された背景色を使用。',
+                placeholder: 'background'
+            },
             frontmatterMigration: {
                 name: '設定からアイコンと色を移行',
                 desc: '設定に保存: アイコン {icons} 個、色 {colors} 個。',

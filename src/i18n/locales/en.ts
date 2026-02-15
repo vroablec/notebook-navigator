@@ -1654,6 +1654,11 @@ export const STRINGS_EN = {
                 desc: 'Frontmatter field for file colors. Leave empty to use colors stored in settings.',
                 placeholder: 'color'
             },
+            frontmatterBackgroundField: {
+                name: 'Background field',
+                desc: 'Frontmatter field for background colors. Leave empty to use background colors stored in settings.',
+                placeholder: 'background'
+            },
             frontmatterMigration: {
                 name: 'Migrate icons and colors from settings',
                 desc: 'Stored in settings: {icons} icons, {colors} colors.',

@@ -1665,6 +1665,11 @@ export const STRINGS_PL = {
                 desc: 'Pole frontmatter dla kolorów plików. Zostaw puste aby użyć kolorów zapisanych w ustawieniach.',
                 placeholder: 'color'
             },
+            frontmatterBackgroundField: {
+                name: 'Pole tła',
+                desc: 'Pole frontmatter dla kolorów tła. Zostaw puste aby użyć kolorów tła zapisanych w ustawieniach.',
+                placeholder: 'background'
+            },
             frontmatterMigration: {
                 name: 'Migruj ikony i kolory z ustawień',
                 desc: 'Zapisane w ustawieniach: {icons} ikon, {colors} kolorów.',
