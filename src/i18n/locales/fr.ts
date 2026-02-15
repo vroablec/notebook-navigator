@@ -1669,8 +1669,8 @@ export const STRINGS_FR = {
                 placeholder: 'color'
             },
             frontmatterBackgroundField: {
-                name: 'Champ d\'arrière-plan',
-                desc: 'Champ frontmatter pour les couleurs d\'arrière-plan. Laisser vide pour utiliser les couleurs d\'arrière-plan enregistrées dans les paramètres.',
+                name: "Champ d'arrière-plan",
+                desc: "Champ frontmatter pour les couleurs d'arrière-plan. Laisser vide pour utiliser les couleurs d'arrière-plan enregistrées dans les paramètres.",
                 placeholder: 'background'
             },
             frontmatterMigration: {
