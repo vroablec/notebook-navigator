@@ -1060,6 +1060,16 @@ export function useListPaneData({
                 }
             });
         }
+        let unsubscribePropertyTree: (() => void) | null = null;
+        if (selectionType === ItemType.PROPERTY && selectedProperty && propertyTreeService) {
+            unsubscribePropertyTree = propertyTreeService.addTreeUpdateListener(() => {
+                if (operationActiveRef.current) {
+                    pendingRefreshRef.current = true;
+                    return;
+                }
+                scheduleRefresh();
+            });
+        }
 
         const isModifiedSort = sortOption.startsWith('modified');
         const propertySortKey = settings.propertySortKey.trim();
@@ -1199,6 +1209,7 @@ export function useListPaneData({
         const db = getDB();
         const dbUnsubscribe = db.onContentChange(changes => {
             let shouldRefresh = false;
+            const isPropertyView = selectionType === ItemType.PROPERTY && selectedProperty;
 
             // React to tag/property changes that affect the current view
             const hasTagChanges = changes.some(change => change.changes.tags !== undefined);
@@ -1206,7 +1217,6 @@ export function useListPaneData({
             if (hasTagChanges || hasPropertyChanges) {
                 const isTagView = selectionType === ItemType.TAG && selectedTag;
                 const isFolderView = selectionType === ItemType.FOLDER && selectedFolder;
-                const isPropertyView = selectionType === ItemType.PROPERTY && selectedProperty;
 
                 if (isTagView && hasTagChanges) {
                     shouldRefresh = true;
@@ -1270,6 +1280,7 @@ export function useListPaneData({
             app.metadataCache.offref(metadataEvent);
             dbUnsubscribe();
             if (unsubscribeCQ) unsubscribeCQ();
+            if (unsubscribePropertyTree) unsubscribePropertyTree();
             // Cancel any pending scheduled refresh to avoid stray updates
             scheduleRefresh.cancel();
         };
@@ -1287,6 +1298,7 @@ export function useListPaneData({
         hasTaskSearchFilters,
         getDB,
         commandQueue,
+        propertyTreeService,
         basePathSet,
         sortOption,
         settings.propertySortKey
