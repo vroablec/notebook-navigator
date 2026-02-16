@@ -279,6 +279,11 @@
     text-decoration: var(--nn-theme-navitem-folder-note-name-decoration) !important;
 }
 
+/* Folder with folder note and custom color uses custom color weight */
+.nn-navitem-name.nn-has-folder-note.nn-has-custom-color {
+    font-weight: var(--nn-theme-navitem-custom-color-name-font-weight) !important;
+}
+
 /* Folder with folder note - show pointer cursor on hover */
 .nn-navitem-name.nn-has-folder-note:hover {
     cursor: pointer;
@@ -400,6 +405,11 @@
 .nn-shortcut-item .nn-navitem-name.nn-has-folder-note .nn-shortcut-label {
     font-weight: var(--nn-theme-navitem-folder-note-name-font-weight) !important;
     text-decoration: var(--nn-theme-navitem-folder-note-name-decoration) !important;
+}
+
+/* Folder note shortcuts with custom color use custom color weight */
+.nn-shortcut-item .nn-navitem-name.nn-has-folder-note.nn-has-custom-color .nn-shortcut-label {
+    font-weight: var(--nn-theme-navitem-custom-color-file-name-font-weight) !important;
 }
 
 /* Pointer cursor on hover for clickable folder note shortcuts */
