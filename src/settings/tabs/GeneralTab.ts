@@ -533,6 +533,16 @@ export function renderGeneralTab(context: SettingsTabContext): void {
     );
 
     new Setting(autoRevealSettingsEl)
+        .setName(strings.settings.items.autoRevealShortestPath.name)
+        .setDesc(strings.settings.items.autoRevealShortestPath.desc)
+        .addToggle(toggle =>
+            toggle.setValue(plugin.settings.autoRevealShortestPath).onChange(async value => {
+                plugin.settings.autoRevealShortestPath = value;
+                await plugin.saveSettingsAndUpdate();
+            })
+        );
+
+    new Setting(autoRevealSettingsEl)
         .setName(strings.settings.items.autoRevealIgnoreRightSidebar.name)
         .setDesc(strings.settings.items.autoRevealIgnoreRightSidebar.desc)
         .addToggle(toggle =>

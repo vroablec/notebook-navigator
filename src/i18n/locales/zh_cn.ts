@@ -975,6 +975,10 @@ export const STRINGS_ZH_CN = {
                 name: '自动定位活动笔记',
                 desc: '从快速切换器、链接或搜索打开笔记时自动显示。'
             },
+            autoRevealShortestPath: {
+                name: '使用最短路径',
+                desc: '启用：自动显示选择最近的可见祖先文件夹或标签。禁用：自动显示选择文件的实际文件夹和精确标签。'
+            },
             autoRevealIgnoreRightSidebar: {
                 name: '忽略右侧边栏事件',
                 desc: '在右侧边栏中点击或更改笔记时不更改活动笔记。'

@@ -979,6 +979,10 @@ export const STRINGS_NL = {
                 name: 'Actieve notitie automatisch tonen',
                 desc: 'Notities automatisch tonen wanneer geopend vanuit Snelle Wisselaar, links of zoeken.'
             },
+            autoRevealShortestPath: {
+                name: 'Kortste pad gebruiken',
+                desc: 'Ingeschakeld: Automatisch tonen selecteert de dichtstbijzijnde zichtbare bovenliggende map of tag. Uitgeschakeld: Automatisch tonen selecteert de werkelijke map en exacte tag van het bestand.'
+            },
             autoRevealIgnoreRightSidebar: {
                 name: 'Gebeurtenissen van rechter zijbalk negeren',
                 desc: 'Actieve notitie niet wijzigen bij klikken of wijzigen van notities in de rechter zijbalk.'

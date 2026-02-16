@@ -976,6 +976,10 @@ export const STRINGS_EN = {
                 name: 'Auto-reveal active note',
                 desc: 'Automatically reveal notes when opened from Quick Switcher, links, or search.'
             },
+            autoRevealShortestPath: {
+                name: 'Use shortest path',
+                desc: "Enabled: Auto-reveal selects the nearest visible ancestor folder or tag. Disabled: Auto-reveal selects the file's actual folder and exact tag."
+            },
             autoRevealIgnoreRightSidebar: {
                 name: 'Ignore events from right sidebar',
                 desc: 'Do not change active note when clicking or changing notes in the right sidebar.'

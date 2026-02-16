@@ -976,6 +976,10 @@ export const STRINGS_IT = {
                 name: 'Auto-mostra nota attiva',
                 desc: 'Mostra automaticamente le note quando aperte da Switcher rapido, link o ricerca.'
             },
+            autoRevealShortestPath: {
+                name: 'Usa il percorso più breve',
+                desc: 'Attivato: La rivelazione automatica seleziona la cartella antenata o il tag visibile più vicino. Disattivato: La rivelazione automatica seleziona la cartella effettiva del file e il tag esatto.'
+            },
             autoRevealIgnoreRightSidebar: {
                 name: 'Ignora eventi dalla barra laterale destra',
                 desc: 'Non cambiare nota attiva quando clicchi o cambi note nella barra laterale destra.'

@@ -978,6 +978,10 @@ export const STRINGS_TR = {
                 name: 'Aktif notu otomatik göster',
                 desc: 'Hızlı Geçiş, bağlantılar veya aramadan açıldığında notları otomatik olarak göster.'
             },
+            autoRevealShortestPath: {
+                name: 'En kısa yolu kullan',
+                desc: 'Etkin: Otomatik gösterim en yakın görünür üst klasörü veya etiketi seçer. Devre dışı: Otomatik gösterim dosyanın gerçek klasörünü ve tam etiketini seçer.'
+            },
             autoRevealIgnoreRightSidebar: {
                 name: 'Sağ kenar çubuğundaki olayları yoksay',
                 desc: 'Sağ kenar çubuğunda notlara tıklarken veya değiştirirken aktif notu değiştirme.'

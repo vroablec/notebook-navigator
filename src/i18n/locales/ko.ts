@@ -977,6 +977,10 @@ export const STRINGS_KO = {
                 name: '활성 노트 자동 표시',
                 desc: '빠른 전환기, 링크 또는 검색에서 열 때 노트를 자동으로 표시합니다.'
             },
+            autoRevealShortestPath: {
+                name: '최단 경로 사용',
+                desc: '활성화: 자동 표시가 가장 가까운 보이는 상위 폴더 또는 태그를 선택합니다. 비활성화: 자동 표시가 파일의 실제 폴더와 정확한 태그를 선택합니다.'
+            },
             autoRevealIgnoreRightSidebar: {
                 name: '오른쪽 사이드바의 이벤트 무시',
                 desc: '오른쪽 사이드바에서 클릭하거나 노트를 변경할 때 활성 노트를 변경하지 않습니다.'

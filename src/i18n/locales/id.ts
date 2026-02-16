@@ -977,6 +977,10 @@ export const STRINGS_ID = {
                 name: 'Auto-tampilkan catatan aktif',
                 desc: 'Secara otomatis menampilkan catatan saat dibuka dari Quick Switcher, tautan, atau pencarian.'
             },
+            autoRevealShortestPath: {
+                name: 'Gunakan jalur terpendek',
+                desc: 'Diaktifkan: Auto-reveal memilih folder atau tag induk terdekat yang terlihat. Dinonaktifkan: Auto-reveal memilih folder asli dan tag persis dari file.'
+            },
             autoRevealIgnoreRightSidebar: {
                 name: 'Abaikan peristiwa dari sidebar kanan',
                 desc: 'Jangan ubah catatan aktif saat mengklik atau mengubah catatan di sidebar kanan.'

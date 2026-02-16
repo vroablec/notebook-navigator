@@ -975,6 +975,10 @@ export const STRINGS_ZH_TW = {
                 name: '自動定位使用中的筆記',
                 desc: '從快速切換器、連結或搜尋開啟筆記時自動顯示。'
             },
+            autoRevealShortestPath: {
+                name: '使用最短路徑',
+                desc: '啟用：自動顯示選擇最近的可見祖先資料夾或標籤。停用：自動顯示選擇檔案的實際資料夾和精確標籤。'
+            },
             autoRevealIgnoreRightSidebar: {
                 name: '忽略右側邊欄事件',
                 desc: '在右側邊欄中點按或變更筆記時不變更使用中的筆記。'

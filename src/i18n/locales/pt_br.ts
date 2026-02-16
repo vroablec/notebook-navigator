@@ -980,6 +980,10 @@ export const STRINGS_PT_BR = {
                 name: 'Revelar automaticamente a nota ativa',
                 desc: 'Revelar automaticamente notas quando abertas pelo Alternador Rápido, links ou pesquisa.'
             },
+            autoRevealShortestPath: {
+                name: 'Usar caminho mais curto',
+                desc: 'Ativado: A revelação automática seleciona a pasta ancestral ou tag visível mais próxima. Desativado: A revelação automática seleciona a pasta real do arquivo e a tag exata.'
+            },
             autoRevealIgnoreRightSidebar: {
                 name: 'Ignorar eventos da barra lateral direita',
                 desc: 'Não alterar a nota ativa ao clicar ou alterar notas na barra lateral direita.'

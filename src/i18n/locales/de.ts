@@ -979,6 +979,10 @@ export const STRINGS_DE = {
                 name: 'Aktive Notiz automatisch anzeigen',
                 desc: 'Notizen automatisch anzeigen, wenn sie über Schnellauswahl, Links oder Suche geöffnet werden.'
             },
+            autoRevealShortestPath: {
+                name: 'Kürzesten Pfad verwenden',
+                desc: 'Aktiviert: Automatisches Anzeigen wählt den nächsten sichtbaren übergeordneten Ordner oder Tag. Deaktiviert: Automatisches Anzeigen wählt den tatsächlichen Ordner der Datei und den genauen Tag.'
+            },
             autoRevealIgnoreRightSidebar: {
                 name: 'Ereignisse von rechter Seitenleiste ignorieren',
                 desc: 'Aktive Notiz nicht ändern, wenn in der rechten Seitenleiste auf Notizen geklickt oder diese gewechselt werden.'

@@ -979,6 +979,10 @@ export const STRINGS_FR = {
                 name: 'Révéler automatiquement la note active',
                 desc: "Révéler automatiquement les notes lorsqu'elles sont ouvertes depuis le Commutateur rapide, les liens ou la recherche."
             },
+            autoRevealShortestPath: {
+                name: 'Utiliser le chemin le plus court',
+                desc: 'Activé : La révélation automatique sélectionne le dossier parent ou le tag visible le plus proche. Désactivé : La révélation automatique sélectionne le dossier réel du fichier et le tag exact.'
+            },
             autoRevealIgnoreRightSidebar: {
                 name: 'Ignorer les événements du panneau de droite',
                 desc: "Ne pas changer la note active lors d'un clic ou du changement de notes dans le panneau de droite."

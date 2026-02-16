@@ -979,6 +979,10 @@ export const STRINGS_ES = {
                 name: 'Mostrar automáticamente la nota activa',
                 desc: 'Muestra automáticamente las notas cuando se abren desde el Conmutador rápido, enlaces o búsqueda.'
             },
+            autoRevealShortestPath: {
+                name: 'Usar la ruta más corta',
+                desc: 'Activado: La revelación automática selecciona la carpeta ancestral o etiqueta visible más cercana. Desactivado: La revelación automática selecciona la carpeta real del archivo y la etiqueta exacta.'
+            },
             autoRevealIgnoreRightSidebar: {
                 name: 'Ignorar eventos de la barra lateral derecha',
                 desc: 'No cambiar la nota activa al hacer clic o cambiar notas en la barra lateral derecha.'

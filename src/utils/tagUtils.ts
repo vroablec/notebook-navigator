@@ -19,7 +19,7 @@
 import { TFile, getAllTags, type App } from 'obsidian';
 import { MultiSelectModifier, NotebookNavigatorSettings } from '../settings';
 import { TAGGED_TAG_ID, UNTAGGED_TAG_ID } from '../types';
-import { IndexedDBStorage, type FileData } from '../storage/IndexedDBStorage';
+import type { FileData } from '../storage/IndexedDBStorage';
 import { getDBInstanceOrNull } from '../storage/fileOperations';
 import { isMultiSelectModifierPressed } from './keyboardOpenContext';
 import { normalizeTagPathValue } from './tagPrefixMatcher';
@@ -214,6 +214,10 @@ export interface CachedFileTagsDB {
     getCachedTags?: (path: string) => readonly string[];
 }
 
+interface TagRevealStorage {
+    getFile(path: string): FileData | null;
+}
+
 const EMPTY_FILE_TAGS: readonly string[] = [];
 
 export function getCachedFileTags(params: {
@@ -286,7 +290,7 @@ export function getTagSearchModifierOperator(
 /**
  * Gets normalized tags for a file (without # prefix and in lowercase)
  */
-function getNormalizedTagsForFile(file: TFile, storage: IndexedDBStorage): string[] {
+function getNormalizedTagsForFile(file: TFile, storage: TagRevealStorage): string[] {
     if (file.extension !== 'md') {
         return [];
     }
@@ -307,7 +311,7 @@ function getNormalizedTagsForFile(file: TFile, storage: IndexedDBStorage): strin
  * Checks if a file has a specific tag - exact match only, no ancestor checking.
  * Comparison is case-insensitive (e.g., "TODO" matches "todo").
  */
-function fileHasExactTag(file: TFile, tag: string, storage: IndexedDBStorage): boolean {
+function fileHasExactTag(file: TFile, tag: string, storage: TagRevealStorage): boolean {
     const normalizedTags = getNormalizedTagsForFile(file, storage);
     const normalizedSearchTag = normalizeTagPathValue(tag);
     if (normalizedSearchTag.length === 0) {
@@ -324,8 +328,9 @@ export function determineTagToReveal(
     file: TFile,
     currentTag: string | null,
     settings: NotebookNavigatorSettings,
-    storage: IndexedDBStorage,
-    includeDescendantNotes: boolean
+    storage: TagRevealStorage,
+    includeDescendantNotes: boolean,
+    useShortestPath: boolean
 ): string | null {
     const fileData = storage.getFile(file.path);
     if (!fileData || fileData.tags === null) {
@@ -350,7 +355,7 @@ export function determineTagToReveal(
     };
 
     if (currentTag === TAGGED_TAG_ID) {
-        return includeDescendantNotes ? TAGGED_TAG_ID : getFirstFileTag();
+        return includeDescendantNotes && useShortestPath ? TAGGED_TAG_ID : getFirstFileTag();
     }
 
     // Check if we should stay on the current tag
@@ -360,9 +365,8 @@ export function determineTagToReveal(
             return currentTag; // Stay on current tag
         }
 
-        if (includeDescendantNotes) {
-            // For auto-reveals (which tag reveals always are), check if current tag is a parent.
-            // This is similar to how folder auto-reveals preserve parent folders with includeDescendantNotes.
+        if (includeDescendantNotes && useShortestPath) {
+            // In shortest-path mode, keep parent tags selected when the file has descendant tags.
             const normalizedCurrentTag = normalizeTagPathValue(currentTag);
             if (normalizedCurrentTag.length > 0) {
                 const currentTagPrefix = `${normalizedCurrentTag}/`;

@@ -421,16 +421,25 @@ export function useNavigatorReveal({ app, navigationPaneRef, focusNavigationPane
             let targetFolderOverride: TFolder | null = null;
             let preserveFolder = false;
             const revealSource: SelectionRevealSource | undefined = options?.isStartupReveal ? 'startup' : options?.source;
+            const isAutoOrStartupReveal = revealSource === 'auto' || revealSource === 'startup';
+            const useShortestPath = !isAutoOrStartupReveal || settings.autoRevealShortestPath;
             const shouldCenterNavigation = Boolean(options?.isStartupReveal && settings.startView === 'navigation');
             const navigationAlign: Align = shouldCenterNavigation ? 'center' : 'auto';
             if (selectionState.selectionType === 'tag') {
-                const resolvedTag = determineTagToReveal(file, selectionState.selectedTag, settings, getDB(), includeDescendantNotes);
+                const resolvedTag = determineTagToReveal(
+                    file,
+                    selectionState.selectedTag,
+                    settings,
+                    getDB(),
+                    includeDescendantNotes,
+                    useShortestPath
+                );
                 targetTag = resolvedTag;
 
                 if (resolvedTag) {
                     const normalizedResolvedTag = normalizeTagPath(resolvedTag);
                     if (normalizedResolvedTag) {
-                        if (includeDescendantNotes) {
+                        if (includeDescendantNotes && useShortestPath) {
                             const isTagsRootCollapsed =
                                 settings.showTags &&
                                 settings.showAllTagsFolder &&
@@ -535,40 +544,57 @@ export function useNavigatorReveal({ app, navigationPaneRef, focusNavigationPane
                 (targetProperty === null || targetProperty === undefined) &&
                 file.parent
             ) {
-                const { target, expandAncestors } = getRevealTargetFolder(file.parent);
-                resolvedFolder = target;
+                if (useShortestPath) {
+                    const { target, expandAncestors } = getRevealTargetFolder(file.parent);
+                    resolvedFolder = target;
 
-                const selectedFolder = selectionState.selectedFolder;
-                // Check if selected folder contains file when including descendants
-                const shouldPreserveSelectedFolder =
-                    includeDescendantNotes &&
-                    selectionState.selectionType === 'folder' &&
-                    selectedFolder !== null &&
-                    doesFolderContainPath(selectedFolder.path, file.parent.path);
+                    const selectedFolder = selectionState.selectedFolder;
+                    // Check if selected folder contains file when including descendants
+                    const shouldPreserveSelectedFolder =
+                        includeDescendantNotes &&
+                        selectionState.selectionType === 'folder' &&
+                        selectedFolder !== null &&
+                        doesFolderContainPath(selectedFolder.path, file.parent.path);
 
-                if (target) {
-                    const isCurrentFolderSelected = selectedFolder && selectedFolder.path === target.path;
-                    if (isCurrentFolderSelected || shouldPreserveSelectedFolder) {
-                        preserveFolder = true;
-                    } else {
-                        targetFolderOverride = target;
-                    }
-                } else if (shouldPreserveSelectedFolder) {
-                    // No reveal target but selected folder contains the file
-                    preserveFolder = true;
-                }
-
-                if (expandAncestors) {
-                    const foldersToExpand: string[] = [];
-                    let currentFolder: TFolder | null = file.parent;
-
-                    if (currentFolder && currentFolder.parent) {
-                        currentFolder = currentFolder.parent;
-                        while (currentFolder) {
-                            foldersToExpand.unshift(currentFolder.path);
-                            if (currentFolder.path === '/') break;
-                            currentFolder = currentFolder.parent;
+                    if (target) {
+                        const isCurrentFolderSelected = selectedFolder && selectedFolder.path === target.path;
+                        if (isCurrentFolderSelected || shouldPreserveSelectedFolder) {
+                            preserveFolder = true;
+                        } else {
+                            targetFolderOverride = target;
                         }
+                    } else if (shouldPreserveSelectedFolder) {
+                        // No reveal target but selected folder contains the file
+                        preserveFolder = true;
+                    }
+
+                    if (expandAncestors) {
+                        const foldersToExpand: string[] = [];
+                        let currentFolder: TFolder | null = file.parent;
+
+                        if (currentFolder && currentFolder.parent) {
+                            currentFolder = currentFolder.parent;
+                            while (currentFolder) {
+                                foldersToExpand.unshift(currentFolder.path);
+                                if (currentFolder.path === '/') break;
+                                currentFolder = currentFolder.parent;
+                            }
+                        }
+
+                        if (foldersToExpand.some(path => !expansionState.expandedFolders.has(path))) {
+                            expansionDispatch({ type: 'EXPAND_FOLDERS', folderPaths: foldersToExpand });
+                        }
+                    }
+                } else {
+                    resolvedFolder = file.parent;
+                    targetFolderOverride = file.parent;
+
+                    const foldersToExpand: string[] = [];
+                    let currentFolder: TFolder | null = file.parent.parent;
+                    while (currentFolder) {
+                        foldersToExpand.unshift(currentFolder.path);
+                        if (currentFolder.path === '/') break;
+                        currentFolder = currentFolder.parent;
                     }
 
                     if (foldersToExpand.some(path => !expansionState.expandedFolders.has(path))) {
@@ -957,6 +983,7 @@ export function useNavigatorReveal({ app, navigationPaneRef, focusNavigationPane
             if (isStartupReveal) {
                 // On startup, if we're already in tag view with the correct file selected, skip reveal but expand tags
                 if (
+                    settings.autoRevealShortestPath &&
                     selectionState.selectionType === ItemType.TAG &&
                     selectionState.selectedTag &&
                     selectionState.selectedFile?.path === fileToReveal.path
@@ -977,11 +1004,10 @@ export function useNavigatorReveal({ app, navigationPaneRef, focusNavigationPane
                         return;
                     }
                 }
-                // Use nearest folder for startup - this respects includeDescendantNotes
-                // and preserves the current folder selection when possible
+                // Use configured auto-reveal path behavior for startup reveals.
                 revealFileInNearestFolder(fileToReveal, { source: 'auto', isStartupReveal: true });
             } else {
-                revealFileInNearestFolder(fileToReveal, { source: 'auto' }); // Use nearest folder for sidebar clicks
+                revealFileInNearestFolder(fileToReveal, { source: 'auto' });
             }
         }
     }, [
@@ -995,6 +1021,7 @@ export function useNavigatorReveal({ app, navigationPaneRef, focusNavigationPane
         selectionState.selectedFile,
         revealTag,
         revealProperty,
+        settings.autoRevealShortestPath,
         settings.startView,
         uiState.singlePane
     ]);

@@ -979,6 +979,10 @@ export const STRINGS_PL = {
                 name: 'Automatycznie odkryj aktywną notatkę',
                 desc: 'Automatycznie odkrywaj notatki po otwarciu z Quick Switcher, linków lub wyszukiwania.'
             },
+            autoRevealShortestPath: {
+                name: 'Użyj najkrótszej ścieżki',
+                desc: 'Włączone: Automatyczne ujawnianie wybiera najbliższy widoczny folder nadrzędny lub tag. Wyłączone: Automatyczne ujawnianie wybiera rzeczywisty folder pliku i dokładny tag.'
+            },
             autoRevealIgnoreRightSidebar: {
                 name: 'Ignoruj zdarzenia z prawego paska bocznego',
                 desc: 'Nie zmieniaj aktywnej notatki przy klikaniu lub zmienianiu notatek w prawym pasku bocznym.'

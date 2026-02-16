@@ -16,7 +16,25 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 import { describe, it, expect } from 'vitest';
-import { hasValidTagCharacters, isInlineTagValueCompatible, isValidTagPrecedingChar } from '../../src/utils/tagUtils';
+import { determineTagToReveal, hasValidTagCharacters, isInlineTagValueCompatible, isValidTagPrecedingChar } from '../../src/utils/tagUtils';
+import { DEFAULT_SETTINGS } from '../../src/settings/defaultSettings';
+import { TAGGED_TAG_ID } from '../../src/types';
+import { createDefaultFileData, type FileData } from '../../src/storage/IndexedDBStorage';
+import { createTestTFile } from './createTestTFile';
+
+function createTagRevealStorage(filePath: string, tags: string[] | null): { getFile(path: string): FileData | null } {
+    const fileData = createDefaultFileData({ mtime: 0, path: filePath });
+    fileData.tags = tags;
+
+    return {
+        getFile(path: string): FileData | null {
+            if (path === filePath) {
+                return fileData;
+            }
+            return null;
+        }
+    };
+}
 
 describe('tagUtils', () => {
     describe('hasValidTagCharacters', () => {
@@ -88,6 +106,35 @@ describe('tagUtils', () => {
             expect(isValidTagPrecedingChar('1')).toBe(false);
             expect(isValidTagPrecedingChar('-')).toBe(false);
             expect(isValidTagPrecedingChar('.')).toBe(false);
+        });
+    });
+
+    describe('determineTagToReveal', () => {
+        it('keeps parent tag in shortest-path mode with descendant notes enabled', () => {
+            const file = createTestTFile('projects/work.md');
+            const storage = createTagRevealStorage(file.path, ['project/task']);
+
+            const result = determineTagToReveal(file, 'project', DEFAULT_SETTINGS, storage, true, true);
+            expect(result).toBe('project');
+        });
+
+        it('selects the exact tag when shortest-path mode is disabled', () => {
+            const file = createTestTFile('projects/work.md');
+            const storage = createTagRevealStorage(file.path, ['project/task']);
+
+            const result = determineTagToReveal(file, 'project', DEFAULT_SETTINGS, storage, true, false);
+            expect(result).toBe('project/task');
+        });
+
+        it('keeps tagged root in shortest-path mode and selects exact tag when disabled', () => {
+            const file = createTestTFile('projects/work.md');
+            const storage = createTagRevealStorage(file.path, ['project/task']);
+
+            const shortestPathResult = determineTagToReveal(file, TAGGED_TAG_ID, DEFAULT_SETTINGS, storage, true, true);
+            const exactPathResult = determineTagToReveal(file, TAGGED_TAG_ID, DEFAULT_SETTINGS, storage, true, false);
+
+            expect(shortestPathResult).toBe(TAGGED_TAG_ID);
+            expect(exactPathResult).toBe('project/task');
         });
     });
 });

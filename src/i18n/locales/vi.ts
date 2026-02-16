@@ -977,6 +977,10 @@ export const STRINGS_VI = {
                 name: 'Tự động hiện ghi chú đang hoạt động',
                 desc: 'Tự động hiện ghi chú khi mở từ Quick Switcher, liên kết hoặc tìm kiếm.'
             },
+            autoRevealShortestPath: {
+                name: 'Sử dụng đường dẫn ngắn nhất',
+                desc: 'Bật: Tự động hiển thị chọn thư mục cha hoặc thẻ gần nhất có thể nhìn thấy. Tắt: Tự động hiển thị chọn thư mục thực tế và thẻ chính xác của tệp.'
+            },
             autoRevealIgnoreRightSidebar: {
                 name: 'Bỏ qua sự kiện từ thanh bên phải',
                 desc: 'Không đổi ghi chú đang hoạt động khi nhấn hoặc đổi ghi chú ở thanh bên phải.'

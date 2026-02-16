@@ -211,6 +211,7 @@ export interface NotebookNavigatorSettings {
 
     // General tab - Behavior
     autoRevealActiveFile: boolean;
+    autoRevealShortestPath: boolean;
     autoRevealIgnoreRightSidebar: boolean;
     paneTransitionDuration: number;
 

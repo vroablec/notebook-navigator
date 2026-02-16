@@ -65,6 +65,7 @@ export const DEFAULT_SETTINGS: NotebookNavigatorSettings = {
 
     // General tab - Behavior
     autoRevealActiveFile: true,
+    autoRevealShortestPath: true,
     autoRevealIgnoreRightSidebar: true,
     paneTransitionDuration: 150,
 
