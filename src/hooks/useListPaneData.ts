@@ -39,7 +39,12 @@ import type { ListPaneItem } from '../types/virtualization';
 import { TIMEOUTS } from '../types/obsidian-extended';
 import { DateUtils } from '../utils/dateUtils';
 import { collectPinnedPaths } from '../utils/fileFinder';
-import { shouldExcludeFile, createHiddenFileNameMatcher, isFolderInExcludedFolder } from '../utils/fileFilters';
+import {
+    createFrontmatterPropertyExclusionMatcher,
+    createHiddenFileNameMatcher,
+    isFolderInExcludedFolder,
+    shouldExcludeFileWithMatcher
+} from '../utils/fileFilters';
 import {
     getDateField,
     getEffectiveSortOption,
@@ -193,6 +198,10 @@ export function useListPaneData({
         return selectedFolder.path;
     }, [selectionType, selectedFolder]);
     const { hiddenFolders, hiddenFileProperties, hiddenFileNames, hiddenTags, hiddenFileTags, fileVisibility } = activeProfile;
+    const hiddenFilePropertyMatcher = useMemo(
+        () => createFrontmatterPropertyExclusionMatcher(hiddenFileProperties),
+        [hiddenFileProperties]
+    );
     const listConfig = useMemo(
         () => ({
             pinnedNotes: settings.pinnedNotes,
@@ -613,7 +622,7 @@ export function useListPaneData({
         const db = getDB();
         const records = db.getFiles(files.map(file => file.path));
         const shouldCheckFolders = hiddenFolders.length > 0;
-        const shouldCheckFrontmatter = hiddenFileProperties.length > 0;
+        const shouldCheckFrontmatter = hiddenFilePropertyMatcher.hasCriteria;
         const shouldCheckFileNames = hiddenFileNames.length > 0;
         const shouldCheckFileTags = hiddenFileTags.length > 0;
         const fileNameMatcher = shouldCheckFileNames ? createHiddenFileNameMatcher(hiddenFileNames) : null;
@@ -639,7 +648,7 @@ export function useListPaneData({
             let hiddenByFrontmatter = false;
             if (shouldCheckFrontmatter && file.extension === 'md') {
                 if (record?.metadata?.hidden === undefined) {
-                    hiddenByFrontmatter = shouldExcludeFile(file, hiddenFileProperties, app);
+                    hiddenByFrontmatter = shouldExcludeFileWithMatcher(file, hiddenFilePropertyMatcher, app);
                 } else {
                     hiddenByFrontmatter = Boolean(record.metadata?.hidden);
                 }
@@ -660,7 +669,7 @@ export function useListPaneData({
         });
 
         return result;
-    }, [files, getDB, hiddenFolders, hiddenFileProperties, hiddenFileNames, hiddenFileTags, showHiddenItems, app]);
+    }, [files, getDB, hiddenFolders, hiddenFilePropertyMatcher, hiddenFileNames, hiddenFileTags, showHiddenItems, app]);
 
     /**
      * Build the complete list of items for rendering, including:
@@ -1169,11 +1178,11 @@ export function useListPaneData({
             }
 
             // Check if file's hidden state changed (frontmatter property added/removed) to trigger rebuild
-            if (hiddenFileProperties.length > 0 && file.extension === 'md') {
+            if (hiddenFilePropertyMatcher.hasCriteria && file.extension === 'md') {
                 const db = getDB();
                 const record = db.getFile(file.path);
                 const wasExcluded = Boolean(record?.metadata?.hidden);
-                const isCurrentlyExcluded = shouldExcludeFile(file, hiddenFileProperties, app);
+                const isCurrentlyExcluded = shouldExcludeFileWithMatcher(file, hiddenFilePropertyMatcher, app);
 
                 if (isCurrentlyExcluded !== wasExcluded) {
                     if (operationActiveRef.current) {
@@ -1250,7 +1259,7 @@ export function useListPaneData({
             }
 
             // React to metadata changes that may update hidden-state styling
-            if (!shouldRefresh && hiddenFileProperties.length > 0 && showHiddenItems) {
+            if (!shouldRefresh && hiddenFilePropertyMatcher.hasCriteria && showHiddenItems) {
                 const metadataPaths = changes.filter(change => change.changes.metadata !== undefined).map(change => change.path);
                 if (metadataPaths.length > 0) {
                     shouldRefresh = metadataPaths.some(path => basePathSet.has(path));
@@ -1291,7 +1300,7 @@ export function useListPaneData({
         selectedFolder,
         selectedProperty,
         includeDescendantNotes,
-        hiddenFileProperties,
+        hiddenFilePropertyMatcher,
         hiddenFolders,
         hiddenFileTags,
         showHiddenItems,

@@ -39,7 +39,7 @@ import {
     type CalendarNoteKind
 } from '../../utils/calendarNotes';
 import { getFolderNote, getFolderNoteDetectionSettings, isFolderNote, isSupportedFolderNoteExtension } from '../../utils/folderNotes';
-import { isFolderInExcludedFolder, shouldExcludeFile } from '../../utils/fileFilters';
+import { createFrontmatterPropertyExclusionMatcher, isFolderInExcludedFolder, shouldExcludeFileWithMatcher } from '../../utils/fileFilters';
 import { getEffectiveFrontmatterExclusions, isFileHiddenBySettings } from '../../utils/exclusionUtils';
 import { runAsyncAction } from '../../utils/async';
 import { getMomentApi, resolveMomentLocale, type MomentInstance } from '../../utils/moment';
@@ -1103,6 +1103,7 @@ export default function registerNavigatorCommands(plugin: NotebookNavigatorPlugi
 
                 const { showHiddenItems } = plugin.getUXPreferences();
                 const effectiveExcludedFiles = getEffectiveFrontmatterExclusions(plugin.settings, showHiddenItems);
+                const effectiveExcludedFileMatcher = createFrontmatterPropertyExclusionMatcher(effectiveExcludedFiles);
                 const hiddenFolders = getActiveHiddenFolders(plugin.settings);
 
                 const eligible: TFile[] = [];
@@ -1125,7 +1126,10 @@ export default function registerNavigatorCommands(plugin: NotebookNavigatorPlugi
                         return;
                     }
 
-                    if (effectiveExcludedFiles.length > 0 && shouldExcludeFile(file, effectiveExcludedFiles, plugin.app)) {
+                    if (
+                        effectiveExcludedFileMatcher.hasCriteria &&
+                        shouldExcludeFileWithMatcher(file, effectiveExcludedFileMatcher, plugin.app)
+                    ) {
                         return;
                     }
 

@@ -56,9 +56,10 @@ import { PropertyTreeNode, TagTreeNode } from '../types/storage';
 import type { CombinedNavigationItem } from '../types/virtualization';
 import type { NotebookNavigatorSettings, TagSortOrder } from '../settings/types';
 import {
+    createFrontmatterPropertyExclusionMatcher,
     createHiddenFileNameMatcherForVisibility,
     isFolderInExcludedFolder,
-    shouldExcludeFile,
+    shouldExcludeFileWithMatcher,
     shouldExcludeFileName
 } from '../utils/fileFilters';
 import { shouldDisplayFile, FILE_VISIBILITY } from '../utils/fileTypeUtils';
@@ -565,6 +566,10 @@ export function useNavigationPaneData({
     const folderCountFileNameMatcher = useMemo(() => {
         return createHiddenFileNameMatcherForVisibility(hiddenFileNames, showHiddenItems);
     }, [hiddenFileNames, showHiddenItems]);
+    const hiddenFilePropertyMatcher = useMemo(
+        () => createFrontmatterPropertyExclusionMatcher(hiddenFileProperties),
+        [hiddenFileProperties]
+    );
 
     // Version counter that increments when vault files change
     const [fileChangeVersion, setFileChangeVersion] = useState(0);
@@ -1104,7 +1109,7 @@ export function useNavigationPaneData({
                 return false;
             }
 
-            if (hiddenFileProperties.length > 0 && shouldExcludeFile(abstractFile, hiddenFileProperties, app)) {
+            if (hiddenFilePropertyMatcher.hasCriteria && shouldExcludeFileWithMatcher(abstractFile, hiddenFilePropertyMatcher, app)) {
                 fileVisibilityCache.set(path, false);
                 return false;
             }
@@ -1236,7 +1241,9 @@ export function useNavigationPaneData({
                     return;
                 }
                 const isExcluded =
-                    (note.extension === 'md' && hiddenFileProperties.length > 0 && shouldExcludeFile(note, hiddenFileProperties, app)) ||
+                    (note.extension === 'md' &&
+                        hiddenFilePropertyMatcher.hasCriteria &&
+                        shouldExcludeFileWithMatcher(note, hiddenFilePropertyMatcher, app)) ||
                     (note.extension === 'md' &&
                         shouldFilterHiddenFileTags &&
                         getCachedFileTags({ app, file: note, db }).some(tagValue => !hiddenFileTagVisibility.isTagVisible(tagValue))) ||
@@ -1386,7 +1393,7 @@ export function useNavigationPaneData({
         hydratedShortcuts,
         hiddenFileNames,
         hiddenFileTags,
-        hiddenFileProperties,
+        hiddenFilePropertyMatcher,
         hiddenFolders,
         hiddenMatcherHasRules,
         hiddenTagMatcher,
@@ -2147,6 +2154,7 @@ export function useNavigationPaneData({
         const counts = new Map<string, NoteCountInfo>();
 
         const excludedProperties = effectiveFrontmatterExclusions;
+        const excludedFileMatcher = createFrontmatterPropertyExclusionMatcher(excludedProperties);
         const excludedFolderPatterns = hiddenFolders;
         const hiddenFileTagVisibility = showHiddenItems ? null : createHiddenTagVisibility(hiddenFileTags, false);
         const db = hiddenFileTagVisibility && hiddenFileTagVisibility.hasHiddenRules ? getDBInstanceOrNull() : null;
@@ -2158,6 +2166,7 @@ export function useNavigationPaneData({
             db,
             fileVisibility,
             excludedFiles: excludedProperties,
+            excludedFileMatcher,
             excludedFolders: excludedFolderPatterns,
             fileNameMatcher: folderCountFileNameMatcher,
             hiddenFileTagVisibility,

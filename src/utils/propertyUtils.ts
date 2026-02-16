@@ -127,6 +127,15 @@ export function removePropertyField(propertyFields: string, propertyKey: string)
     return formatCommaSeparatedList(remainingFields);
 }
 
+export function normalizePropertyTreeValuePath(rawValue: string): string {
+    const wikiLink = parseStrictWikiLink(rawValue);
+    if (wikiLink) {
+        return casefold(wikiLink.displayText);
+    }
+
+    return casefold(rawValue);
+}
+
 export function parseStrictWikiLink(value: string): WikiLinkTarget | null {
     // Property pills are clickable only when the full value is a single wiki link token.
     const trimmed = value.trim();

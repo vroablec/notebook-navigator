@@ -1243,9 +1243,9 @@ export const STRINGS_EN = {
                 }
             },
             excludedNotes: {
-                name: 'Hide notes with properties (vault profile)',
-                desc: 'Comma-separated list of frontmatter properties. Notes containing any of these properties will be hidden (e.g., draft, private, archived).',
-                placeholder: 'draft, private'
+                name: 'Hide notes with property rules (vault profile)',
+                desc: 'Comma-separated list of frontmatter rules. Use `key` or `key=value` entries (e.g., status=done, published=true, archived).',
+                placeholder: 'status=done, published=true, archived'
             },
             excludedFileNamePatterns: {
                 name: 'Hide files (vault profile)',

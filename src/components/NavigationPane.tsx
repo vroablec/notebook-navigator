@@ -168,7 +168,7 @@ import { useSurfaceColorVariables } from '../hooks/useSurfaceColorVariables';
 import { NAVIGATION_PANE_SURFACE_COLOR_MAPPINGS } from '../constants/surfaceColorMappings';
 import { PROPERTY_DRAG_MIME, TAG_DRAG_MIME } from '../types/obsidian-extended';
 import { SHORTCUT_POINTER_CONSTRAINT, verticalAxisOnly } from '../utils/dndConfig';
-import { createHiddenFileNameMatcherForVisibility } from '../utils/fileFilters';
+import { createFrontmatterPropertyExclusionMatcher, createHiddenFileNameMatcherForVisibility } from '../utils/fileFilters';
 import { createHiddenTagVisibility } from '../utils/tagPrefixMatcher';
 import { getDBInstanceOrNull } from '../storage/fileOperations';
 import { appendPropertyField, collectAvailablePropertyKeySuggestions } from '../utils/propertyUtils';
@@ -283,6 +283,9 @@ export const NavigationPane = React.memo(
         const { hiddenFolders, hiddenFileNames, hiddenFileTags, fileVisibility } = activeProfile;
         // Resolves frontmatter exclusions, returns empty array when hidden items are shown
         const effectiveFrontmatterExclusions = getEffectiveFrontmatterExclusions(settings, showHiddenItems);
+        const effectiveFrontmatterExclusionMatcher = useMemo(() => {
+            return createFrontmatterPropertyExclusionMatcher(effectiveFrontmatterExclusions);
+        }, [effectiveFrontmatterExclusions]);
         const folderCountFileNameMatcher = useMemo(() => {
             return createHiddenFileNameMatcherForVisibility(hiddenFileNames, showHiddenItems);
         }, [hiddenFileNames, showHiddenItems]);
@@ -2316,6 +2319,7 @@ export const NavigationPane = React.memo(
                     db: noteCountDB,
                     fileVisibility,
                     excludedFiles: effectiveFrontmatterExclusions,
+                    excludedFileMatcher: effectiveFrontmatterExclusionMatcher,
                     excludedFolders: hiddenFolders,
                     fileNameMatcher: folderCountFileNameMatcher,
                     hiddenFileTagVisibility,
@@ -2331,6 +2335,7 @@ export const NavigationPane = React.memo(
                 settings.showNoteCount,
                 fileVisibility,
                 effectiveFrontmatterExclusions,
+                effectiveFrontmatterExclusionMatcher,
                 hiddenFolders,
                 noteCountDB,
                 includeDescendantNotes,

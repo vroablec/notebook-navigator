@@ -59,7 +59,12 @@ import { strings } from '../i18n';
 import { getIconService, useIconServiceVersion } from '../services/icons';
 import { getTooltipPlacement } from '../utils/domUtils';
 import { getFolderNote } from '../utils/folderNotes';
-import { hasSubfolders, shouldExcludeFolder, shouldExcludeFile } from '../utils/fileFilters';
+import {
+    createFrontmatterPropertyExclusionMatcher,
+    hasSubfolders,
+    shouldExcludeFolder,
+    shouldExcludeFileWithMatcher
+} from '../utils/fileFilters';
 import { getEffectiveFrontmatterExclusions } from '../utils/exclusionUtils';
 import { shouldDisplayFile } from '../utils/fileTypeUtils';
 import { IndentGuideColumns } from './IndentGuideColumns';
@@ -141,6 +146,10 @@ export const FolderItem = React.memo(function FolderItem({
     const iconVersion = useIconServiceVersion();
     // Resolves frontmatter exclusions, returns empty array when hidden items are shown
     const effectiveExcludedFiles = getEffectiveFrontmatterExclusions(settings, showHiddenItems);
+    const effectiveExcludedFileMatcher = useMemo(
+        () => createFrontmatterPropertyExclusionMatcher(effectiveExcludedFiles),
+        [effectiveExcludedFiles]
+    );
 
     // Count folders and files for tooltip (skip on mobile to save computation)
     const folderStats = React.useMemo(() => {
@@ -155,7 +164,7 @@ export const FolderItem = React.memo(function FolderItem({
         for (const child of folder.children) {
             if (child instanceof TFile) {
                 if (shouldDisplayFile(child, fileVisibility, app)) {
-                    if (!shouldExcludeFile(child, effectiveExcludedFiles, app)) {
+                    if (!shouldExcludeFileWithMatcher(child, effectiveExcludedFileMatcher, app)) {
                         fileCount++;
                     }
                 }
@@ -175,7 +184,16 @@ export const FolderItem = React.memo(function FolderItem({
         }
 
         return { fileCount, folderCount };
-    }, [folder.children, isMobile, settings.showTooltips, showHiddenItems, fileVisibility, effectiveExcludedFiles, excludedFolders, app]);
+    }, [
+        folder.children,
+        isMobile,
+        settings.showTooltips,
+        showHiddenItems,
+        fileVisibility,
+        effectiveExcludedFileMatcher,
+        excludedFolders,
+        app
+    ]);
 
     // Merge provided count info with default values to ensure all properties are present
     const noteCounts: NoteCountInfo = countInfo ?? { current: 0, descendants: 0, total: 0 };

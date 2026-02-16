@@ -23,10 +23,12 @@ import type { NotebookNavigatorSettings } from '../settings';
 import type { IPropertyTreeProvider } from '../interfaces/IPropertyTreeProvider';
 import { isPathInExcludedFolder } from './fileFilters';
 import { getCachedCommaSeparatedList } from './commaSeparatedListUtils';
-import { parseStrictWikiLink } from './propertyUtils';
+import { normalizePropertyTreeValuePath, parseStrictWikiLink } from './propertyUtils';
 import { casefold } from './recordUtils';
 import { naturalCompare } from './sortUtils';
 import { isRecord } from './typeGuards';
+
+export { normalizePropertyTreeValuePath };
 
 export interface BuildPropertyTreeOptions {
     excludedFolderPatterns?: string[];
@@ -701,15 +703,6 @@ export function parsePropertyNodeId(nodeId: string): { key: string; valuePath: s
 
 export function isPropertyTreeNodeId(value: string): value is PropertyTreeNodeId {
     return parsePropertyNodeId(value) !== null;
-}
-
-export function normalizePropertyTreeValuePath(rawValue: string): string {
-    const wikiLink = parseStrictWikiLink(rawValue);
-    if (wikiLink) {
-        return casefold(wikiLink.displayText);
-    }
-
-    return casefold(rawValue);
 }
 
 function normalizePropertyTreeDisplayValuePath(rawValue: string): string {
