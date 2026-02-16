@@ -36,6 +36,7 @@ export interface StyleMenuConfig {
     removeIcon?: () => Promise<void>;
     removeColor?: () => Promise<void>;
     removeBackground?: () => Promise<void>;
+    clearStyle?: () => Promise<void>;
 }
 
 /**
@@ -63,13 +64,14 @@ export function addStyleMenu(config: StyleMenuConfig): void {
     const hasRemovableColor = Boolean(config.removeColor && hasColorSupport);
     const hasRemovableBackground = Boolean(config.removeBackground && hasBackgroundSupport);
     const removalCount = Number(hasRemovableIcon) + Number(hasRemovableColor) + Number(hasRemovableBackground);
+    const hasClearAction = Boolean(config.clearStyle) || removalCount > 0;
     const hasCopyableStyle = hasStyleData(config.styleData);
     const hasPasteableStyle = Boolean(config.applyStyle && hasSupportedClipboardData);
     const hasRemoveActions = removalCount > 0;
     const showIndividualRemovers = (config.showIndividualRemovers ?? true) && hasRemoveActions;
-    const showClearAction = config.showClearAction ?? removalCount >= 2;
+    const showClearAction = config.showClearAction ?? (Boolean(config.clearStyle) || removalCount >= 2);
 
-    if (!hasCopyableStyle && !hasPasteableStyle && !hasRemoveActions) {
+    if (!hasCopyableStyle && !hasPasteableStyle && !hasClearAction) {
         return;
     }
 
@@ -137,9 +139,15 @@ export function addStyleMenu(config: StyleMenuConfig): void {
             });
         }
 
-        if (showClearAction && hasRemoveActions) {
+        if (showClearAction && hasClearAction) {
             styleSubmenu.addItem(subItem => {
                 setAsyncOnClick(subItem.setTitle(strings.contextMenu.style.clear).setIcon('lucide-eraser'), async () => {
+                    if (config.clearStyle) {
+                        // Single clear action path for item types that support unified metadata updates.
+                        await config.clearStyle();
+                        return;
+                    }
+
                     const actions: Promise<void>[] = [];
 
                     if (hasRemovableIcon && config.removeIcon) {

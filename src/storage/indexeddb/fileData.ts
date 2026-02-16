@@ -209,6 +209,7 @@ export interface FileData {
         modified?: number; // Valid timestamp, 0 = field not configured, -1 = parse failed
         icon?: string;
         color?: string;
+        background?: string;
         hidden?: boolean; // Whether file matches frontmatter exclusion patterns
     } | null; // null = not generated yet
 }

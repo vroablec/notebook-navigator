@@ -1136,6 +1136,7 @@ export class IndexedDBStorage {
             modified?: number;
             icon?: string;
             color?: string;
+            background?: string;
         }
     ): Promise<void> {
         await this.init();

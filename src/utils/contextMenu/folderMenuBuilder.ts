@@ -329,45 +329,68 @@ export function buildFolderMenu(params: FolderMenuBuilderParams): void {
     const hasSeparator = metadataService.hasNavigationSeparator(folderSeparatorTarget);
     const disableNavigationSeparatorActions = Boolean(options?.disableNavigationSeparatorActions);
 
-    const folderIcon = metadataService.getFolderIcon(folder.path);
-    const folderColor = metadataService.getFolderColor(folder.path);
-    const folderBackgroundColor = metadataService.getFolderBackgroundColor(folder.path);
-    const directFolderColor = settings.folderColors?.[folder.path];
-    const directFolderBackground = settings.folderBackgroundColors?.[folder.path];
+    const directFolderDisplayData = metadataService.getFolderDisplayData(folder.path, {
+        includeDisplayName: false,
+        includeColor: true,
+        includeBackgroundColor: true,
+        includeIcon: true,
+        includeInheritedColors: false
+    });
+    const shouldResolveInheritedColor = settings.inheritFolderColors && !directFolderDisplayData.color;
+    const shouldResolveInheritedBackground = settings.inheritFolderColors && !directFolderDisplayData.backgroundColor;
+    const inheritedFolderDisplayData =
+        shouldResolveInheritedColor || shouldResolveInheritedBackground
+            ? metadataService.getFolderDisplayData(folder.path, {
+                  includeDisplayName: false,
+                  includeColor: shouldResolveInheritedColor,
+                  includeBackgroundColor: shouldResolveInheritedBackground,
+                  includeIcon: false,
+                  includeInheritedColors: true
+              })
+            : null;
+    const folderDisplayData = {
+        ...directFolderDisplayData,
+        color: directFolderDisplayData.color ?? inheritedFolderDisplayData?.color,
+        backgroundColor: directFolderDisplayData.backgroundColor ?? inheritedFolderDisplayData?.backgroundColor
+    };
 
-    const hasRemovableIcon = Boolean(folderIcon);
-    const hasRemovableColor = Boolean(directFolderColor);
-    const hasRemovableBackground = Boolean(directFolderBackground);
+    const hasRemovableIcon = Boolean(directFolderDisplayData.icon);
+    const hasRemovableColor = Boolean(directFolderDisplayData.color);
+    const hasRemovableBackground = Boolean(directFolderDisplayData.backgroundColor);
+    const hasRemovableStyle = hasRemovableIcon || hasRemovableColor || hasRemovableBackground;
+    const removableStyleCount = Number(hasRemovableIcon) + Number(hasRemovableColor) + Number(hasRemovableBackground);
 
     addStyleMenu({
         menu,
         styleData: {
-            icon: folderIcon,
-            color: folderColor,
-            background: folderBackgroundColor
+            icon: folderDisplayData.icon,
+            color: folderDisplayData.color,
+            background: folderDisplayData.backgroundColor
         },
         hasIcon: settings.showFolderIcons,
         hasColor: true,
         hasBackground: true,
+        showClearAction: removableStyleCount >= 2,
         applyStyle: async clipboard => {
             const { icon, color, background } = clipboard;
-            const actions: Promise<void>[] = [];
-
-            if (icon) {
-                actions.push(metadataService.setFolderIcon(folder.path, icon));
-            }
-            if (color) {
-                actions.push(metadataService.setFolderColor(folder.path, color));
-            }
-            if (background) {
-                actions.push(metadataService.setFolderBackgroundColor(folder.path, background));
-            }
-
-            await Promise.all(actions);
+            await metadataService.setFolderStyle(folder.path, {
+                icon: icon ?? undefined,
+                color: color ?? undefined,
+                backgroundColor: background ?? undefined
+            });
         },
         removeIcon: hasRemovableIcon ? async () => metadataService.removeFolderIcon(folder.path) : undefined,
         removeColor: hasRemovableColor ? async () => metadataService.removeFolderColor(folder.path) : undefined,
-        removeBackground: hasRemovableBackground ? async () => metadataService.removeFolderBackgroundColor(folder.path) : undefined
+        removeBackground: hasRemovableBackground ? async () => metadataService.removeFolderBackgroundColor(folder.path) : undefined,
+        // Keep folder clear operations in one metadata update path.
+        clearStyle: hasRemovableStyle
+            ? async () =>
+                  metadataService.setFolderStyle(folder.path, {
+                      icon: null,
+                      color: null,
+                      backgroundColor: null
+                  })
+            : undefined
     });
 
     menu.addSeparator();

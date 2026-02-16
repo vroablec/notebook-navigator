@@ -370,11 +370,85 @@ export class MetadataAPI {
     // Folder Metadata
     // ===================================================================
 
+    private getFolderMetadataFromService(folder: TFolder): FolderMetadata | null {
+        const plugin = this.api.getPlugin();
+        if (!plugin.metadataService) {
+            return null;
+        }
+
+        const folderDisplayData = plugin.metadataService.getFolderDisplayData(folder.path, {
+            includeDisplayName: false,
+            includeColor: true,
+            includeBackgroundColor: true,
+            includeIcon: true,
+            includeInheritedColors: false
+        });
+        if (!folderDisplayData.color && !folderDisplayData.backgroundColor && !folderDisplayData.icon) {
+            return null;
+        }
+
+        return {
+            color: folderDisplayData.color,
+            backgroundColor: folderDisplayData.backgroundColor,
+            icon: folderDisplayData.icon as IconString | undefined
+        };
+    }
+
+    private getFolderSettingsSnapshot(folderPath: string): string {
+        const plugin = this.api.getPlugin();
+        const color = plugin.settings.folderColors[folderPath];
+        const backgroundColor = plugin.settings.folderBackgroundColors[folderPath];
+        const icon = plugin.settings.folderIcons[folderPath];
+        return `${color === undefined ? '\u0000' : color}\u0001${backgroundColor === undefined ? '\u0000' : backgroundColor}\u0001${
+            icon === undefined ? '\u0000' : icon
+        }`;
+    }
+
+    private isSameFolderMetadata(left: FolderMetadata | null, right: FolderMetadata | null): boolean {
+        return left?.color === right?.color && left?.backgroundColor === right?.backgroundColor && left?.icon === right?.icon;
+    }
+
+    private triggerFolderChanged(folder: TFolder): void {
+        if (this.api.getPlugin().metadataService) {
+            const metadata = this.getFolderMetadataFromService(folder);
+            this.api.trigger('folder-changed', {
+                folder,
+                metadata: {
+                    color: metadata?.color,
+                    backgroundColor: metadata?.backgroundColor,
+                    icon: metadata?.icon
+                }
+            });
+            return;
+        }
+
+        const metadata = this.getFolderMeta(folder);
+        this.api.trigger('folder-changed', {
+            folder,
+            metadata: metadata || { color: undefined, backgroundColor: undefined, icon: undefined }
+        });
+    }
+
+    /** @internal */
+    emitFolderChangedForPath(folderPath: string): void {
+        const folder = this.api.getApp().vault.getFolderByPath(folderPath);
+        if (!folder) {
+            return;
+        }
+
+        this.triggerFolderChanged(folder);
+    }
+
     /**
      * Get folder metadata
      * @param folder - Folder to get metadata for
      */
     getFolderMeta(folder: TFolder): FolderMetadata | null {
+        const plugin = this.api.getPlugin();
+        if (plugin.settings.useFrontmatterMetadata && plugin.metadataService) {
+            return this.getFolderMetadataFromService(folder);
+        }
+
         const path = folder.path;
         const color = this.metadataState.folderColors[path];
         const backgroundColor = this.metadataState.folderBackgroundColors[path];
@@ -399,6 +473,52 @@ export class MetadataAPI {
     async setFolderMeta(folder: TFolder, meta: Partial<FolderMetadata>): Promise<void> {
         const plugin = this.api.getPlugin();
         if (!plugin) return;
+
+        if (plugin.metadataService) {
+            const folderStyleUpdate: {
+                icon?: string | null;
+                color?: string | null;
+                backgroundColor?: string | null;
+            } = {};
+
+            if (meta.icon !== undefined) {
+                if (meta.icon === null) {
+                    folderStyleUpdate.icon = null;
+                } else if (typeof meta.icon === 'string') {
+                    const normalizedIcon = normalizeCanonicalIconId(meta.icon);
+                    if (normalizedIcon) {
+                        folderStyleUpdate.icon = normalizedIcon;
+                    }
+                }
+            }
+
+            if (meta.color !== undefined) {
+                folderStyleUpdate.color = meta.color;
+            }
+
+            if (meta.backgroundColor !== undefined) {
+                folderStyleUpdate.backgroundColor = meta.backgroundColor;
+            }
+
+            if (
+                folderStyleUpdate.icon !== undefined ||
+                folderStyleUpdate.color !== undefined ||
+                folderStyleUpdate.backgroundColor !== undefined
+            ) {
+                const isFolderStyleEventBridgeEnabled = plugin.metadataService.isFolderStyleEventBridgeEnabled?.() === true;
+                const settingsSnapshotBefore = this.getFolderSettingsSnapshot(folder.path);
+                const metadataBefore = this.getFolderMetadataFromService(folder);
+                await plugin.metadataService.setFolderStyle(folder.path, folderStyleUpdate);
+                const settingsSnapshotAfter = this.getFolderSettingsSnapshot(folder.path);
+                if (settingsSnapshotBefore === settingsSnapshotAfter && !isFolderStyleEventBridgeEnabled) {
+                    const metadataAfter = this.getFolderMetadataFromService(folder);
+                    if (!this.isSameFolderMetadata(metadataBefore, metadataAfter)) {
+                        this.triggerFolderChanged(folder);
+                    }
+                }
+            }
+            return;
+        }
 
         await this.updateMetadata(
             folder.path,

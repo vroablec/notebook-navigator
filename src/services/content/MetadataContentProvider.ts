@@ -63,6 +63,7 @@ export class MetadataContentProvider extends BaseContentProvider {
             'frontmatterNameField',
             'frontmatterIconField',
             'frontmatterColorField',
+            'frontmatterBackgroundField',
             'frontmatterCreatedField',
             'frontmatterModifiedField',
             'frontmatterDateFormat',
@@ -91,6 +92,7 @@ export class MetadataContentProvider extends BaseContentProvider {
                 oldSettings.frontmatterNameField !== newSettings.frontmatterNameField ||
                 oldSettings.frontmatterIconField !== newSettings.frontmatterIconField ||
                 oldSettings.frontmatterColorField !== newSettings.frontmatterColorField ||
+                oldSettings.frontmatterBackgroundField !== newSettings.frontmatterBackgroundField ||
                 oldSettings.frontmatterCreatedField !== newSettings.frontmatterCreatedField ||
                 oldSettings.frontmatterModifiedField !== newSettings.frontmatterModifiedField ||
                 oldSettings.frontmatterDateFormat !== newSettings.frontmatterDateFormat
@@ -203,6 +205,7 @@ export class MetadataContentProvider extends BaseContentProvider {
                 if (processedMetadata.fm !== undefined) fileMetadata.modified = processedMetadata.fm;
                 if (processedMetadata.icon) fileMetadata.icon = processedMetadata.icon;
                 if (processedMetadata.color) fileMetadata.color = processedMetadata.color;
+                if (processedMetadata.background) fileMetadata.background = processedMetadata.background;
             }
 
             if (shouldTrackHidden && job.file.extension === 'md') {

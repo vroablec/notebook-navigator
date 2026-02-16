@@ -231,6 +231,7 @@ export async function runUpdateFileMetadata(
             modified?: number;
             icon?: string;
             color?: string;
+            background?: string;
         };
     }
 ): Promise<void> {

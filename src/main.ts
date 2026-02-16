@@ -962,6 +962,13 @@ export default class NotebookNavigatorPlugin extends Plugin implements ISettings
             this.setSearchProvider('internal');
         }
         this.api = new NotebookNavigatorAPI(this, this.app);
+        this.metadataService.setFolderStyleChangeListener(folderPath => {
+            if (this.isUnloading || !this.api) {
+                return;
+            }
+
+            this.api.metadata.emitFolderChangedForPath(folderPath);
+        });
         this.releaseCheckService = new ReleaseCheckService(this);
 
         const iconService = getIconService();
@@ -1796,6 +1803,7 @@ export default class NotebookNavigatorPlugin extends Plugin implements ISettings
 
         // Clean up the metadata service
         if (this.metadataService) {
+            this.metadataService.dispose();
             // Clear the reference to break circular dependencies
             this.metadataService = null;
         }

@@ -105,6 +105,19 @@ export class MetadataService {
     getSettingsProvider(): ISettingsProvider {
         return this.settingsProvider;
     }
+
+    dispose(): void {
+        this.folderService.dispose();
+    }
+
+    setFolderStyleChangeListener(listener: ((folderPath: string) => void) | null): void {
+        this.folderService.setFolderStyleChangeListener(listener);
+    }
+
+    isFolderStyleEventBridgeEnabled(): boolean {
+        return this.folderService.isFolderStyleEventBridgeEnabled();
+    }
+
     // ========== Folder Methods (delegated to FolderMetadataService) ==========
 
     async setFolderColor(folderPath: string, color: string): Promise<void> {
@@ -113,6 +126,17 @@ export class MetadataService {
 
     async setFolderBackgroundColor(folderPath: string, color: string): Promise<void> {
         return this.folderService.setFolderBackgroundColor(folderPath, color);
+    }
+
+    async setFolderStyle(
+        folderPath: string,
+        style: {
+            icon?: string | null;
+            color?: string | null;
+            backgroundColor?: string | null;
+        }
+    ): Promise<void> {
+        return this.folderService.setFolderStyle(folderPath, style);
     }
 
     async removeFolderColor(folderPath: string): Promise<void> {
@@ -150,6 +174,7 @@ export class MetadataService {
             includeColor?: boolean;
             includeBackgroundColor?: boolean;
             includeIcon?: boolean;
+            includeInheritedColors?: boolean;
         }
     ): FolderDisplayData {
         return this.folderService.getFolderDisplayData(folderPath, options);
