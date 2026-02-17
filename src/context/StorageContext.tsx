@@ -434,6 +434,14 @@ export function StorageProvider({ app, api, children }: StorageProviderProps) {
         regenerateFeatureImageForFile
     ]);
 
+    // Initializes providers before settings-sync hooks schedule any provider work.
+    useInitializeContentProviderRegistry({
+        app,
+        contentRegistryRef: contentRegistry,
+        pendingSyncTimeoutIdRef: pendingSyncTimeoutId,
+        clearCacheRebuildNotice
+    });
+
     const { resetPendingSettingsChanges } = useStorageSettingsSync({
         settings,
         stoppedRef,
@@ -454,13 +462,6 @@ export function StorageProvider({ app, api, children }: StorageProviderProps) {
     });
 
     // ==================== Effects ====================
-
-    useInitializeContentProviderRegistry({
-        app,
-        contentRegistryRef: contentRegistry,
-        pendingSyncTimeoutIdRef: pendingSyncTimeoutId,
-        clearCacheRebuildNotice
-    });
 
     useStorageVaultSync({
         app,

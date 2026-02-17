@@ -116,6 +116,16 @@ export function useMetadataCacheQueue(params: {
         metadataDisposers.clear();
     }, [metadataWaitDisposersRef]);
 
+    // Stores the active listener cleanup callback while metadata wait listeners are attached.
+    const metadataWaitCleanupRef = useRef<(() => void) | null>(null);
+    // Batches ready files by the mask they were waiting on so each flush can enqueue the same `include` set.
+    const pendingReadyFilesByMaskRef = useRef<Map<PendingMetadataWaitMask, TFile[]>>(new Map());
+    // Coordinates deferred flush/sweep passes triggered by metadata cache events.
+    const flushTimeoutIdRef = useRef<number | null>(null);
+    const sweepIteratorRef = useRef<Iterator<string> | null>(null);
+    const sweepTimeoutIdRef = useRef<number | null>(null);
+    const warningTimeoutIdRef = useRef<number | null>(null);
+
     /**
      * Effect: Clean up pending metadata waits for disabled content types.
      *
@@ -151,14 +161,6 @@ export function useMetadataCacheQueue(params: {
         disposeMetadataWaitDisposers();
         pendingMetadataWaitPathsRef.current.clear();
     }, [disposeMetadataWaitDisposers, pendingMetadataWaitPathsRef, settings]);
-
-    const metadataWaitCleanupRef = useRef<(() => void) | null>(null);
-    // Batches ready files by the mask they were waiting on so each flush can enqueue the same `include` set.
-    const pendingReadyFilesByMaskRef = useRef<Map<PendingMetadataWaitMask, TFile[]>>(new Map());
-    const flushTimeoutIdRef = useRef<number | null>(null);
-    const sweepIteratorRef = useRef<Iterator<string> | null>(null);
-    const sweepTimeoutIdRef = useRef<number | null>(null);
-    const warningTimeoutIdRef = useRef<number | null>(null);
 
     const clearWarningTimer = useCallback(() => {
         if (warningTimeoutIdRef.current === null) {
@@ -516,21 +518,21 @@ export function useMetadataCacheQueue(params: {
                 return;
             }
 
-            // Filter to files that actually need content generation
-            const filesNeedingContent = filterFilesRequiringMetadataSources(markdownFiles, requestedTypes, baseSettings, {
+            // Keeps only files that still need one of the requested metadata-dependent providers.
+            const filesForQueue = filterFilesRequiringMetadataSources(markdownFiles, requestedTypes, baseSettings, {
                 // When metadata cache is not ready yet, prefer treating metadata as missing to avoid "false ready"
                 // files (for example when only a subset of fields has been indexed).
                 conservativeMetadata: true
             });
-            if (filesNeedingContent.length === 0) {
+            if (filesForQueue.length === 0) {
                 return;
             }
 
             // Split files into those with metadata cache ready and those waiting
             const immediateFiles: TFile[] = [];
-            let addedPending = false;
+            let addedPendingCount = 0;
 
-            for (const file of filesNeedingContent) {
+            for (const file of filesForQueue) {
                 const pendingMask = pendingMetadataWaitPathsRef.current.get(file.path) ?? 0;
                 const hasAllPending = (pendingMask & requestedMask) === requestedMask;
                 if (hasAllPending) {
@@ -542,7 +544,7 @@ export function useMetadataCacheQueue(params: {
                     immediateFiles.push(file);
                 } else {
                     pendingMetadataWaitPathsRef.current.set(file.path, pendingMask | requestedMask);
-                    addedPending = true;
+                    addedPendingCount += 1;
                 }
             }
 
@@ -564,7 +566,7 @@ export function useMetadataCacheQueue(params: {
                 queueFilesForTypes(immediateFiles);
             }
 
-            if (addedPending) {
+            if (addedPendingCount > 0) {
                 ensureMetadataWaitListeners();
                 return;
             }

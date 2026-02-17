@@ -127,6 +127,7 @@ export function useStorageSettingsSync(params: {
 
             // Provider-level settings may change which files need content and which providers should run.
             const affectedProviders = await registry.handleSettingsChange(oldSettings, newSettings);
+
             const enabledFeatureImages = oldSettings.showFeatureImage !== newSettings.showFeatureImage && newSettings.showFeatureImage;
             const shouldShowIndexNotice = (affectedProviders.length > 0 || enabledFeatureImages) && !stoppedRef.current;
 
@@ -160,7 +161,6 @@ export function useStorageSettingsSync(params: {
 
             const metadataDependentTypes = getMetadataDependentTypes(newSettings);
             const { markdownFiles } = queueIndexableFilesForContentGeneration(allFiles, newSettings);
-
             if (metadataDependentTypes.length > 0) {
                 queueMetadataContentWhenReady(markdownFiles, metadataDependentTypes, newSettings);
             }

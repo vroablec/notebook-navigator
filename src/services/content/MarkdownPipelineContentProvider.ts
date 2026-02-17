@@ -392,12 +392,15 @@ export class MarkdownPipelineContentProvider extends FeatureImageContentProvider
 
         const { oldSettings, newSettings } = context;
 
-        const shouldClearPreview =
-            oldSettings.showFilePreview !== newSettings.showFilePreview ||
+        const previewExtractionSettingsChanged =
             oldSettings.skipHeadingsInPreview !== newSettings.skipHeadingsInPreview ||
             oldSettings.skipCodeBlocksInPreview !== newSettings.skipCodeBlocksInPreview ||
             oldSettings.stripHtmlInPreview !== newSettings.stripHtmlInPreview ||
             !areStringArraysEqual(oldSettings.previewProperties, newSettings.previewProperties);
+        const shouldClearPreview =
+            previewExtractionSettingsChanged ||
+            // Enabling preview requires regenerated text because files may have changed while preview extraction was disabled.
+            (!oldSettings.showFilePreview && newSettings.showFilePreview);
 
         const shouldClearProperties = oldSettings.propertyFields !== newSettings.propertyFields;
 
