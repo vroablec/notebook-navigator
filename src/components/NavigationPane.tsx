@@ -77,7 +77,7 @@ import { useSettingsState, useSettingsUpdate, useActiveProfile } from '../contex
 import { useUXPreferences } from '../context/UXPreferencesContext';
 import { showNotice } from '../utils/noticeUtils';
 import { executeCommand } from '../utils/typeGuards';
-import { resolveUXIconForMenu } from '../utils/uxIcons';
+import { resolveUXIcon, resolveUXIconForMenu } from '../utils/uxIcons';
 import { useFileCache } from '../context/StorageContext';
 import { useUIState, useUIDispatch } from '../context/UIStateContext';
 import { useNavigationPaneKeyboard } from '../hooks/useNavigationPaneKeyboard';
@@ -100,9 +100,9 @@ import {
 import { getSelectedPath } from '../utils/selectionUtils';
 import { PropertyTreeNode, TagTreeNode } from '../types/storage';
 import { getFolderNote, getFolderNoteDetectionSettings, openFolderNoteFile } from '../utils/folderNotes';
-import { findTagNode, getTotalNoteCount } from '../utils/tagTree';
+import { collectAllTagPaths, findTagNode, getTotalNoteCount } from '../utils/tagTree';
 import { FILE_VISIBILITY, getExtensionSuffix, shouldShowExtensionSuffix } from '../utils/fileTypeUtils';
-import { getTagSearchModifierOperator, normalizeTagPath, resolveCanonicalTagPath } from '../utils/tagUtils';
+import { getTagSearchModifierOperator, resolveCanonicalTagPath } from '../utils/tagUtils';
 import { FolderItem } from './FolderItem';
 import { NavigationPaneHeader } from './NavigationPaneHeader';
 import { NavigationToolbar } from './NavigationToolbar';
@@ -121,13 +121,14 @@ import {
 } from '../types';
 import { localStorage } from '../utils/localStorage';
 import { runAsyncAction } from '../utils/async';
-import { extractFilePathsFromDataTransfer, parseTagDragPayload } from '../utils/dragData';
+import { extractFilePathsFromDataTransfer, parsePropertyDragPayload, parseTagDragPayload } from '../utils/dragData';
 import { resolveFolderNoteClickOpenContext } from '../utils/keyboardOpenContext';
 import { openFileInContext } from '../utils/openFileInContext';
 import { useShortcuts } from '../context/ShortcutsContext';
 import { ShortcutItem } from './ShortcutItem';
 import { NavItemHoverActionSlot } from './NavItemHoverActionSlot';
 import { ConfirmModal } from '../modals/ConfirmModal';
+import { PropertyKeySuggestModal } from '../modals/PropertyKeySuggestModal';
 import {
     ShortcutEntry,
     ShortcutType,
@@ -136,7 +137,8 @@ import {
     isFolderShortcut,
     isNoteShortcut,
     isSearchShortcut,
-    isTagShortcut
+    isTagShortcut,
+    isPropertyShortcut
 } from '../types/shortcuts';
 import { strings } from '../i18n';
 import { NavigationBanner } from './NavigationBanner';
@@ -145,6 +147,7 @@ import {
     buildFolderMenu,
     buildFileMenu,
     buildTagMenu,
+    buildPropertyMenu,
     type MenuServices,
     type MenuState,
     type MenuDispatchers
@@ -156,25 +159,25 @@ import { calculateFolderNoteCounts } from '../utils/noteCountUtils';
 import { getEffectiveFrontmatterExclusions } from '../utils/exclusionUtils';
 import { normalizeNavigationSectionOrderInput } from '../utils/navigationSections';
 import { getPathBaseName } from '../utils/pathUtils';
-import type { NavigateToFolderOptions, RevealTagOptions } from '../hooks/useNavigatorReveal';
+import type { NavigateToFolderOptions, RevealPropertyOptions, RevealTagOptions } from '../hooks/useNavigatorReveal';
 import { isVirtualTagCollectionId } from '../utils/virtualTagCollections';
 import { compositeWithBase } from '../utils/colorUtils';
+import { normalizeCommaSeparatedList } from '../utils/commaSeparatedListUtils';
 import { useMeasuredElementHeight } from '../hooks/useMeasuredElementHeight';
 import { useSurfaceColorVariables } from '../hooks/useSurfaceColorVariables';
 import { NAVIGATION_PANE_SURFACE_COLOR_MAPPINGS } from '../constants/surfaceColorMappings';
-import { TAG_DRAG_MIME } from '../types/obsidian-extended';
+import { PROPERTY_DRAG_MIME, TAG_DRAG_MIME } from '../types/obsidian-extended';
 import { SHORTCUT_POINTER_CONSTRAINT, verticalAxisOnly } from '../utils/dndConfig';
-import { createHiddenFileNameMatcherForVisibility } from '../utils/fileFilters';
+import { createFrontmatterPropertyExclusionMatcher, createHiddenFileNameMatcherForVisibility } from '../utils/fileFilters';
 import { createHiddenTagVisibility } from '../utils/tagPrefixMatcher';
 import { getDBInstanceOrNull } from '../storage/fileOperations';
-import { resolvePropertyColorMapColor } from '../utils/propertyColorMapFormat';
+import { appendPropertyField, collectAvailablePropertyKeySuggestions } from '../utils/propertyUtils';
 import {
-    buildPropertyKeyNodeId,
-    buildPropertyValueNodeId,
-    isPropertyKeyOnlyValuePath,
-    normalizePropertyTreeValuePath
+    getDirectPropertyKeyNoteCount,
+    getTotalPropertyNoteCount,
+    resolvePropertyShortcutNodeId,
+    resolvePropertyTreeNode
 } from '../utils/propertyTree';
-import { casefold } from '../utils/recordUtils';
 
 export interface NavigationPaneHandle {
     getIndexOfPath: (itemType: ItemType, path: string) => number;
@@ -199,6 +202,7 @@ interface NavigationPaneProps {
     onExecuteSearchShortcut?: (shortcutKey: string, searchShortcut: SearchShortcut) => Promise<void> | void;
     onNavigateToFolder: (folderPath: string, options?: NavigateToFolderOptions) => void;
     onRevealTag: (tagPath: string, options?: RevealTagOptions) => void;
+    onRevealProperty: (propertyNodeId: string, options?: RevealPropertyOptions) => boolean;
     onRevealFile: (file: TFile) => void;
     onRevealShortcutFile?: (file: TFile) => void;
     onModifySearchWithTag: (tag: string, operator: InclusionOperator) => void;
@@ -247,6 +251,7 @@ export const NavigationPane = React.memo(
             searchNavFilters,
             onNavigateToFolder,
             onRevealTag,
+            onRevealProperty,
             onRevealFile,
             onRevealShortcutFile,
             onModifySearchWithTag,
@@ -278,6 +283,9 @@ export const NavigationPane = React.memo(
         const { hiddenFolders, hiddenFileNames, hiddenFileTags, fileVisibility } = activeProfile;
         // Resolves frontmatter exclusions, returns empty array when hidden items are shown
         const effectiveFrontmatterExclusions = getEffectiveFrontmatterExclusions(settings, showHiddenItems);
+        const effectiveFrontmatterExclusionMatcher = useMemo(() => {
+            return createFrontmatterPropertyExclusionMatcher(effectiveFrontmatterExclusions);
+        }, [effectiveFrontmatterExclusions]);
         const folderCountFileNameMatcher = useMemo(() => {
             return createHiddenFileNameMatcherForVisibility(hiddenFileNames, showHiddenItems);
         }, [hiddenFileNames, showHiddenItems]);
@@ -313,6 +321,7 @@ export const NavigationPane = React.memo(
             hydratedShortcuts,
             reorderShortcuts,
             addTagShortcut,
+            addPropertyShortcut,
             addShortcutsBatch,
             hasFolderShortcut,
             hasNoteShortcut
@@ -330,7 +339,7 @@ export const NavigationPane = React.memo(
             });
             return badgeMap;
         }, [effectiveShortcutBadgeDisplay, hydratedShortcuts]);
-        const { fileData, getFileDisplayName } = useFileCache();
+        const { fileData, getFileDisplayName, isStorageReady } = useFileCache();
         // Detect Android platform for toolbar placement
         const isAndroid = Platform.isAndroidApp;
         const vaultTitlePreference = settings.vaultTitle ?? 'navigation';
@@ -613,6 +622,8 @@ export const NavigationPane = React.memo(
         const [foldersSectionExpanded, setFoldersSectionExpanded] = useState(true);
         // Tracks whether the tags section is expanded or collapsed
         const [tagsSectionExpanded, setTagsSectionExpanded] = useState(true);
+        // Tracks whether the properties section is expanded or collapsed
+        const [propertiesSectionExpanded, setPropertiesSectionExpanded] = useState(true);
         // Toggles the expanded state of the folders section
         const handleToggleFoldersSection = useCallback(() => {
             setFoldersSectionExpanded(prev => !prev);
@@ -621,6 +632,11 @@ export const NavigationPane = React.memo(
         // Toggles the expanded state of the tags section
         const handleToggleTagsSection = useCallback(() => {
             setTagsSectionExpanded(prev => !prev);
+        }, []);
+
+        // Toggles the expanded state of the properties section
+        const handleTogglePropertiesSection = useCallback(() => {
+            setPropertiesSectionExpanded(prev => !prev);
         }, []);
         // Trigger for forcing a re-render when shortcut note metadata changes in frontmatter
         const [, forceMetadataRefresh] = useReducer((value: number) => value + 1, 0);
@@ -773,7 +789,8 @@ export const NavigationPane = React.memo(
 
                 const hasObsidianFiles = types.includes('obsidian/file') || types.includes('obsidian/files');
                 const hasTagPayload = types.includes(TAG_DRAG_MIME);
-                if (!hasObsidianFiles && !hasTagPayload) {
+                const hasPropertyPayload = types.includes(PROPERTY_DRAG_MIME);
+                if (!hasObsidianFiles && !hasTagPayload && !hasPropertyPayload) {
                     return false;
                 }
 
@@ -810,6 +827,22 @@ export const NavigationPane = React.memo(
                         const baseInsertIndex = computeShortcutInsertIndex(event, key);
                         runAsyncAction(async () => {
                             await addTagShortcut(droppedTagPath, { index: Math.max(0, baseInsertIndex) });
+                        });
+
+                        return true;
+                    }
+                }
+
+                const propertyPayloadRaw = dataTransfer.getData(PROPERTY_DRAG_MIME);
+                if (propertyPayloadRaw) {
+                    const droppedNodeId = parsePropertyDragPayload(propertyPayloadRaw);
+                    if (droppedNodeId) {
+                        event.preventDefault();
+                        event.stopPropagation();
+
+                        const baseInsertIndex = computeShortcutInsertIndex(event, key);
+                        runAsyncAction(async () => {
+                            await addPropertyShortcut(droppedNodeId, { index: Math.max(0, baseInsertIndex) });
                         });
 
                         return true;
@@ -888,6 +921,7 @@ export const NavigationPane = React.memo(
             [
                 addShortcutsBatch,
                 addTagShortcut,
+                addPropertyShortcut,
                 app.vault,
                 computeShortcutInsertIndex,
                 shortcutsExpanded,
@@ -937,6 +971,8 @@ export const NavigationPane = React.memo(
 
         // Track previous settings for smart auto-expand
         const prevShowAllTagsFolder = useRef(settings.showAllTagsFolder);
+        const expandedTagsRef = useRef(expansionState.expandedTags);
+        const expandedPropertiesRef = useRef(expansionState.expandedProperties);
 
         // Determine if navigation pane is visible early for optimization
         const isVisible = uiState.dualPane || uiState.currentSinglePaneView === 'navigation';
@@ -946,60 +982,42 @@ export const NavigationPane = React.memo(
         const propertyTree = fileData.propertyTree;
 
         useEffect(() => {
-            const shouldCleanupTags = expansionState.expandedTags.size > 0;
-            const shouldCleanupProperties = expansionState.expandedProperties.size > 0;
-            if (!shouldCleanupTags && !shouldCleanupProperties) {
+            expandedTagsRef.current = expansionState.expandedTags;
+        }, [expansionState.expandedTags]);
+
+        useEffect(() => {
+            expandedPropertiesRef.current = expansionState.expandedProperties;
+        }, [expansionState.expandedProperties]);
+
+        useEffect(() => {
+            if (!isStorageReady) {
                 return;
             }
 
-            const db = getDBInstanceOrNull();
-            if (!db) {
+            const shouldCleanupTags = expandedTagsRef.current.size > 0;
+            const shouldCleanupProperties = expandedPropertiesRef.current.size > 0;
+            if (!shouldCleanupTags && !shouldCleanupProperties) {
                 return;
             }
 
             const existingTags = shouldCleanupTags ? new Set<string>() : null;
             const existingPropertyNodeIds = shouldCleanupProperties ? new Set<string>() : null;
 
-            db.forEachFile((_path, cachedFileData) => {
-                if (existingTags) {
-                    const tags = cachedFileData.tags;
-                    if (tags && tags.length > 0) {
-                        tags.forEach(tag => {
-                            const normalizedTag = normalizeTagPath(tag);
-                            if (normalizedTag) {
-                                existingTags.add(normalizedTag);
-                            }
-                        });
-                    }
-                }
+            if (existingTags && tagTree) {
+                const visitedTagNodes = new Set<TagTreeNode>();
+                tagTree.forEach(rootTagNode => {
+                    collectAllTagPaths(rootTagNode, existingTags, visitedTagNodes);
+                });
+            }
 
-                if (existingPropertyNodeIds) {
-                    const customProperty = cachedFileData.customProperty;
-                    if (!customProperty || customProperty.length === 0) {
-                        return;
-                    }
-
-                    customProperty.forEach(propertyEntry => {
-                        const normalizedKey = casefold(propertyEntry.fieldKey);
-                        if (!normalizedKey) {
-                            return;
-                        }
-
-                        existingPropertyNodeIds.add(buildPropertyKeyNodeId(normalizedKey));
-
-                        const normalizedValuePath = normalizePropertyTreeValuePath(propertyEntry.value);
-                        if (isPropertyKeyOnlyValuePath(normalizedValuePath, propertyEntry.valueKind)) {
-                            return;
-                        }
-
-                        if (!normalizedValuePath) {
-                            return;
-                        }
-
-                        existingPropertyNodeIds.add(buildPropertyValueNodeId(normalizedKey, normalizedValuePath));
+            if (existingPropertyNodeIds && propertyTree) {
+                propertyTree.forEach(keyNode => {
+                    existingPropertyNodeIds.add(keyNode.id);
+                    keyNode.children.forEach(valueNode => {
+                        existingPropertyNodeIds.add(valueNode.id);
                     });
-                }
-            });
+                });
+            }
 
             if (existingTags) {
                 expansionDispatch({ type: 'CLEANUP_DELETED_TAGS', existingTags });
@@ -1008,13 +1026,7 @@ export const NavigationPane = React.memo(
             if (existingPropertyNodeIds) {
                 expansionDispatch({ type: 'CLEANUP_DELETED_PROPERTIES', existingPropertyNodeIds });
             }
-        }, [
-            expansionDispatch,
-            expansionState.expandedProperties.size,
-            expansionState.expandedTags.size,
-            fileData.propertyTree,
-            fileData.tagTree
-        ]);
+        }, [expansionDispatch, isStorageReady, propertyTree, tagTree]);
 
         // Use the new data hook - now returns filtered items and pathToIndex
         // Determine if shortcuts should be pinned based on UI state and settings
@@ -1038,6 +1050,9 @@ export const NavigationPane = React.memo(
             resolvedRootTagKeys,
             rootOrderingTagTree,
             missingRootTagPaths,
+            resolvedRootPropertyKeys,
+            rootOrderingPropertyTree,
+            missingRootPropertyKeys,
             vaultChangeVersion,
             navigationBannerPath
         } = useNavigationPaneData({
@@ -1112,21 +1127,28 @@ export const NavigationPane = React.memo(
         const {
             reorderableRootFolders,
             reorderableRootTags,
+            reorderableRootProperties,
             sectionReorderItems,
             folderReorderItems,
             tagReorderItems,
+            propertyReorderItems,
             canReorderSections,
             canReorderRootFolders,
             canReorderRootTags,
+            canReorderRootProperties,
             canReorderRootItems,
             showRootFolderSection,
             showRootTagSection,
+            showRootPropertySection,
             resetRootTagOrderLabel,
+            resetRootPropertyOrderLabel,
             handleResetRootFolderOrder,
             handleResetRootTagOrder,
+            handleResetRootPropertyOrder,
             reorderSectionOrder,
             reorderRootFolderOrder,
-            reorderRootTagOrder
+            reorderRootTagOrder,
+            reorderRootPropertyOrder
         } = useNavigationRootReorder({
             app,
             items,
@@ -1140,12 +1162,17 @@ export const NavigationPane = React.memo(
             resolvedRootTagKeys,
             rootOrderingTagTree,
             missingRootTagPaths,
+            resolvedRootPropertyKeys,
+            rootOrderingPropertyTree,
+            missingRootPropertyKeys,
             metadataService,
             foldersSectionExpanded,
             tagsSectionExpanded,
+            propertiesSectionExpanded,
             propertiesSectionActive,
             handleToggleFoldersSection,
             handleToggleTagsSection,
+            handleTogglePropertiesSection,
             activeProfile
         });
 
@@ -1211,7 +1238,15 @@ export const NavigationPane = React.memo(
                 return;
             }
             rowVirtualizer.measure();
-        }, [isRootReorderMode, rowVirtualizer, sectionOrder, reorderableRootFolders, reorderableRootTags, navigationScrollMargin]);
+        }, [
+            isRootReorderMode,
+            rowVirtualizer,
+            sectionOrder,
+            reorderableRootFolders,
+            reorderableRootTags,
+            reorderableRootProperties,
+            navigationScrollMargin
+        ]);
 
         // Scroll to top when entering root reorder mode for better UX
         useEffect(() => {
@@ -1669,7 +1704,8 @@ export const NavigationPane = React.memo(
                     onSelect: () => {
                         selectionDispatch({
                             type: 'SET_SELECTED_PROPERTY',
-                            nodeId: propertyNode.id
+                            nodeId: propertyNode.id,
+                            source: options?.fromShortcut ? 'shortcut' : undefined
                         });
                     },
                     onToggleExpand: () => {
@@ -1877,12 +1913,47 @@ export const NavigationPane = React.memo(
             ]
         );
 
+        const handleShortcutPropertyActivate = useCallback(
+            (propertyNodeId: string, shortcutKey: string) => {
+                setActiveShortcut(shortcutKey);
+                const didReveal = onRevealProperty(propertyNodeId, { skipScroll: settings.skipAutoScroll, source: 'shortcut' });
+                if (!didReveal) {
+                    scheduleShortcutRelease();
+                    return false;
+                }
+
+                if (!uiState.singlePane) {
+                    uiDispatch({ type: 'SET_FOCUSED_PANE', pane: 'navigation' });
+                    const container = rootContainerRef.current;
+                    if (container) {
+                        container.focus();
+                    }
+                }
+
+                selectionDispatch({ type: 'SET_KEYBOARD_NAVIGATION', isKeyboardNavigation: true });
+
+                scheduleShortcutRelease();
+                return true;
+            },
+            [
+                onRevealProperty,
+                rootContainerRef,
+                scheduleShortcutRelease,
+                selectionDispatch,
+                settings.skipAutoScroll,
+                setActiveShortcut,
+                uiDispatch,
+                uiState.singlePane
+            ]
+        );
+
         type ShortcutContextMenuTarget =
             | { type: 'folder'; key: string; folder: TFolder }
             | { type: 'note'; key: string; file: TFile }
             | { type: 'tag'; key: string; tagPath: string }
+            | { type: 'property'; key: string; propertyNodeId: string }
             | { type: 'search'; key: string }
-            | { type: 'missing'; key: string; kind: 'folder' | 'note' | 'tag' };
+            | { type: 'missing'; key: string; kind: 'folder' | 'note' | 'tag' | 'property' };
 
         const handleShortcutContextMenu = useCallback(
             (event: React.MouseEvent<HTMLDivElement>, target: ShortcutContextMenuTarget) => {
@@ -1934,7 +2005,8 @@ export const NavigationPane = React.memo(
                 const state: MenuState = {
                     selectionState,
                     expandedFolders: expansionState.expandedFolders,
-                    expandedTags: expansionState.expandedTags
+                    expandedTags: expansionState.expandedTags,
+                    expandedProperties: expansionState.expandedProperties
                 };
 
                 const dispatchers: MenuDispatchers = {
@@ -1983,6 +2055,16 @@ export const NavigationPane = React.memo(
                         dispatchers,
                         options: { disableNavigationSeparatorActions: true }
                     });
+                } else if (target.type === 'property') {
+                    buildPropertyMenu({
+                        propertyNodeId: target.propertyNodeId,
+                        menu,
+                        services: menuServices,
+                        settings,
+                        state,
+                        dispatchers,
+                        options: { disableNavigationSeparatorActions: true }
+                    });
                 }
 
                 menu.showAtMouseEvent(event.nativeEvent);
@@ -1993,6 +2075,7 @@ export const NavigationPane = React.memo(
                 selectionState,
                 expansionState.expandedFolders,
                 expansionState.expandedTags,
+                expansionState.expandedProperties,
                 selectionDispatch,
                 expansionDispatch,
                 uiDispatch,
@@ -2010,7 +2093,8 @@ export const NavigationPane = React.memo(
                 const state: MenuState = {
                     selectionState,
                     expandedFolders: expansionState.expandedFolders,
-                    expandedTags: expansionState.expandedTags
+                    expandedTags: expansionState.expandedTags,
+                    expandedProperties: expansionState.expandedProperties
                 };
 
                 const dispatchers: MenuDispatchers = {
@@ -2036,11 +2120,31 @@ export const NavigationPane = React.memo(
                 selectionState,
                 expansionState.expandedFolders,
                 expansionState.expandedTags,
+                expansionState.expandedProperties,
                 selectionDispatch,
                 expansionDispatch,
                 uiDispatch
             ]
         );
+
+        const handleAddPropertyKeyFromSectionMenu = useCallback(() => {
+            const suggestions = collectAvailablePropertyKeySuggestions(app, plugin.settings.propertyFields);
+            if (suggestions.length === 0) {
+                showNotice(strings.settings.items.propertyFields.emptySelectorNotice, { variant: 'warning' });
+                return;
+            }
+
+            const modal = new PropertyKeySuggestModal(app, suggestions, async selectedKey => {
+                const nextValue = appendPropertyField(plugin.settings.propertyFields, selectedKey);
+                if (nextValue === plugin.settings.propertyFields) {
+                    return;
+                }
+
+                plugin.settings.propertyFields = normalizeCommaSeparatedList(nextValue);
+                await plugin.saveSettingsAndUpdate();
+            });
+            modal.open();
+        }, [app, plugin]);
 
         // Shows a context menu for navigation section headers with separator and shortcut actions
         const handleSectionContextMenu = useCallback(
@@ -2049,11 +2153,25 @@ export const NavigationPane = React.memo(
                 event.stopPropagation();
 
                 const isShortcutsSection = sectionId === NavigationSectionId.SHORTCUTS;
+                const isTagSection = sectionId === NavigationSectionId.TAGS;
+                const isPropertySection = sectionId === NavigationSectionId.PROPERTIES;
                 const target = { type: 'section', id: sectionId } as const;
                 const allowSeparator = options?.allowSeparator ?? true;
                 const hasSeparator = allowSeparator ? metadataService.hasNavigationSeparator(target) : false;
                 const menu = new Menu();
                 let hasActions = false;
+
+                if (isPropertySection) {
+                    menu.addItem(item => {
+                        item.setTitle(strings.contextMenu.property.addKey)
+                            .setIcon('lucide-plus')
+                            .onClick(() => {
+                                handleAddPropertyKeyFromSectionMenu();
+                            });
+                    });
+                    hasActions = true;
+                    menu.addSeparator();
+                }
 
                 if (isShortcutsSection) {
                     menu.addItem(item => {
@@ -2136,16 +2254,21 @@ export const NavigationPane = React.memo(
                     hasActions = true;
                 }
 
-                if (sectionId === NavigationSectionId.TAGS) {
+                if (isTagSection || isPropertySection) {
                     if (hasActions) {
                         menu.addSeparator();
                     }
 
+                    const commandId = isTagSection ? 'navigate-to-tag' : 'navigate-to-property';
+                    const commandTitle = isTagSection ? strings.commands.navigateToTag : strings.commands.navigateToProperty;
+                    const commandIcon = isTagSection
+                        ? resolveUXIconForMenu(settings.interfaceIcons, 'nav-tag', 'lucide-hash')
+                        : resolveUXIconForMenu(settings.interfaceIcons, 'nav-property', 'lucide-list-filter');
                     menu.addItem(item => {
-                        item.setTitle(strings.commands.navigateToTag)
-                            .setIcon('lucide-hash')
+                        item.setTitle(commandTitle)
+                            .setIcon(commandIcon)
                             .onClick(() => {
-                                executeCommand(app, `${plugin.manifest.id}:navigate-to-tag`);
+                                executeCommand(app, `${plugin.manifest.id}:${commandId}`);
                             });
                     });
                     hasActions = true;
@@ -2162,9 +2285,11 @@ export const NavigationPane = React.memo(
                 app,
                 clearShortcuts,
                 handleShortcutSplitToggle,
+                handleAddPropertyKeyFromSectionMenu,
                 metadataService,
                 pinToggleLabel,
                 plugin.manifest.id,
+                settings.interfaceIcons,
                 shortcutsList.length,
                 uiState.pinShortcuts
             ]
@@ -2194,6 +2319,7 @@ export const NavigationPane = React.memo(
                     db: noteCountDB,
                     fileVisibility,
                     excludedFiles: effectiveFrontmatterExclusions,
+                    excludedFileMatcher: effectiveFrontmatterExclusionMatcher,
                     excludedFolders: hiddenFolders,
                     fileNameMatcher: folderCountFileNameMatcher,
                     hiddenFileTagVisibility,
@@ -2209,6 +2335,7 @@ export const NavigationPane = React.memo(
                 settings.showNoteCount,
                 fileVisibility,
                 effectiveFrontmatterExclusions,
+                effectiveFrontmatterExclusionMatcher,
                 hiddenFolders,
                 noteCountDB,
                 includeDescendantNotes,
@@ -2267,6 +2394,51 @@ export const NavigationPane = React.memo(
             [settings.showNoteCount, includeDescendantNotes, tagCounts, tagTree]
         );
 
+        const getPropertyShortcutCount = useCallback(
+            (propertyNodeId: string): NoteCountInfo => {
+                if (!settings.showNoteCount) {
+                    return ZERO_NOTE_COUNT;
+                }
+
+                const resolved = resolvePropertyTreeNode({
+                    nodeId: propertyNodeId,
+                    propertyTreeService,
+                    propertyTree
+                });
+                const resolvedNode = resolved?.node ?? null;
+
+                if (!resolvedNode) {
+                    return ZERO_NOTE_COUNT;
+                }
+
+                if (resolvedNode.kind === 'key') {
+                    const current = getDirectPropertyKeyNoteCount(resolvedNode);
+                    if (!includeDescendantNotes) {
+                        return { current, descendants: 0, total: current };
+                    }
+
+                    const total = resolvedNode.notesWithValue.size;
+                    const descendants = Math.max(total - current, 0);
+                    return { current, descendants, total };
+                }
+
+                const current = resolvedNode.notesWithValue.size;
+                if (!includeDescendantNotes || !resolvedNode.valuePath) {
+                    return { current, descendants: 0, total: current };
+                }
+
+                const keyNode = propertyTreeService?.getKeyNode(resolvedNode.key) ?? propertyTree?.get(resolvedNode.key) ?? null;
+                if (!keyNode) {
+                    return { current, descendants: 0, total: current };
+                }
+
+                const total = getTotalPropertyNoteCount(keyNode, resolvedNode.valuePath);
+                const descendants = Math.max(total - current, 0);
+                return { current, descendants, total };
+            },
+            [settings.showNoteCount, propertyTreeService, propertyTree, includeDescendantNotes]
+        );
+
         // Generates display label for missing note shortcuts, stripping .md extension
         const getMissingNoteLabel = useCallback((path: string): string => {
             const baseName = getPathBaseName(path);
@@ -2317,6 +2489,15 @@ export const NavigationPane = React.memo(
                 if (!selectedTag || selectedTag !== shortcut.tagPath) {
                     setActiveShortcut(null);
                 }
+                return;
+            }
+
+            if (shortcut.type === ShortcutType.PROPERTY) {
+                const selectedProperty = selectionState.selectedProperty;
+                const resolvedNodeId = resolvePropertyShortcutNodeId(null, shortcut.nodeId);
+                if (!selectedProperty || !resolvedNodeId || selectedProperty !== resolvedNodeId) {
+                    setActiveShortcut(null);
+                }
             }
         }, [
             activeShortcutKey,
@@ -2324,6 +2505,7 @@ export const NavigationPane = React.memo(
             selectionState.selectedFolder,
             selectionState.selectedFile,
             selectionState.selectedTag,
+            selectionState.selectedProperty,
             setActiveShortcut
         ]);
 
@@ -2599,6 +2781,65 @@ export const NavigationPane = React.memo(
                         return <ShortcutItem {...shortcutProps} isDragSource={isDragSource} />;
                     }
 
+                    case NavigationPaneItemType.SHORTCUT_PROPERTY: {
+                        const isMissing = Boolean(item.isMissing);
+                        const propertyNodeId = item.propertyNodeId;
+                        const propertyCountInfo =
+                            !isMissing && shouldShowShortcutCounts ? getPropertyShortcutCount(propertyNodeId) : ZERO_NOTE_COUNT;
+                        const propertyAlias = isPropertyShortcut(item.shortcut) ? item.shortcut.alias : undefined;
+                        const propertyLabel = propertyAlias && propertyAlias.length > 0 ? propertyAlias : item.displayName;
+
+                        const dragHandlers = buildShortcutExternalHandlers(item.key);
+                        const isDragSource = shouldUseShortcutDnd && activeShortcutId === item.key;
+
+                        const contextTarget: ShortcutContextMenuTarget = !isMissing
+                            ? { type: 'property', key: item.key, propertyNodeId }
+                            : { type: 'missing', key: item.key, kind: 'property' };
+                        const shortcutBackground = isMissing ? undefined : getSolidBackground(item.backgroundColor);
+
+                        const shortcutProps = {
+                            icon: isMissing
+                                ? 'lucide-alert-triangle'
+                                : (item.icon ?? resolveUXIcon(settings.interfaceIcons, 'nav-property')),
+                            color: isMissing ? undefined : item.color,
+                            backgroundColor: shortcutBackground,
+                            label: propertyLabel,
+                            description: undefined,
+                            level: item.level,
+                            type: 'property' as const,
+                            countInfo: !isMissing && shouldShowShortcutCounts ? propertyCountInfo : undefined,
+                            badge: shortcutNumberBadgesByKey.get(item.key),
+                            forceShowCount: shouldShowShortcutCounts,
+                            isDisabled: isMissing,
+                            isMissing,
+                            onClick: () => {
+                                if (isMissing) {
+                                    return;
+                                }
+                                handleShortcutPropertyActivate(propertyNodeId, item.key);
+                            },
+                            onRemove: () => {
+                                runAsyncAction(() => removeShortcut(item.key));
+                            },
+                            onContextMenu: (event: React.MouseEvent<HTMLDivElement>) => handleShortcutContextMenu(event, contextTarget),
+                            dragHandlers,
+                            dragHandleConfig: shortcutDragHandleConfig
+                        };
+
+                        if (shouldUseShortcutDnd) {
+                            return (
+                                <SortableShortcutItem
+                                    sortableId={item.key}
+                                    canReorder={shouldUseShortcutDnd}
+                                    isDragSource={isDragSource}
+                                    {...shortcutProps}
+                                />
+                            );
+                        }
+
+                        return <ShortcutItem {...shortcutProps} isDragSource={isDragSource} />;
+                    }
+
                     case NavigationPaneItemType.FOLDER: {
                         const folderPath = item.data.path;
                         const countInfo = folderCounts.get(folderPath);
@@ -2707,7 +2948,9 @@ export const NavigationPane = React.memo(
                               ? NavigationSectionId.RECENT
                               : virtualFolder.id === TAGS_ROOT_VIRTUAL_FOLDER_ID
                                 ? NavigationSectionId.TAGS
-                                : null;
+                                : virtualFolder.id === PROPERTIES_ROOT_VIRTUAL_FOLDER_ID
+                                  ? NavigationSectionId.PROPERTIES
+                                  : null;
 
                         const shouldDisableFirstSectionMenu =
                             shouldPinShortcuts && sectionId !== null && firstSectionId !== null && sectionId === firstSectionId;
@@ -2848,12 +3091,6 @@ export const NavigationPane = React.memo(
                             searchMatch = 'include';
                         }
 
-                        const propertyColor = resolvePropertyColorMapColor(
-                            settings.customPropertyColorMap,
-                            propertyNode.key,
-                            propertyNode.valuePath ?? ''
-                        );
-
                         return (
                             <PropertyTreeItem
                                 propertyNode={propertyNode}
@@ -2888,9 +3125,11 @@ export const NavigationPane = React.memo(
                                         }
                                     }
                                 }}
-                                color={propertyColor}
-                                backgroundColor={undefined}
+                                color={item.color}
+                                backgroundColor={getSolidBackground(item.backgroundColor)}
+                                icon={item.icon}
                                 searchMatch={searchMatch}
+                                isDraggable={!isMobile}
                                 countInfo={propertyCounts.get(propertyNode.id)}
                                 showFileCount={settings.showNoteCount}
                             />
@@ -2954,11 +3193,13 @@ export const NavigationPane = React.memo(
                 propertyCounts,
                 getFolderShortcutCount,
                 getTagShortcutCount,
+                getPropertyShortcutCount,
                 handleShortcutFolderActivate,
                 handleShortcutNoteActivate,
                 handleShortcutNoteMouseDown,
                 handleShortcutSearchActivate,
                 handleShortcutTagActivate,
+                handleShortcutPropertyActivate,
                 handleRecentNoteActivate,
                 handleRecentFileContextMenu,
                 handleShortcutContextMenu,
@@ -3030,7 +3271,7 @@ export const NavigationPane = React.memo(
                         return false;
                     }
 
-                    const { key, shortcut, folder, note, search, tagPath } = entry;
+                    const { key, shortcut, folder, note, search, tagPath, propertyNodeId } = entry;
 
                     if (isFolderShortcut(shortcut) && folder) {
                         handleShortcutFolderActivate(folder, key);
@@ -3056,6 +3297,14 @@ export const NavigationPane = React.memo(
                         return true;
                     }
 
+                    if (isPropertyShortcut(shortcut)) {
+                        const resolvedNodeId = resolvePropertyShortcutNodeId(propertyNodeId, shortcut.nodeId);
+                        if (!resolvedNodeId) {
+                            return false;
+                        }
+                        return handleShortcutPropertyActivate(resolvedNodeId, key);
+                    }
+
                     return false;
                 }
             }),
@@ -3068,7 +3317,8 @@ export const NavigationPane = React.memo(
                 handleShortcutFolderActivate,
                 handleShortcutNoteActivate,
                 handleShortcutSearchActivate,
-                handleShortcutTagActivate
+                handleShortcutTagActivate,
+                handleShortcutPropertyActivate
             ]
         );
 
@@ -3179,21 +3429,29 @@ export const NavigationPane = React.memo(
                                         sectionItems={sectionReorderItems}
                                         folderItems={folderReorderItems}
                                         tagItems={tagReorderItems}
+                                        propertyItems={propertyReorderItems}
                                         showRootFolderSection={showRootFolderSection}
                                         showRootTagSection={showRootTagSection}
+                                        showRootPropertySection={showRootPropertySection}
                                         foldersSectionExpanded={foldersSectionExpanded}
                                         tagsSectionExpanded={tagsSectionExpanded}
+                                        propertiesSectionExpanded={propertiesSectionExpanded}
                                         showRootFolderReset={settings.rootFolderOrder.length > 0}
                                         showRootTagReset={settings.rootTagOrder.length > 0}
+                                        showRootPropertyReset={settings.rootPropertyOrder.length > 0}
                                         resetRootTagOrderLabel={resetRootTagOrderLabel}
+                                        resetRootPropertyOrderLabel={resetRootPropertyOrderLabel}
                                         onResetRootFolderOrder={handleResetRootFolderOrder}
                                         onResetRootTagOrder={handleResetRootTagOrder}
+                                        onResetRootPropertyOrder={handleResetRootPropertyOrder}
                                         onReorderSections={reorderSectionOrder}
                                         onReorderFolders={reorderRootFolderOrder}
                                         onReorderTags={reorderRootTagOrder}
+                                        onReorderProperties={reorderRootPropertyOrder}
                                         canReorderSections={canReorderSections}
                                         canReorderFolders={canReorderRootFolders}
                                         canReorderTags={canReorderRootTags}
+                                        canReorderProperties={canReorderRootProperties}
                                         isMobile={isMobile}
                                     />
                                 ) : (

@@ -42,7 +42,7 @@ export type ContentProviderUpdate = {
     featureImage?: Blob | null;
     featureImageKey?: string | null;
     metadata?: FileData['metadata'];
-    customProperty?: FileData['customProperty'];
+    properties?: FileData['properties'];
 };
 
 export type ContentProviderProcessResult = {

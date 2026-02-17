@@ -21,30 +21,30 @@ import { isPlainObjectRecordValue } from '../../utils/recordUtils';
 
 export type FeatureImageStatus = 'unprocessed' | 'none' | 'has';
 export type PreviewStatus = 'unprocessed' | 'none' | 'has';
-export type CustomPropertyValueKind = 'string' | 'number' | 'boolean';
+export type PropertyValueKind = 'string' | 'number' | 'boolean';
 
-function isCustomPropertyValueKind(value: unknown): value is CustomPropertyValueKind {
+function isPropertyValueKind(value: unknown): value is PropertyValueKind {
     return value === 'string' || value === 'number' || value === 'boolean';
 }
 
-export interface CustomPropertyItem {
+export interface PropertyItem {
     // Frontmatter field name that produced the value.
-    // Used at render time for property and property:value color rules.
+    // Used at render time for property display metadata lookups.
     fieldKey: string;
     // Rendered pill text (raw frontmatter value after frontmatter flattening).
     value: string;
     // Original frontmatter value type.
     // Omitted in legacy cache entries created before value-kind metadata was stored.
-    valueKind?: CustomPropertyValueKind;
+    valueKind?: PropertyValueKind;
 }
 
-function isCustomPropertyItem(value: unknown): value is CustomPropertyItem {
+function isPropertyItem(value: unknown): value is PropertyItem {
     if (!isPlainObjectRecordValue(value)) {
         return false;
     }
 
     // Validation is applied when reading persisted file data.
-    // Invalid entries cause the record to be treated as missing (`customProperty = null`) so providers can regenerate it.
+    // Invalid entries cause the record to be treated as missing (`properties = null`) so providers can regenerate it.
     // Persisted data must remain JSON-compatible.
     const rawFieldKey = value['fieldKey'];
     if (typeof rawFieldKey !== 'string' || rawFieldKey.trim().length === 0) {
@@ -57,18 +57,18 @@ function isCustomPropertyItem(value: unknown): value is CustomPropertyItem {
     }
 
     const rawValueKind = value['valueKind'];
-    if (rawValueKind !== undefined && !isCustomPropertyValueKind(rawValueKind)) {
+    if (rawValueKind !== undefined && !isPropertyValueKind(rawValueKind)) {
         return false;
     }
 
     return true;
 }
 
-export function isCustomPropertyData(value: unknown): value is CustomPropertyItem[] {
+export function isPropertyData(value: unknown): value is PropertyItem[] {
     if (!Array.isArray(value)) {
         return false;
     }
-    return value.every(entry => isCustomPropertyItem(entry));
+    return value.every(entry => isPropertyItem(entry));
 }
 
 // Task counters are stored and updated as a pair.
@@ -116,7 +116,7 @@ export function createDefaultFileData(params: { mtime: number; path: string }): 
         wordCount: isMarkdown ? null : 0,
         taskTotal: isMarkdown ? null : 0,
         taskUnfinished: isMarkdown ? null : 0,
-        customProperty: null,
+        properties: null,
         previewStatus: getDefaultPreviewStatusForPath(params.path),
         featureImage: null,
         featureImageStatus: 'unprocessed',
@@ -146,7 +146,7 @@ export interface FileData {
     /**
      * Last file mtime processed by the markdown pipeline provider.
      *
-     * Used to detect markdown changes even when existing preview/feature image/custom property values remain visible
+     * Used to detect markdown changes even when existing preview/feature image/property values remain visible
      * until regeneration completes.
      */
     markdownPipelineMtime: number;
@@ -166,7 +166,7 @@ export interface FileData {
     wordCount: number | null; // null = not generated yet
     taskTotal: number | null; // null = not generated yet
     taskUnfinished: number | null; // null = not generated yet
-    customProperty: CustomPropertyItem[] | null; // null = not generated yet
+    properties: PropertyItem[] | null; // null = not generated yet
     /**
      * Preview text processing state.
      *
@@ -209,6 +209,7 @@ export interface FileData {
         modified?: number; // Valid timestamp, 0 = field not configured, -1 = parse failed
         icon?: string;
         color?: string;
+        background?: string;
         hidden?: boolean; // Whether file matches frontmatter exclusion patterns
     } | null; // null = not generated yet
 }
@@ -225,7 +226,7 @@ export interface FileContentChange {
         wordCount?: number | null;
         taskTotal?: number | null;
         taskUnfinished?: number | null;
-        customProperty?: FileData['customProperty'];
+        properties?: FileData['properties'];
     };
     changeType?: 'metadata' | 'content' | 'both';
 }

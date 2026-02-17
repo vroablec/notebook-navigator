@@ -45,7 +45,7 @@ function shouldEnablePropertyTree(settings: NotebookNavigatorSettings): boolean 
 
 function buildConfiguredPropertyDisplayByKey(settings: NotebookNavigatorSettings): Map<string, string> {
     const displayByKey = new Map<string, string>();
-    for (const fieldName of getCachedCommaSeparatedList(settings.customPropertyFields)) {
+    for (const fieldName of getCachedCommaSeparatedList(settings.propertyFields)) {
         const displayName = fieldName.trim();
         const normalizedField = casefold(fieldName);
         if (!displayName || !normalizedField || displayByKey.has(normalizedField)) {
@@ -83,6 +83,7 @@ export function usePropertyTreeSync(params: {
     showHiddenItems: boolean;
     hiddenFolders: string[];
     hiddenFileProperties: string[];
+    hiddenFileNames: string[];
     hiddenFileTags: string[];
     fileVisibility: FileVisibility;
     profileId: string;
@@ -104,6 +105,7 @@ export function usePropertyTreeSync(params: {
         showHiddenItems,
         hiddenFolders,
         hiddenFileProperties,
+        hiddenFileNames,
         hiddenFileTags,
         fileVisibility,
         profileId,
@@ -137,7 +139,7 @@ export function usePropertyTreeSync(params: {
         const liveSettings = latestSettingsRef.current;
         const configuredDisplayByKey = buildConfiguredPropertyDisplayByKey(liveSettings);
         const includedPropertyKeys = new Set(configuredDisplayByKey.keys());
-        const shouldBuildTree = liveSettings.customPropertyType === 'frontmatter' && configuredDisplayByKey.size > 0;
+        const shouldBuildTree = liveSettings.showProperties && configuredDisplayByKey.size > 0;
         if (!shouldBuildTree) {
             return clearPropertyTree();
         }
@@ -258,11 +260,12 @@ export function usePropertyTreeSync(params: {
         clearPropertyTree,
         hiddenFolders,
         hiddenFileProperties,
+        hiddenFileNames,
         hiddenFileTags,
         fileVisibility,
         profileId,
-        settings.customPropertyFields,
-        settings.customPropertyType
+        settings.propertyFields,
+        settings.showProperties
     ]);
 
     useEffect(() => {
@@ -271,6 +274,7 @@ export function usePropertyTreeSync(params: {
         }
 
         const shouldRebuildOnTagVisibilityChanges = !showHiddenItems && hiddenFileTags.length > 0;
+        const shouldRebuildOnFrontmatterVisibilityChanges = !showHiddenItems && hiddenFileProperties.length > 0;
         const db = getDBInstance();
         const unsubscribe = db.onContentChange(changes => {
             if (stoppedRef.current) {
@@ -283,9 +287,10 @@ export function usePropertyTreeSync(params: {
             let activeFileResolved = false;
 
             for (const change of changes) {
-                const hasPropertyChange = change.changes.customProperty !== undefined;
+                const hasPropertyChange = change.changes.properties !== undefined;
                 const hasTagVisibilityChange = shouldRebuildOnTagVisibilityChanges && change.changes.tags !== undefined;
-                if (!hasPropertyChange && !hasTagVisibilityChange) {
+                const hasFrontmatterVisibilityChange = shouldRebuildOnFrontmatterVisibilityChanges && change.changes.metadata !== undefined;
+                if (!hasPropertyChange && !hasTagVisibilityChange && !hasFrontmatterVisibilityChange) {
                     continue;
                 }
 
@@ -308,7 +313,16 @@ export function usePropertyTreeSync(params: {
         });
 
         return unsubscribe;
-    }, [app.workspace, hiddenFileTags, isStorageReady, isPropertyTreeEnabled, schedulePropertyTreeRebuild, showHiddenItems, stoppedRef]);
+    }, [
+        app.workspace,
+        hiddenFileProperties,
+        hiddenFileTags,
+        isStorageReady,
+        isPropertyTreeEnabled,
+        schedulePropertyTreeRebuild,
+        showHiddenItems,
+        stoppedRef
+    ]);
 
     return { rebuildPropertyTree, schedulePropertyTreeRebuild, cancelPropertyTreeRebuildDebouncer };
 }

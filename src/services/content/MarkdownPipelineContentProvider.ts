@@ -20,11 +20,11 @@ import { Platform, type CachedMetadata, type FrontMatterCache, type TFile } from
 import { LIMITS } from '../../constants/limits';
 import { type ContentProviderType } from '../../interfaces/IContentProvider';
 import { NotebookNavigatorSettings } from '../../settings';
-import { type CustomPropertyItem, type CustomPropertyValueKind, FileData } from '../../storage/IndexedDBStorage';
+import { type PropertyItem, type PropertyValueKind, FileData } from '../../storage/IndexedDBStorage';
 import { getDBInstance } from '../../storage/fileOperations';
 import { getCachedCommaSeparatedList } from '../../utils/commaSeparatedListUtils';
 import { areStringArraysEqual } from '../../utils/arrayUtils';
-import { areCustomPropertyItemsEqual, hasCustomPropertyFrontmatterFields } from '../../utils/customPropertyUtils';
+import { arePropertyItemsEqual, hasPropertyFrontmatterFields } from '../../utils/propertyUtils';
 import {
     type FenceMarkerChar,
     isFenceClose,
@@ -35,7 +35,7 @@ import {
 } from '../../utils/codeRangeUtils';
 import { PreviewTextUtils } from '../../utils/previewTextUtils';
 import { createCaseInsensitiveKeyMatcher } from '../../utils/recordUtils';
-import { countWordsForCustomProperty } from '../../utils/wordCountUtils';
+import { countWordsForNoteProperty } from '../../utils/wordCountUtils';
 import type { ContentProviderProcessResult } from './BaseContentProvider';
 import { findFeatureImageReference, type FeatureImageReference } from './featureImageReferenceResolver';
 import { FeatureImageContentProvider } from './FeatureImageContentProvider';
@@ -49,8 +49,8 @@ type MarkdownPipelineContext = {
     bodyStartIndex: number;
     isExcalidraw: boolean;
     fileModified: boolean;
-    customPropertyEnabled: boolean;
-    customPropertyNameFields: readonly string[];
+    propertiesEnabled: boolean;
+    propertyNameFields: readonly string[];
     hasContent: boolean;
     featureImageReference: FeatureImageReference | null;
     featureImageExcluded: boolean;
@@ -61,12 +61,12 @@ type MarkdownPipelineUpdate = {
     taskTotal?: number | null;
     taskUnfinished?: number | null;
     preview?: string;
-    customProperty?: FileData['customProperty'];
+    properties?: FileData['properties'];
     featureImageKey?: string | null;
     featureImage?: Blob | null;
 };
 
-type MarkdownPipelineProcessorId = 'preview' | 'wordCount' | 'tasks' | 'customProperty' | 'featureImage';
+type MarkdownPipelineProcessorId = 'preview' | 'wordCount' | 'tasks' | 'properties' | 'featureImage';
 
 type MarkdownPipelineProcessor = {
     id: MarkdownPipelineProcessorId;
@@ -206,14 +206,18 @@ function countMarkdownTasks(content: string, bodyStartIndex: number): { taskTota
     return { taskTotal, taskUnfinished };
 }
 
-type ExtractedCustomPropertyValue = {
+type ExtractedPropertyValue = {
     value: string;
-    valueKind: CustomPropertyValueKind;
+    valueKind: PropertyValueKind;
 };
 
 // Converts frontmatter values into a list of pill strings.
 // Supports scalars and nested arrays; skips empty strings and non-finite numbers.
-function extractFrontmatterValues(value: unknown): ExtractedCustomPropertyValue[] {
+function extractFrontmatterValues(value: unknown): ExtractedPropertyValue[] {
+    if (value === null) {
+        return [{ value: 'true', valueKind: 'boolean' }];
+    }
+
     if (typeof value === 'string') {
         const trimmed = value.trim();
         return trimmed.length > 0 ? [{ value: trimmed, valueKind: 'string' }] : [];
@@ -231,7 +235,7 @@ function extractFrontmatterValues(value: unknown): ExtractedCustomPropertyValue[
     }
 
     if (Array.isArray(value)) {
-        const parts: ExtractedCustomPropertyValue[] = [];
+        const parts: ExtractedPropertyValue[] = [];
         for (const entry of value) {
             parts.push(...extractFrontmatterValues(entry));
         }
@@ -241,19 +245,16 @@ function extractFrontmatterValues(value: unknown): ExtractedCustomPropertyValue[
     return [];
 }
 
-// Builds the custom property pill list from frontmatter.
+// Builds the property pill list from frontmatter.
 // - `nameFields` produce the pill values (all matching fields are included)
-function resolveCustomPropertyItemsFromFrontmatter(
-    frontmatter: FrontMatterCache | null,
-    nameFields: readonly string[]
-): CustomPropertyItem[] {
+function resolvePropertyItemsFromFrontmatter(frontmatter: FrontMatterCache | null, nameFields: readonly string[]): PropertyItem[] {
     if (!frontmatter) {
         return [];
     }
 
-    // Custom property items are persisted without styling metadata.
+    // Property items are persisted without styling metadata.
     // Rendering derives property and property:value colors from `fieldKey` and raw value.
-    const entries: CustomPropertyItem[] = [];
+    const entries: PropertyItem[] = [];
 
     for (let fieldIndex = 0; fieldIndex < nameFields.length; fieldIndex += 1) {
         const field = nameFields[fieldIndex];
@@ -315,14 +316,14 @@ export class MarkdownPipelineContentProvider extends FeatureImageContentProvider
             run: async context => await this.processTasks(context)
         },
         {
-            id: 'customProperty',
+            id: 'properties',
             needsProcessing: context => {
-                if (!context.customPropertyEnabled) {
+                if (!context.propertiesEnabled) {
                     return false;
                 }
-                return !context.fileData || context.fileModified || context.fileData.customProperty === null;
+                return !context.fileData || context.fileModified || context.fileData.properties === null;
             },
-            run: async context => await this.processCustomProperty(context)
+            run: async context => await this.processProperties(context)
         },
         {
             id: 'featureImage',
@@ -361,7 +362,7 @@ export class MarkdownPipelineContentProvider extends FeatureImageContentProvider
             'featureImageProperties',
             'featureImageExcludeProperties',
             'downloadExternalFeatureImages',
-            'customPropertyFields'
+            'propertyFields'
         ];
     }
 
@@ -378,13 +379,13 @@ export class MarkdownPipelineContentProvider extends FeatureImageContentProvider
 
     private getClearFlags(context: { oldSettings: NotebookNavigatorSettings; newSettings: NotebookNavigatorSettings } | undefined): {
         shouldClearPreview: boolean;
-        shouldClearCustomProperty: boolean;
+        shouldClearProperties: boolean;
         shouldClearFeatureImage: boolean;
     } {
         if (!context) {
             return {
                 shouldClearPreview: true,
-                shouldClearCustomProperty: true,
+                shouldClearProperties: true,
                 shouldClearFeatureImage: true
             };
         }
@@ -398,7 +399,7 @@ export class MarkdownPipelineContentProvider extends FeatureImageContentProvider
             oldSettings.stripHtmlInPreview !== newSettings.stripHtmlInPreview ||
             !areStringArraysEqual(oldSettings.previewProperties, newSettings.previewProperties);
 
-        const shouldClearCustomProperty = oldSettings.customPropertyFields !== newSettings.customPropertyFields;
+        const shouldClearProperties = oldSettings.propertyFields !== newSettings.propertyFields;
 
         const featureImagePropertiesChanged = !areStringArraysEqual(oldSettings.featureImageProperties, newSettings.featureImageProperties);
         const featureImageExcludePropertiesChanged = !areStringArraysEqual(
@@ -412,18 +413,18 @@ export class MarkdownPipelineContentProvider extends FeatureImageContentProvider
             (newSettings.showFeatureImage &&
                 (featureImagePropertiesChanged || oldSettings.downloadExternalFeatureImages !== newSettings.downloadExternalFeatureImages));
 
-        return { shouldClearPreview, shouldClearCustomProperty, shouldClearFeatureImage };
+        return { shouldClearPreview, shouldClearProperties, shouldClearFeatureImage };
     }
 
     shouldRegenerate(oldSettings: NotebookNavigatorSettings, newSettings: NotebookNavigatorSettings): boolean {
-        const { shouldClearPreview, shouldClearCustomProperty, shouldClearFeatureImage } = this.getClearFlags({ oldSettings, newSettings });
-        return shouldClearPreview || shouldClearCustomProperty || shouldClearFeatureImage;
+        const { shouldClearPreview, shouldClearProperties, shouldClearFeatureImage } = this.getClearFlags({ oldSettings, newSettings });
+        return shouldClearPreview || shouldClearProperties || shouldClearFeatureImage;
     }
 
     async clearContent(context?: { oldSettings: NotebookNavigatorSettings; newSettings: NotebookNavigatorSettings }): Promise<void> {
-        const { shouldClearPreview, shouldClearCustomProperty, shouldClearFeatureImage } = this.getClearFlags(context);
+        const { shouldClearPreview, shouldClearProperties, shouldClearFeatureImage } = this.getClearFlags(context);
 
-        if (!shouldClearPreview && !shouldClearCustomProperty && !shouldClearFeatureImage) {
+        if (!shouldClearPreview && !shouldClearProperties && !shouldClearFeatureImage) {
             return;
         }
 
@@ -433,8 +434,8 @@ export class MarkdownPipelineContentProvider extends FeatureImageContentProvider
             await db.batchClearAllFileContent('preview');
         }
 
-        if (shouldClearCustomProperty) {
-            await db.batchClearAllFileContent('customProperty');
+        if (shouldClearProperties) {
+            await db.batchClearAllFileContent('properties');
         }
 
         if (shouldClearFeatureImage) {
@@ -447,7 +448,7 @@ export class MarkdownPipelineContentProvider extends FeatureImageContentProvider
             return false;
         }
 
-        const customPropertyEnabled = hasCustomPropertyFrontmatterFields(settings);
+        const propertiesEnabled = hasPropertyFrontmatterFields(settings);
 
         const needsRefresh = fileData !== null && fileData.markdownPipelineMtime !== file.stat.mtime;
         if (!fileData || needsRefresh) {
@@ -457,11 +458,11 @@ export class MarkdownPipelineContentProvider extends FeatureImageContentProvider
         const needsPreview = settings.showFilePreview && fileData.previewStatus === 'unprocessed';
         const needsFeatureImage =
             settings.showFeatureImage && (fileData.featureImageKey === null || fileData.featureImageStatus === 'unprocessed');
-        const needsCustomProperty = customPropertyEnabled && fileData.customProperty === null;
+        const needsProperties = propertiesEnabled && fileData.properties === null;
         const needsWordCount = fileData.wordCount === null;
         const needsTasks = fileData.taskTotal === null || fileData.taskUnfinished === null;
 
-        return needsPreview || needsFeatureImage || needsCustomProperty || needsWordCount || needsTasks;
+        return needsPreview || needsFeatureImage || needsProperties || needsWordCount || needsTasks;
     }
 
     protected async processFile(
@@ -473,8 +474,8 @@ export class MarkdownPipelineContentProvider extends FeatureImageContentProvider
             return { update: null, processed: true };
         }
 
-        const customPropertyNameFields = getCachedCommaSeparatedList(settings.customPropertyFields);
-        const customPropertyEnabled = customPropertyNameFields.length > 0;
+        const propertyNameFields = getCachedCommaSeparatedList(settings.propertyFields);
+        const propertiesEnabled = propertyNameFields.length > 0;
 
         const cachedMetadata = this.app.metadataCache.getFileCache(job.file);
         if (!cachedMetadata) {
@@ -525,7 +526,7 @@ export class MarkdownPipelineContentProvider extends FeatureImageContentProvider
             preview?: string;
             featureImage?: Blob | null;
             featureImageKey?: string | null;
-            customProperty?: FileData['customProperty'];
+            properties?: FileData['properties'];
         } = { path: job.path };
 
         if (needsContent) {
@@ -545,14 +546,10 @@ export class MarkdownPipelineContentProvider extends FeatureImageContentProvider
                     hasSafeUpdate = true;
                 }
 
-                if (customPropertyEnabled) {
-                    const nextCustomProperty = resolveCustomPropertyItemsFromFrontmatter(frontmatter, customPropertyNameFields);
-                    if (
-                        !fileData ||
-                        fileData.customProperty === null ||
-                        !areCustomPropertyItemsEqual(fileData.customProperty, nextCustomProperty)
-                    ) {
-                        update.customProperty = nextCustomProperty;
+                if (propertiesEnabled) {
+                    const nextProperties = resolvePropertyItemsFromFrontmatter(frontmatter, propertyNameFields);
+                    if (!fileData || fileData.properties === null || !arePropertyItemsEqual(fileData.properties, nextProperties)) {
+                        update.properties = nextProperties;
                         hasSafeUpdate = true;
                     }
                 }
@@ -640,14 +637,10 @@ export class MarkdownPipelineContentProvider extends FeatureImageContentProvider
                 }
             }
 
-            if (customPropertyEnabled) {
-                const nextCustomProperty = resolveCustomPropertyItemsFromFrontmatter(frontmatter, customPropertyNameFields);
-                if (
-                    !fileData ||
-                    fileData.customProperty === null ||
-                    !areCustomPropertyItemsEqual(fileData.customProperty, nextCustomProperty)
-                ) {
-                    update.customProperty = nextCustomProperty;
+            if (propertiesEnabled) {
+                const nextProperties = resolvePropertyItemsFromFrontmatter(frontmatter, propertyNameFields);
+                if (!fileData || fileData.properties === null || !arePropertyItemsEqual(fileData.properties, nextProperties)) {
+                    update.properties = nextProperties;
                     hasSafeUpdate = true;
                 }
             }
@@ -723,8 +716,8 @@ export class MarkdownPipelineContentProvider extends FeatureImageContentProvider
             bodyStartIndex,
             isExcalidraw,
             fileModified,
-            customPropertyEnabled,
-            customPropertyNameFields,
+            propertiesEnabled,
+            propertyNameFields,
             hasContent,
             featureImageReference: frontmatterFeatureImageReference,
             featureImageExcluded
@@ -752,8 +745,8 @@ export class MarkdownPipelineContentProvider extends FeatureImageContentProvider
             if (processorUpdate.preview !== undefined) {
                 update.preview = processorUpdate.preview;
             }
-            if (processorUpdate.customProperty !== undefined) {
-                update.customProperty = processorUpdate.customProperty;
+            if (processorUpdate.properties !== undefined) {
+                update.properties = processorUpdate.properties;
             }
             if (processorUpdate.featureImageKey !== undefined) {
                 update.featureImageKey = processorUpdate.featureImageKey;
@@ -768,7 +761,7 @@ export class MarkdownPipelineContentProvider extends FeatureImageContentProvider
             update.taskTotal !== undefined ||
             update.taskUnfinished !== undefined ||
             update.preview !== undefined ||
-            update.customProperty !== undefined ||
+            update.properties !== undefined ||
             update.featureImageKey !== undefined;
 
         if (hasContentUpdate) {
@@ -812,7 +805,7 @@ export class MarkdownPipelineContentProvider extends FeatureImageContentProvider
 
     private async processWordCount(context: MarkdownPipelineContext): Promise<MarkdownPipelineUpdate | null> {
         try {
-            const count = context.isExcalidraw ? 0 : countWordsForCustomProperty(context.content, context.bodyStartIndex);
+            const count = context.isExcalidraw ? 0 : countWordsForNoteProperty(context.content, context.bodyStartIndex);
             if (!context.fileData || context.fileData.wordCount === null || context.fileData.wordCount !== count) {
                 return { wordCount: count };
             }
@@ -855,23 +848,23 @@ export class MarkdownPipelineContentProvider extends FeatureImageContentProvider
         }
     }
 
-    private async processCustomProperty(context: MarkdownPipelineContext): Promise<MarkdownPipelineUpdate | null> {
+    private async processProperties(context: MarkdownPipelineContext): Promise<MarkdownPipelineUpdate | null> {
         try {
-            const nextValue = resolveCustomPropertyItemsFromFrontmatter(context.frontmatter, context.customPropertyNameFields);
+            const nextValue = resolvePropertyItemsFromFrontmatter(context.frontmatter, context.propertyNameFields);
 
             if (
                 !context.fileData ||
-                context.fileData.customProperty === null ||
-                !areCustomPropertyItemsEqual(context.fileData.customProperty, nextValue)
+                context.fileData.properties === null ||
+                !arePropertyItemsEqual(context.fileData.properties, nextValue)
             ) {
-                return { customProperty: nextValue };
+                return { properties: nextValue };
             }
 
             return null;
         } catch (error) {
-            console.error(`Error generating custom property for ${context.file.path}:`, error);
-            if (!context.fileData || context.fileData.customProperty === null) {
-                return { customProperty: [] };
+            console.error(`Error generating property values for ${context.file.path}:`, error);
+            if (!context.fileData || context.fileData.properties === null) {
+                return { properties: [] };
             }
             return null;
         }

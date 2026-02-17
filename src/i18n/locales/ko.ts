@@ -104,6 +104,8 @@ export const STRINGS_KO = {
         folderExists: '폴더가 이미 바로가기에 있습니다',
         noteExists: '노트가 이미 바로가기에 있습니다',
         tagExists: '태그가 이미 바로가기에 있습니다',
+        propertyExists: '속성이 이미 바로가기에 있습니다',
+        invalidProperty: '잘못된 속성 바로가기',
         searchExists: '검색 바로가기가 이미 존재합니다',
         emptySearchQuery: '저장하기 전에 검색 쿼리를 입력하세요',
         emptySearchName: '검색을 저장하기 전에 이름을 입력하세요',
@@ -184,12 +186,12 @@ export const STRINGS_KO = {
                 properties: {
                     title: '속성',
                     items: [
-                        '`.key` 사용자 정의 속성 키가 있는 노트를 포함합니다.',
-                        '`.key=value` 사용자 정의 속성 값이 있는 노트를 포함합니다.',
+                        '`.key` 속성 키가 있는 노트를 포함합니다.',
+                        '`.key=value` 속성 값이 있는 노트를 포함합니다.',
                         '`."Reading Status"` 공백이 포함된 속성 키가 있는 노트를 포함합니다.',
                         '`."Reading Status"="In Progress"` 공백이 포함된 키와 값은 큰따옴표로 묶어야 합니다.',
-                        '`-.key` 사용자 정의 속성 키가 있는 노트를 제외합니다.',
-                        '`-.key=value` 사용자 정의 속성 값이 있는 노트를 제외합니다.',
+                        '`-.key` 속성 키가 있는 노트를 제외합니다.',
+                        '`-.key=value` 속성 값이 있는 노트를 제외합니다.',
                         'Cmd/Ctrl+클릭으로 속성을 AND로 추가. Cmd/Ctrl+Shift+클릭으로 OR로 추가.'
                     ]
                 },
@@ -322,6 +324,10 @@ export const STRINGS_KO = {
             showTag: '태그 표시',
             hideTag: '태그 숨기기'
         },
+        property: {
+            addKey: '속성 키 추가',
+            removeKey: '속성 키 제거'
+        },
         navigation: {
             addSeparator: '구분선 추가',
             removeSeparator: '구분선 제거'
@@ -375,10 +381,6 @@ export const STRINGS_KO = {
         fileIconRuleEditor: {
             addRuleAria: '규칙 추가'
         },
-        propertyColorRuleEditor: {
-            propertyPlaceholder: 'Property',
-            valuePlaceholder: 'Value'
-        },
         interfaceIcons: {
             title: '인터페이스 아이콘',
             fileItemsSection: '파일 항목',
@@ -404,13 +406,15 @@ export const STRINGS_KO = {
                 'list-new-note': '새 노트',
                 'nav-folder-open': '열린 폴더',
                 'nav-folder-closed': '닫힌 폴더',
-                'nav-folder-note': '폴더 노트',
+                'nav-tags': '태그',
                 'nav-tag': '태그',
                 'nav-properties': '속성',
+                'nav-property': '속성',
+                'nav-property-value': '값',
                 'list-pinned': '고정 항목',
                 'file-unfinished-task': '미완료 작업',
                 'file-word-count': '단어 수',
-                'file-custom-property': '사용자 지정 속성'
+                'file-property': '속성'
             }
         },
         colorPicker: {
@@ -532,6 +536,15 @@ export const STRINGS_KO = {
                 dismiss: '닫기',
                 add: '태그 추가',
                 remove: '태그 제거'
+            }
+        },
+        propertySuggest: {
+            placeholder: '속성 키 선택...',
+            navigatePlaceholder: '속성으로 이동...',
+            instructions: {
+                navigate: '이동',
+                select: '속성 추가',
+                dismiss: '닫기'
             }
         },
         welcome: {
@@ -687,6 +700,7 @@ export const STRINGS_KO = {
         pinAllFolderNotes: '폴더 노트를 모두 고정', // Command palette: Pins all folder notes to shortcuts (English: Pin all folder notes)
         navigateToFolder: '폴더로 이동', // Command palette: Navigate to a folder using fuzzy search (English: Navigate to folder)
         navigateToTag: '태그로 이동', // Command palette: Navigate to a tag using fuzzy search (English: Navigate to tag)
+        navigateToProperty: '속성으로 이동', // Command palette: Navigate to a property key or value using fuzzy search (English: Navigate to property)
         addShortcut: '바로가기에 추가', // Command palette: Adds the current file, folder, or tag to shortcuts (English: Add to shortcuts)
         openShortcut: '바로가기 {number} 열기',
         toggleDescendants: '하위 항목 전환', // Command palette: Toggles showing notes from descendants (English: Toggle descendants)
@@ -727,14 +741,15 @@ export const STRINGS_KO = {
         },
         sections: {
             general: '일반',
-            navigationPane: '탐색 창',
+            navigationPane: '탐색',
             calendar: '달력',
             icons: '아이콘 팩',
             folders: '폴더',
             folderNotes: '폴더 노트',
-            foldersAndTags: '폴더 및 태그',
+            foldersAndTags: '폴더',
+            tagsAndProperties: '태그 및 속성',
             tags: '태그',
-            listPane: '목록 창',
+            listPane: '목록',
             notes: '노트',
             advanced: '고급'
         },
@@ -753,7 +768,6 @@ export const STRINGS_KO = {
             },
             navigation: {
                 appearance: '모양',
-                shortcutsAndRecent: '바로가기 및 최근 항목',
                 leftSidebar: '왼쪽 사이드바',
                 calendarIntegration: '캘린더 연동'
             },
@@ -768,7 +782,7 @@ export const STRINGS_KO = {
                 previewText: '미리보기 텍스트',
                 featureImage: '대표 이미지',
                 tags: '태그',
-                customProperty: '사용자 정의 속성 (프론트매터 또는 단어 수)',
+                properties: '속성',
                 date: '날짜',
                 parentFolder: '상위 폴더'
             }
@@ -813,6 +827,16 @@ export const STRINGS_KO = {
                 name: '정렬 속성',
                 desc: '속성 정렬과 함께 사용됩니다. 이 frontmatter 속성이 있는 노트가 먼저 나열되고 속성 값으로 정렬됩니다. 배열은 하나의 값으로 결합됩니다.',
                 placeholder: 'order'
+            },
+            propertySortSecondary: {
+                name: '보조 정렬',
+                desc: '속성 정렬 사용 시 노트의 속성 값이 같거나 속성 값이 없을 때 적용됩니다.',
+                options: {
+                    title: '제목',
+                    filename: '파일 이름',
+                    created: '생성 날짜',
+                    modified: '편집 날짜'
+                }
             },
             revealFileOnListChanges: {
                 name: '목록 변경 시 선택된 파일로 스크롤',
@@ -963,6 +987,10 @@ export const STRINGS_KO = {
                 name: '활성 노트 자동 표시',
                 desc: '빠른 전환기, 링크 또는 검색에서 열 때 노트를 자동으로 표시합니다.'
             },
+            autoRevealShortestPath: {
+                name: '최단 경로 사용',
+                desc: '활성화: 자동 표시가 가장 가까운 보이는 상위 폴더 또는 태그를 선택합니다. 비활성화: 자동 표시가 파일의 실제 폴더와 정확한 태그를 선택합니다.'
+            },
             autoRevealIgnoreRightSidebar: {
                 name: '오른쪽 사이드바의 이벤트 무시',
                 desc: '오른쪽 사이드바에서 클릭하거나 노트를 변경할 때 활성 노트를 변경하지 않습니다.'
@@ -1022,6 +1050,14 @@ export const STRINGS_KO = {
             showRecentNotes: {
                 name: '최근 노트 표시',
                 desc: '탐색 창에 최근 노트 섹션을 표시합니다.'
+            },
+            hideRecentNotes: {
+                name: '노트 숨기기',
+                desc: '최근 노트 섹션에서 숨길 노트 유형을 선택합니다.',
+                options: {
+                    none: '없음',
+                    folderNotes: '폴더 노트'
+                }
             },
             recentNotesCount: {
                 name: '최근 노트 수',
@@ -1223,9 +1259,9 @@ export const STRINGS_KO = {
                 }
             },
             excludedNotes: {
-                name: '속성이 있는 노트 숨기기 (볼트 프로필)',
-                desc: '쉼표로 구분된 frontmatter 속성 목록입니다. 이러한 속성 중 하나라도 포함된 노트는 숨겨집니다 (예: draft, private, archived).',
-                placeholder: 'draft, private'
+                name: '속성 규칙으로 노트 숨기기 (볼트 프로필)',
+                desc: '쉼표로 구분된 frontmatter 규칙 목록입니다. `key` 또는 `key=value` 항목을 사용합니다 (예: status=done, published=true, archived).',
+                placeholder: 'status=done, published=true, archived'
             },
             excludedFileNamePatterns: {
                 name: '파일 숨기기 (볼트 프로필)',
@@ -1298,33 +1334,41 @@ export const STRINGS_KO = {
                 name: '슬림 모드에서 파일 태그 표시',
                 desc: '날짜, 미리보기, 이미지가 숨겨져 있을 때 태그를 표시합니다.'
             },
-            customPropertyType: {
-                name: '속성 유형',
-                desc: '파일 항목에 표시할 사용자 정의 속성을 선택합니다.',
+            showFileProperties: {
+                name: '파일 속성 표시',
+                desc: '파일 항목에 클릭 가능한 속성을 표시합니다.'
+            },
+            colorFileProperties: {
+                name: '파일 속성에 색상 적용',
+                desc: '파일 항목의 속성 배지에 속성 색상을 적용합니다.'
+            },
+            prioritizeColoredFileProperties: {
+                name: '색상 속성을 먼저 표시',
+                desc: '파일 항목에서 색상 속성을 다른 속성보다 먼저 정렬합니다.'
+            },
+            showFilePropertiesInCompactMode: {
+                name: '간결 모드에서 속성 표시',
+                desc: '간결 모드가 활성화되면 속성을 표시합니다.'
+            },
+            notePropertyType: {
+                name: '노트 속성',
+                desc: '파일 항목에 표시할 노트 속성을 선택합니다.',
                 options: {
                     frontmatter: '프론트매터 속성',
                     wordCount: '단어 수',
                     none: '없음'
                 }
             },
-            customPropertyFields: {
+            propertyFields: {
                 name: '표시할 속성들',
-                desc: '배지로 표시할 프론트매터 속성의 쉼표로 구분된 목록. 목록 값 속성은 값당 하나의 배지를 표시합니다. [[위키링크]] 값은 클릭 가능한 링크로 표시됩니다.',
-                placeholder: '상태, 유형, 카테고리'
+                desc: '탐색 창과 파일 항목의 배지로 표시할 프론트매터 속성의 쉼표로 구분된 목록. 목록 값 속성은 값당 하나의 배지를 표시합니다.',
+                placeholder: 'status, type, category',
+                addButtonTooltip: '속성 키 추가',
+                emptySelectorNotice: '메타데이터 캐시에서 속성 키를 찾을 수 없습니다.'
             },
-            showCustomPropertiesOnSeparateRows: {
+            showPropertiesOnSeparateRows: {
                 name: '속성을 별도 행에 표시',
                 desc: '각 속성을 개별 행에 표시합니다.'
-            },
-            customPropertyColorMap: {
-                name: '속성 색상',
-                desc: '프론트매터 속성과 값을 배지 색상에 매핑합니다. 한 줄에 하나의 매핑: 속성=색상 또는 속성:값=색상',
-                placeholder: '# 속성 또는 속성:값 색상\nstatus=#f59e0b\nstatus:done=#10b981\nstatus:todo=#ef4444',
-                editTooltip: '매핑 편집'
-            },
-            showCustomPropertyInCompactMode: {
-                name: '슬림 모드에서 사용자 정의 속성 표시',
-                desc: '날짜, 미리보기, 이미지가 숨겨져 있을 때 사용자 정의 속성을 표시합니다.'
             },
             dateFormat: {
                 name: '날짜 형식',
@@ -1399,7 +1443,7 @@ export const STRINGS_KO = {
             featureImageExcludeProperties: {
                 name: '속성이 있는 노트 제외',
                 desc: '쉼표로 구분된 frontmatter 속성 목록입니다. 이러한 속성 중 하나라도 포함된 노트는 대표 이미지를 저장하지 않습니다.',
-                placeholder: '비공개, 기밀'
+                placeholder: 'private, confidential'
             },
 
             downloadExternalFeatureImages: {
@@ -1511,6 +1555,33 @@ export const STRINGS_KO = {
                 name: '마지막 태그 제거 후 tags 속성 유지',
                 desc: '모든 태그가 제거될 때 frontmatter 의 tags 속성을 유지합니다. 비활성화하면 tags 속성이 frontmatter 에서 삭제됩니다.'
             },
+            showProperties: {
+                name: '속성 표시',
+                desc: '탐색기에 속성 섹션을 표시합니다.'
+            },
+            showPropertyIcons: {
+                name: '속성 아이콘 표시',
+                desc: '탐색 창에서 속성 옆에 아이콘을 표시합니다.'
+            },
+            inheritPropertyColors: {
+                name: '속성 색상 상속',
+                desc: '속성 값이 속성 키의 색상과 배경색을 상속합니다.'
+            },
+            propertySortOrder: {
+                name: '속성 정렬 순서',
+                desc: '속성을 마우스 오른쪽 버튼으로 클릭하여 값의 정렬 순서를 변경합니다.',
+                options: {
+                    alphaAsc: '가나다순',
+                    alphaDesc: '역가나다순',
+                    frequency: '빈도',
+                    lowToHigh: '낮은 순',
+                    highToLow: '높은 순'
+                }
+            },
+            showAllPropertiesFolder: {
+                name: '속성 폴더 표시',
+                desc: '"속성"을 접을 수 있는 폴더로 표시합니다.'
+            },
             hiddenTags: {
                 name: '태그 숨기기 (볼트 프로필)',
                 desc: '쉼표로 구분된 태그 패턴 목록입니다. 이름 패턴: tag* (시작), *tag (끝). 경로 패턴: archive (태그와 하위), archive/* (하위만), projects/*/drafts (중간 와일드카드).',
@@ -1571,7 +1642,7 @@ export const STRINGS_KO = {
                 error: '설정 정리에 실패했습니다',
                 loading: '메타데이터 확인 중...',
                 statusClean: '정리할 메타데이터가 없습니다',
-                statusCounts: '고아 항목: {folders} 폴더, {tags} 태그, {files} 파일, {pinned} 고정, {separators} 구분선'
+                statusCounts: '고아 항목: {folders} 폴더, {tags} 태그, {properties} 속성, {files} 파일, {pinned} 고정, {separators} 구분선'
             },
             rebuildCache: {
                 name: '캐시 다시 빌드',
@@ -1600,7 +1671,7 @@ export const STRINGS_KO = {
             frontmatterNameField: {
                 name: '이름 필드들',
                 desc: '쉼표로 구분된 frontmatter 필드 목록. 첫 번째 비어 있지 않은 값을 사용. 파일 이름으로 대체.',
-                placeholder: '제목, 이름'
+                placeholder: 'title, name'
             },
             frontmatterIconField: {
                 name: '아이콘 필드',
@@ -1612,9 +1683,10 @@ export const STRINGS_KO = {
                 desc: '파일 색상용 frontmatter 필드입니다. 설정에 저장된 색상을 사용하려면 비워 두세요.',
                 placeholder: 'color'
             },
-            frontmatterSaveMetadata: {
-                name: 'frontmatter에 아이콘과 색상 저장',
-                desc: '위에서 구성한 필드를 사용하여 파일 아이콘과 색상을 frontmatter에 자동으로 기록합니다.'
+            frontmatterBackgroundField: {
+                name: '배경 필드',
+                desc: '배경색용 frontmatter 필드입니다. 설정에 저장된 배경색을 사용하려면 비워 두세요.',
+                placeholder: 'background'
             },
             frontmatterMigration: {
                 name: '설정에서 아이콘과 색상 이동',

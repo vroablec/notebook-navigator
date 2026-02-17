@@ -65,6 +65,7 @@ export const DEFAULT_SETTINGS: NotebookNavigatorSettings = {
 
     // General tab - Behavior
     autoRevealActiveFile: true,
+    autoRevealShortestPath: true,
     autoRevealIgnoreRightSidebar: true,
     paneTransitionDuration: 150,
 
@@ -77,7 +78,6 @@ export const DEFAULT_SETTINGS: NotebookNavigatorSettings = {
     // General tab - View
     startView: 'files',
     showInfoButtons: true,
-    interfaceIcons: sanitizeRecord<string>(undefined),
 
     // General tab - Homepage
     homepage: null,
@@ -97,23 +97,171 @@ export const DEFAULT_SETTINGS: NotebookNavigatorSettings = {
     // General tab - Mobile appearance
     useFloatingToolbars: true,
 
+    // General tab - Toolbar buttons
+    toolbarVisibility: {
+        navigation: {
+            toggleDualPane: true,
+            expandCollapse: true,
+            calendar: true,
+            hiddenItems: true,
+            rootReorder: true,
+            newFolder: true
+        },
+        list: {
+            back: true,
+            search: true,
+            descendants: true,
+            sort: true,
+            appearance: true,
+            newNote: true
+        }
+    },
+
+    // General tab - Icons
+    interfaceIcons: sanitizeRecord<string>(undefined),
+    colorIconOnly: false,
+
     // General tab - Formatting
     dateFormat: 'MMM D, YYYY',
     timeFormat: 'h:mm a',
     calendarTemplateFolder: '',
 
+    // Icon packs tab
+    externalIconProviders: {},
+
+    // Advanced tab
+    checkForUpdatesOnStart: true,
+    confirmBeforeDelete: true,
+
+    // Navigation pane tab - Appearance
+    pinNavigationBanner: true,
+    showNoteCount: true,
+    separateNoteCounts: true,
+    showIndentGuides: false,
+    rootLevelSpacing: 0,
+    navIndent: NAVPANE_MEASUREMENTS.defaultIndent,
+    navItemHeight: NAVPANE_MEASUREMENTS.defaultItemHeight,
+    navItemHeightScaleText: true,
+
     // Navigation pane tab - Behavior
-    pinRecentNotesWithShortcuts: false,
     collapseBehavior: 'all',
     smartCollapse: true,
+    autoSelectFirstFileOnFocusChange: false,
+    autoExpandNavItems: false,
+    springLoadedFolders: true,
+    springLoadedFoldersInitialDelay: 0.5,
+    springLoadedFoldersSubsequentDelay: 0.5,
 
-    // Navigation pane tab - Shortcuts & recent items
+    // Shortcuts tab
     showSectionIcons: true,
     showShortcuts: true,
     shortcutBadgeDisplay: 'index',
     skipAutoScroll: false,
     showRecentNotes: true,
+    hideRecentNotes: 'none',
+    pinRecentNotesWithShortcuts: false,
     recentNotesCount: 5,
+
+    // Folders tab
+    showFolderIcons: true,
+    showRootFolder: true,
+    inheritFolderColors: false,
+    folderSortOrder: 'alpha-asc',
+    enableFolderNotes: false,
+    folderNoteType: 'markdown',
+    folderNoteName: '',
+    folderNoteNamePattern: '',
+    folderNoteTemplate: null,
+    openFolderNotesInNewTab: false,
+    hideFolderNoteInList: true,
+    pinCreatedFolderNote: false,
+
+    // Tags tab
+    showTags: true,
+    showTagIcons: true,
+    showAllTagsFolder: true,
+    showUntagged: true,
+    tagSortOrder: 'alpha-asc',
+    inheritTagColors: true,
+    keepEmptyTagsProperty: false,
+
+    // Properties tab
+    showProperties: true,
+    showPropertyIcons: true,
+    inheritPropertyColors: true,
+    propertySortOrder: 'alpha-asc',
+    showAllPropertiesFolder: true,
+    propertyFields: '',
+
+    // List pane tab
+    defaultListMode: 'standard',
+    includeDescendantNotes: false,
+    defaultFolderSort: 'modified-desc',
+    propertySortKey: '',
+    propertySortSecondary: 'title',
+    revealFileOnListChanges: true,
+    listPaneTitle: 'header',
+    noteGrouping: 'date',
+    filterPinnedByFolder: false,
+    showPinnedGroupHeader: true,
+    showPinnedIcon: true,
+    optimizeNoteHeight: true,
+    compactItemHeight: LISTPANE_MEASUREMENTS.defaultCompactItemHeight,
+    compactItemHeightScaleText: true,
+    showQuickActions: true,
+    quickActionRevealInFolder: false,
+    quickActionAddTag: true,
+    quickActionAddToShortcuts: true,
+    quickActionPinNote: true,
+    quickActionOpenInNewTab: false,
+
+    // Frontmatter tab
+    useFrontmatterMetadata: false,
+    frontmatterIconField: 'icon',
+    frontmatterColorField: 'color',
+    frontmatterBackgroundField: 'background',
+    frontmatterNameField: '',
+    frontmatterCreatedField: '',
+    frontmatterModifiedField: '',
+    frontmatterDateFormat: '',
+
+    // Notes tab
+    showFileIcons: true,
+    showFileIconUnfinishedTask: false,
+    showFilenameMatchIcons: false,
+    fileNameIconMap: {},
+    showCategoryIcons: false,
+    fileTypeIconMap: {},
+    fileNameRows: 1,
+    showFilePreview: true,
+    skipHeadingsInPreview: true,
+    skipCodeBlocksInPreview: true,
+    stripHtmlInPreview: true,
+    previewRows: 2,
+    previewProperties: [],
+    showFeatureImage: true,
+    featureImageProperties: [],
+    featureImageExcludeProperties: [],
+    forceSquareFeatureImage: true,
+    downloadExternalFeatureImages: true,
+    showFileTags: true,
+    colorFileTags: true,
+    prioritizeColoredFileTags: true,
+    showFileTagAncestors: false,
+    showFileTagsInCompactMode: false,
+    showFileProperties: true,
+    colorFileProperties: true,
+    prioritizeColoredFileProperties: true,
+    notePropertyType: 'none',
+    showFilePropertiesInCompactMode: false,
+    showPropertiesOnSeparateRows: true,
+    showFileDate: true,
+    // Default to showing modified date when sorting alphabetically
+    alphabeticalDateMode: 'modified',
+    showParentFolder: true,
+    parentFolderClickRevealsFile: false,
+    showParentFolderColor: false,
+    showParentFolderIcon: false,
 
     // Calendar tab - Calendar
     calendarPlacement: 'left-sidebar',
@@ -141,137 +289,9 @@ export const DEFAULT_SETTINGS: NotebookNavigatorSettings = {
     calendarCustomQuarterTemplate: null,
     calendarCustomYearTemplate: null,
 
-    // Navigation pane tab - Appearance
-    colorIconOnly: false,
-    toolbarVisibility: {
-        navigation: {
-            toggleDualPane: true,
-            expandCollapse: true,
-            calendar: true,
-            hiddenItems: true,
-            rootReorder: true,
-            newFolder: true
-        },
-        list: {
-            back: true,
-            search: true,
-            descendants: true,
-            sort: true,
-            appearance: true,
-            newNote: true
-        }
-    },
-    pinNavigationBanner: true,
-    showNoteCount: true,
-    separateNoteCounts: true,
-    showIndentGuides: false,
-    rootLevelSpacing: 0,
-    navIndent: NAVPANE_MEASUREMENTS.defaultIndent,
-    navItemHeight: NAVPANE_MEASUREMENTS.defaultItemHeight,
-    navItemHeightScaleText: true,
-
-    // Folders & tags tab
-    autoSelectFirstFileOnFocusChange: false,
-    autoExpandNavItems: false,
-    springLoadedFolders: true,
-    springLoadedFoldersInitialDelay: 0.5,
-    springLoadedFoldersSubsequentDelay: 0.5,
-    showFolderIcons: true,
-    showRootFolder: true,
-    inheritFolderColors: false,
-    folderSortOrder: 'alpha-asc',
-    inheritTagColors: true,
-    enableFolderNotes: false,
-    folderNoteType: 'markdown',
-    folderNoteName: '',
-    folderNoteNamePattern: '',
-    folderNoteTemplate: null,
-    openFolderNotesInNewTab: false,
-    hideFolderNoteInList: true,
-    pinCreatedFolderNote: false,
-    showTags: true,
-    showTagIcons: true,
-    showAllTagsFolder: true,
-    showUntagged: true,
-    tagSortOrder: 'alpha-asc',
-    keepEmptyTagsProperty: false,
-
-    // List pane tab
-    defaultListMode: 'standard',
-    includeDescendantNotes: false,
-    defaultFolderSort: 'modified-desc',
-    propertySortKey: '',
-    revealFileOnListChanges: true,
-    listPaneTitle: 'header',
-    noteGrouping: 'date',
-    filterPinnedByFolder: false,
-    showPinnedGroupHeader: true,
-    showPinnedIcon: true,
-    optimizeNoteHeight: true,
-    compactItemHeight: LISTPANE_MEASUREMENTS.defaultCompactItemHeight,
-    compactItemHeightScaleText: true,
-    showQuickActions: true,
-    quickActionRevealInFolder: false,
-    quickActionAddTag: true,
-    quickActionAddToShortcuts: true,
-    quickActionPinNote: true,
-    quickActionOpenInNewTab: false,
-
-    // Notes tab
-    useFrontmatterMetadata: false,
-    frontmatterIconField: 'icon',
-    frontmatterColorField: 'color',
-    frontmatterNameField: '',
-    frontmatterCreatedField: '',
-    frontmatterModifiedField: '',
-    frontmatterDateFormat: '',
-    saveMetadataToFrontmatter: false,
-    showFileIcons: true,
-    showFileIconUnfinishedTask: false,
-    showFilenameMatchIcons: false,
-    fileNameIconMap: {},
-    showCategoryIcons: false,
-    fileTypeIconMap: {},
-    fileNameRows: 1,
-    showFilePreview: true,
-    skipHeadingsInPreview: true,
-    skipCodeBlocksInPreview: true,
-    stripHtmlInPreview: true,
-    previewRows: 2,
-    previewProperties: [],
-    showFeatureImage: true,
-    featureImageProperties: [],
-    featureImageExcludeProperties: [],
-    forceSquareFeatureImage: true,
-    downloadExternalFeatureImages: true,
-    showFileTags: true,
-    colorFileTags: true,
-    prioritizeColoredFileTags: true,
-    showFileTagAncestors: false,
-    showFileTagsInCompactMode: false,
-    customPropertyType: 'none',
-    customPropertyFields: '',
-    showCustomPropertiesOnSeparateRows: true,
-    customPropertyColorMap: {},
-    showCustomPropertyInCompactMode: false,
-    showFileDate: true,
-    // Default to showing modified date when sorting alphabetically
-    alphabeticalDateMode: 'modified',
-    showParentFolder: true,
-    parentFolderClickRevealsFile: false,
-    showParentFolderColor: false,
-    showParentFolderIcon: false,
-
-    // Icon packs tab
-    externalIconProviders: {},
-
     // Search settings and hotkeys
     searchProvider: 'internal',
     keyboardShortcuts: getDefaultKeyboardShortcuts(),
-
-    // Advanced tab
-    checkForUpdatesOnStart: true,
-    confirmBeforeDelete: true,
 
     // Runtime state and cached data
     customVaultName: '',
@@ -290,10 +310,15 @@ export const DEFAULT_SETTINGS: NotebookNavigatorSettings = {
     tagSortOverrides: {},
     tagTreeSortOverrides: {},
     tagAppearances: {} as Record<string, TagAppearance>,
+    propertyIcons: {},
+    propertyColors: {},
+    propertyBackgroundColors: {},
+    propertyTreeSortOverrides: {},
     navigationSeparators: {},
     userColors: [...DEFAULT_CUSTOM_COLORS],
     lastShownVersion: '',
     lastAnnouncedRelease: '',
     rootFolderOrder: [],
-    rootTagOrder: []
+    rootTagOrder: [],
+    rootPropertyOrder: []
 };

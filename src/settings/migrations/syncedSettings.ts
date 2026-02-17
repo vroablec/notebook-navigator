@@ -21,10 +21,9 @@ import type { NotebookNavigatorSettings } from '../types';
 import type { LocalStorageKeys } from '../../types';
 import type { FolderAppearance } from '../../hooks/useListPaneAppearance';
 import { localStorage } from '../../utils/localStorage';
-import { isPlainObjectRecordValue } from '../../utils/recordUtils';
 import { cloneShortcuts, DEFAULT_VAULT_PROFILE_ID } from '../../utils/vaultProfiles';
 import { ShortcutType, type ShortcutEntry } from '../../types/shortcuts';
-import { isCustomPropertyType } from '../types';
+import { isNotePropertyType, isRecentNotesHideMode, isTagSortOrder } from '../types';
 import { normalizeCalendarCustomRootFolder } from '../../utils/calendarCustomNotePatterns';
 import { normalizeFolderNoteNamePattern } from '../../utils/folderNoteName';
 import { normalizeOptionalVaultFilePath } from '../../utils/pathUtils';
@@ -132,26 +131,105 @@ export function migrateLegacySyncedSettings(params: {
         settings.shortcutBadgeDisplay = defaultSettings.shortcutBadgeDisplay;
     }
 
-    if (!isCustomPropertyType(settings.customPropertyType)) {
-        settings.customPropertyType = defaultSettings.customPropertyType;
+    const legacyHideFolderNotesInRecentNotes = mutableSettings['hideFolderNotesInRecentNotes'];
+    if (typeof storedData?.['hideRecentNotes'] === 'undefined' && typeof legacyHideFolderNotesInRecentNotes === 'boolean') {
+        settings.hideRecentNotes = legacyHideFolderNotesInRecentNotes ? 'folder-notes' : 'none';
+    }
+    delete mutableSettings['hideFolderNotesInRecentNotes'];
+
+    if (!isRecentNotesHideMode(settings.hideRecentNotes)) {
+        settings.hideRecentNotes = defaultSettings.hideRecentNotes;
     }
 
-    if (typeof settings.customPropertyFields !== 'string') {
-        settings.customPropertyFields = defaultSettings.customPropertyFields;
+    const legacyNotePropertyType = mutableSettings['customPropertyType'];
+    if (typeof storedData?.['notePropertyType'] === 'undefined' && typeof legacyNotePropertyType === 'string') {
+        if (legacyNotePropertyType === 'frontmatter') {
+            settings.notePropertyType = 'none';
+        } else if (isNotePropertyType(legacyNotePropertyType)) {
+            settings.notePropertyType = legacyNotePropertyType;
+        }
+    }
+    delete mutableSettings['customPropertyType'];
+
+    const legacyPropertyFields = mutableSettings['customPropertyFields'];
+    if (typeof storedData?.['propertyFields'] === 'undefined' && typeof legacyPropertyFields === 'string') {
+        settings.propertyFields = legacyPropertyFields;
+    }
+    delete mutableSettings['customPropertyFields'];
+
+    const legacyShowPropertiesOnSeparateRows = mutableSettings['showCustomPropertiesOnSeparateRows'];
+    if (typeof storedData?.['showPropertiesOnSeparateRows'] === 'undefined' && typeof legacyShowPropertiesOnSeparateRows === 'boolean') {
+        settings.showPropertiesOnSeparateRows = legacyShowPropertiesOnSeparateRows;
+    }
+    delete mutableSettings['showCustomPropertiesOnSeparateRows'];
+
+    const legacyShowFilePropertiesInCompactMode = mutableSettings['showCustomPropertyInCompactMode'];
+    if (
+        typeof storedData?.['showFilePropertiesInCompactMode'] === 'undefined' &&
+        typeof legacyShowFilePropertiesInCompactMode === 'boolean'
+    ) {
+        settings.showFilePropertiesInCompactMode = legacyShowFilePropertiesInCompactMode;
+    }
+    delete mutableSettings['showCustomPropertyInCompactMode'];
+
+    const previousShowFilePropertiesInCompactMode = mutableSettings['showNotePropertyInCompactMode'];
+    if (
+        typeof storedData?.['showFilePropertiesInCompactMode'] === 'undefined' &&
+        typeof previousShowFilePropertiesInCompactMode === 'boolean'
+    ) {
+        settings.showFilePropertiesInCompactMode = previousShowFilePropertiesInCompactMode;
+    }
+    delete mutableSettings['showNotePropertyInCompactMode'];
+
+    if (!isNotePropertyType(settings.notePropertyType)) {
+        settings.notePropertyType = defaultSettings.notePropertyType;
     }
 
-    if (typeof settings.showCustomPropertiesOnSeparateRows !== 'boolean') {
-        settings.showCustomPropertiesOnSeparateRows = defaultSettings.showCustomPropertiesOnSeparateRows;
+    if (typeof settings.propertyFields !== 'string') {
+        settings.propertyFields = defaultSettings.propertyFields;
+    }
+
+    if (typeof settings.showPropertiesOnSeparateRows !== 'boolean') {
+        settings.showPropertiesOnSeparateRows = defaultSettings.showPropertiesOnSeparateRows;
     }
 
     delete mutableSettings['customPropertyColorFields'];
+    delete mutableSettings['customPropertyColorMap'];
 
-    if (!isPlainObjectRecordValue(settings.customPropertyColorMap)) {
-        settings.customPropertyColorMap = defaultSettings.customPropertyColorMap;
+    if (typeof settings.showFilePropertiesInCompactMode !== 'boolean') {
+        settings.showFilePropertiesInCompactMode = defaultSettings.showFilePropertiesInCompactMode;
     }
 
-    if (typeof settings.showCustomPropertyInCompactMode !== 'boolean') {
-        settings.showCustomPropertyInCompactMode = defaultSettings.showCustomPropertyInCompactMode;
+    if (typeof settings.showFileProperties !== 'boolean') {
+        settings.showFileProperties = defaultSettings.showFileProperties;
+    }
+
+    if (typeof settings.colorFileProperties !== 'boolean') {
+        settings.colorFileProperties = defaultSettings.colorFileProperties;
+    }
+
+    if (typeof settings.prioritizeColoredFileProperties !== 'boolean') {
+        settings.prioritizeColoredFileProperties = defaultSettings.prioritizeColoredFileProperties;
+    }
+
+    if (typeof settings.showProperties !== 'boolean') {
+        settings.showProperties = defaultSettings.showProperties;
+    }
+
+    if (typeof settings.showPropertyIcons !== 'boolean') {
+        settings.showPropertyIcons = defaultSettings.showPropertyIcons;
+    }
+
+    if (typeof settings.inheritPropertyColors !== 'boolean') {
+        settings.inheritPropertyColors = defaultSettings.inheritPropertyColors;
+    }
+
+    if (typeof settings.showAllPropertiesFolder !== 'boolean') {
+        settings.showAllPropertiesFolder = defaultSettings.showAllPropertiesFolder;
+    }
+
+    if (!isTagSortOrder(settings.propertySortOrder)) {
+        settings.propertySortOrder = defaultSettings.propertySortOrder;
     }
 
     type LegacyAppearance = FolderAppearance & {
@@ -190,6 +268,22 @@ export function migrateLegacySyncedSettings(params: {
         Object.entries(collection).forEach(([key, appearance]) => {
             const migratedAppearance = migrateLegacyAppearanceMode(appearance);
             if (migratedAppearance) {
+                const appearanceRecord = migratedAppearance as unknown as Record<string, unknown>;
+                const rawNotePropertyType = appearanceRecord['notePropertyType'];
+                const rawLegacyNotePropertyType = appearanceRecord['customPropertyType'];
+                const effectiveRawType =
+                    typeof rawNotePropertyType === 'string' && rawNotePropertyType.length > 0
+                        ? rawNotePropertyType
+                        : rawLegacyNotePropertyType;
+
+                if (effectiveRawType === 'frontmatter') {
+                    migratedAppearance.notePropertyType = 'none';
+                } else if (typeof effectiveRawType === 'string' && effectiveRawType.length > 0 && !isNotePropertyType(effectiveRawType)) {
+                    delete appearanceRecord['notePropertyType'];
+                } else if (typeof effectiveRawType === 'string' && isNotePropertyType(effectiveRawType)) {
+                    migratedAppearance.notePropertyType = effectiveRawType;
+                }
+                delete appearanceRecord['customPropertyType'];
                 collection[key] = migratedAppearance;
             }
         });
@@ -286,6 +380,7 @@ export function extractLegacyShortcuts(params: { storedData: Record<string, unkn
             shortcutType !== ShortcutType.FOLDER &&
             shortcutType !== ShortcutType.NOTE &&
             shortcutType !== ShortcutType.TAG &&
+            shortcutType !== ShortcutType.PROPERTY &&
             shortcutType !== ShortcutType.SEARCH
         ) {
             return;

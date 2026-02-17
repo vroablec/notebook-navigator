@@ -71,6 +71,7 @@ export function ListPaneHeader({
     // Use the shared actions hook
     const {
         handleNewFile,
+        canCreateNewFile,
         handleAppearanceMenu,
         handleSortMenu,
         handleToggleDescendants,
@@ -215,7 +216,7 @@ export function ListPaneHeader({
         const parts: React.ReactNode[] = [];
         breadcrumbSegments.forEach((segment, index) => {
             const key = `${segment.label}-${index}`;
-            // The last breadcrumb segment maps to the selected folder.
+            // The last breadcrumb segment maps to the active selection.
             const isCurrentFolderNoteSegment = segment.isLast && Boolean(selectedFolderNote);
 
             if (segment.isLast || segment.targetType === 'none' || !segment.targetPath) {
@@ -240,6 +241,8 @@ export function ListPaneHeader({
                         }
                     } else if (segment.targetType === 'tag' && segment.targetPath) {
                         selectionDispatch({ type: 'SET_SELECTED_TAG', tag: normalizeTagPath(segment.targetPath) });
+                    } else if (segment.targetType === 'property' && segment.targetPath) {
+                        selectionDispatch({ type: 'SET_SELECTED_PROPERTY', nodeId: segment.targetPath });
                     }
                 };
 
@@ -419,7 +422,7 @@ export function ListPaneHeader({
                             onClick={() => {
                                 runAsyncAction(() => handleNewFile());
                             }}
-                            disabled={!selectionState.selectedFolder}
+                            disabled={!canCreateNewFile}
                             tabIndex={-1}
                         >
                             <ServiceIcon iconId={resolveUXIcon(settings.interfaceIcons, 'list-new-note')} />

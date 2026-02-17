@@ -105,6 +105,8 @@ export const STRINGS_EN = {
         folderExists: 'Folder already in shortcuts',
         noteExists: 'Note already in shortcuts',
         tagExists: 'Tag already in shortcuts',
+        propertyExists: 'Property already in shortcuts',
+        invalidProperty: 'Invalid property shortcut',
         searchExists: 'Search shortcut already exists',
         emptySearchQuery: 'Enter a search query before saving it',
         emptySearchName: 'Enter a name before saving the search',
@@ -185,12 +187,12 @@ export const STRINGS_EN = {
                 properties: {
                     title: 'Properties',
                     items: [
-                        '`.key` Include notes with custom property key.',
-                        '`.key=value` Include notes with custom property value.',
+                        '`.key` Include notes with property key.',
+                        '`.key=value` Include notes with property value.',
                         '`."Reading Status"` Include notes with a property key that contains whitespace.',
                         '`."Reading Status"="In Progress"` Keys and values with whitespace must be double-quoted.',
-                        '`-.key` Exclude notes with custom property key.',
-                        '`-.key=value` Exclude notes with custom property value.',
+                        '`-.key` Exclude notes with property key.',
+                        '`-.key=value` Exclude notes with property value.',
                         'Cmd/Ctrl+Click a property to add with AND. Cmd/Ctrl+Shift+Click to add with OR.'
                     ]
                 },
@@ -323,6 +325,10 @@ export const STRINGS_EN = {
             showTag: 'Show tag',
             hideTag: 'Hide tag'
         },
+        property: {
+            addKey: 'Add property key',
+            removeKey: 'Remove property key'
+        },
         navigation: {
             addSeparator: 'Add separator',
             removeSeparator: 'Remove separator'
@@ -376,10 +382,6 @@ export const STRINGS_EN = {
         fileIconRuleEditor: {
             addRuleAria: 'Add rule'
         },
-        propertyColorRuleEditor: {
-            propertyPlaceholder: 'Property',
-            valuePlaceholder: 'Value'
-        },
         interfaceIcons: {
             title: 'Interface icons',
             fileItemsSection: 'File items',
@@ -405,13 +407,15 @@ export const STRINGS_EN = {
                 'list-new-note': 'New note',
                 'nav-folder-open': 'Folder open',
                 'nav-folder-closed': 'Folder closed',
-                'nav-folder-note': 'Folder note',
+                'nav-tags': 'Tags',
                 'nav-tag': 'Tag',
                 'nav-properties': 'Properties',
+                'nav-property': 'Property',
+                'nav-property-value': 'Value',
                 'list-pinned': 'Pinned items',
                 'file-unfinished-task': 'Unfinished tasks',
                 'file-word-count': 'Word count',
-                'file-custom-property': 'Custom property'
+                'file-property': 'Property'
             }
         },
         colorPicker: {
@@ -532,6 +536,15 @@ export const STRINGS_EN = {
                 dismiss: 'to dismiss',
                 add: 'to add tag',
                 remove: 'to remove tag'
+            }
+        },
+        propertySuggest: {
+            placeholder: 'Select property key...',
+            navigatePlaceholder: 'Navigate to property...',
+            instructions: {
+                navigate: 'to navigate',
+                select: 'to add property',
+                dismiss: 'to dismiss'
             }
         },
         welcome: {
@@ -686,6 +699,7 @@ export const STRINGS_EN = {
         pinAllFolderNotes: 'Pin all folder notes', // Command palette: Pins all folder notes to shortcuts (English: Pin all folder notes)
         navigateToFolder: 'Navigate to folder', // Command palette: Navigate to a folder using fuzzy search (English: Navigate to folder)
         navigateToTag: 'Navigate to tag', // Command palette: Navigate to a tag using fuzzy search (English: Navigate to tag)
+        navigateToProperty: 'Navigate to property', // Command palette: Navigate to a property key or value using fuzzy search (English: Navigate to property)
         addShortcut: 'Add to shortcuts', // Command palette: Adds the current file, folder, or tag to shortcuts (English: Add to shortcuts)
         openShortcut: 'Open shortcut {number}', // Command palette: Opens a shortcut by its position (English: Open shortcut {number})
         toggleDescendants: 'Toggle descendants', // Command palette: Toggles showing notes from descendants (English: Toggle descendants)
@@ -726,14 +740,15 @@ export const STRINGS_EN = {
         },
         sections: {
             general: 'General',
-            navigationPane: 'Navigation pane',
+            navigationPane: 'Navigation',
             calendar: 'Calendar',
             icons: 'Icon packs',
             folders: 'Folders',
             folderNotes: 'Folder notes',
-            foldersAndTags: 'Folders & tags',
+            foldersAndTags: 'Folders',
+            tagsAndProperties: 'Tags & properties',
             tags: 'Tags',
-            listPane: 'List pane',
+            listPane: 'List',
             notes: 'Notes',
             advanced: 'Advanced'
         },
@@ -752,7 +767,6 @@ export const STRINGS_EN = {
             },
             navigation: {
                 appearance: 'Appearance',
-                shortcutsAndRecent: 'Shortcuts & recent items',
                 leftSidebar: 'Left sidebar',
                 calendarIntegration: 'Calendar integration'
             },
@@ -767,7 +781,7 @@ export const STRINGS_EN = {
                 previewText: 'Preview text',
                 featureImage: 'Feature image',
                 tags: 'Tags',
-                customProperty: 'Custom property (frontmatter or word count)',
+                properties: 'Properties',
                 date: 'Date',
                 parentFolder: 'Parent folder'
             }
@@ -812,6 +826,16 @@ export const STRINGS_EN = {
                 name: 'Property to sort by',
                 desc: 'Used with Property sort. Notes with this frontmatter property are listed first and sorted by the property value. Arrays are joined into one value.',
                 placeholder: 'order'
+            },
+            propertySortSecondary: {
+                name: 'Secondary sort',
+                desc: 'Used with Property sort when notes have the same property value or no property value.',
+                options: {
+                    title: 'Title',
+                    filename: 'File name',
+                    created: 'Date created',
+                    modified: 'Date edited'
+                }
             },
             revealFileOnListChanges: {
                 name: 'Scroll to selected file on list changes',
@@ -962,6 +986,10 @@ export const STRINGS_EN = {
                 name: 'Auto-reveal active note',
                 desc: 'Automatically reveal notes when opened from Quick Switcher, links, or search.'
             },
+            autoRevealShortestPath: {
+                name: 'Use shortest path',
+                desc: "Enabled: Auto-reveal selects the nearest visible ancestor folder or tag. Disabled: Auto-reveal selects the file's actual folder and exact tag."
+            },
             autoRevealIgnoreRightSidebar: {
                 name: 'Ignore events from right sidebar',
                 desc: 'Do not change active note when clicking or changing notes in the right sidebar.'
@@ -1021,6 +1049,14 @@ export const STRINGS_EN = {
             showRecentNotes: {
                 name: 'Show recent notes',
                 desc: 'Display the recent notes section in the navigation pane.'
+            },
+            hideRecentNotes: {
+                name: 'Hide notes',
+                desc: 'Choose which note types to hide in the recent notes section.',
+                options: {
+                    none: 'None',
+                    folderNotes: 'Folder notes'
+                }
             },
             recentNotesCount: {
                 name: 'Recent notes count',
@@ -1221,9 +1257,9 @@ export const STRINGS_EN = {
                 }
             },
             excludedNotes: {
-                name: 'Hide notes with properties (vault profile)',
-                desc: 'Comma-separated list of frontmatter properties. Notes containing any of these properties will be hidden (e.g., draft, private, archived).',
-                placeholder: 'draft, private'
+                name: 'Hide notes with property rules (vault profile)',
+                desc: 'Comma-separated list of frontmatter rules. Use `key` or `key=value` entries (e.g., status=done, published=true, archived).',
+                placeholder: 'status=done, published=true, archived'
             },
             excludedFileNamePatterns: {
                 name: 'Hide files (vault profile)',
@@ -1296,33 +1332,41 @@ export const STRINGS_EN = {
                 name: 'Show file tags in compact mode',
                 desc: 'Display tags when date, preview, and image are hidden.'
             },
-            customPropertyType: {
-                name: 'Property type',
-                desc: 'Select the custom property to display in file items.',
+            showFileProperties: {
+                name: 'Show file properties',
+                desc: 'Display clickable properties in file items.'
+            },
+            colorFileProperties: {
+                name: 'Color file properties',
+                desc: 'Apply property colors to property badges on file items.'
+            },
+            prioritizeColoredFileProperties: {
+                name: 'Show colored properties first',
+                desc: 'Sort colored properties before other properties on file items.'
+            },
+            showFilePropertiesInCompactMode: {
+                name: 'Show properties in compact mode',
+                desc: 'Display properties when compact mode is active.'
+            },
+            notePropertyType: {
+                name: 'Note property',
+                desc: 'Select the note property to display in file items.',
                 options: {
                     frontmatter: 'Frontmatter property',
                     wordCount: 'Word count',
                     none: 'None'
                 }
             },
-            customPropertyFields: {
+            propertyFields: {
                 name: 'Properties to display',
-                desc: 'Comma-separated list of frontmatter properties to display as badges. List-valued properties render one badge per value. [[wikilink]] values displayed as clickable links.',
-                placeholder: 'status, type, category'
+                desc: 'Comma-separated list of frontmatter properties to display in the navigation pane and as badges in file items. List-valued properties render one badge per value.',
+                placeholder: 'status, type, category',
+                addButtonTooltip: 'Add property key',
+                emptySelectorNotice: 'No property keys found in metadata cache.'
             },
-            showCustomPropertiesOnSeparateRows: {
+            showPropertiesOnSeparateRows: {
                 name: 'Show properties on separate rows',
                 desc: 'Display each property on its own row.'
-            },
-            customPropertyColorMap: {
-                name: 'Property colors',
-                desc: 'Map frontmatter properties and values to badge colors. One mapping per line: property=color or property:value=color',
-                placeholder: '# property=color or property:value=color\nstatus=#f59e0b\nstatus:done=#10b981\nstatus:todo=#ef4444',
-                editTooltip: 'Edit mappings'
-            },
-            showCustomPropertyInCompactMode: {
-                name: 'Show custom property in compact mode',
-                desc: 'Display the custom property when date, preview, and image are hidden.'
             },
             dateFormat: {
                 name: 'Date format',
@@ -1508,6 +1552,33 @@ export const STRINGS_EN = {
                 name: 'Retain tags property after removing last tag',
                 desc: 'Keep the tags frontmatter property when all tags are removed. When disabled, the tags property is deleted from frontmatter.'
             },
+            showProperties: {
+                name: 'Show properties',
+                desc: 'Display properties section in the navigator.'
+            },
+            showPropertyIcons: {
+                name: 'Show property icons',
+                desc: 'Display icons next to properties in the navigation pane.'
+            },
+            inheritPropertyColors: {
+                name: 'Inherit property colors',
+                desc: 'Property values inherit color and background from their property key.'
+            },
+            propertySortOrder: {
+                name: 'Property sort order',
+                desc: 'Right-click any property to set a different sort order for its values.',
+                options: {
+                    alphaAsc: 'A to Z',
+                    alphaDesc: 'Z to A',
+                    frequency: 'Frequency',
+                    lowToHigh: 'low to high',
+                    highToLow: 'high to low'
+                }
+            },
+            showAllPropertiesFolder: {
+                name: 'Show properties folder',
+                desc: 'Display "Properties" as a collapsible folder.'
+            },
             hiddenTags: {
                 name: 'Hide tags (vault profile)',
                 desc: 'Comma-separated list of tag patterns. Name patterns: tag* (starting with), *tag (ending with). Path patterns: archive (tag and descendants), archive/* (descendants only), projects/*/drafts (mid-segment wildcard).',
@@ -1568,7 +1639,8 @@ export const STRINGS_EN = {
                 error: 'Settings cleanup failed',
                 loading: 'Checking metadata...',
                 statusClean: 'No metadata to clean',
-                statusCounts: 'Orphaned items: {folders} folders, {tags} tags, {files} files, {pinned} pins, {separators} separators'
+                statusCounts:
+                    'Orphaned items: {folders} folders, {tags} tags, {properties} properties, {files} files, {pinned} pins, {separators} separators'
             },
             rebuildCache: {
                 name: 'Rebuild cache',
@@ -1604,9 +1676,10 @@ export const STRINGS_EN = {
                 desc: 'Frontmatter field for file colors. Leave empty to use colors stored in settings.',
                 placeholder: 'color'
             },
-            frontmatterSaveMetadata: {
-                name: 'Save icons and colors to frontmatter',
-                desc: 'Automatically write file icons and colors to frontmatter using the configured fields above.'
+            frontmatterBackgroundField: {
+                name: 'Background field',
+                desc: 'Frontmatter field for background colors. Leave empty to use background colors stored in settings.',
+                placeholder: 'background'
             },
             frontmatterMigration: {
                 name: 'Migrate icons and colors from settings',

@@ -93,6 +93,8 @@ export function Calendar({
     const dayNoteFileLookupCacheRef = useRef<Map<string, TFile | null>>(new Map());
     const vaultVersionDebounceRef = useRef<number | null>(null);
     const scheduleVaultVersionUpdate = useCallback(() => {
+        dayNoteFileLookupCacheRef.current.clear();
+
         if (typeof window === 'undefined') {
             setVaultVersion(v => v + 1);
             return;
@@ -372,6 +374,7 @@ export function Calendar({
                     date,
                     resolverContext: dayNoteResolverContext,
                     displayLocale,
+                    weekLocale: calendarRulesLocale,
                     customCalendarRootFolderSettings,
                     momentApi
                 });
@@ -389,6 +392,7 @@ export function Calendar({
             dailyNoteSettings,
             dayNoteResolverContext,
             displayLocale,
+            calendarRulesLocale,
             momentApi,
             settings.calendarIntegrationMode
         ]
@@ -515,14 +519,14 @@ export function Calendar({
         return unfinishedTaskCounts;
     }, [db, taskIndicatorVersion, weeks]);
 
+    const showYearCalendar = isRightSidebar && settings.calendarShowYearCalendar;
     const renderedWeekRowCount = useMemo(() => {
         const weeksToShow = clamp(weeksToShowSetting, 1, 6);
-        if (weeksToShow === 6) {
+        if (weeksToShow === 6 && showYearCalendar) {
             return 6;
         }
         return weeks.length;
-    }, [weeks.length, weeksToShowSetting]);
-
+    }, [showYearCalendar, weeks.length, weeksToShowSetting]);
     const trailingSpacerWeekCount = Math.max(0, renderedWeekRowCount - weeks.length);
 
     useLayoutEffect(() => {
@@ -656,6 +660,7 @@ export function Calendar({
             dailyNoteSettings,
             momentApi,
             displayLocale,
+            weekLocale: calendarRulesLocale,
             customCalendarRootFolderSettings,
             openFile,
             clearHoverTooltip,
@@ -673,7 +678,6 @@ export function Calendar({
 
     const showWeekNumbers = settings.calendarShowWeekNumber;
     const highlightToday = settings.calendarHighlightToday;
-    const showYearCalendar = isRightSidebar && settings.calendarShowYearCalendar;
     const showYearInHeader = !isRightSidebar || !showYearCalendar;
     const useRightSidebarYearCalendarHeaderLayout = isRightSidebar && showYearCalendar;
     const useSplitHeaderLayout = !useRightSidebarYearCalendarHeaderLayout;

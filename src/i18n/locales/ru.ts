@@ -105,6 +105,8 @@ export const STRINGS_RU = {
         folderExists: 'Папка уже в ярлыках',
         noteExists: 'Заметка уже в ярлыках',
         tagExists: 'Тег уже в ярлыках',
+        propertyExists: 'Свойство уже в закладках',
+        invalidProperty: 'Недопустимая закладка свойства',
         searchExists: 'Ярлык поиска уже существует',
         emptySearchQuery: 'Введите поисковый запрос перед сохранением',
         emptySearchName: 'Введите название перед сохранением поиска',
@@ -186,12 +188,12 @@ export const STRINGS_RU = {
                 properties: {
                     title: 'Свойства',
                     items: [
-                        '`.key` Включить заметки с пользовательским ключом свойства.',
-                        '`.key=value` Включить заметки с пользовательским значением свойства.',
+                        '`.key` Включить заметки с ключом свойства.',
+                        '`.key=value` Включить заметки с значением свойства.',
                         '`."Reading Status"` Включить заметки с ключом свойства, содержащим пробелы.',
                         '`."Reading Status"="In Progress"` Ключи и значения с пробелами должны быть заключены в двойные кавычки.',
-                        '`-.key` Исключить заметки с пользовательским ключом свойства.',
-                        '`-.key=value` Исключить заметки с пользовательским значением свойства.',
+                        '`-.key` Исключить заметки с ключом свойства.',
+                        '`-.key=value` Исключить заметки с значением свойства.',
                         'Cmd/Ctrl+Клик по свойству для добавления с AND. Cmd/Ctrl+Shift+Клик для добавления с OR.'
                     ]
                 },
@@ -324,6 +326,10 @@ export const STRINGS_RU = {
             showTag: 'Показать тег',
             hideTag: 'Скрыть тег'
         },
+        property: {
+            addKey: 'Добавить ключ свойства',
+            removeKey: 'Удалить ключ свойства'
+        },
         navigation: {
             addSeparator: 'Добавить разделитель',
             removeSeparator: 'Удалить разделитель'
@@ -377,10 +383,6 @@ export const STRINGS_RU = {
         fileIconRuleEditor: {
             addRuleAria: 'Добавить правило'
         },
-        propertyColorRuleEditor: {
-            propertyPlaceholder: 'Property',
-            valuePlaceholder: 'Value'
-        },
         interfaceIcons: {
             title: 'Иконки интерфейса',
             fileItemsSection: 'Элементы файла',
@@ -406,13 +408,15 @@ export const STRINGS_RU = {
                 'list-new-note': 'Новая заметка',
                 'nav-folder-open': 'Папка открыта',
                 'nav-folder-closed': 'Папка закрыта',
-                'nav-folder-note': 'Заметка папки',
+                'nav-tags': 'Теги',
                 'nav-tag': 'Тег',
                 'nav-properties': 'Свойства',
+                'nav-property': 'Свойство',
+                'nav-property-value': 'Значение',
                 'list-pinned': 'Закреплённые элементы',
                 'file-unfinished-task': 'Незавершённые задачи',
                 'file-word-count': 'Количество слов',
-                'file-custom-property': 'Пользовательское свойство'
+                'file-property': 'Свойство'
             }
         },
         colorPicker: {
@@ -533,6 +537,15 @@ export const STRINGS_RU = {
                 dismiss: 'для закрытия',
                 add: 'для добавления тега',
                 remove: 'для удаления тега'
+            }
+        },
+        propertySuggest: {
+            placeholder: 'Выберите ключ свойства...',
+            navigatePlaceholder: 'Перейти к свойству...',
+            instructions: {
+                navigate: 'для навигации',
+                select: 'для добавления свойства',
+                dismiss: 'для закрытия'
             }
         },
         welcome: {
@@ -687,6 +700,7 @@ export const STRINGS_RU = {
         pinAllFolderNotes: 'Закрепить все заметки папок', // Command palette: Pins all folder notes to shortcuts (English: Pin all folder notes)
         navigateToFolder: 'Перейти к папке', // Command palette: Navigate to a folder using fuzzy search (English: Navigate to folder)
         navigateToTag: 'Перейти к тегу', // Command palette: Navigate to a tag using fuzzy search (English: Navigate to tag)
+        navigateToProperty: 'Перейти к свойству', // Command palette: Navigate to a property key or value using fuzzy search (English: Navigate to property)
         addShortcut: 'Добавить в ярлыки', // Command palette: Adds the current file, folder, or tag to shortcuts (English: Add to shortcuts)
         openShortcut: 'Открыть ярлык {number}',
         toggleDescendants: 'Переключить потомков', // Command palette: Toggles showing notes from descendants (English: Toggle descendants)
@@ -727,14 +741,15 @@ export const STRINGS_RU = {
         },
         sections: {
             general: 'Общие',
-            navigationPane: 'Панель навигации',
+            navigationPane: 'Навигация',
             calendar: 'Календарь',
             icons: 'Наборы иконок',
             folders: 'Папки',
             folderNotes: 'Заметки папок',
-            foldersAndTags: 'Папки и теги',
+            foldersAndTags: 'Папки',
+            tagsAndProperties: 'Теги и свойства',
             tags: 'Теги',
-            listPane: 'Панель списка',
+            listPane: 'Список',
             notes: 'Заметки',
             advanced: 'Расширенные'
         },
@@ -753,7 +768,6 @@ export const STRINGS_RU = {
             },
             navigation: {
                 appearance: 'Внешний вид',
-                shortcutsAndRecent: 'Ярлыки и недавние элементы',
                 leftSidebar: 'Левая боковая панель',
                 calendarIntegration: 'Интеграция с календарём'
             },
@@ -768,7 +782,7 @@ export const STRINGS_RU = {
                 previewText: 'Текст превью',
                 featureImage: 'Изображение записи',
                 tags: 'Теги',
-                customProperty: 'Пользовательское свойство (метаданные или количество слов)',
+                properties: 'Свойства',
                 date: 'Дата',
                 parentFolder: 'Родительская папка'
             }
@@ -813,6 +827,16 @@ export const STRINGS_RU = {
                 name: 'Свойство сортировки',
                 desc: 'Используется с сортировкой по свойству. Заметки с этим свойством frontmatter отображаются первыми и сортируются по значению свойства. Массивы объединяются в одно значение.',
                 placeholder: 'order'
+            },
+            propertySortSecondary: {
+                name: 'Вторичная сортировка',
+                desc: 'Используется при сортировке по свойству, когда у заметок одинаковое значение свойства или значение отсутствует.',
+                options: {
+                    title: 'Заголовок',
+                    filename: 'Имя файла',
+                    created: 'Дата создания',
+                    modified: 'Дата редактирования'
+                }
             },
             revealFileOnListChanges: {
                 name: 'Прокрутка к выбранному файлу при изменениях списка',
@@ -963,6 +987,10 @@ export const STRINGS_RU = {
                 name: 'Автопоказ активной заметки',
                 desc: 'Автоматически показывать заметки, открытые из быстрого переключателя, ссылок или поиска.'
             },
+            autoRevealShortestPath: {
+                name: 'Использовать кратчайший путь',
+                desc: 'Включено: Автопоказ выбирает ближайшую видимую родительскую папку или тег. Выключено: Автопоказ выбирает фактическую папку файла и точный тег.'
+            },
             autoRevealIgnoreRightSidebar: {
                 name: 'Игнорировать события из правой боковой панели',
                 desc: 'Не менять активную заметку при клике или изменении заметок в правой боковой панели.'
@@ -1022,6 +1050,14 @@ export const STRINGS_RU = {
             showRecentNotes: {
                 name: 'Показывать недавние заметки',
                 desc: 'Отображать раздел недавних заметок в панели навигации.'
+            },
+            hideRecentNotes: {
+                name: 'Скрыть заметки',
+                desc: 'Выберите типы заметок для скрытия в разделе недавних заметок.',
+                options: {
+                    none: 'Нет',
+                    folderNotes: 'Заметки папок'
+                }
             },
             recentNotesCount: {
                 name: 'Количество недавних заметок',
@@ -1223,9 +1259,9 @@ export const STRINGS_RU = {
                 }
             },
             excludedNotes: {
-                name: 'Скрыть заметки со свойствами (профиль хранилища)',
-                desc: 'Список свойств frontmatter через запятую. Заметки, содержащие любое из этих свойств, будут скрыты (например, draft, private, archived).',
-                placeholder: 'draft, private'
+                name: 'Скрыть заметки по правилам свойств (профиль хранилища)',
+                desc: 'Список правил frontmatter через запятую. Используйте записи `key` или `key=value` (например, status=done, published=true, archived).',
+                placeholder: 'status=done, published=true, archived'
             },
             excludedFileNamePatterns: {
                 name: 'Скрыть файлы (профиль хранилища)',
@@ -1299,33 +1335,41 @@ export const STRINGS_RU = {
                 name: 'Показывать теги файлов в компактном режиме',
                 desc: 'Отображать теги, когда дата, превью и изображение скрыты.'
             },
-            customPropertyType: {
-                name: 'Тип свойства',
-                desc: 'Выберите пользовательское свойство для отображения в элементах файлов.',
+            showFileProperties: {
+                name: 'Показывать свойства файлов',
+                desc: 'Отображать кликабельные свойства в элементах файлов.'
+            },
+            colorFileProperties: {
+                name: 'Окрашивать свойства файлов',
+                desc: 'Применять цвета свойств к значкам свойств на элементах файлов.'
+            },
+            prioritizeColoredFileProperties: {
+                name: 'Показывать цветные свойства первыми',
+                desc: 'Сортировать цветные свойства перед другими свойствами на элементах файлов.'
+            },
+            showFilePropertiesInCompactMode: {
+                name: 'Показывать свойства в компактном режиме',
+                desc: 'Отображать свойства при активном компактном режиме.'
+            },
+            notePropertyType: {
+                name: 'Свойство заметки',
+                desc: 'Выберите свойство заметки для отображения в элементах файлов.',
                 options: {
                     frontmatter: 'Свойство frontmatter',
                     wordCount: 'Количество слов',
                     none: 'Нет'
                 }
             },
-            customPropertyFields: {
+            propertyFields: {
                 name: 'Свойства для отображения',
-                desc: 'Список свойств frontmatter через запятую для отображения в виде значков. Свойства со списковыми значениями отображают один значок на каждое значение. Значения в формате [[wikilink]] отображаются как кликабельные ссылки.',
-                placeholder: 'статус, тип, категория'
+                desc: 'Список свойств метаданных через запятую для отображения в панели навигации и в виде значков в элементах файлов. Свойства со списком значений отображают один значок на значение.',
+                placeholder: 'status, type, category',
+                addButtonTooltip: 'Добавить ключ свойства',
+                emptySelectorNotice: 'Ключи свойств не найдены в кеше метаданных.'
             },
-            showCustomPropertiesOnSeparateRows: {
+            showPropertiesOnSeparateRows: {
                 name: 'Показывать свойства в отдельных строках',
                 desc: 'Показывать каждое свойство в собственной строке.'
-            },
-            customPropertyColorMap: {
-                name: 'Цвета свойств',
-                desc: 'Сопоставление свойств и значений frontmatter с цветами значков. Одно сопоставление на строку: свойство=цвет или свойство:значение=цвет',
-                placeholder: '# Свойство или свойство:значение цвет\nstatus=#f59e0b\nstatus:done=#10b981\nstatus:todo=#ef4444',
-                editTooltip: 'Редактировать сопоставления'
-            },
-            showCustomPropertyInCompactMode: {
-                name: 'Показывать пользовательское свойство в компактном режиме',
-                desc: 'Отображать пользовательское свойство, когда дата, превью и изображение скрыты.'
             },
             dateFormat: {
                 name: 'Формат даты',
@@ -1400,7 +1444,7 @@ export const STRINGS_RU = {
             featureImageExcludeProperties: {
                 name: 'Исключить заметки со свойствами',
                 desc: 'Список свойств frontmatter через запятую. Заметки, содержащие любое из этих свойств, не сохраняют главные изображения.',
-                placeholder: 'личное, конфиденциальное'
+                placeholder: 'private, confidential'
             },
 
             downloadExternalFeatureImages: {
@@ -1512,6 +1556,33 @@ export const STRINGS_RU = {
                 name: 'Сохранять свойство tags после удаления последнего тега',
                 desc: 'Сохранять свойство tags в frontmatter, когда все теги удалены. При отключении свойство tags удаляется из frontmatter.'
             },
+            showProperties: {
+                name: 'Показать свойства',
+                desc: 'Отображать раздел свойств в навигаторе.'
+            },
+            showPropertyIcons: {
+                name: 'Показать значки свойств',
+                desc: 'Отображать значки рядом со свойствами в панели навигации.'
+            },
+            inheritPropertyColors: {
+                name: 'Наследовать цвета свойств',
+                desc: 'Значения свойств наследуют цвет и фон от ключа свойства.'
+            },
+            propertySortOrder: {
+                name: 'Порядок сортировки свойств',
+                desc: 'Щёлкните правой кнопкой мыши по свойству, чтобы задать другой порядок сортировки его значений.',
+                options: {
+                    alphaAsc: 'А до Я',
+                    alphaDesc: 'Я до А',
+                    frequency: 'Частота',
+                    lowToHigh: 'по возрастанию',
+                    highToLow: 'по убыванию'
+                }
+            },
+            showAllPropertiesFolder: {
+                name: 'Показать папку свойств',
+                desc: 'Отображать «Свойства» как сворачиваемую папку.'
+            },
             hiddenTags: {
                 name: 'Скрыть теги (профиль хранилища)',
                 desc: 'Список шаблонов тегов через запятую. Шаблоны имён: тег* (начинается с), *тег (заканчивается на). Шаблоны путей: архив (тег и потомки), архив/* (только потомки), проекты/*/черновики (подстановочный знак в середине).',
@@ -1573,7 +1644,7 @@ export const STRINGS_RU = {
                 loading: 'Проверка метаданных...',
                 statusClean: 'Нет метаданных для очистки',
                 statusCounts:
-                    'Осиротевшие элементы: {folders} папок, {tags} тегов, {files} файлов, {pinned} закреплённых, {separators} разделителей'
+                    'Осиротевшие элементы: {folders} папок, {tags} тегов, {properties} свойств, {files} файлов, {pinned} закреплённых, {separators} разделителей'
             },
             rebuildCache: {
                 name: 'Пересобрать кэш',
@@ -1609,9 +1680,10 @@ export const STRINGS_RU = {
                 desc: 'Поле frontmatter для цветов файлов. Оставьте пустым для использования цветов из настроек.',
                 placeholder: 'color'
             },
-            frontmatterSaveMetadata: {
-                name: 'Сохранять иконки и цвета во frontmatter',
-                desc: 'Автоматически записывать иконки и цвета файлов во frontmatter, используя настроенные выше поля.'
+            frontmatterBackgroundField: {
+                name: 'Поле фона',
+                desc: 'Поле frontmatter для цветов фона. Оставьте пустым для использования цветов фона из настроек.',
+                placeholder: 'background'
             },
             frontmatterMigration: {
                 name: 'Миграция иконок и цветов из настроек',
@@ -1626,7 +1698,7 @@ export const STRINGS_RU = {
             frontmatterNameField: {
                 name: 'Поля названия',
                 desc: 'Список полей frontmatter через запятую. Используется первое непустое значение. Возвращается к имени файла.',
-                placeholder: 'заголовок, название'
+                placeholder: 'title, name'
             },
             frontmatterCreatedField: {
                 name: 'Поле даты создания',

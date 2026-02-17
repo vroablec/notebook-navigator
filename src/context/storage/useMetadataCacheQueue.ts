@@ -72,7 +72,7 @@ function getTypesForPendingMetadataWaitMask(mask: PendingMetadataWaitMask): Cont
  * Queues metadata-dependent content providers once Obsidian's metadata cache is ready.
  *
  * Obsidian populates `app.metadataCache` asynchronously. Some providers (tags, frontmatter metadata, and
- * custom-property extraction) must not run until `metadataCache.getFileCache(file)` returns a value.
+ * property extraction) must not run until `metadataCache.getFileCache(file)` returns a value.
  *
  * Flow:
  * 1) Queue files that already have metadata cache entries.

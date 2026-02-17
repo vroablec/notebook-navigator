@@ -105,6 +105,8 @@ export const STRINGS_NL = {
         folderExists: 'Map staat al in snelkoppelingen',
         noteExists: 'Notitie staat al in snelkoppelingen',
         tagExists: 'Tag staat al in snelkoppelingen',
+        propertyExists: 'Eigenschap staat al in snelkoppelingen',
+        invalidProperty: 'Ongeldige eigenschapssnelkoppeling',
         searchExists: 'Zoeksnelkoppeling bestaat al',
         emptySearchQuery: 'Voer een zoekopdracht in voordat u deze opslaat',
         emptySearchName: 'Voer een naam in voordat u de zoekopdracht opslaat',
@@ -187,12 +189,12 @@ export const STRINGS_NL = {
                 properties: {
                     title: 'Eigenschappen',
                     items: [
-                        '`.key` Notities met aangepaste eigenschapssleutel opnemen.',
-                        '`.key=value` Notities met aangepaste eigenschapswaarde opnemen.',
+                        '`.key` Notities met eigenschapssleutel opnemen.',
+                        '`.key=value` Notities met eigenschapswaarde opnemen.',
                         '`."Reading Status"` Notities opnemen met een eigenschapssleutel die spaties bevat.',
                         '`."Reading Status"="In Progress"` Sleutels en waarden met spaties moeten tussen dubbele aanhalingstekens staan.',
-                        '`-.key` Notities met aangepaste eigenschapssleutel uitsluiten.',
-                        '`-.key=value` Notities met aangepaste eigenschapswaarde uitsluiten.',
+                        '`-.key` Notities met eigenschapssleutel uitsluiten.',
+                        '`-.key=value` Notities met eigenschapswaarde uitsluiten.',
                         'Cmd/Ctrl+Klik op een eigenschap om toe te voegen met AND. Cmd/Ctrl+Shift+Klik om toe te voegen met OR.'
                     ]
                 },
@@ -325,6 +327,10 @@ export const STRINGS_NL = {
             showTag: 'Tag tonen',
             hideTag: 'Tag verbergen'
         },
+        property: {
+            addKey: 'Eigenschapssleutel toevoegen',
+            removeKey: 'Eigenschapssleutel verwijderen'
+        },
         navigation: {
             addSeparator: 'Scheidingslijn toevoegen',
             removeSeparator: 'Scheidingslijn verwijderen'
@@ -378,10 +384,6 @@ export const STRINGS_NL = {
         fileIconRuleEditor: {
             addRuleAria: 'Regel toevoegen'
         },
-        propertyColorRuleEditor: {
-            propertyPlaceholder: 'Property',
-            valuePlaceholder: 'Value'
-        },
         interfaceIcons: {
             title: 'Interface-iconen',
             fileItemsSection: 'Bestandsitems',
@@ -407,13 +409,15 @@ export const STRINGS_NL = {
                 'list-new-note': 'Nieuwe notitie',
                 'nav-folder-open': 'Map open',
                 'nav-folder-closed': 'Map gesloten',
-                'nav-folder-note': 'Mapnotitie',
+                'nav-tags': 'Tags',
                 'nav-tag': 'Tag',
                 'nav-properties': 'Eigenschappen',
+                'nav-property': 'Eigenschap',
+                'nav-property-value': 'Waarde',
                 'list-pinned': 'Vastgezette items',
                 'file-unfinished-task': 'Onvoltooide taken',
                 'file-word-count': 'Aantal woorden',
-                'file-custom-property': 'Aangepaste eigenschap'
+                'file-property': 'Eigenschap'
             }
         },
         colorPicker: {
@@ -534,6 +538,15 @@ export const STRINGS_NL = {
                 dismiss: 'om te sluiten',
                 add: 'om tag toe te voegen',
                 remove: 'om tag te verwijderen'
+            }
+        },
+        propertySuggest: {
+            placeholder: 'Eigenschap selecteren...',
+            navigatePlaceholder: 'Navigeer naar eigenschap...',
+            instructions: {
+                navigate: 'om te navigeren',
+                select: 'om eigenschap toe te voegen',
+                dismiss: 'om te sluiten'
             }
         },
         welcome: {
@@ -689,6 +702,7 @@ export const STRINGS_NL = {
         pinAllFolderNotes: 'Alle mapnotities vastpinnen',
         navigateToFolder: 'Navigeren naar map',
         navigateToTag: 'Navigeren naar tag',
+        navigateToProperty: 'Navigeer naar eigenschap',
         addShortcut: 'Toevoegen aan snelkoppelingen',
         openShortcut: 'Snelkoppeling {number} openen',
         toggleDescendants: 'Afstammelingen in-/uitschakelen',
@@ -729,14 +743,15 @@ export const STRINGS_NL = {
         },
         sections: {
             general: 'Algemeen',
-            navigationPane: 'Navigatiepaneel',
+            navigationPane: 'Navigatie',
             calendar: 'Kalender',
             icons: 'Pictogrampakketten',
             folders: 'Mappen',
             folderNotes: 'Mapnotities',
-            foldersAndTags: 'Mappen & tags',
+            foldersAndTags: 'Mappen',
+            tagsAndProperties: 'Tags & eigenschappen',
             tags: 'Tags',
-            listPane: 'Lijstpaneel',
+            listPane: 'Lijst',
             notes: 'Notities',
             advanced: 'Geavanceerd'
         },
@@ -755,7 +770,6 @@ export const STRINGS_NL = {
             },
             navigation: {
                 appearance: 'Uiterlijk',
-                shortcutsAndRecent: 'Snelkoppelingen en recente items',
                 leftSidebar: 'Linkerzijbalk',
                 calendarIntegration: 'Kalenderintegratie'
             },
@@ -770,7 +784,7 @@ export const STRINGS_NL = {
                 previewText: 'Voorbeeldtekst',
                 featureImage: 'Uitgelichte afbeelding',
                 tags: 'Tags',
-                customProperty: 'Aangepaste eigenschap (frontmatter of woordtelling)',
+                properties: 'Eigenschappen',
                 date: 'Datum',
                 parentFolder: 'Bovenliggende map'
             }
@@ -815,6 +829,16 @@ export const STRINGS_NL = {
                 name: 'Sorteereigenschap',
                 desc: 'Gebruikt met Eigenschap-sortering. Notities met deze frontmatter-eigenschap worden eerst weergegeven en gesorteerd op de eigenschapswaarde. Arrays worden samengevoegd tot één waarde.',
                 placeholder: 'order'
+            },
+            propertySortSecondary: {
+                name: 'Secundaire sortering',
+                desc: 'Gebruikt bij Eigenschap-sortering wanneer notities dezelfde eigenschapswaarde of geen eigenschapswaarde hebben.',
+                options: {
+                    title: 'Titel',
+                    filename: 'Bestandsnaam',
+                    created: 'Aanmaakdatum',
+                    modified: 'Bewerkingsdatum'
+                }
             },
             revealFileOnListChanges: {
                 name: 'Scroll naar geselecteerd bestand bij lijstwijzigingen',
@@ -965,6 +989,10 @@ export const STRINGS_NL = {
                 name: 'Actieve notitie automatisch tonen',
                 desc: 'Notities automatisch tonen wanneer geopend vanuit Snelle Wisselaar, links of zoeken.'
             },
+            autoRevealShortestPath: {
+                name: 'Kortste pad gebruiken',
+                desc: 'Ingeschakeld: Automatisch tonen selecteert de dichtstbijzijnde zichtbare bovenliggende map of tag. Uitgeschakeld: Automatisch tonen selecteert de werkelijke map en exacte tag van het bestand.'
+            },
             autoRevealIgnoreRightSidebar: {
                 name: 'Gebeurtenissen van rechter zijbalk negeren',
                 desc: 'Actieve notitie niet wijzigen bij klikken of wijzigen van notities in de rechter zijbalk.'
@@ -1024,6 +1052,14 @@ export const STRINGS_NL = {
             showRecentNotes: {
                 name: 'Recente notities tonen',
                 desc: 'De sectie recente notities weergeven in het navigatiepaneel.'
+            },
+            hideRecentNotes: {
+                name: 'Notities verbergen',
+                desc: 'Kies welke soorten notities verborgen worden in de sectie recente notities.',
+                options: {
+                    none: 'Geen',
+                    folderNotes: 'Mapnotities'
+                }
             },
             recentNotesCount: {
                 name: 'Aantal recente notities',
@@ -1226,9 +1262,9 @@ export const STRINGS_NL = {
                 }
             },
             excludedNotes: {
-                name: 'Notities met eigenschappen verbergen (kluisprofiel)',
-                desc: 'Kommagescheiden lijst van frontmatter-eigenschappen. Notities met een van deze eigenschappen worden verborgen (bijv. draft, private, archived).',
-                placeholder: 'draft, private'
+                name: 'Notities verbergen met eigenschapsregels (kluisprofiel)',
+                desc: 'Kommagescheiden lijst van frontmatter-regels. Gebruik `key` of `key=value` items (bijv. status=done, published=true, archived).',
+                placeholder: 'status=done, published=true, archived'
             },
             excludedFileNamePatterns: {
                 name: 'Bestanden verbergen (kluisprofiel)',
@@ -1302,33 +1338,41 @@ export const STRINGS_NL = {
                 name: 'Bestandstags tonen in compacte modus',
                 desc: 'Tags weergeven wanneer datum, voorbeeld en afbeelding verborgen zijn.'
             },
-            customPropertyType: {
-                name: 'Eigenschapstype',
-                desc: 'Selecteer de aangepaste eigenschap om weer te geven in bestandsitems.',
+            showFileProperties: {
+                name: 'Bestandseigenschappen tonen',
+                desc: 'Klikbare eigenschappen weergeven in bestandsitems.'
+            },
+            colorFileProperties: {
+                name: 'Bestandseigenschappen kleuren',
+                desc: 'Eigenschapkleuren toepassen op eigenschapbadges in bestandsitems.'
+            },
+            prioritizeColoredFileProperties: {
+                name: 'Gekleurde eigenschappen eerst tonen',
+                desc: 'Gekleurde eigenschappen sorteren vóór andere eigenschappen in bestandsitems.'
+            },
+            showFilePropertiesInCompactMode: {
+                name: 'Eigenschappen tonen in compacte modus',
+                desc: 'Eigenschappen weergeven wanneer de compacte modus actief is.'
+            },
+            notePropertyType: {
+                name: 'Notitie-eigenschap',
+                desc: 'Selecteer de notitie-eigenschap om weer te geven in bestandsitems.',
                 options: {
                     frontmatter: 'Frontmatter eigenschap',
                     wordCount: 'Woordentelling',
                     none: 'Geen'
                 }
             },
-            customPropertyFields: {
+            propertyFields: {
                 name: 'Weer te geven eigenschappen',
-                desc: "Door komma's gescheiden lijst van frontmatter-eigenschappen om als badges weer te geven. Lijstwaarde-eigenschappen tonen één badge per waarde. Waarden in [[wikilink]]-formaat worden weergegeven als aanklikbare links.",
-                placeholder: 'status, type, categorie'
+                desc: "Door komma's gescheiden lijst van frontmatter-eigenschappen om weer te geven in het navigatiepaneel en als badges in bestandsitems. Lijst-eigenschappen tonen één badge per waarde.",
+                placeholder: 'status, type, category',
+                addButtonTooltip: 'Eigenschap toevoegen',
+                emptySelectorNotice: 'Geen eigenschappen gevonden in de metadatacache.'
             },
-            showCustomPropertiesOnSeparateRows: {
+            showPropertiesOnSeparateRows: {
                 name: 'Eigenschappen op afzonderlijke regels tonen',
                 desc: 'Toon elke eigenschap op een eigen regel.'
-            },
-            customPropertyColorMap: {
-                name: 'Eigenschapkleuren',
-                desc: 'Koppel frontmatter-eigenschappen en -waarden aan badge-kleuren. Eén koppeling per regel: eigenschap=kleur of eigenschap:waarde=kleur',
-                placeholder: '# Eigenschap of eigenschap:waarde kleur\nstatus=#f59e0b\nstatus:done=#10b981\nstatus:todo=#ef4444',
-                editTooltip: 'Koppelingen bewerken'
-            },
-            showCustomPropertyInCompactMode: {
-                name: 'Toon aangepaste eigenschap in compacte modus',
-                desc: 'Toon de aangepaste eigenschap wanneer datum, voorbeeld en afbeelding verborgen zijn.'
             },
             dateFormat: {
                 name: 'Datumformaat',
@@ -1403,7 +1447,7 @@ export const STRINGS_NL = {
             featureImageExcludeProperties: {
                 name: 'Notities met eigenschappen uitsluiten',
                 desc: 'Kommagescheiden lijst van frontmatter-eigenschappen. Notities met een van deze eigenschappen slaan geen uitgelichte afbeeldingen op.',
-                placeholder: 'privé, vertrouwelijk'
+                placeholder: 'private, confidential'
             },
 
             downloadExternalFeatureImages: {
@@ -1515,6 +1559,33 @@ export const STRINGS_NL = {
                 name: 'Tags-eigenschap behouden na verwijderen laatste tag',
                 desc: 'De tags frontmatter-eigenschap behouden wanneer alle tags worden verwijderd. Indien uitgeschakeld, wordt de tags-eigenschap verwijderd uit frontmatter.'
             },
+            showProperties: {
+                name: 'Eigenschappen tonen',
+                desc: 'Eigenschappensectie tonen in de navigator.'
+            },
+            showPropertyIcons: {
+                name: 'Eigenschapspictogrammen tonen',
+                desc: 'Pictogrammen naast eigenschappen in het navigatiepaneel tonen.'
+            },
+            inheritPropertyColors: {
+                name: 'Eigenschapkleuren overnemen',
+                desc: 'Eigenschapwaarden nemen de kleur en achtergrond over van hun eigenschapsleutel.'
+            },
+            propertySortOrder: {
+                name: 'Sorteervolgorde eigenschappen',
+                desc: 'Klik met de rechtermuisknop op een eigenschap om een andere sorteervolgorde voor de waarden in te stellen.',
+                options: {
+                    alphaAsc: 'A tot Z',
+                    alphaDesc: 'Z tot A',
+                    frequency: 'Frequentie',
+                    lowToHigh: 'laag naar hoog',
+                    highToLow: 'hoog naar laag'
+                }
+            },
+            showAllPropertiesFolder: {
+                name: 'Eigenschappenmap tonen',
+                desc: '"Eigenschappen" als een inklapbare map tonen.'
+            },
             hiddenTags: {
                 name: 'Tags verbergen (kluisprofiel)',
                 desc: 'Kommagescheiden lijst van tagpatronen. Naampatronen: tag* (begint met), *tag (eindigt met). Padpatronen: archief (tag en afstammelingen), archief/* (alleen afstammelingen), projecten/*/concepten (wildcard in het midden).',
@@ -1576,7 +1647,7 @@ export const STRINGS_NL = {
                 loading: 'Metadata controleren...',
                 statusClean: 'Geen metadata om op te schonen',
                 statusCounts:
-                    'Verweesde items: {folders} mappen, {tags} tags, {files} bestanden, {pinned} pins, {separators} scheidingslijnen'
+                    'Verweesde items: {folders} mappen, {tags} tags, {properties} eigenschappen, {files} bestanden, {pinned} pins, {separators} scheidingslijnen'
             },
             rebuildCache: {
                 name: 'Cache opnieuw opbouwen',
@@ -1612,9 +1683,10 @@ export const STRINGS_NL = {
                 desc: 'Frontmatter-veld voor bestandskleuren. Laat leeg om kleuren te gebruiken die zijn opgeslagen in instellingen.',
                 placeholder: 'color'
             },
-            frontmatterSaveMetadata: {
-                name: 'Pictogrammen en kleuren opslaan in frontmatter',
-                desc: 'Bestandspictogrammen en -kleuren automatisch naar frontmatter schrijven met behulp van de hierboven geconfigureerde velden.'
+            frontmatterBackgroundField: {
+                name: 'Achtergrondveld',
+                desc: 'Frontmatter-veld voor achtergrondkleuren. Laat leeg om achtergrondkleuren te gebruiken die zijn opgeslagen in instellingen.',
+                placeholder: 'background'
             },
             frontmatterMigration: {
                 name: 'Pictogrammen en kleuren migreren vanuit instellingen',
@@ -1629,7 +1701,7 @@ export const STRINGS_NL = {
             frontmatterNameField: {
                 name: 'Naamvelden',
                 desc: 'Kommagescheiden lijst van frontmatter-velden. Eerste niet-lege waarde wordt gebruikt. Valt terug op bestandsnaam.',
-                placeholder: 'titel, naam'
+                placeholder: 'title, name'
             },
             frontmatterCreatedField: {
                 name: 'Aangemaakt tijdstempelveld',

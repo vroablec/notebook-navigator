@@ -316,7 +316,7 @@ export async function recordFileChanges(
                 wordCount: renamed.wordCount,
                 taskTotal: renamed.taskTotal,
                 taskUnfinished: renamed.taskUnfinished,
-                customProperty: renamed.customProperty,
+                properties: renamed.properties,
                 previewStatus: renamed.previewStatus,
                 featureImageStatus: renamed.featureImageStatus,
                 featureImageKey: renamed.featureImageKey,

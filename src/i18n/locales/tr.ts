@@ -105,6 +105,8 @@ export const STRINGS_TR = {
         folderExists: 'Klasör zaten kısayollarda',
         noteExists: 'Not zaten kısayollarda',
         tagExists: 'Etiket zaten kısayollarda',
+        propertyExists: 'Özellik zaten kısayollarda mevcut',
+        invalidProperty: 'Geçersiz özellik kısayolu',
         searchExists: 'Arama kısayolu zaten mevcut',
         emptySearchQuery: 'Kaydetmeden önce bir arama sorgusu girin',
         emptySearchName: 'Aramayı kaydetmeden önce bir ad girin',
@@ -186,12 +188,12 @@ export const STRINGS_TR = {
                 properties: {
                     title: 'Özellikler',
                     items: [
-                        '`.key` Özel özellik anahtarına sahip notları dahil et.',
-                        '`.key=value` Özel özellik değerine sahip notları dahil et.',
+                        '`.key` Özellik anahtarına sahip notları dahil et.',
+                        '`.key=value` Özellik değerine sahip notları dahil et.',
                         '`."Reading Status"` Boşluk içeren özellik anahtarına sahip notları dahil et.',
                         '`."Reading Status"="In Progress"` Boşluk içeren anahtarlar ve değerler çift tırnak içine alınmalıdır.',
-                        '`-.key` Özel özellik anahtarına sahip notları hariç tut.',
-                        '`-.key=value` Özel özellik değerine sahip notları hariç tut.',
+                        '`-.key` Özellik anahtarına sahip notları hariç tut.',
+                        '`-.key=value` Özellik değerine sahip notları hariç tut.',
                         'Cmd/Ctrl+Tıklayarak özelliği AND ile ekleyin. Cmd/Ctrl+Shift+Tıklayarak OR ile ekleyin.'
                     ]
                 },
@@ -324,6 +326,10 @@ export const STRINGS_TR = {
             showTag: 'Etiketi göster',
             hideTag: 'Etiketi gizle'
         },
+        property: {
+            addKey: 'Özellik anahtarı ekle',
+            removeKey: 'Özellik anahtarını kaldır'
+        },
         navigation: {
             addSeparator: 'Ayırıcı ekle',
             removeSeparator: 'Ayırıcıyı kaldır'
@@ -377,10 +383,6 @@ export const STRINGS_TR = {
         fileIconRuleEditor: {
             addRuleAria: 'Kural ekle'
         },
-        propertyColorRuleEditor: {
-            propertyPlaceholder: 'Property',
-            valuePlaceholder: 'Value'
-        },
         interfaceIcons: {
             title: 'Arayüz simgeleri',
             fileItemsSection: 'Dosya öğeleri',
@@ -406,13 +408,15 @@ export const STRINGS_TR = {
                 'list-new-note': 'Yeni not',
                 'nav-folder-open': 'Klasör açık',
                 'nav-folder-closed': 'Klasör kapalı',
-                'nav-folder-note': 'Klasör notu',
+                'nav-tags': 'Etiketler',
                 'nav-tag': 'Etiket',
                 'nav-properties': 'Özellikler',
+                'nav-property': 'Özellik',
+                'nav-property-value': 'Değer',
                 'list-pinned': 'Sabitlenmiş öğeler',
                 'file-unfinished-task': 'Tamamlanmamış görevler',
                 'file-word-count': 'Kelime sayısı',
-                'file-custom-property': 'Özel özellik'
+                'file-property': 'Özellik'
             }
         },
         colorPicker: {
@@ -534,6 +538,15 @@ export const STRINGS_TR = {
                 dismiss: 'kapatmak için',
                 add: 'etiket eklemek için',
                 remove: 'etiketi kaldırmak için'
+            }
+        },
+        propertySuggest: {
+            placeholder: 'Özellik anahtarı seç...',
+            navigatePlaceholder: 'Özelliğe git...',
+            instructions: {
+                navigate: 'gezinmek için',
+                select: 'özellik eklemek için',
+                dismiss: 'kapatmak için'
             }
         },
         welcome: {
@@ -688,6 +701,7 @@ export const STRINGS_TR = {
         pinAllFolderNotes: 'Tüm klasör notlarını sabitle', // Command palette: Pins all folder notes to shortcuts (English: Pin all folder notes)
         navigateToFolder: 'Klasöre git', // Command palette: Navigate to a folder using fuzzy search (English: Navigate to folder)
         navigateToTag: 'Etikete git', // Command palette: Navigate to a tag using fuzzy search (English: Navigate to tag)
+        navigateToProperty: 'Özelliğe git', // Command palette: Navigate to a property key or value using fuzzy search (English: Navigate to property)
         addShortcut: 'Kısayollara ekle', // Command palette: Adds the current file, folder, or tag to shortcuts (English: Add to shortcuts)
         openShortcut: 'Kısayol {number} aç',
         toggleDescendants: 'Alt öğeleri aç/kapat', // Command palette: Toggles showing notes from descendants (English: Toggle descendants)
@@ -728,14 +742,15 @@ export const STRINGS_TR = {
         },
         sections: {
             general: 'Genel',
-            navigationPane: 'Gezinme bölmesi',
+            navigationPane: 'Gezinme',
             calendar: 'Takvim',
             icons: 'Simge paketleri',
             folders: 'Klasörler',
             folderNotes: 'Klasör notları',
-            foldersAndTags: 'Klasörler ve etiketler',
+            foldersAndTags: 'Klasörler',
+            tagsAndProperties: 'Etiketler ve özellikler',
             tags: 'Etiketler',
-            listPane: 'Liste bölmesi',
+            listPane: 'Liste',
             notes: 'Notlar',
             advanced: 'Gelişmiş'
         },
@@ -754,7 +769,6 @@ export const STRINGS_TR = {
             },
             navigation: {
                 appearance: 'Görünüm',
-                shortcutsAndRecent: 'Kısayollar ve son öğeler',
                 leftSidebar: 'Sol kenar çubuğu',
                 calendarIntegration: 'Takvim entegrasyonu'
             },
@@ -769,7 +783,7 @@ export const STRINGS_TR = {
                 previewText: 'Önizleme metni',
                 featureImage: 'Öne çıkan görsel',
                 tags: 'Etiketler',
-                customProperty: 'Özel özellik (frontmatter veya kelime sayısı)',
+                properties: 'Özellikler',
                 date: 'Tarih',
                 parentFolder: 'Üst klasör'
             }
@@ -814,6 +828,16 @@ export const STRINGS_TR = {
                 name: 'Sıralama özelliği',
                 desc: 'Özellik sıralaması ile kullanılır. Bu frontmatter özelliğine sahip notlar önce listelenir ve özellik değerine göre sıralanır. Diziler tek bir değere birleştirilir.',
                 placeholder: 'order'
+            },
+            propertySortSecondary: {
+                name: 'İkincil sıralama',
+                desc: 'Özellik sıralamasında notlar aynı özellik değerine sahip olduğunda veya özellik değeri olmadığında kullanılır.',
+                options: {
+                    title: 'Başlık',
+                    filename: 'Dosya adı',
+                    created: 'Oluşturma tarihi',
+                    modified: 'Düzenleme tarihi'
+                }
             },
             revealFileOnListChanges: {
                 name: 'Liste değişikliklerinde seçili dosyaya kaydır',
@@ -964,6 +988,10 @@ export const STRINGS_TR = {
                 name: 'Aktif notu otomatik göster',
                 desc: 'Hızlı Geçiş, bağlantılar veya aramadan açıldığında notları otomatik olarak göster.'
             },
+            autoRevealShortestPath: {
+                name: 'En kısa yolu kullan',
+                desc: 'Etkin: Otomatik gösterim en yakın görünür üst klasörü veya etiketi seçer. Devre dışı: Otomatik gösterim dosyanın gerçek klasörünü ve tam etiketini seçer.'
+            },
             autoRevealIgnoreRightSidebar: {
                 name: 'Sağ kenar çubuğundaki olayları yoksay',
                 desc: 'Sağ kenar çubuğunda notlara tıklarken veya değiştirirken aktif notu değiştirme.'
@@ -1023,6 +1051,14 @@ export const STRINGS_TR = {
             showRecentNotes: {
                 name: 'Son notları göster',
                 desc: 'Gezinme bölmesinde son notlar bölümünü görüntüle.'
+            },
+            hideRecentNotes: {
+                name: 'Notları gizle',
+                desc: 'Son notlar bölümünde gizlenecek not türlerini seç.',
+                options: {
+                    none: 'Hiçbiri',
+                    folderNotes: 'Klasör notları'
+                }
             },
             recentNotesCount: {
                 name: 'Son not sayısı',
@@ -1224,9 +1260,9 @@ export const STRINGS_TR = {
                 }
             },
             excludedNotes: {
-                name: 'Özellikli notları gizle (kasa profili)',
-                desc: 'Virgülle ayrılmış frontmatter özellikleri listesi. Bu özelliklerden herhangi birini içeren notlar gizlenecektir (örn. taslak, özel, arşiv).',
-                placeholder: 'taslak, özel'
+                name: 'Özellik kurallarıyla notları gizle (kasa profili)',
+                desc: 'Virgülle ayrılmış frontmatter kuralları listesi. `key` veya `key=value` girdileri kullanın (örn. status=done, published=true, archived).',
+                placeholder: 'status=done, published=true, archived'
             },
             excludedFileNamePatterns: {
                 name: 'Dosyaları gizle (kasa profili)',
@@ -1299,33 +1335,41 @@ export const STRINGS_TR = {
                 name: 'Kompakt modda dosya etiketlerini göster',
                 desc: 'Tarih, önizleme ve görsel gizlendiğinde etiketleri görüntüle.'
             },
-            customPropertyType: {
-                name: 'Özellik türü',
-                desc: 'Dosya öğelerinde görüntülenecek özel özelliği seçin.',
+            showFileProperties: {
+                name: 'Dosya özelliklerini göster',
+                desc: 'Dosya öğelerinde tıklanabilir özellikleri görüntüle.'
+            },
+            colorFileProperties: {
+                name: 'Dosya özelliklerini renklendir',
+                desc: 'Dosya öğelerindeki özellik rozetlerine özellik renklerini uygula.'
+            },
+            prioritizeColoredFileProperties: {
+                name: 'Renkli özellikleri önce göster',
+                desc: 'Dosya öğelerinde renkli özellikleri diğer özelliklerden önce sırala.'
+            },
+            showFilePropertiesInCompactMode: {
+                name: 'Kompakt modda özellikleri göster',
+                desc: 'Kompakt mod etkinken özellikleri görüntüle.'
+            },
+            notePropertyType: {
+                name: 'Not özelliği',
+                desc: 'Dosya öğelerinde görüntülenecek not özelliğini seçin.',
                 options: {
                     frontmatter: 'Frontmatter özelliği',
                     wordCount: 'Kelime sayısı',
                     none: 'Hiçbiri'
                 }
             },
-            customPropertyFields: {
+            propertyFields: {
                 name: 'Görüntülenecek özellikler',
-                desc: 'Rozet olarak gösterilecek virgülle ayrılmış frontmatter özellikleri listesi. Liste değerli özellikler değer başına bir rozet gösterir. [[wikilink]] formatındaki değerler tıklanabilir bağlantılar olarak gösterilir.',
-                placeholder: 'durum, tür, kategori'
+                desc: 'Gezinme panelinde ve dosya öğelerinde rozet olarak görüntülenecek virgülle ayrılmış ön bilgi özellikleri listesi. Liste değerli özellikler değer başına bir rozet gösterir.',
+                placeholder: 'status, type, category',
+                addButtonTooltip: 'Özellik anahtarı ekle',
+                emptySelectorNotice: 'Meta veri önbelleğinde özellik anahtarı bulunamadı.'
             },
-            showCustomPropertiesOnSeparateRows: {
+            showPropertiesOnSeparateRows: {
                 name: 'Özellikleri ayrı satırlarda göster',
                 desc: 'Her özelliği kendi satırında göster.'
-            },
-            customPropertyColorMap: {
-                name: 'Özellik renkleri',
-                desc: 'Frontmatter özelliklerini ve değerlerini rozet renklerine eşle. Satır başına bir eşleme: özellik=renk veya özellik:değer=renk',
-                placeholder: '# Özellik veya özellik:değer renk\nstatus=#f59e0b\nstatus:done=#10b981\nstatus:todo=#ef4444',
-                editTooltip: 'Eşlemeleri düzenle'
-            },
-            showCustomPropertyInCompactMode: {
-                name: 'Kompakt modda özel özelliği göster',
-                desc: 'Tarih, önizleme ve görsel gizlendiğinde özel özelliği görüntüle.'
             },
             dateFormat: {
                 name: 'Tarih formatı',
@@ -1362,7 +1406,7 @@ export const STRINGS_TR = {
             previewProperties: {
                 name: 'Önizleme özellikleri',
                 desc: 'Önizleme metni için kontrol edilecek virgülle ayrılmış frontmatter özellikleri listesi. Metni olan ilk özellik kullanılacak.',
-                placeholder: 'özet, açıklama, abstract',
+                placeholder: 'summary, description, abstract',
                 info: 'Belirtilen özelliklerde önizleme metni bulunamazsa, önizleme not içeriğinden oluşturulacak.'
             },
             previewRows: {
@@ -1400,7 +1444,7 @@ export const STRINGS_TR = {
             featureImageExcludeProperties: {
                 name: 'Özellikli notları hariç tut',
                 desc: 'Virgülle ayrılmış frontmatter özellikleri listesi. Bu özelliklerden herhangi birini içeren notlar öne çıkan görsel saklamaz.',
-                placeholder: 'özel, gizli'
+                placeholder: 'private, confidential'
             },
 
             downloadExternalFeatureImages: {
@@ -1512,6 +1556,33 @@ export const STRINGS_TR = {
                 name: 'Son etiket kaldırıldıktan sonra tags özelliğini koru',
                 desc: "Tüm etiketler kaldırıldığında tags frontmatter özelliğini koru. Devre dışı bırakıldığında, tags özelliği frontmatter'dan silinir."
             },
+            showProperties: {
+                name: 'Özellikleri göster',
+                desc: 'Gezginde özellikler bölümünü görüntüle.'
+            },
+            showPropertyIcons: {
+                name: 'Özellik simgelerini göster',
+                desc: 'Gezinme panelinde özelliklerin yanında simgeleri görüntüle.'
+            },
+            inheritPropertyColors: {
+                name: 'Özellik renklerini devral',
+                desc: 'Özellik değerleri, özellik anahtarından renk ve arka planı devralır.'
+            },
+            propertySortOrder: {
+                name: 'Özellik sıralama düzeni',
+                desc: 'Değerler için farklı bir sıralama düzeni ayarlamak üzere herhangi bir özelliğe sağ tıklayın.',
+                options: {
+                    alphaAsc: "A'dan Z'ye",
+                    alphaDesc: "Z'den A'ya",
+                    frequency: 'Sıklık',
+                    lowToHigh: 'düşükten yükseğe',
+                    highToLow: 'yüksekten düşüğe'
+                }
+            },
+            showAllPropertiesFolder: {
+                name: 'Özellikler klasörünü göster',
+                desc: '"Özellikler"i daraltılabilir klasör olarak görüntüle.'
+            },
             hiddenTags: {
                 name: 'Etiketleri gizle (kasa profili)',
                 desc: 'Virgülle ayrılmış etiket kalıpları listesi. Ad kalıpları: etiket* (ile başlayan), *etiket (ile biten). Yol kalıpları: arşiv (etiket ve alt öğeler), arşiv/* (yalnızca alt öğeler), projeler/*/taslaklar (ortada joker).',
@@ -1572,7 +1643,8 @@ export const STRINGS_TR = {
                 error: 'Ayarlar temizliği başarısız',
                 loading: 'Meta veriler kontrol ediliyor...',
                 statusClean: 'Temizlenecek meta veri yok',
-                statusCounts: 'Yetim öğeler: {folders} klasör, {tags} etiket, {files} dosya, {pinned} sabitleme, {separators} ayırıcı'
+                statusCounts:
+                    'Yetim öğeler: {folders} klasör, {tags} etiket, {properties} özellik, {files} dosya, {pinned} sabitleme, {separators} ayırıcı'
             },
             rebuildCache: {
                 name: 'Önbelleği yeniden oluştur',
@@ -1601,16 +1673,17 @@ export const STRINGS_TR = {
             frontmatterIconField: {
                 name: 'Simge alanı',
                 desc: 'Dosya simgeleri için frontmatter alanı. Ayarlarda saklanan simgeleri kullanmak için boş bırakın.',
-                placeholder: 'simge'
+                placeholder: 'icon'
             },
             frontmatterColorField: {
                 name: 'Renk alanı',
                 desc: 'Dosya renkleri için frontmatter alanı. Ayarlarda saklanan renkleri kullanmak için boş bırakın.',
-                placeholder: 'renk'
+                placeholder: 'color'
             },
-            frontmatterSaveMetadata: {
-                name: "Simgeleri ve renkleri frontmatter'a kaydet",
-                desc: "Yukarıda yapılandırılan alanları kullanarak dosya simgelerini ve renklerini otomatik olarak frontmatter'a yaz."
+            frontmatterBackgroundField: {
+                name: 'Arka plan alanı',
+                desc: 'Arka plan renkleri için frontmatter alanı. Ayarlarda saklanan arka plan renklerini kullanmak için boş bırakın.',
+                placeholder: 'background'
             },
             frontmatterMigration: {
                 name: 'Simgeleri ve renkleri ayarlardan taşı',
@@ -1625,17 +1698,17 @@ export const STRINGS_TR = {
             frontmatterNameField: {
                 name: 'Ad alanları',
                 desc: 'Virgülle ayrılmış frontmatter alanları listesi. İlk boş olmayan değer kullanılır. Dosya adına geri döner.',
-                placeholder: 'başlık, ad'
+                placeholder: 'title, name'
             },
             frontmatterCreatedField: {
                 name: 'Oluşturma zaman damgası alanı',
                 desc: 'Oluşturma zaman damgası için frontmatter alan adı. Yalnızca dosya sistemi tarihini kullanmak için boş bırakın.',
-                placeholder: 'oluşturuldu'
+                placeholder: 'created'
             },
             frontmatterModifiedField: {
                 name: 'Değiştirme zaman damgası alanı',
                 desc: 'Değiştirme zaman damgası için frontmatter alan adı. Yalnızca dosya sistemi tarihini kullanmak için boş bırakın.',
-                placeholder: 'değiştirildi'
+                placeholder: 'modified'
             },
             frontmatterDateFormat: {
                 name: 'Zaman damgası formatı',

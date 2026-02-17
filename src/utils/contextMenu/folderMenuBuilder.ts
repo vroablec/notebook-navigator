@@ -32,7 +32,7 @@ import { resolveUXIconForMenu } from '../uxIcons';
 import { getActiveVaultProfile, getHiddenFolderPatternMatch, normalizeHiddenFolderPath } from '../../utils/vaultProfiles';
 import { casefold } from '../../utils/recordUtils';
 import { EXCALIDRAW_PLUGIN_ID, TLDRAW_PLUGIN_ID } from '../../constants/pluginIds';
-import { addStyleMenu } from './styleMenuBuilder';
+import { addFolderStyleChangeActions, addFolderStyleMenu } from './styleMenuBuilder';
 import { getTemplaterCreateNewNoteFromTemplate } from '../templaterIntegration';
 import { resolveFolderDisplayName } from '../folderDisplayName';
 
@@ -243,34 +243,12 @@ export function buildFolderMenu(params: FolderMenuBuilderParams): void {
     menu.addSeparator();
 
     // Customization options: icon, color, background, separator
-    // Only show icon options if folder icons are enabled
-    if (settings.showFolderIcons) {
-        // Change icon
-        menu.addItem((item: MenuItem) => {
-            setAsyncOnClick(item.setTitle(strings.contextMenu.folder.changeIcon).setIcon('lucide-image'), async () => {
-                const { IconPickerModal } = await import('../../modals/IconPickerModal');
-                const modal = new IconPickerModal(app, metadataService, folder.path, ItemType.FOLDER);
-                modal.open();
-            });
-        });
-    }
-
-    // Change color
-    menu.addItem((item: MenuItem) => {
-        setAsyncOnClick(item.setTitle(strings.contextMenu.folder.changeColor).setIcon('lucide-palette'), async () => {
-            const { ColorPickerModal } = await import('../../modals/ColorPickerModal');
-            const modal = new ColorPickerModal(app, metadataService, folder.path, ItemType.FOLDER, 'foreground');
-            modal.open();
-        });
-    });
-
-    // Change background color
-    menu.addItem((item: MenuItem) => {
-        setAsyncOnClick(item.setTitle(strings.contextMenu.folder.changeBackground).setIcon('lucide-paint-bucket'), async () => {
-            const { ColorPickerModal } = await import('../../modals/ColorPickerModal');
-            const modal = new ColorPickerModal(app, metadataService, folder.path, ItemType.FOLDER, 'background');
-            modal.open();
-        });
+    addFolderStyleChangeActions({
+        menu,
+        app,
+        metadataService,
+        folderPath: folder.path,
+        showFolderIcons: settings.showFolderIcons
     });
 
     // Child folder sort order
@@ -329,45 +307,12 @@ export function buildFolderMenu(params: FolderMenuBuilderParams): void {
     const hasSeparator = metadataService.hasNavigationSeparator(folderSeparatorTarget);
     const disableNavigationSeparatorActions = Boolean(options?.disableNavigationSeparatorActions);
 
-    const folderIcon = metadataService.getFolderIcon(folder.path);
-    const folderColor = metadataService.getFolderColor(folder.path);
-    const folderBackgroundColor = metadataService.getFolderBackgroundColor(folder.path);
-    const directFolderColor = settings.folderColors?.[folder.path];
-    const directFolderBackground = settings.folderBackgroundColors?.[folder.path];
-
-    const hasRemovableIcon = Boolean(folderIcon);
-    const hasRemovableColor = Boolean(directFolderColor);
-    const hasRemovableBackground = Boolean(directFolderBackground);
-
-    addStyleMenu({
+    addFolderStyleMenu({
         menu,
-        styleData: {
-            icon: folderIcon,
-            color: folderColor,
-            background: folderBackgroundColor
-        },
-        hasIcon: settings.showFolderIcons,
-        hasColor: true,
-        hasBackground: true,
-        applyStyle: async clipboard => {
-            const { icon, color, background } = clipboard;
-            const actions: Promise<void>[] = [];
-
-            if (icon) {
-                actions.push(metadataService.setFolderIcon(folder.path, icon));
-            }
-            if (color) {
-                actions.push(metadataService.setFolderColor(folder.path, color));
-            }
-            if (background) {
-                actions.push(metadataService.setFolderBackgroundColor(folder.path, background));
-            }
-
-            await Promise.all(actions);
-        },
-        removeIcon: hasRemovableIcon ? async () => metadataService.removeFolderIcon(folder.path) : undefined,
-        removeColor: hasRemovableColor ? async () => metadataService.removeFolderColor(folder.path) : undefined,
-        removeBackground: hasRemovableBackground ? async () => metadataService.removeFolderBackgroundColor(folder.path) : undefined
+        metadataService,
+        folderPath: folder.path,
+        inheritFolderColors: settings.inheritFolderColors,
+        showFolderIcons: settings.showFolderIcons
     });
 
     menu.addSeparator();

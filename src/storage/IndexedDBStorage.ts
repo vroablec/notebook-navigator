@@ -41,14 +41,7 @@ import {
 import { normalizeFileData as normalizeFileDataValue } from './indexeddb/normalizeFileData';
 import { handleUpgradeNeeded } from './indexeddb/schemaUpgrade';
 import { createDefaultFileData, METADATA_SENTINEL } from './indexeddb/fileData';
-import type {
-    CustomPropertyItem,
-    CustomPropertyValueKind,
-    FeatureImageStatus,
-    FileContentChange,
-    FileData,
-    PreviewStatus
-} from './indexeddb/fileData';
+import type { PropertyItem, PropertyValueKind, FeatureImageStatus, FileContentChange, FileData, PreviewStatus } from './indexeddb/fileData';
 import {
     runBatchUpdateFileContentAndProviderProcessedMtimes,
     type BatchUpdateFileContentAndProviderProcessedMtimesParams
@@ -63,7 +56,7 @@ import {
 } from './indexeddb/contentMutationOperations';
 
 export { createDefaultFileData, METADATA_SENTINEL };
-export type { CustomPropertyItem, CustomPropertyValueKind, FeatureImageStatus, FileContentChange, FileData, PreviewStatus };
+export type { PropertyItem, PropertyValueKind, FeatureImageStatus, FileContentChange, FileData, PreviewStatus };
 
 interface IndexedDBStorageOptions {
     featureImageCacheMaxEntries?: number;
@@ -1026,7 +1019,7 @@ export class IndexedDBStorage {
                 (type === 'metadata' && isMarkdownPath(path) && data.metadata === null) ||
                 (type === 'wordCount' && isMarkdownPath(path) && data.wordCount === null) ||
                 (type === 'tasks' && isMarkdownPath(path) && (data.taskTotal === null || data.taskUnfinished === null)) ||
-                (type === 'customProperty' && isMarkdownPath(path) && data.customProperty === null)
+                (type === 'properties' && isMarkdownPath(path) && data.properties === null)
             ) {
                 result.add(path);
             }
@@ -1045,7 +1038,7 @@ export class IndexedDBStorage {
         const needsMetadata = types.includes('metadata');
         const needsWordCount = types.includes('wordCount');
         const needsTasks = types.includes('tasks');
-        const needsCustomProperty = types.includes('customProperty');
+        const needsProperties = types.includes('properties');
 
         const result = new Set<string>();
         this.cache.forEachFile((path, data) => {
@@ -1057,7 +1050,7 @@ export class IndexedDBStorage {
                 (needsMetadata && isMarkdown && data.metadata === null) ||
                 (needsWordCount && isMarkdown && data.wordCount === null) ||
                 (needsTasks && isMarkdown && (data.taskTotal === null || data.taskUnfinished === null)) ||
-                (needsCustomProperty && isMarkdown && data.customProperty === null)
+                (needsProperties && isMarkdown && data.properties === null)
             ) {
                 result.add(path);
             }
@@ -1143,6 +1136,7 @@ export class IndexedDBStorage {
             modified?: number;
             icon?: string;
             color?: string;
+            background?: string;
         }
     ): Promise<void> {
         await this.init();
@@ -1216,7 +1210,7 @@ export class IndexedDBStorage {
      *
      * @param type - Type of content to clear or 'all'
      */
-    async batchClearAllFileContent(type: 'preview' | 'featureImage' | 'metadata' | 'tags' | 'customProperty' | 'all'): Promise<void> {
+    async batchClearAllFileContent(type: 'preview' | 'featureImage' | 'metadata' | 'tags' | 'properties' | 'all'): Promise<void> {
         await this.init();
         if (!this.db) throw new Error('Database not initialized');
         await runBatchClearAllFileContent(
@@ -1272,7 +1266,7 @@ export class IndexedDBStorage {
      */
     async batchClearFileContent(
         paths: string[],
-        type: 'preview' | 'featureImage' | 'metadata' | 'tags' | 'customProperty' | 'all'
+        type: 'preview' | 'featureImage' | 'metadata' | 'tags' | 'properties' | 'all'
     ): Promise<void> {
         await this.init();
         if (!this.db) throw new Error('Database not initialized');

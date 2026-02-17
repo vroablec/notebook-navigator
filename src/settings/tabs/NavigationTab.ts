@@ -16,11 +16,11 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { ButtonComponent, DropdownComponent, Setting, SliderComponent } from 'obsidian';
+import { ButtonComponent, Platform, Setting, SliderComponent } from 'obsidian';
 import { strings } from '../../i18n';
 import { NavigationBannerModal } from '../../modals/NavigationBannerModal';
 import { DEFAULT_SETTINGS } from '../defaultSettings';
-import type { ItemScope, ShortcutBadgeDisplayMode } from '../types';
+import type { ItemScope } from '../types';
 import type { SettingsTabContext } from './SettingsTabContext';
 import { runAsyncAction } from '../../utils/async';
 import { getActiveVaultProfile } from '../../utils/vaultProfiles';
@@ -34,124 +34,6 @@ export function renderNavigationPaneTab(context: SettingsTabContext): void {
     const getActiveProfile = () => getActiveVaultProfile(plugin.settings);
 
     const createGroup = createSettingGroupFactory(containerEl);
-    const behaviorGroup = createGroup(undefined);
-
-    behaviorGroup.addSetting(setting => {
-        setting
-            .setName(strings.settings.items.collapseBehavior.name)
-            .setDesc(strings.settings.items.collapseBehavior.desc)
-            .addDropdown(dropdown =>
-                dropdown
-                    .addOption('all', strings.settings.items.collapseBehavior.options.all)
-                    .addOption('folders-only', strings.settings.items.collapseBehavior.options.foldersOnly)
-                    .addOption('tags-only', strings.settings.items.collapseBehavior.options.tagsOnly)
-                    .setValue(plugin.settings.collapseBehavior)
-                    .onChange(async (value: ItemScope) => {
-                        plugin.settings.collapseBehavior = value;
-                        await plugin.saveSettingsAndUpdate();
-                    })
-            );
-    });
-
-    addToggleSetting(
-        behaviorGroup.addSetting,
-        strings.settings.items.smartCollapse.name,
-        strings.settings.items.smartCollapse.desc,
-        () => plugin.settings.smartCollapse,
-        value => {
-            plugin.settings.smartCollapse = value;
-        }
-    );
-
-    const shortcutsGroup = createGroup(strings.settings.groups.navigation.shortcutsAndRecent);
-
-    addToggleSetting(
-        shortcutsGroup.addSetting,
-        strings.settings.items.showSectionIcons.name,
-        strings.settings.items.showSectionIcons.desc,
-        () => plugin.settings.showSectionIcons,
-        value => {
-            plugin.settings.showSectionIcons = value;
-        }
-    );
-
-    const showShortcutsSetting = shortcutsGroup.addSetting(setting => {
-        setting.setName(strings.settings.items.showShortcuts.name).setDesc(strings.settings.items.showShortcuts.desc);
-    });
-
-    const shortcutsSubSettings = wireToggleSettingWithSubSettings(
-        showShortcutsSetting,
-        () => plugin.settings.showShortcuts,
-        async value => {
-            plugin.settings.showShortcuts = value;
-            await plugin.saveSettingsAndUpdate();
-        }
-    );
-
-    new Setting(shortcutsSubSettings)
-        .setName(strings.settings.items.shortcutBadgeDisplay.name)
-        .setDesc(strings.settings.items.shortcutBadgeDisplay.desc)
-        .addDropdown((dropdown: DropdownComponent) =>
-            dropdown
-                .addOption('index', strings.settings.items.shortcutBadgeDisplay.options.index)
-                .addOption('count', strings.settings.items.shortcutBadgeDisplay.options.count)
-                .addOption('none', strings.settings.items.shortcutBadgeDisplay.options.none)
-                .setValue(plugin.settings.shortcutBadgeDisplay)
-                .onChange(async (value: ShortcutBadgeDisplayMode) => {
-                    plugin.settings.shortcutBadgeDisplay = value;
-                    await plugin.saveSettingsAndUpdate();
-                })
-        );
-
-    new Setting(shortcutsSubSettings)
-        .setName(strings.settings.items.skipAutoScroll.name)
-        .setDesc(strings.settings.items.skipAutoScroll.desc)
-        .addToggle(toggle =>
-            toggle.setValue(plugin.settings.skipAutoScroll).onChange(async value => {
-                plugin.settings.skipAutoScroll = value;
-                await plugin.saveSettingsAndUpdate();
-            })
-        );
-
-    const showRecentNotesSetting = shortcutsGroup.addSetting(setting => {
-        setting.setName(strings.settings.items.showRecentNotes.name).setDesc(strings.settings.items.showRecentNotes.desc);
-    });
-
-    const recentNotesSubSettings = wireToggleSettingWithSubSettings(
-        showRecentNotesSetting,
-        () => plugin.settings.showRecentNotes,
-        async value => {
-            plugin.settings.showRecentNotes = value;
-            await plugin.saveSettingsAndUpdate();
-        }
-    );
-
-    new Setting(recentNotesSubSettings)
-        .setName(strings.settings.items.pinRecentNotesWithShortcuts.name)
-        .setDesc(strings.settings.items.pinRecentNotesWithShortcuts.desc)
-        .addToggle(toggle =>
-            toggle.setValue(plugin.settings.pinRecentNotesWithShortcuts).onChange(async value => {
-                plugin.settings.pinRecentNotesWithShortcuts = value;
-                await plugin.saveSettingsAndUpdate();
-            })
-        );
-
-    new Setting(recentNotesSubSettings)
-        .setName(strings.settings.items.recentNotesCount.name)
-        .setDesc(strings.settings.items.recentNotesCount.desc)
-        .addSlider(slider =>
-            slider
-                .setLimits(1, 10, 1)
-                .setValue(plugin.settings.recentNotesCount)
-                .setInstant(false)
-                .setDynamicTooltip()
-                .onChange(async value => {
-                    plugin.settings.recentNotesCount = value;
-                    plugin.applyRecentNotesLimit();
-                    await plugin.saveSettingsAndUpdate();
-                })
-        );
-
     const appearanceGroup = createGroup(strings.settings.groups.navigation.appearance);
 
     const navigationBannerSetting = appearanceGroup.addSetting(setting => {
@@ -370,4 +252,99 @@ export function renderNavigationPaneTab(context: SettingsTabContext): void {
         );
 
     addSettingSyncModeToggle({ setting: navItemHeightScaleTextSetting, plugin, settingId: 'navItemHeightScaleText' });
+
+    const behaviorGroup = createGroup(strings.settings.groups.general.behavior);
+
+    behaviorGroup.addSetting(setting => {
+        setting
+            .setName(strings.settings.items.collapseBehavior.name)
+            .setDesc(strings.settings.items.collapseBehavior.desc)
+            .addDropdown(dropdown =>
+                dropdown
+                    .addOption('all', strings.settings.items.collapseBehavior.options.all)
+                    .addOption('folders-only', strings.settings.items.collapseBehavior.options.foldersOnly)
+                    .addOption('tags-only', strings.settings.items.collapseBehavior.options.tagsOnly)
+                    .setValue(plugin.settings.collapseBehavior)
+                    .onChange(async (value: ItemScope) => {
+                        plugin.settings.collapseBehavior = value;
+                        await plugin.saveSettingsAndUpdate();
+                    })
+            );
+    });
+
+    addToggleSetting(
+        behaviorGroup.addSetting,
+        strings.settings.items.smartCollapse.name,
+        strings.settings.items.smartCollapse.desc,
+        () => plugin.settings.smartCollapse,
+        value => {
+            plugin.settings.smartCollapse = value;
+        }
+    );
+
+    if (!Platform.isMobile) {
+        addToggleSetting(
+            behaviorGroup.addSetting,
+            strings.settings.items.autoSelectFirstFileOnFocusChange.name,
+            strings.settings.items.autoSelectFirstFileOnFocusChange.desc,
+            () => plugin.settings.autoSelectFirstFileOnFocusChange,
+            value => {
+                plugin.settings.autoSelectFirstFileOnFocusChange = value;
+            }
+        );
+    }
+
+    addToggleSetting(
+        behaviorGroup.addSetting,
+        strings.settings.items.autoExpandNavItems.name,
+        strings.settings.items.autoExpandNavItems.desc,
+        () => plugin.settings.autoExpandNavItems,
+        value => {
+            plugin.settings.autoExpandNavItems = value;
+        }
+    );
+
+    if (!Platform.isMobile) {
+        const springLoadedFoldersSetting = behaviorGroup.addSetting(setting => {
+            setting.setName(strings.settings.items.springLoadedFolders.name).setDesc(strings.settings.items.springLoadedFolders.desc);
+        });
+        const springLoadedFoldersSubSettings = wireToggleSettingWithSubSettings(
+            springLoadedFoldersSetting,
+            () => plugin.settings.springLoadedFolders,
+            async value => {
+                plugin.settings.springLoadedFolders = value;
+                await plugin.saveSettingsAndUpdate();
+            }
+        );
+
+        new Setting(springLoadedFoldersSubSettings)
+            .setName(strings.settings.items.springLoadedFoldersInitialDelay.name)
+            .setDesc(strings.settings.items.springLoadedFoldersInitialDelay.desc)
+            .addSlider(slider =>
+                slider
+                    .setLimits(0.1, 2, 0.1)
+                    .setValue(plugin.settings.springLoadedFoldersInitialDelay)
+                    .setInstant(false)
+                    .setDynamicTooltip()
+                    .onChange(async value => {
+                        plugin.settings.springLoadedFoldersInitialDelay = Math.round(value * 10) / 10;
+                        await plugin.saveSettingsAndUpdate();
+                    })
+            );
+
+        new Setting(springLoadedFoldersSubSettings)
+            .setName(strings.settings.items.springLoadedFoldersSubsequentDelay.name)
+            .setDesc(strings.settings.items.springLoadedFoldersSubsequentDelay.desc)
+            .addSlider(slider =>
+                slider
+                    .setLimits(0.1, 2, 0.1)
+                    .setValue(plugin.settings.springLoadedFoldersSubsequentDelay)
+                    .setInstant(false)
+                    .setDynamicTooltip()
+                    .onChange(async value => {
+                        plugin.settings.springLoadedFoldersSubsequentDelay = Math.round(value * 10) / 10;
+                        await plugin.saveSettingsAndUpdate();
+                    })
+            );
+    }
 }

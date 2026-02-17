@@ -16,14 +16,15 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React, { forwardRef, useMemo, useCallback, useEffect, useRef } from 'react';
+import React, { forwardRef, useMemo, useCallback, useEffect, useRef, useImperativeHandle } from 'react';
 import { useSettingsState } from '../context/SettingsContext';
 import { useUXPreferences } from '../context/UXPreferencesContext';
+import { useContextMenu } from '../hooks/useContextMenu';
 import { getIconService, useIconServiceVersion } from '../services/icons';
-import type { CSSPropertiesWithVars } from '../types';
+import { ItemType, type CSSPropertiesWithVars } from '../types';
 import type { NoteCountInfo } from '../types/noteCounts';
 import type { PropertyTreeNode } from '../types/storage';
-import { buildNoteCountDisplay } from '../utils/noteCountFormatting';
+import { buildNoteCountDisplay, buildSortableNoteCountDisplay } from '../utils/noteCountFormatting';
 import { buildSearchMatchContentClass } from '../utils/searchHighlight';
 import { resolveUXIcon } from '../utils/uxIcons';
 import { IndentGuideColumns } from './IndentGuideColumns';
@@ -41,7 +42,9 @@ interface PropertyTreeItemProps {
     showFileCount: boolean;
     color?: string;
     backgroundColor?: string;
+    icon?: string;
     searchMatch?: 'include' | 'exclude';
+    isDraggable: boolean;
 }
 
 export const PropertyTreeItem = React.memo(
@@ -59,7 +62,9 @@ export const PropertyTreeItem = React.memo(
             showFileCount,
             color,
             backgroundColor,
-            searchMatch
+            icon,
+            searchMatch,
+            isDraggable
         },
         ref
     ) {
@@ -69,6 +74,7 @@ export const PropertyTreeItem = React.memo(
         const chevronRef = useRef<HTMLDivElement>(null);
         const iconRef = useRef<HTMLSpanElement>(null);
         const iconVersion = useIconServiceVersion();
+        const itemRef = useRef<HTMLDivElement>(null);
 
         const resolvedCounts = useMemo<NoteCountInfo>(() => {
             if (countInfo) {
@@ -78,11 +84,30 @@ export const PropertyTreeItem = React.memo(
             return { current, descendants: 0, total: current };
         }, [countInfo, propertyNode.notesWithValue.size]);
 
+        const propertyTreeSortOverrides = settings.propertyTreeSortOverrides;
+        const hasChildSortOrderOverride =
+            propertyNode.kind === 'key' &&
+            Boolean(propertyTreeSortOverrides && Object.prototype.hasOwnProperty.call(propertyTreeSortOverrides, propertyNode.id));
+        const childSortOrderOverride = hasChildSortOrderOverride ? propertyTreeSortOverrides?.[propertyNode.id] : undefined;
+        const sortOrderIndicator = childSortOrderOverride === 'alpha-desc' ? '↓' : childSortOrderOverride === 'alpha-asc' ? '↑' : undefined;
+
         const useSeparateCounts = includeDescendantNotes && settings.separateNoteCounts;
-        const noteCountDisplay = buildNoteCountDisplay(resolvedCounts, includeDescendantNotes, useSeparateCounts);
+        const noteCountDisplay = buildSortableNoteCountDisplay(
+            buildNoteCountDisplay(resolvedCounts, includeDescendantNotes, useSeparateCounts, '•'),
+            sortOrderIndicator
+        );
+        const noteCountLabel = noteCountDisplay.label;
         const shouldDisplayCount = showFileCount && noteCountDisplay.shouldDisplay;
         const hasChildren = useMemo(() => propertyNode.children.size > 0, [propertyNode.children.size]);
         const applyColorToName = Boolean(color) && !settings.colorIconOnly;
+        const dragIconId = useMemo(() => {
+            if (icon) {
+                return icon;
+            }
+            return propertyNode.kind === 'value'
+                ? resolveUXIcon(settings.interfaceIcons, 'nav-property-value')
+                : resolveUXIcon(settings.interfaceIcons, 'nav-property');
+        }, [icon, propertyNode.kind, settings.interfaceIcons]);
 
         const className = useMemo(() => {
             const classes = ['nn-navitem', 'nn-property'];
@@ -158,14 +183,25 @@ export const PropertyTreeItem = React.memo(
         }, [hasChildren, iconVersion, isExpanded, settings.interfaceIcons]);
 
         useEffect(() => {
-            if (!iconRef.current || !settings.showTagIcons) {
+            if (!iconRef.current || !settings.showPropertyIcons) {
                 return;
             }
 
             iconRef.current.empty();
-            const iconId = propertyNode.kind === 'value' ? 'equal' : resolveUXIcon(settings.interfaceIcons, 'nav-properties');
+            const iconId =
+                icon ??
+                (propertyNode.kind === 'value'
+                    ? resolveUXIcon(settings.interfaceIcons, 'nav-property-value')
+                    : resolveUXIcon(settings.interfaceIcons, 'nav-property'));
             getIconService().renderIcon(iconRef.current, iconId);
-        }, [iconVersion, propertyNode.kind, settings.interfaceIcons, settings.showTagIcons]);
+        }, [icon, iconVersion, propertyNode.kind, settings.interfaceIcons, settings.showPropertyIcons]);
+
+        useImperativeHandle(ref, () => itemRef.current as HTMLDivElement);
+
+        useContextMenu(itemRef, {
+            type: ItemType.PROPERTY,
+            item: propertyNode.id
+        });
 
         const propertyStyle: CSSPropertiesWithVars = {
             '--level': level,
@@ -174,9 +210,21 @@ export const PropertyTreeItem = React.memo(
 
         return (
             <div
-                ref={ref}
+                ref={itemRef}
                 className={className}
                 data-property-node={propertyNode.id}
+                // Property node id used as drag source identifier
+                data-drag-path={propertyNode.id}
+                // Identifies element as a property node for drag operations
+                data-drag-type="property"
+                // Marks element as draggable for drag handler filtering
+                data-draggable={isDraggable ? 'true' : undefined}
+                // Icon displayed in drag ghost
+                data-drag-icon={dragIconId}
+                // Optional color applied to drag ghost icon
+                data-drag-icon-color={color || undefined}
+                // Enable native drag and drop when not on mobile
+                draggable={isDraggable}
                 data-drop-zone="property"
                 data-drop-path={propertyNode.id}
                 data-allow-external-drop="false"
@@ -196,10 +244,12 @@ export const PropertyTreeItem = React.memo(
                         onDoubleClick={handleChevronDoubleClick}
                         tabIndex={-1}
                     />
-                    {settings.showTagIcons && <span className="nn-navitem-icon" ref={iconRef} style={color ? { color } : undefined} />}
-                    <span className={propertyNameClassName}>{propertyNode.name}</span>
+                    {settings.showPropertyIcons && <span className="nn-navitem-icon" ref={iconRef} style={color ? { color } : undefined} />}
+                    <span className={propertyNameClassName} style={applyColorToName ? { color } : undefined}>
+                        {propertyNode.name}
+                    </span>
                     <span className="nn-navitem-spacer" />
-                    {shouldDisplayCount && <span className="nn-navitem-count">{noteCountDisplay.label}</span>}
+                    {shouldDisplayCount && <span className="nn-navitem-count">{noteCountLabel}</span>}
                 </div>
             </div>
         );

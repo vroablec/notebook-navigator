@@ -21,8 +21,9 @@ import type { NotebookNavigatorSettings } from '../settings';
 import type { NavigatorContext, PinnedNotes, VisibilityPreferences } from '../types';
 import { ItemType, PROPERTIES_ROOT_VIRTUAL_FOLDER_ID, TAGGED_TAG_ID, UNTAGGED_TAG_ID } from '../types';
 import {
-    shouldExcludeFile,
+    createFrontmatterPropertyExclusionMatcher,
     shouldExcludeFolder,
+    shouldExcludeFileWithMatcher,
     createHiddenFileNameMatcherForVisibility,
     getFilteredDocumentFiles,
     getFilteredFiles,
@@ -109,7 +110,7 @@ function isFileVisibleForScopedSelection(
     options: {
         showHiddenItems: boolean;
         excludedFolderPatterns: string[];
-        excludedFileProperties: string[];
+        excludedFilePropertyMatcher: ReturnType<typeof createFrontmatterPropertyExclusionMatcher>;
         fileNameMatcher: ReturnType<typeof createHiddenFileNameMatcherForVisibility>;
         shouldFilterHiddenFileTags: boolean;
         hiddenFileTagVisibility: ReturnType<typeof createHiddenTagVisibility>;
@@ -120,7 +121,7 @@ function isFileVisibleForScopedSelection(
     const {
         showHiddenItems,
         excludedFolderPatterns,
-        excludedFileProperties,
+        excludedFilePropertyMatcher,
         fileNameMatcher,
         shouldFilterHiddenFileTags,
         hiddenFileTagVisibility,
@@ -132,7 +133,11 @@ function isFileVisibleForScopedSelection(
         return false;
     }
 
-    if (!showHiddenItems && excludedFileProperties.length > 0 && shouldExcludeFile(file, excludedFileProperties, app)) {
+    if (
+        !showHiddenItems &&
+        excludedFilePropertyMatcher.hasCriteria &&
+        shouldExcludeFileWithMatcher(file, excludedFilePropertyMatcher, app)
+    ) {
         return false;
     }
 
@@ -276,14 +281,14 @@ function sortNavigationFiles(
             return getDisplayName(file, { fn: metadata.fn }, settings);
         };
 
-        sortFiles(files, sortOption, getCreatedTime, getModifiedTime, getTitle, getPropertySortValue);
+        sortFiles(files, sortOption, getCreatedTime, getModifiedTime, getTitle, getPropertySortValue, settings.propertySortSecondary);
         return;
     }
 
     const getCreatedTime = (file: TFile) => file.stat.ctime;
     const getModifiedTime = (file: TFile) => file.stat.mtime;
     const getTitle = (file: TFile) => file.basename;
-    sortFiles(files, sortOption, getCreatedTime, getModifiedTime, getTitle, getPropertySortValue);
+    sortFiles(files, sortOption, getCreatedTime, getModifiedTime, getTitle, getPropertySortValue, settings.propertySortSecondary);
 }
 
 /**
@@ -368,6 +373,7 @@ export function getFilesForFolder(
     const files: TFile[] = [];
     const excludedFolderPatterns = getActiveHiddenFolders(settings);
     const excludedFileProperties = getActiveHiddenFileProperties(settings);
+    const excludedFilePropertyMatcher = createFrontmatterPropertyExclusionMatcher(excludedFileProperties);
     const excludedFileNamePatterns = getActiveHiddenFileNames(settings);
     const excludedFileTagPatterns = getActiveHiddenFileTags(settings);
     const fileVisibility = getActiveFileVisibility(settings);
@@ -407,8 +413,8 @@ export function getFilesForFolder(
 
     collectFiles(folder, folderHiddenInitially);
     let allFiles: TFile[] = files;
-    if (!visibility.showHiddenItems && excludedFileProperties.length > 0) {
-        allFiles = files.filter(file => file.extension !== 'md' || !shouldExcludeFile(file, excludedFileProperties, app));
+    if (!visibility.showHiddenItems && excludedFilePropertyMatcher.hasCriteria) {
+        allFiles = files.filter(file => file.extension !== 'md' || !shouldExcludeFileWithMatcher(file, excludedFilePropertyMatcher, app));
     }
     if (fileNameMatcher) {
         allFiles = allFiles.filter(file => !fileNameMatcher.matches(file));
@@ -473,6 +479,7 @@ export function getFilesForTag(
     const hiddenFileTags = getActiveHiddenFileTags(settings);
     const excludedFolderPatterns = getActiveHiddenFolders(settings);
     const excludedFileProperties = getActiveHiddenFileProperties(settings);
+    const excludedFilePropertyMatcher = createFrontmatterPropertyExclusionMatcher(excludedFileProperties);
     const excludedFileNamePatterns = getActiveHiddenFileNames(settings);
     const fileNameMatcher = createHiddenFileNameMatcherForVisibility(excludedFileNamePatterns, visibility.showHiddenItems);
     const hiddenTagVisibility = createHiddenTagVisibility(hiddenTags, visibility.showHiddenItems);
@@ -495,7 +502,7 @@ export function getFilesForTag(
         return isFileVisibleForScopedSelection(file, {
             showHiddenItems: visibility.showHiddenItems,
             excludedFolderPatterns,
-            excludedFileProperties,
+            excludedFilePropertyMatcher,
             fileNameMatcher,
             shouldFilterHiddenFileTags,
             hiddenFileTagVisibility,
@@ -606,7 +613,7 @@ export function getFilesForProperty(
     propertyTreeService: IPropertyTreeProvider | null = null
 ): TFile[] {
     const includesAnyProperty = propertyNodeId === PROPERTIES_ROOT_VIRTUAL_FOLDER_ID;
-    const configuredPropertyKeys = getConfiguredPropertyKeySet(settings.customPropertyFields);
+    const configuredPropertyKeys = getConfiguredPropertyKeySet(settings.propertyFields);
 
     if (includesAnyProperty && configuredPropertyKeys.size === 0) {
         return [];
@@ -631,6 +638,7 @@ export function getFilesForProperty(
     const selectedPropertyKey = normalizedKey ?? '';
     const excludedFolderPatterns = getActiveHiddenFolders(settings);
     const excludedFileProperties = getActiveHiddenFileProperties(settings);
+    const excludedFilePropertyMatcher = createFrontmatterPropertyExclusionMatcher(excludedFileProperties);
     const excludedFileNamePatterns = getActiveHiddenFileNames(settings);
     const fileNameMatcher = createHiddenFileNameMatcherForVisibility(excludedFileNamePatterns, visibility.showHiddenItems);
 
@@ -669,7 +677,7 @@ export function getFilesForProperty(
         return isFileVisibleForScopedSelection(file, {
             showHiddenItems: visibility.showHiddenItems,
             excludedFolderPatterns,
-            excludedFileProperties,
+            excludedFilePropertyMatcher,
             fileNameMatcher,
             shouldFilterHiddenFileTags,
             hiddenFileTagVisibility,
@@ -687,8 +695,8 @@ export function getFilesForProperty(
 
         return markdownFiles.filter(file => {
             const fileData = db?.getFile(file.path) ?? null;
-            const customProperty = fileData?.customProperty;
-            if (!customProperty || customProperty.length === 0) {
+            const properties = fileData?.properties;
+            if (!properties || properties.length === 0) {
                 return false;
             }
 
@@ -700,12 +708,12 @@ export function getFilesForProperty(
             }
 
             if (includesAnyProperty) {
-                return customProperty.some(entry => configuredPropertyKeys.has(casefold(entry.fieldKey)));
+                return properties.some(entry => configuredPropertyKeys.has(casefold(entry.fieldKey)));
             }
 
             let hasMatchingKey = false;
             let hasDirectMatchingKey = false;
-            for (const entry of customProperty) {
+            for (const entry of properties) {
                 if (casefold(entry.fieldKey) !== selectedPropertyKey) {
                     continue;
                 }

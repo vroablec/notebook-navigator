@@ -105,6 +105,8 @@ export const STRINGS_VI = {
         folderExists: 'Thư mục đã có trong lối tắt',
         noteExists: 'Ghi chú đã có trong lối tắt',
         tagExists: 'Thẻ đã có trong lối tắt',
+        propertyExists: 'Thuộc tính đã có trong phím tắt',
+        invalidProperty: 'Phím tắt thuộc tính không hợp lệ',
         searchExists: 'Lối tắt tìm kiếm đã tồn tại',
         emptySearchQuery: 'Nhập truy vấn tìm kiếm trước khi lưu',
         emptySearchName: 'Nhập tên trước khi lưu tìm kiếm',
@@ -185,12 +187,12 @@ export const STRINGS_VI = {
                 properties: {
                     title: 'Thuộc tính',
                     items: [
-                        '`.key` Bao gồm ghi chú có khóa thuộc tính tùy chỉnh.',
-                        '`.key=value` Bao gồm ghi chú có giá trị thuộc tính tùy chỉnh.',
+                        '`.key` Bao gồm ghi chú có khóa thuộc tính.',
+                        '`.key=value` Bao gồm ghi chú có giá trị thuộc tính.',
                         '`."Reading Status"` Bao gồm ghi chú có khóa thuộc tính chứa khoảng trắng.',
                         '`."Reading Status"="In Progress"` Khóa và giá trị có khoảng trắng phải được đặt trong dấu ngoặc kép.',
-                        '`-.key` Loại trừ ghi chú có khóa thuộc tính tùy chỉnh.',
-                        '`-.key=value` Loại trừ ghi chú có giá trị thuộc tính tùy chỉnh.',
+                        '`-.key` Loại trừ ghi chú có khóa thuộc tính.',
+                        '`-.key=value` Loại trừ ghi chú có giá trị thuộc tính.',
                         'Cmd/Ctrl+Nhấp vào thuộc tính để thêm với AND. Cmd/Ctrl+Shift+Nhấp để thêm với OR.'
                     ]
                 },
@@ -323,6 +325,10 @@ export const STRINGS_VI = {
             showTag: 'Hiện thẻ',
             hideTag: 'Ẩn thẻ'
         },
+        property: {
+            addKey: 'Thêm khóa thuộc tính',
+            removeKey: 'Xóa khóa thuộc tính'
+        },
         navigation: {
             addSeparator: 'Thêm dấu phân cách',
             removeSeparator: 'Gỡ dấu phân cách'
@@ -376,10 +382,6 @@ export const STRINGS_VI = {
         fileIconRuleEditor: {
             addRuleAria: 'Thêm quy tắc'
         },
-        propertyColorRuleEditor: {
-            propertyPlaceholder: 'Property',
-            valuePlaceholder: 'Value'
-        },
         interfaceIcons: {
             title: 'Biểu tượng giao diện',
             fileItemsSection: 'Mục tệp',
@@ -405,13 +407,15 @@ export const STRINGS_VI = {
                 'list-new-note': 'Ghi chú mới',
                 'nav-folder-open': 'Thư mục mở',
                 'nav-folder-closed': 'Thư mục đóng',
-                'nav-folder-note': 'Ghi chú thư mục',
+                'nav-tags': 'Thẻ',
                 'nav-tag': 'Thẻ',
                 'nav-properties': 'Thuộc tính',
+                'nav-property': 'Thuộc tính',
+                'nav-property-value': 'Giá trị',
                 'list-pinned': 'Mục đã ghim',
                 'file-unfinished-task': 'Nhiệm vụ chưa hoàn thành',
                 'file-word-count': 'Số từ',
-                'file-custom-property': 'Thuộc tính tùy chỉnh'
+                'file-property': 'Thuộc tính'
             }
         },
         colorPicker: {
@@ -533,6 +537,15 @@ export const STRINGS_VI = {
                 dismiss: 'để đóng',
                 add: 'để thêm thẻ',
                 remove: 'để gỡ thẻ'
+            }
+        },
+        propertySuggest: {
+            placeholder: 'Chọn khóa thuộc tính...',
+            navigatePlaceholder: 'Điều hướng đến thuộc tính...',
+            instructions: {
+                navigate: 'để điều hướng',
+                select: 'để thêm thuộc tính',
+                dismiss: 'để đóng'
             }
         },
         welcome: {
@@ -687,6 +700,7 @@ export const STRINGS_VI = {
         pinAllFolderNotes: 'Ghim tất cả ghi chú thư mục', // Command palette: Pins all folder notes to shortcuts (English: Pin all folder notes)
         navigateToFolder: 'Chuyển đến thư mục', // Command palette: Navigate to a folder using fuzzy search (English: Navigate to folder)
         navigateToTag: 'Chuyển đến thẻ', // Command palette: Navigate to a tag using fuzzy search (English: Navigate to tag)
+        navigateToProperty: 'Điều hướng đến thuộc tính', // Command palette: Navigate to a property key or value using fuzzy search (English: Navigate to property)
         addShortcut: 'Thêm vào lối tắt', // Command palette: Adds the current file, folder, or tag to shortcuts (English: Add to shortcuts)
         openShortcut: 'Mở lối tắt {number}',
         toggleDescendants: 'Bật/tắt phần tử con', // Command palette: Toggles showing notes from descendants (English: Toggle descendants)
@@ -727,14 +741,15 @@ export const STRINGS_VI = {
         },
         sections: {
             general: 'Chung',
-            navigationPane: 'Ngăn điều hướng',
+            navigationPane: 'Điều hướng',
             calendar: 'Lịch',
             icons: 'Gói biểu tượng',
             folders: 'Thư mục',
             folderNotes: 'Ghi chú thư mục',
-            foldersAndTags: 'Thư mục & thẻ',
+            foldersAndTags: 'Thư mục',
+            tagsAndProperties: 'Thẻ và thuộc tính',
             tags: 'Thẻ',
-            listPane: 'Ngăn danh sách',
+            listPane: 'Danh sách',
             notes: 'Ghi chú',
             advanced: 'Nâng cao'
         },
@@ -753,7 +768,6 @@ export const STRINGS_VI = {
             },
             navigation: {
                 appearance: 'Giao diện',
-                shortcutsAndRecent: 'Phím tắt và mục gần đây',
                 leftSidebar: 'Thanh bên trái',
                 calendarIntegration: 'Tích hợp lịch'
             },
@@ -768,7 +782,7 @@ export const STRINGS_VI = {
                 previewText: 'Văn bản xem trước',
                 featureImage: 'Hình ảnh nổi bật',
                 tags: 'Thẻ',
-                customProperty: 'Thuộc tính tùy chỉnh (frontmatter hoặc số từ)',
+                properties: 'Thuộc tính',
                 date: 'Ngày',
                 parentFolder: 'Thư mục cha'
             }
@@ -813,6 +827,16 @@ export const STRINGS_VI = {
                 name: 'Thuộc tính sắp xếp',
                 desc: 'Dùng với sắp xếp theo thuộc tính. Ghi chú có thuộc tính frontmatter này được liệt kê trước và sắp xếp theo giá trị thuộc tính. Mảng được kết hợp thành một giá trị.',
                 placeholder: 'order'
+            },
+            propertySortSecondary: {
+                name: 'Sắp xếp phụ',
+                desc: 'Dùng với sắp xếp theo thuộc tính khi các ghi chú có cùng giá trị thuộc tính hoặc không có giá trị thuộc tính.',
+                options: {
+                    title: 'Tiêu đề',
+                    filename: 'Tên tệp',
+                    created: 'Ngày tạo',
+                    modified: 'Ngày chỉnh sửa'
+                }
             },
             revealFileOnListChanges: {
                 name: 'Cuộn đến tệp đã chọn khi danh sách thay đổi',
@@ -963,6 +987,10 @@ export const STRINGS_VI = {
                 name: 'Tự động hiện ghi chú đang hoạt động',
                 desc: 'Tự động hiện ghi chú khi mở từ Quick Switcher, liên kết hoặc tìm kiếm.'
             },
+            autoRevealShortestPath: {
+                name: 'Sử dụng đường dẫn ngắn nhất',
+                desc: 'Bật: Tự động hiển thị chọn thư mục cha hoặc thẻ gần nhất có thể nhìn thấy. Tắt: Tự động hiển thị chọn thư mục thực tế và thẻ chính xác của tệp.'
+            },
             autoRevealIgnoreRightSidebar: {
                 name: 'Bỏ qua sự kiện từ thanh bên phải',
                 desc: 'Không đổi ghi chú đang hoạt động khi nhấn hoặc đổi ghi chú ở thanh bên phải.'
@@ -1022,6 +1050,14 @@ export const STRINGS_VI = {
             showRecentNotes: {
                 name: 'Hiện ghi chú gần đây',
                 desc: 'Hiển thị phần ghi chú gần đây trong ngăn điều hướng.'
+            },
+            hideRecentNotes: {
+                name: 'Ẩn ghi chú',
+                desc: 'Chọn loại ghi chú cần ẩn trong phần ghi chú gần đây.',
+                options: {
+                    none: 'Không',
+                    folderNotes: 'Ghi chú thư mục'
+                }
             },
             recentNotesCount: {
                 name: 'Số lượng ghi chú gần đây',
@@ -1223,9 +1259,9 @@ export const STRINGS_VI = {
                 }
             },
             excludedNotes: {
-                name: 'Ẩn ghi chú có thuộc tính (hồ sơ vault)',
-                desc: 'Danh sách thuộc tính frontmatter phân cách bằng dấu phẩy. Ghi chú chứa bất kỳ thuộc tính nào sẽ bị ẩn (ví dụ: nháp, riêng tư, lưu trữ).',
-                placeholder: 'nháp, riêng tư'
+                name: 'Ẩn ghi chú theo quy tắc thuộc tính (hồ sơ vault)',
+                desc: 'Danh sách quy tắc frontmatter phân cách bằng dấu phẩy. Sử dụng mục `key` hoặc `key=value` (ví dụ: status=done, published=true, archived).',
+                placeholder: 'status=done, published=true, archived'
             },
             excludedFileNamePatterns: {
                 name: 'Ẩn tệp (hồ sơ vault)',
@@ -1298,33 +1334,41 @@ export const STRINGS_VI = {
                 name: 'Hiện thẻ tệp ở chế độ gọn',
                 desc: 'Hiển thị thẻ khi ngày, xem trước và ảnh bị ẩn.'
             },
-            customPropertyType: {
-                name: 'Loại thuộc tính',
-                desc: 'Chọn thuộc tính tùy chỉnh để hiển thị trong các mục tệp.',
+            showFileProperties: {
+                name: 'Hiện thuộc tính tệp',
+                desc: 'Hiển thị các thuộc tính có thể nhấp trong mục tệp.'
+            },
+            colorFileProperties: {
+                name: 'Tô màu thuộc tính tệp',
+                desc: 'Áp dụng màu thuộc tính cho huy hiệu thuộc tính trên mục tệp.'
+            },
+            prioritizeColoredFileProperties: {
+                name: 'Hiện thuộc tính có màu trước',
+                desc: 'Sắp xếp thuộc tính có màu trước các thuộc tính khác trên mục tệp.'
+            },
+            showFilePropertiesInCompactMode: {
+                name: 'Hiện thuộc tính ở chế độ gọn',
+                desc: 'Hiển thị thuộc tính khi chế độ gọn đang hoạt động.'
+            },
+            notePropertyType: {
+                name: 'Thuộc tính ghi chú',
+                desc: 'Chọn thuộc tính ghi chú để hiển thị trong các mục tệp.',
                 options: {
                     frontmatter: 'Thuộc tính frontmatter',
                     wordCount: 'Số từ',
                     none: 'Không'
                 }
             },
-            customPropertyFields: {
+            propertyFields: {
                 name: 'Các thuộc tính để hiển thị',
-                desc: 'Danh sách thuộc tính frontmatter phân cách bằng dấu phẩy để hiển thị dưới dạng huy hiệu. Thuộc tính có giá trị danh sách hiển thị một huy hiệu cho mỗi giá trị. Giá trị ở định dạng [[wikilink]] được hiển thị dưới dạng liên kết có thể nhấp.',
-                placeholder: 'trạng thái, loại, danh mục'
+                desc: 'Danh sách thuộc tính frontmatter phân cách bằng dấu phẩy để hiển thị trong bảng điều hướng và dưới dạng huy hiệu trong các mục tệp. Thuộc tính dạng danh sách hiển thị một huy hiệu cho mỗi giá trị.',
+                placeholder: 'status, type, category',
+                addButtonTooltip: 'Thêm khóa thuộc tính',
+                emptySelectorNotice: 'Không tìm thấy khóa thuộc tính trong bộ nhớ đệm siêu dữ liệu.'
             },
-            showCustomPropertiesOnSeparateRows: {
+            showPropertiesOnSeparateRows: {
                 name: 'Hiển thị thuộc tính trên các dòng riêng',
                 desc: 'Hiển thị mỗi thuộc tính trên một dòng riêng.'
-            },
-            customPropertyColorMap: {
-                name: 'Màu thuộc tính',
-                desc: 'Ánh xạ thuộc tính và giá trị frontmatter thành màu huy hiệu. Một ánh xạ mỗi dòng: thuộc tính=màu hoặc thuộc tính:giá trị=màu',
-                placeholder: '# Thuộc tính hoặc thuộc tính:giá trị màu\nstatus=#f59e0b\nstatus:done=#10b981\nstatus:todo=#ef4444',
-                editTooltip: 'Chỉnh sửa ánh xạ'
-            },
-            showCustomPropertyInCompactMode: {
-                name: 'Hiện thuộc tính tùy chỉnh ở chế độ gọn',
-                desc: 'Hiển thị thuộc tính tùy chỉnh khi ngày, xem trước và ảnh bị ẩn.'
             },
             dateFormat: {
                 name: 'Định dạng ngày',
@@ -1361,7 +1405,7 @@ export const STRINGS_VI = {
             previewProperties: {
                 name: 'Thuộc tính xem trước',
                 desc: 'Danh sách thuộc tính frontmatter phân cách bằng dấu phẩy để kiểm tra văn bản xem trước. Thuộc tính đầu tiên có văn bản sẽ được dùng.',
-                placeholder: 'tóm tắt, mô tả, abstract',
+                placeholder: 'summary, description, abstract',
                 info: 'Nếu không tìm thấy văn bản xem trước trong các thuộc tính đã chỉ định, xem trước sẽ được tạo từ nội dung ghi chú.'
             },
             previewRows: {
@@ -1399,7 +1443,7 @@ export const STRINGS_VI = {
             featureImageExcludeProperties: {
                 name: 'Loại trừ ghi chú có thuộc tính',
                 desc: 'Danh sách thuộc tính frontmatter phân cách bằng dấu phẩy. Ghi chú chứa bất kỳ thuộc tính nào trong số này không lưu trữ ảnh nổi bật.',
-                placeholder: 'riêng tư, bí mật'
+                placeholder: 'private, confidential'
             },
 
             downloadExternalFeatureImages: {
@@ -1511,6 +1555,33 @@ export const STRINGS_VI = {
                 name: 'Giữ thuộc tính tags sau khi gỡ thẻ cuối',
                 desc: 'Giữ thuộc tính tags frontmatter khi tất cả thẻ bị gỡ. Khi tắt, thuộc tính tags bị xóa khỏi frontmatter.'
             },
+            showProperties: {
+                name: 'Hiển thị thuộc tính',
+                desc: 'Hiển thị phần thuộc tính trong trình điều hướng.'
+            },
+            showPropertyIcons: {
+                name: 'Hiển thị biểu tượng thuộc tính',
+                desc: 'Hiển thị biểu tượng bên cạnh thuộc tính trong bảng điều hướng.'
+            },
+            inheritPropertyColors: {
+                name: 'Kế thừa màu thuộc tính',
+                desc: 'Giá trị thuộc tính kế thừa màu sắc và nền từ khóa thuộc tính.'
+            },
+            propertySortOrder: {
+                name: 'Thứ tự sắp xếp thuộc tính',
+                desc: 'Nhấp chuột phải vào bất kỳ thuộc tính nào để đặt thứ tự sắp xếp khác cho các giá trị của nó.',
+                options: {
+                    alphaAsc: 'A đến Z',
+                    alphaDesc: 'Z đến A',
+                    frequency: 'Tần suất',
+                    lowToHigh: 'thấp đến cao',
+                    highToLow: 'cao đến thấp'
+                }
+            },
+            showAllPropertiesFolder: {
+                name: 'Hiển thị thư mục thuộc tính',
+                desc: 'Hiển thị "Thuộc tính" dưới dạng thư mục có thể thu gọn.'
+            },
             hiddenTags: {
                 name: 'Ẩn thẻ (hồ sơ vault)',
                 desc: 'Danh sách mẫu thẻ phân cách bằng dấu phẩy. Mẫu tên: tag* (bắt đầu bằng), *tag (kết thúc bằng). Mẫu đường dẫn: archive (thẻ và con cháu), archive/* (chỉ con cháu), projects/*/drafts (ký tự đại diện ở giữa).',
@@ -1571,7 +1642,8 @@ export const STRINGS_VI = {
                 error: 'Dọn dẹp cài đặt thất bại',
                 loading: 'Đang kiểm tra metadata...',
                 statusClean: 'Không có metadata cần dọn',
-                statusCounts: 'Mục mồ côi: {folders} thư mục, {tags} thẻ, {files} tệp, {pinned} ghim, {separators} dấu phân cách'
+                statusCounts:
+                    'Mục mồ côi: {folders} thư mục, {tags} thẻ, {properties} thuộc tính, {files} tệp, {pinned} ghim, {separators} dấu phân cách'
             },
             rebuildCache: {
                 name: 'Xây dựng lại cache',
@@ -1607,9 +1679,10 @@ export const STRINGS_VI = {
                 desc: 'Trường frontmatter cho màu tệp. Để trống để dùng màu lưu trong cài đặt.',
                 placeholder: 'color'
             },
-            frontmatterSaveMetadata: {
-                name: 'Lưu biểu tượng và màu vào frontmatter',
-                desc: 'Tự động ghi biểu tượng và màu tệp vào frontmatter dùng các trường đã cấu hình ở trên.'
+            frontmatterBackgroundField: {
+                name: 'Trường nền',
+                desc: 'Trường frontmatter cho màu nền. Để trống để dùng màu nền lưu trong cài đặt.',
+                placeholder: 'background'
             },
             frontmatterMigration: {
                 name: 'Di chuyển biểu tượng và màu từ cài đặt',
@@ -1624,7 +1697,7 @@ export const STRINGS_VI = {
             frontmatterNameField: {
                 name: 'Các trường tên',
                 desc: 'Danh sách trường frontmatter phân cách bằng dấu phẩy. Sử dụng giá trị không trống đầu tiên. Quay lại tên tệp.',
-                placeholder: 'tiêu đề, tên'
+                placeholder: 'title, name'
             },
             frontmatterCreatedField: {
                 name: 'Trường dấu thời gian tạo',

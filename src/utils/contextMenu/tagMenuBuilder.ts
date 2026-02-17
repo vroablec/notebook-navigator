@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { MenuItem } from 'obsidian';
+import { MenuItem, TFile } from 'obsidian';
 import { TagMenuBuilderParams } from './menuTypes';
 import { strings } from '../../i18n';
 import { cleanupTagPatterns, createHiddenTagMatcher, matchesHiddenTagPattern } from '../tagPrefixMatcher';
@@ -35,8 +35,10 @@ import { resolveDisplayTagPath } from '../../services/tagOperations/TagOperation
  * Builds the context menu for a tag
  */
 export function buildTagMenu(params: TagMenuBuilderParams): void {
-    const { tagPath, menu, services, settings, options } = params;
-    const { app, metadataService, plugin, isMobile } = services;
+    const { tagPath, menu, services, settings, state, dispatchers, options } = params;
+    const { app, metadataService, plugin, fileSystemOps, isMobile } = services;
+    const { selectionState } = state;
+    const { selectionDispatch, uiDispatch } = dispatchers;
 
     // Show tag name on mobile
     if (isMobile) {
@@ -49,6 +51,35 @@ export function buildTagMenu(params: TagMenuBuilderParams): void {
 
     // Add rename/delete options only for real tags (not virtual aggregations)
     const isVirtualTag = tagPath === UNTAGGED_TAG_ID || tagPath === TAGGED_TAG_ID;
+
+    const ensureTagSelected = () => {
+        if (selectionState.selectionType === ItemType.TAG && selectionState.selectedTag === tagPath) {
+            return;
+        }
+
+        selectionDispatch({ type: 'SET_SELECTED_TAG', tag: tagPath });
+    };
+
+    const handleFileCreation = (file: TFile | null | undefined) => {
+        if (!file) {
+            return;
+        }
+
+        selectionDispatch({ type: 'SET_SELECTED_FILE', file });
+        uiDispatch({ type: 'SET_FOCUSED_PANE', pane: 'files' });
+    };
+
+    if (!isVirtualTag) {
+        menu.addItem((item: MenuItem) => {
+            setAsyncOnClick(item.setTitle(strings.contextMenu.folder.newNote).setIcon('lucide-pen-box'), async () => {
+                ensureTagSelected();
+                const sourcePath = selectionState.selectedFile?.path ?? app.workspace.getActiveFile()?.path ?? '';
+                const createdFile = await fileSystemOps.createNewFileForTag(tagPath, sourcePath);
+                handleFileCreation(createdFile);
+            });
+        });
+        menu.addSeparator();
+    }
 
     // Change icon
     if (settings.showTagIcons) {

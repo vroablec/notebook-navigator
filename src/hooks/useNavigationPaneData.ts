@@ -56,22 +56,24 @@ import { PropertyTreeNode, TagTreeNode } from '../types/storage';
 import type { CombinedNavigationItem } from '../types/virtualization';
 import type { NotebookNavigatorSettings, TagSortOrder } from '../settings/types';
 import {
+    createFrontmatterPropertyExclusionMatcher,
     createHiddenFileNameMatcherForVisibility,
     isFolderInExcludedFolder,
-    shouldExcludeFile,
+    shouldExcludeFileWithMatcher,
     shouldExcludeFileName
 } from '../utils/fileFilters';
 import { shouldDisplayFile, FILE_VISIBILITY } from '../utils/fileTypeUtils';
 import { resolveFileIconId, type FileNameIconNeedle } from '../utils/fileIconUtils';
 // Use Obsidian's trailing debounce for vault-driven updates
 import { getTotalNoteCount, excludeFromTagTree, findTagNode } from '../utils/tagTree';
-import { flattenFolderTree, flattenTagTree, compareTagOrderWithFallback } from '../utils/treeFlattener';
+import { flattenFolderTree, flattenTagTree, comparePropertyOrderWithFallback, compareTagOrderWithFallback } from '../utils/treeFlattener';
 import { createHiddenTagVisibility, matchesHiddenTagPattern } from '../utils/tagPrefixMatcher';
 import { setNavigationIndex } from '../utils/navigationIndex';
 import { resolveCanonicalTagPath } from '../utils/tagUtils';
 import { getCachedFileTags } from '../utils/tagUtils';
-import { isFolderShortcut, isNoteShortcut, isSearchShortcut, isTagShortcut } from '../types/shortcuts';
+import { isFolderShortcut, isNoteShortcut, isSearchShortcut, isTagShortcut, isPropertyShortcut } from '../types/shortcuts';
 import { useRootFolderOrder } from './useRootFolderOrder';
+import { useRootPropertyOrder } from './useRootPropertyOrder';
 import { useRootTagOrder } from './useRootTagOrder';
 import { getFolderNoteDetectionSettings } from '../utils/folderNotes';
 import { getDBInstance, getDBInstanceOrNull } from '../storage/fileOperations';
@@ -81,9 +83,17 @@ import { calculateFolderNoteCounts } from '../utils/noteCountUtils';
 import { getEffectiveFrontmatterExclusions } from '../utils/exclusionUtils';
 import { sanitizeNavigationSectionOrder } from '../utils/navigationSections';
 import { getVirtualTagCollection, isVirtualTagCollectionId, VIRTUAL_TAG_COLLECTION_IDS } from '../utils/virtualTagCollections';
-import { getDirectPropertyKeyNoteCount, getTotalPropertyNoteCount } from '../utils/propertyTree';
+import {
+    getDirectPropertyKeyNoteCount,
+    getTotalPropertyNoteCount,
+    normalizePropertyNodeId,
+    parsePropertyNodeId,
+    resolvePropertyShortcutNodeId,
+    resolvePropertyTreeNode
+} from '../utils/propertyTree';
 import {
     buildFolderSeparatorKey,
+    buildPropertySeparatorKey,
     buildSectionSeparatorKey,
     buildTagSeparatorKey,
     parseNavigationSeparatorKey
@@ -91,7 +101,6 @@ import {
 import { resolveUXIcon } from '../utils/uxIcons';
 import type { MetadataService } from '../services/MetadataService';
 import { useSettingsDerived, type ActiveProfileState } from '../context/SettingsContext';
-import { getCachedCommaSeparatedList } from '../utils/commaSeparatedListUtils';
 
 // Checks if a navigation item is a shortcut-related item (virtual folder, shortcut, or header)
 const isShortcutNavigationItem = (item: CombinedNavigationItem): boolean => {
@@ -104,6 +113,7 @@ const isShortcutNavigationItem = (item: CombinedNavigationItem): boolean => {
         item.type === NavigationPaneItemType.SHORTCUT_NOTE ||
         item.type === NavigationPaneItemType.SHORTCUT_SEARCH ||
         item.type === NavigationPaneItemType.SHORTCUT_TAG ||
+        item.type === NavigationPaneItemType.SHORTCUT_PROPERTY ||
         item.type === NavigationPaneItemType.SHORTCUT_HEADER
     );
 };
@@ -142,9 +152,9 @@ function decorateNavigationItems(
     getFileDisplayName: (file: TFile) => string,
     metadataService: MetadataService,
     parsedExcludedFolders: string[],
-    _metadataVersion: string
+    frontmatterMetadataVersion: number
 ): CombinedNavigationItem[] {
-    void _metadataVersion;
+    void frontmatterMetadataVersion;
     const shouldResolveFileNameIcons = settings.showFilenameMatchIcons;
     const fileIconSettings = {
         showFilenameMatchIcons: settings.showFilenameMatchIcons,
@@ -188,6 +198,21 @@ function decorateNavigationItems(
                 icon: metadataService.getTagIcon(tagNode.path)
             };
         }
+        if (item.type === NavigationPaneItemType.PROPERTY_KEY || item.type === NavigationPaneItemType.PROPERTY_VALUE) {
+            const propertyNode = item.data;
+            const propertyNodeId = propertyNode.id;
+            const propertyColorData = metadataService.getPropertyColorData(propertyNodeId);
+            const icon =
+                metadataService.getPropertyIcon(propertyNodeId) ||
+                (propertyNode.kind === 'value' ? resolveUXIcon(settings.interfaceIcons, 'nav-property-value') : undefined);
+
+            return {
+                ...item,
+                color: propertyColorData.color,
+                backgroundColor: propertyColorData.background,
+                icon
+            };
+        }
         if (item.type === NavigationPaneItemType.SHORTCUT_FOLDER) {
             const folderPath = item.folder?.path;
             const folderDisplayData = folderPath ? getFolderDisplayData(folderPath) : undefined;
@@ -208,6 +233,23 @@ function decorateNavigationItems(
                 icon: metadataService.getTagIcon(item.tagPath) || resolveUXIcon(settings.interfaceIcons, 'nav-tag'),
                 color: tagColorData.color,
                 backgroundColor: tagColorData.background
+            };
+        }
+        if (item.type === NavigationPaneItemType.SHORTCUT_PROPERTY) {
+            const propertyNodeId = item.propertyNodeId;
+            const propertyColorData = metadataService.getPropertyColorData(propertyNodeId);
+            const parsed = parsePropertyNodeId(propertyNodeId);
+            const icon =
+                metadataService.getPropertyIcon(propertyNodeId) ||
+                (parsed?.valuePath
+                    ? resolveUXIcon(settings.interfaceIcons, 'nav-property-value')
+                    : resolveUXIcon(settings.interfaceIcons, 'nav-property'));
+
+            return {
+                ...item,
+                icon,
+                color: propertyColorData.color,
+                backgroundColor: propertyColorData.background
             };
         }
         if (item.type === NavigationPaneItemType.SHORTCUT_NOTE) {
@@ -260,7 +302,7 @@ function decorateNavigationItems(
  * @param items Navigation items to augment with spacing
  * @param spacing Spacing value in pixels
  */
-const CUSTOM_SEPARATOR_PREFIXES = ['folder:', 'tag:'];
+const CUSTOM_SEPARATOR_PREFIXES = ['folder:', 'tag:', 'property:'];
 const isCustomSeparatorKey = (key: string): boolean => CUSTOM_SEPARATOR_PREFIXES.some(prefix => key.startsWith(prefix));
 const SPACER_ITEM_TYPES = new Set<NavigationPaneItemType>([
     NavigationPaneItemType.TOP_SPACER,
@@ -322,6 +364,42 @@ const insertRootSpacing = (items: CombinedNavigationItem[], spacing: number, opt
 
 /** Comparator function type for sorting tag tree nodes */
 type TagComparator = (a: TagTreeNode, b: TagTreeNode) => number;
+type PropertyNodeComparator = (a: PropertyTreeNode, b: PropertyTreeNode) => number;
+type NavigationComparator<T> = (a: T, b: T) => number;
+
+function reverseComparator<T>(comparator: NavigationComparator<T>): NavigationComparator<T> {
+    return (a, b) => -comparator(a, b);
+}
+
+function createFrequencyComparator<T>(params: {
+    order: TagSortOrder;
+    compareAlphabetically: NavigationComparator<T>;
+    getFrequency: (node: T) => number;
+}): NavigationComparator<T> | undefined {
+    const { order, compareAlphabetically, getFrequency } = params;
+
+    if (order === 'alpha-asc') {
+        return undefined;
+    }
+
+    if (order === 'alpha-desc') {
+        return reverseComparator(compareAlphabetically);
+    }
+
+    const compareByFrequency: NavigationComparator<T> = (a, b) => {
+        const diff = getFrequency(a) - getFrequency(b);
+        if (diff !== 0) {
+            return diff;
+        }
+        return compareAlphabetically(a, b);
+    };
+
+    if (order === 'frequency-asc') {
+        return compareByFrequency;
+    }
+
+    return reverseComparator(compareByFrequency);
+}
 
 /** Compares tags alphabetically by name with fallback to path */
 const compareTagAlphabetically: TagComparator = (a, b) => {
@@ -334,33 +412,48 @@ const compareTagAlphabetically: TagComparator = (a, b) => {
 
 // Creates comparator for tag sorting modes. Returns undefined for default alphabetical ascending order.
 const createTagComparator = (order: TagSortOrder, includeDescendantNotes: boolean): TagComparator | undefined => {
-    if (order === 'alpha-asc') {
-        return undefined;
-    }
-
-    if (order === 'alpha-desc') {
-        return (a, b) => -compareTagAlphabetically(a, b);
-    }
-
-    /** Gets note count for a tag based on descendant inclusion setting */
     const getCount = includeDescendantNotes
         ? (node: TagTreeNode) => getTotalNoteCount(node)
         : (node: TagTreeNode) => node.notesWithTag.size;
 
-    /** Compares tags by frequency (note count) with alphabetical fallback */
-    const compareByFrequency: TagComparator = (a, b) => {
-        const diff = getCount(a) - getCount(b);
-        if (diff !== 0) {
-            return diff;
-        }
-        return compareTagAlphabetically(a, b);
-    };
+    return createFrequencyComparator<TagTreeNode>({
+        order,
+        compareAlphabetically: compareTagAlphabetically,
+        getFrequency: getCount
+    });
+};
 
-    if (order === 'frequency-asc') {
-        return compareByFrequency;
+/** Compares property key nodes alphabetically by display name with key fallback */
+const comparePropertyKeyNodesAlphabetically: PropertyNodeComparator = (a, b) => {
+    const nameCompare = naturalCompare(a.name, b.name);
+    if (nameCompare !== 0) {
+        return nameCompare;
     }
+    return a.key.localeCompare(b.key);
+};
 
-    return (a, b) => -compareByFrequency(a, b);
+/** Compares property value nodes alphabetically by display name with value-path fallback */
+const comparePropertyValueNodesAlphabetically: PropertyNodeComparator = (a, b) => {
+    const nameCompare = naturalCompare(a.name, b.name);
+    if (nameCompare !== 0) {
+        return nameCompare;
+    }
+    return (a.valuePath ?? '').localeCompare(b.valuePath ?? '');
+};
+
+/** Creates a property node comparator for alpha/frequency sorting modes */
+const createPropertyComparator = (params: {
+    order: TagSortOrder;
+    compareAlphabetically: PropertyNodeComparator;
+    getFrequency: (node: PropertyTreeNode) => number;
+}): PropertyNodeComparator => {
+    const { order, compareAlphabetically, getFrequency } = params;
+    const comparator = createFrequencyComparator<PropertyTreeNode>({
+        order,
+        compareAlphabetically,
+        getFrequency
+    });
+    return comparator ?? compareAlphabetically;
 };
 
 /**
@@ -425,6 +518,14 @@ interface UseNavigationPaneDataResult {
     rootTagOrderMap: Map<string, number>;
     /** Paths for tags in custom order that are not currently present */
     missingRootTagPaths: string[];
+    /** Final ordered keys used for rendering root-level properties in navigation */
+    resolvedRootPropertyKeys: string[];
+    /** Property tree used for ordering (includes configured keys) */
+    rootOrderingPropertyTree: Map<string, PropertyTreeNode>;
+    /** Map from property key to custom order index */
+    rootPropertyOrderMap: Map<string, number>;
+    /** Keys for properties in custom order that are not currently present */
+    missingRootPropertyKeys: string[];
     /** Version marker that bumps when vault files or metadata change */
     vaultChangeVersion: number;
     /** Path to the navigation banner from the active vault profile */
@@ -465,6 +566,10 @@ export function useNavigationPaneData({
     const folderCountFileNameMatcher = useMemo(() => {
         return createHiddenFileNameMatcherForVisibility(hiddenFileNames, showHiddenItems);
     }, [hiddenFileNames, showHiddenItems]);
+    const hiddenFilePropertyMatcher = useMemo(
+        () => createFrontmatterPropertyExclusionMatcher(hiddenFileProperties),
+        [hiddenFileProperties]
+    );
 
     // Version counter that increments when vault files change
     const [fileChangeVersion, setFileChangeVersion] = useState(0);
@@ -480,6 +585,8 @@ export function useNavigationPaneData({
 
     // Extract tag tree data from file cache
     const tagTree = useMemo(() => fileData.tagTree ?? new Map<string, TagTreeNode>(), [fileData.tagTree]);
+    // Extract property tree data from file cache
+    const propertyTree = useMemo(() => fileData.propertyTree ?? new Map<string, PropertyTreeNode>(), [fileData.propertyTree]);
     const untaggedCount = fileData.untagged;
 
     // Create matcher for hidden tag patterns (supports "archive", "temp*", "*draft")
@@ -529,6 +636,20 @@ export function useNavigationPaneData({
         settings,
         tagTree: tagTreeForOrdering,
         comparator: tagComparator ?? compareTagAlphabetically
+    });
+
+    const propertyKeyComparator = useMemo(() => {
+        return createPropertyComparator({
+            order: settings.propertySortOrder,
+            compareAlphabetically: comparePropertyKeyNodesAlphabetically,
+            getFrequency: node => (includeDescendantNotes ? node.notesWithValue.size : getDirectPropertyKeyNoteCount(node))
+        });
+    }, [includeDescendantNotes, settings.propertySortOrder]);
+
+    const { rootPropertyOrderMap, missingRootPropertyKeys } = useRootPropertyOrder({
+        settings,
+        propertyTree,
+        comparator: propertyKeyComparator
     });
 
     /**
@@ -628,7 +749,7 @@ export function useNavigationPaneData({
         if (visibleTagTree.size === 0) {
             if (settings.showAllTagsFolder) {
                 const folderId = TAGS_ROOT_VIRTUAL_FOLDER_ID;
-                addVirtualFolder(folderId, strings.tagList.tags, resolveUXIcon(settings.interfaceIcons, 'nav-tag'), {
+                addVirtualFolder(folderId, strings.tagList.tags, resolveUXIcon(settings.interfaceIcons, 'nav-tags'), {
                     tagCollectionId: TAGGED_TAG_ID,
                     hasChildren: shouldIncludeUntagged,
                     showFileCount: settings.showNoteCount,
@@ -725,7 +846,7 @@ export function useNavigationPaneData({
         if (settings.showAllTagsFolder) {
             if (hasContent) {
                 const folderId = TAGS_ROOT_VIRTUAL_FOLDER_ID;
-                addVirtualFolder(folderId, strings.tagList.tags, resolveUXIcon(settings.interfaceIcons, 'nav-tag'), {
+                addVirtualFolder(folderId, strings.tagList.tags, resolveUXIcon(settings.interfaceIcons, 'nav-tags'), {
                     tagCollectionId: TAGGED_TAG_ID,
                     hasChildren: tagsVirtualFolderHasChildren,
                     showFileCount: settings.showNoteCount,
@@ -792,28 +913,28 @@ export function useNavigationPaneData({
         propertiesSectionActive: boolean;
         keyNodes: PropertyTreeNode[];
         collectionCount: NoteCountInfo | undefined;
+        resolvedRootPropertyKeys: string[];
     } => {
-        const isFrontmatterProperties = settings.customPropertyType === 'frontmatter';
-        const hasConfiguredFields = getCachedCommaSeparatedList(settings.customPropertyFields).length > 0;
-        if (!isFrontmatterProperties || !hasConfiguredFields) {
+        if (!settings.showProperties) {
             return {
                 propertiesSectionActive: false,
                 keyNodes: [],
-                collectionCount: undefined
+                collectionCount: undefined,
+                resolvedRootPropertyKeys: []
             };
         }
 
-        const propertyTree = fileData.propertyTree ?? new Map<string, PropertyTreeNode>();
-        const keyNodes = Array.from(propertyTree.values()).sort((a, b) => {
-            const nameCompare = naturalCompare(a.name, b.name);
-            if (nameCompare !== 0) {
-                return nameCompare;
-            }
-            return a.key.localeCompare(b.key);
-        });
+        const keyNodes = Array.from(propertyTree.values());
+
+        const effectiveComparator: PropertyNodeComparator =
+            rootPropertyOrderMap.size > 0
+                ? (a, b) => comparePropertyOrderWithFallback(a, b, rootPropertyOrderMap, propertyKeyComparator)
+                : propertyKeyComparator;
+
+        keyNodes.sort(effectiveComparator);
 
         let collectionCount: NoteCountInfo | undefined;
-        if (settings.showNoteCount) {
+        if (settings.showNoteCount && keyNodes.length > 0) {
             const propertyCollectionFiles = new Set<string>();
             keyNodes.forEach(node => {
                 node.notesWithValue.forEach(path => propertyCollectionFiles.add(path));
@@ -828,9 +949,10 @@ export function useNavigationPaneData({
         return {
             propertiesSectionActive: true,
             keyNodes,
-            collectionCount
+            collectionCount,
+            resolvedRootPropertyKeys: keyNodes.map(node => node.key)
         };
-    }, [settings.customPropertyType, settings.customPropertyFields, settings.showNoteCount, fileData.propertyTree]);
+    }, [propertyKeyComparator, propertyTree, rootPropertyOrderMap, settings.showNoteCount, settings.showProperties]);
 
     const { propertyItems, propertiesSectionActive } = useMemo((): {
         propertyItems: CombinedNavigationItem[];
@@ -846,9 +968,14 @@ export function useNavigationPaneData({
         const rootId = PROPERTIES_ROOT_VIRTUAL_FOLDER_ID;
         const keyNodes = propertySectionBase.keyNodes;
         const collectionCount = propertySectionBase.collectionCount;
+        const shouldShowRootFolder = settings.showAllPropertiesFolder || keyNodes.length === 0;
+        const rootLevel = shouldShowRootFolder ? 1 : 0;
+        const childLevel = rootLevel + 1;
 
-        const items: CombinedNavigationItem[] = [
-            {
+        const items: CombinedNavigationItem[] = [];
+
+        if (shouldShowRootFolder) {
+            items.push({
                 type: NavigationPaneItemType.VIRTUAL_FOLDER,
                 data: {
                     id: rootId,
@@ -862,37 +989,48 @@ export function useNavigationPaneData({
                 hasChildren: keyNodes.length > 0,
                 showFileCount: settings.showNoteCount,
                 noteCount: collectionCount
-            }
-        ];
+            });
 
-        if (!expansionState.expandedVirtualFolders.has(rootId)) {
-            return { propertyItems: items, propertiesSectionActive: true };
+            if (!expansionState.expandedVirtualFolders.has(rootId)) {
+                return { propertyItems: items, propertiesSectionActive: true };
+            }
         }
 
-        const sortChildren = (children: Iterable<PropertyTreeNode>): PropertyTreeNode[] => {
-            return Array.from(children).sort((a, b) => {
-                const nameCompare = naturalCompare(a.name, b.name);
-                if (nameCompare !== 0) {
-                    return nameCompare;
-                }
-                return (a.valuePath ?? '').localeCompare(b.valuePath ?? '');
+        const sortChildren = (keyNode: PropertyTreeNode, children: Iterable<PropertyTreeNode>): PropertyTreeNode[] => {
+            const nodes = Array.from(children);
+            if (nodes.length <= 1) {
+                return nodes;
+            }
+
+            const propertyTreeSortOverrides = settings.propertyTreeSortOverrides;
+            const hasChildSortOverride = Boolean(
+                propertyTreeSortOverrides && Object.prototype.hasOwnProperty.call(propertyTreeSortOverrides, keyNode.id)
+            );
+            const childSortOverride = hasChildSortOverride ? propertyTreeSortOverrides?.[keyNode.id] : undefined;
+            const comparator = createPropertyComparator({
+                order: childSortOverride ?? settings.propertySortOrder,
+                compareAlphabetically: comparePropertyValueNodesAlphabetically,
+                getFrequency: node =>
+                    includeDescendantNotes && node.valuePath ? getTotalPropertyNoteCount(keyNode, node.valuePath) : node.notesWithValue.size
             });
+
+            return nodes.sort(comparator);
         };
 
         keyNodes.forEach(keyNode => {
             items.push({
                 type: NavigationPaneItemType.PROPERTY_KEY,
                 data: keyNode,
-                level: 1,
+                level: rootLevel,
                 key: keyNode.id
             });
 
             if (expansionState.expandedProperties.has(keyNode.id) && keyNode.children.size > 0) {
-                sortChildren(keyNode.children.values()).forEach(child => {
+                sortChildren(keyNode, keyNode.children.values()).forEach(child => {
                     items.push({
                         type: NavigationPaneItemType.PROPERTY_VALUE,
                         data: child,
-                        level: 2,
+                        level: childLevel,
                         key: child.id
                     });
                 });
@@ -901,10 +1039,14 @@ export function useNavigationPaneData({
 
         return { propertyItems: items, propertiesSectionActive: true };
     }, [
+        includeDescendantNotes,
         propertySectionBase.collectionCount,
         propertySectionBase.keyNodes,
         propertySectionBase.propertiesSectionActive,
         settings.interfaceIcons,
+        settings.propertyTreeSortOverrides,
+        settings.propertySortOrder,
+        settings.showAllPropertiesFolder,
         settings.showNoteCount,
         expansionState.expandedVirtualFolders,
         expansionState.expandedProperties
@@ -929,6 +1071,7 @@ export function useNavigationPaneData({
         const hiddenFileTagVisibility = createHiddenTagVisibility(hiddenFileTags, false);
         const shouldFilterHiddenFileTags = hiddenFileTagVisibility.hasHiddenRules;
         const db = shouldFilterHiddenFileTags ? getDBInstance() : null;
+        const propertyTree = fileData.propertyTree ?? new Map<string, PropertyTreeNode>();
 
         // Start with the shortcuts header/virtual folder
         const items: CombinedNavigationItem[] = [
@@ -966,7 +1109,7 @@ export function useNavigationPaneData({
                 return false;
             }
 
-            if (hiddenFileProperties.length > 0 && shouldExcludeFile(abstractFile, hiddenFileProperties, app)) {
+            if (hiddenFilePropertyMatcher.hasCriteria && shouldExcludeFileWithMatcher(abstractFile, hiddenFilePropertyMatcher, app)) {
                 fileVisibilityCache.set(path, false);
                 return false;
             }
@@ -1054,7 +1197,7 @@ export function useNavigationPaneData({
 
         // Add individual shortcut items based on their type
         hydratedShortcuts.forEach(entry => {
-            const { key, shortcut, folder, note, search, tagPath } = entry;
+            const { key, shortcut, folder, note, search, tagPath, propertyNodeId } = entry;
 
             // Handle folder shortcuts
             if (isFolderShortcut(shortcut)) {
@@ -1098,7 +1241,9 @@ export function useNavigationPaneData({
                     return;
                 }
                 const isExcluded =
-                    (note.extension === 'md' && hiddenFileProperties.length > 0 && shouldExcludeFile(note, hiddenFileProperties, app)) ||
+                    (note.extension === 'md' &&
+                        hiddenFilePropertyMatcher.hasCriteria &&
+                        shouldExcludeFileWithMatcher(note, hiddenFilePropertyMatcher, app)) ||
                     (note.extension === 'md' &&
                         shouldFilterHiddenFileTags &&
                         getCachedFileTags({ app, file: note, db }).some(tagValue => !hiddenFileTagVisibility.isTagVisible(tagValue))) ||
@@ -1161,6 +1306,85 @@ export function useNavigationPaneData({
                     missingLabel: isMissing ? resolvedPath : undefined
                 });
             }
+
+            // Handle property shortcuts
+            if (isPropertyShortcut(shortcut)) {
+                const rawNodeId = propertyNodeId ?? shortcut.nodeId;
+                const resolvedNodeId = resolvePropertyShortcutNodeId(propertyNodeId, shortcut.nodeId);
+                const parsed = resolvedNodeId ? parsePropertyNodeId(resolvedNodeId) : null;
+                if (!resolvedNodeId || !parsed) {
+                    items.push({
+                        type: NavigationPaneItemType.SHORTCUT_PROPERTY,
+                        key,
+                        level: itemLevel,
+                        shortcut,
+                        propertyNodeId: rawNodeId,
+                        displayName: rawNodeId,
+                        isMissing: true,
+                        missingLabel: rawNodeId
+                    });
+                    return;
+                }
+
+                const resolvedNode = resolvePropertyTreeNode({
+                    nodeId: resolvedNodeId,
+                    propertyTree
+                });
+                if (!resolvedNode) {
+                    const keyNode = propertyTree.get(parsed.key);
+                    if (!keyNode) {
+                        const valueLabel = parsed.valuePath?.trim();
+                        const missingLabel = valueLabel && valueLabel.length > 0 ? valueLabel : parsed.key;
+                        items.push({
+                            type: NavigationPaneItemType.SHORTCUT_PROPERTY,
+                            key,
+                            level: itemLevel,
+                            shortcut,
+                            propertyNodeId: resolvedNodeId,
+                            displayName: missingLabel,
+                            isMissing: true,
+                            missingLabel
+                        });
+                        return;
+                    }
+
+                    const valueLabel = parsed.valuePath?.trim();
+                    const missingLabel = valueLabel && valueLabel.length > 0 ? valueLabel : keyNode.name;
+                    items.push({
+                        type: NavigationPaneItemType.SHORTCUT_PROPERTY,
+                        key,
+                        level: itemLevel,
+                        shortcut,
+                        propertyNodeId: resolvedNodeId,
+                        displayName: missingLabel,
+                        isMissing: true,
+                        missingLabel
+                    });
+                    return;
+                }
+
+                const propertyNode = resolvedNode.node;
+                if (propertyNode.kind === 'key') {
+                    items.push({
+                        type: NavigationPaneItemType.SHORTCUT_PROPERTY,
+                        key,
+                        level: itemLevel,
+                        shortcut,
+                        propertyNodeId: propertyNode.id,
+                        displayName: propertyNode.name
+                    });
+                    return;
+                }
+
+                items.push({
+                    type: NavigationPaneItemType.SHORTCUT_PROPERTY,
+                    key,
+                    level: itemLevel,
+                    shortcut,
+                    propertyNodeId: propertyNode.id,
+                    displayName: propertyNode.name
+                });
+            }
         });
 
         return items;
@@ -1169,7 +1393,7 @@ export function useNavigationPaneData({
         hydratedShortcuts,
         hiddenFileNames,
         hiddenFileTags,
-        hiddenFileProperties,
+        hiddenFilePropertyMatcher,
         hiddenFolders,
         hiddenMatcherHasRules,
         hiddenTagMatcher,
@@ -1177,6 +1401,7 @@ export function useNavigationPaneData({
         showHiddenItems,
         settings.interfaceIcons,
         settings.showShortcuts,
+        fileData.propertyTree,
         visibleTagTree,
         tagTreeForOrdering
     ]);
@@ -1388,12 +1613,7 @@ export function useNavigationPaneData({
         pinShortcuts
     ]);
 
-    /**
-     * Create a stable version key for metadata objects that gets updated when they're mutated
-     * This is needed because the settings objects are mutated in place when colors/icons change
-     * We depend on the entire settings object to ensure this recalculates when settings update
-     */
-    // Track frontmatter metadata changes separately since they're stored in IndexedDB
+    // Tracks frontmatter metadata updates from IndexedDB content events.
     const [frontmatterMetadataVersion, setFrontmatterMetadataVersion] = useState(0);
 
     // Subscribe to IndexedDB content changes to detect frontmatter metadata updates
@@ -1407,24 +1627,6 @@ export function useNavigationPaneData({
         });
         return unsubscribe;
     }, []);
-
-    const metadataVersion = useMemo(() => {
-        // Create a version string that will change when any metadata is added/removed/changed
-        // We use JSON.stringify to detect any changes in the objects
-        const settingsSignature = JSON.stringify({
-            folderColors: settings.folderColors || {},
-            folderBackgroundColors: settings.folderBackgroundColors || {},
-            tagColors: settings.tagColors || {},
-            tagBackgroundColors: settings.tagBackgroundColors || {},
-            folderIcons: settings.folderIcons || {},
-            tagIcons: settings.tagIcons || {},
-            fileIcons: settings.fileIcons || {},
-            fileColors: settings.fileColors || {},
-            inheritFolderColors: settings.inheritFolderColors,
-            inheritTagColors: settings.inheritTagColors
-        });
-        return `${settingsSignature}::${frontmatterMetadataVersion}`;
-    }, [settings, frontmatterMetadataVersion]); // Depend on entire settings object to catch mutations
 
     const [navigationSeparatorVersion, setNavigationSeparatorVersion] = useState(() => metadataService.getNavigationSeparatorsVersion());
 
@@ -1444,6 +1646,7 @@ export function useNavigationPaneData({
         const separatorRecord = navigationSeparatorSnapshot.record;
         const folderSeparators = new Set<string>();
         const tagSeparators = new Set<string>();
+        const propertySeparators = new Set<string>();
         const sectionSeparatorIds = new Set<NavigationSectionId>();
         let useSectionSpacerForRootFolder = false;
 
@@ -1461,6 +1664,9 @@ export function useNavigationPaneData({
                 if (descriptor.id === NavigationSectionId.TAGS && !settings.showAllTagsFolder) {
                     return;
                 }
+                if (descriptor.id === NavigationSectionId.PROPERTIES && !propertiesSectionActive) {
+                    return;
+                }
                 sectionSeparatorIds.add(descriptor.id);
                 return;
             }
@@ -1476,18 +1682,43 @@ export function useNavigationPaneData({
 
             if (descriptor.type === 'tag') {
                 tagSeparators.add(descriptor.path);
+                return;
+            }
+
+            if (descriptor.type === 'property') {
+                const normalizedNodeId = normalizePropertyNodeId(descriptor.nodeId);
+                if (normalizedNodeId) {
+                    propertySeparators.add(normalizedNodeId);
+                }
             }
         });
 
         const hasAnySeparators =
-            folderSeparators.size > 0 || tagSeparators.size > 0 || sectionSeparatorIds.size > 0 || useSectionSpacerForRootFolder;
+            folderSeparators.size > 0 ||
+            tagSeparators.size > 0 ||
+            propertySeparators.size > 0 ||
+            sectionSeparatorIds.size > 0 ||
+            useSectionSpacerForRootFolder;
 
-        return { folderSeparators, tagSeparators, sectionSeparatorIds, useSectionSpacerForRootFolder, hasAnySeparators };
-    }, [navigationSeparatorSnapshot, settings.showRootFolder, settings.showAllTagsFolder]);
+        return {
+            folderSeparators,
+            tagSeparators,
+            propertySeparators,
+            sectionSeparatorIds,
+            useSectionSpacerForRootFolder,
+            hasAnySeparators
+        };
+    }, [navigationSeparatorSnapshot, propertiesSectionActive, settings.showRootFolder, settings.showAllTagsFolder]);
 
     const itemsWithSeparators = useMemo(() => {
-        const { folderSeparators, tagSeparators, sectionSeparatorIds, useSectionSpacerForRootFolder, hasAnySeparators } =
-            parsedNavigationSeparators;
+        const {
+            folderSeparators,
+            tagSeparators,
+            propertySeparators,
+            sectionSeparatorIds,
+            useSectionSpacerForRootFolder,
+            hasAnySeparators
+        } = parsedNavigationSeparators;
 
         if (!hasAnySeparators) {
             return items;
@@ -1523,7 +1754,12 @@ export function useNavigationPaneData({
             }
         }
 
-        if (spacerKeysWithSeparators.size === 0 && folderSeparators.size === 0 && tagSeparators.size === 0) {
+        if (
+            spacerKeysWithSeparators.size === 0 &&
+            folderSeparators.size === 0 &&
+            tagSeparators.size === 0 &&
+            propertySeparators.size === 0
+        ) {
             return items;
         }
 
@@ -1556,6 +1792,11 @@ export function useNavigationPaneData({
                 tagSeparators.has(item.data.path)
             ) {
                 result.push(createCustomSeparator(buildTagSeparatorKey(item.data.path)));
+            } else if (
+                (item.type === NavigationPaneItemType.PROPERTY_KEY || item.type === NavigationPaneItemType.PROPERTY_VALUE) &&
+                propertySeparators.has(item.data.id)
+            ) {
+                result.push(createCustomSeparator(buildPropertySeparatorKey(item.data.id)));
             }
 
             result.push(item);
@@ -1574,9 +1815,9 @@ export function useNavigationPaneData({
                 getFileDisplayName,
                 metadataService,
                 parsedExcludedFolders,
-                metadataVersion
+                frontmatterMetadataVersion
             ),
-        [app, settings, fileNameIconNeedles, getFileDisplayName, metadataService, parsedExcludedFolders, metadataVersion]
+        [app, settings, fileNameIconNeedles, getFileDisplayName, metadataService, parsedExcludedFolders, frontmatterMetadataVersion]
     );
 
     /**
@@ -1751,7 +1992,8 @@ export function useNavigationPaneData({
                 item.type === NavigationPaneItemType.SHORTCUT_FOLDER ||
                 item.type === NavigationPaneItemType.SHORTCUT_NOTE ||
                 item.type === NavigationPaneItemType.SHORTCUT_SEARCH ||
-                item.type === NavigationPaneItemType.SHORTCUT_TAG
+                item.type === NavigationPaneItemType.SHORTCUT_TAG ||
+                item.type === NavigationPaneItemType.SHORTCUT_PROPERTY
             ) {
                 indexMap.set(item.key, index);
             }
@@ -1912,6 +2154,7 @@ export function useNavigationPaneData({
         const counts = new Map<string, NoteCountInfo>();
 
         const excludedProperties = effectiveFrontmatterExclusions;
+        const excludedFileMatcher = createFrontmatterPropertyExclusionMatcher(excludedProperties);
         const excludedFolderPatterns = hiddenFolders;
         const hiddenFileTagVisibility = showHiddenItems ? null : createHiddenTagVisibility(hiddenFileTags, false);
         const db = hiddenFileTagVisibility && hiddenFileTagVisibility.hasHiddenRules ? getDBInstanceOrNull() : null;
@@ -1923,6 +2166,7 @@ export function useNavigationPaneData({
             db,
             fileVisibility,
             excludedFiles: excludedProperties,
+            excludedFileMatcher,
             excludedFolders: excludedFolderPatterns,
             fileNameMatcher: folderCountFileNameMatcher,
             hiddenFileTagVisibility,
@@ -2022,6 +2266,10 @@ export function useNavigationPaneData({
         rootOrderingTagTree: tagTreeForOrdering,
         rootTagOrderMap,
         missingRootTagPaths,
+        resolvedRootPropertyKeys: propertySectionBase.resolvedRootPropertyKeys,
+        rootOrderingPropertyTree: propertyTree,
+        rootPropertyOrderMap,
+        missingRootPropertyKeys,
         vaultChangeVersion: fileChangeVersion,
         navigationBannerPath
     };

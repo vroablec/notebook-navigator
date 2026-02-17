@@ -16,15 +16,11 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {
-    type FeatureImageStatus,
-    type FileData,
-    getDefaultPreviewStatusForPath,
-    isCustomPropertyData,
-    normalizeTaskCounters
-} from './fileData';
+import { type FeatureImageStatus, type FileData, getDefaultPreviewStatusForPath, isPropertyData, normalizeTaskCounters } from './fileData';
 
-export function normalizeFileDataInPlace(data: Partial<FileData> & { preview?: string | null }, pathForDefaults?: string): FileData {
+type MutableFileData = Partial<FileData> & { preview?: string | null; customProperty?: unknown };
+
+export function normalizeFileDataInPlace(data: MutableFileData, pathForDefaults?: string): FileData {
     const featureImageKey = typeof data.featureImageKey === 'string' ? data.featureImageKey : null;
     const rawStatus = data.featureImageStatus;
     const featureImageStatus: FeatureImageStatus =
@@ -59,7 +55,11 @@ export function normalizeFileDataInPlace(data: Partial<FileData> & { preview?: s
     const normalizedTaskCounters = normalizeTaskCounters(data.taskTotal, data.taskUnfinished);
     data.taskTotal = normalizedTaskCounters.taskTotal;
     data.taskUnfinished = normalizedTaskCounters.taskUnfinished;
-    data.customProperty = isCustomPropertyData(data.customProperty) ? data.customProperty : null;
+    const rawProperties = data.properties ?? data.customProperty;
+    data.properties = isPropertyData(rawProperties) ? rawProperties : null;
+    if ('customProperty' in data) {
+        delete data.customProperty;
+    }
     data.previewStatus = previewStatus;
     // Feature image blobs are stored separately from the main record.
     // The MemoryFileCache is used for synchronous rendering and should not hold blob payloads.
@@ -69,13 +69,13 @@ export function normalizeFileDataInPlace(data: Partial<FileData> & { preview?: s
     data.metadata = data.metadata && typeof data.metadata === 'object' ? (data.metadata as FileData['metadata']) : null;
 
     if ('preview' in data) {
-        delete (data as Partial<FileData> & { preview?: string | null }).preview;
+        delete data.preview;
     }
 
     return data as FileData;
 }
 
 export function normalizeFileData(data: Partial<FileData> & { preview?: string | null }): FileData {
-    const copy: Partial<FileData> & { preview?: string | null } = { ...data };
+    const copy: MutableFileData = { ...data };
     return normalizeFileDataInPlace(copy);
 }

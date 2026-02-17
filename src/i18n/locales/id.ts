@@ -105,6 +105,8 @@ export const STRINGS_ID = {
         folderExists: 'Folder sudah ada di pintasan',
         noteExists: 'Catatan sudah ada di pintasan',
         tagExists: 'Tag sudah ada di pintasan',
+        propertyExists: 'Properti sudah ada di pintasan',
+        invalidProperty: 'Pintasan properti tidak valid',
         searchExists: 'Pintasan pencarian sudah ada',
         emptySearchQuery: 'Masukkan kueri pencarian sebelum menyimpan',
         emptySearchName: 'Masukkan nama sebelum menyimpan pencarian',
@@ -186,12 +188,12 @@ export const STRINGS_ID = {
                 properties: {
                     title: 'Properti',
                     items: [
-                        '`.key` Sertakan catatan dengan kunci properti kustom.',
-                        '`.key=value` Sertakan catatan dengan nilai properti kustom.',
+                        '`.key` Sertakan catatan dengan kunci properti.',
+                        '`.key=value` Sertakan catatan dengan nilai properti.',
                         '`."Reading Status"` Sertakan catatan dengan kunci properti yang mengandung spasi.',
                         '`."Reading Status"="In Progress"` Kunci dan nilai yang mengandung spasi harus diapit tanda kutip ganda.',
-                        '`-.key` Kecualikan catatan dengan kunci properti kustom.',
-                        '`-.key=value` Kecualikan catatan dengan nilai properti kustom.',
+                        '`-.key` Kecualikan catatan dengan kunci properti.',
+                        '`-.key=value` Kecualikan catatan dengan nilai properti.',
                         'Cmd/Ctrl+Klik properti untuk menambahkan dengan AND. Cmd/Ctrl+Shift+Klik untuk menambahkan dengan OR.'
                     ]
                 },
@@ -324,6 +326,10 @@ export const STRINGS_ID = {
             showTag: 'Tampilkan tag',
             hideTag: 'Sembunyikan tag'
         },
+        property: {
+            addKey: 'Tambah kunci properti',
+            removeKey: 'Hapus kunci properti'
+        },
         navigation: {
             addSeparator: 'Tambah pemisah',
             removeSeparator: 'Hapus pemisah'
@@ -377,10 +383,6 @@ export const STRINGS_ID = {
         fileIconRuleEditor: {
             addRuleAria: 'Tambah aturan'
         },
-        propertyColorRuleEditor: {
-            propertyPlaceholder: 'Property',
-            valuePlaceholder: 'Value'
-        },
         interfaceIcons: {
             title: 'Ikon antarmuka',
             fileItemsSection: 'Item file',
@@ -406,13 +408,15 @@ export const STRINGS_ID = {
                 'list-new-note': 'Catatan baru',
                 'nav-folder-open': 'Folder terbuka',
                 'nav-folder-closed': 'Folder tertutup',
-                'nav-folder-note': 'Catatan folder',
+                'nav-tags': 'Tag',
                 'nav-tag': 'Tag',
                 'nav-properties': 'Properti',
+                'nav-property': 'Properti',
+                'nav-property-value': 'Nilai',
                 'list-pinned': 'Item tersemat',
                 'file-unfinished-task': 'Tugas belum selesai',
                 'file-word-count': 'Jumlah kata',
-                'file-custom-property': 'Properti kustom'
+                'file-property': 'Properti'
             }
         },
         colorPicker: {
@@ -533,6 +537,15 @@ export const STRINGS_ID = {
                 dismiss: 'untuk menutup',
                 add: 'untuk menambah tag',
                 remove: 'untuk menghapus tag'
+            }
+        },
+        propertySuggest: {
+            placeholder: 'Pilih kunci properti...',
+            navigatePlaceholder: 'Navigasi ke properti...',
+            instructions: {
+                navigate: 'untuk navigasi',
+                select: 'untuk menambah properti',
+                dismiss: 'untuk menutup'
             }
         },
         welcome: {
@@ -687,6 +700,7 @@ export const STRINGS_ID = {
         pinAllFolderNotes: 'Sematkan semua catatan folder',
         navigateToFolder: 'Navigasi ke folder',
         navigateToTag: 'Navigasi ke tag',
+        navigateToProperty: 'Navigasi ke properti',
         addShortcut: 'Tambahkan ke pintasan',
         openShortcut: 'Buka pintasan {number}',
         toggleDescendants: 'Alihkan turunan',
@@ -727,14 +741,15 @@ export const STRINGS_ID = {
         },
         sections: {
             general: 'Umum',
-            navigationPane: 'Panel navigasi',
+            navigationPane: 'Navigasi',
             calendar: 'Kalender',
             icons: 'Paket ikon',
             folders: 'Folder',
             folderNotes: 'Catatan folder',
-            foldersAndTags: 'Folder & tag',
+            foldersAndTags: 'Folder',
+            tagsAndProperties: 'Tag & properti',
             tags: 'Tag',
-            listPane: 'Panel daftar',
+            listPane: 'Daftar',
             notes: 'Catatan',
             advanced: 'Lanjutan'
         },
@@ -753,7 +768,6 @@ export const STRINGS_ID = {
             },
             navigation: {
                 appearance: 'Tampilan',
-                shortcutsAndRecent: 'Pintasan & item terbaru',
                 leftSidebar: 'Bilah sisi kiri',
                 calendarIntegration: 'Integrasi kalender'
             },
@@ -768,7 +782,7 @@ export const STRINGS_ID = {
                 previewText: 'Teks pratinjau',
                 featureImage: 'Gambar fitur',
                 tags: 'Tag',
-                customProperty: 'Properti kustom (frontmatter atau jumlah kata)',
+                properties: 'Properti',
                 date: 'Tanggal',
                 parentFolder: 'Folder induk'
             }
@@ -813,6 +827,16 @@ export const STRINGS_ID = {
                 name: 'Properti pengurutan',
                 desc: 'Digunakan dengan pengurutan Properti. Catatan dengan properti frontmatter ini ditampilkan lebih dulu dan diurutkan berdasarkan nilai properti. Array digabungkan menjadi satu nilai.',
                 placeholder: 'order'
+            },
+            propertySortSecondary: {
+                name: 'Urutan sekunder',
+                desc: 'Digunakan dengan urutan Properti ketika catatan memiliki nilai properti yang sama atau tidak memiliki nilai properti.',
+                options: {
+                    title: 'Judul',
+                    filename: 'Nama file',
+                    created: 'Tanggal dibuat',
+                    modified: 'Tanggal diedit'
+                }
             },
             revealFileOnListChanges: {
                 name: 'Gulir ke file yang dipilih saat perubahan daftar',
@@ -963,6 +987,10 @@ export const STRINGS_ID = {
                 name: 'Auto-tampilkan catatan aktif',
                 desc: 'Secara otomatis menampilkan catatan saat dibuka dari Quick Switcher, tautan, atau pencarian.'
             },
+            autoRevealShortestPath: {
+                name: 'Gunakan jalur terpendek',
+                desc: 'Diaktifkan: Auto-reveal memilih folder atau tag induk terdekat yang terlihat. Dinonaktifkan: Auto-reveal memilih folder asli dan tag persis dari file.'
+            },
             autoRevealIgnoreRightSidebar: {
                 name: 'Abaikan peristiwa dari sidebar kanan',
                 desc: 'Jangan ubah catatan aktif saat mengklik atau mengubah catatan di sidebar kanan.'
@@ -1022,6 +1050,14 @@ export const STRINGS_ID = {
             showRecentNotes: {
                 name: 'Tampilkan catatan terbaru',
                 desc: 'Tampilkan bagian catatan terbaru di panel navigasi.'
+            },
+            hideRecentNotes: {
+                name: 'Sembunyikan catatan',
+                desc: 'Pilih jenis catatan yang disembunyikan di bagian catatan terbaru.',
+                options: {
+                    none: 'Tidak ada',
+                    folderNotes: 'Catatan folder'
+                }
             },
             recentNotesCount: {
                 name: 'Jumlah catatan terbaru',
@@ -1223,9 +1259,9 @@ export const STRINGS_ID = {
                 }
             },
             excludedNotes: {
-                name: 'Sembunyikan catatan dengan properti (profil vault)',
-                desc: 'Daftar properti frontmatter yang dipisahkan koma. Catatan yang berisi properti ini akan disembunyikan (misal, draf, pribadi, arsip).',
-                placeholder: 'draf, pribadi'
+                name: 'Sembunyikan catatan dengan aturan properti (profil vault)',
+                desc: 'Daftar aturan frontmatter yang dipisahkan koma. Gunakan entri `key` atau `key=value` (misal, status=done, published=true, archived).',
+                placeholder: 'status=done, published=true, archived'
             },
             excludedFileNamePatterns: {
                 name: 'Sembunyikan file (profil vault)',
@@ -1299,33 +1335,41 @@ export const STRINGS_ID = {
                 name: 'Tampilkan tag file dalam mode kompak',
                 desc: 'Tampilkan tag saat tanggal, pratinjau, dan gambar disembunyikan.'
             },
-            customPropertyType: {
-                name: 'Tipe properti',
-                desc: 'Pilih properti kustom untuk ditampilkan di item file.',
+            showFileProperties: {
+                name: 'Tampilkan properti file',
+                desc: 'Tampilkan properti yang dapat diklik di item file.'
+            },
+            colorFileProperties: {
+                name: 'Warnai properti file',
+                desc: 'Terapkan warna properti pada lencana properti di item file.'
+            },
+            prioritizeColoredFileProperties: {
+                name: 'Tampilkan properti berwarna terlebih dahulu',
+                desc: 'Urutkan properti berwarna sebelum properti lain di item file.'
+            },
+            showFilePropertiesInCompactMode: {
+                name: 'Tampilkan properti dalam mode kompak',
+                desc: 'Tampilkan properti saat mode kompak aktif.'
+            },
+            notePropertyType: {
+                name: 'Properti catatan',
+                desc: 'Pilih properti catatan untuk ditampilkan di item file.',
                 options: {
                     frontmatter: 'Properti frontmatter',
                     wordCount: 'Jumlah kata',
                     none: 'Tidak ada'
                 }
             },
-            customPropertyFields: {
+            propertyFields: {
                 name: 'Properti-properti untuk ditampilkan',
-                desc: 'Daftar properti frontmatter yang dipisahkan koma untuk ditampilkan sebagai lencana. Properti bernilai daftar menampilkan satu lencana per nilai. Nilai [[wikilink]] ditampilkan sebagai tautan yang dapat diklik.',
-                placeholder: 'status, tipe, kategori'
+                desc: 'Daftar properti frontmatter dipisahkan koma untuk ditampilkan di panel navigasi dan sebagai lencana di item file. Properti bernilai daftar menampilkan satu lencana per nilai.',
+                placeholder: 'status, type, category',
+                addButtonTooltip: 'Tambah kunci properti',
+                emptySelectorNotice: 'Tidak ditemukan kunci properti dalam cache metadata.'
             },
-            showCustomPropertiesOnSeparateRows: {
+            showPropertiesOnSeparateRows: {
                 name: 'Tampilkan properti pada baris terpisah',
                 desc: 'Tampilkan setiap properti pada barisnya sendiri.'
-            },
-            customPropertyColorMap: {
-                name: 'Warna properti',
-                desc: 'Petakan properti dan nilai frontmatter ke warna lencana. Satu pemetaan per baris: properti=warna atau properti:nilai=warna',
-                placeholder: '# Properti atau properti:nilai warna\nstatus=#f59e0b\nstatus:done=#10b981\nstatus:todo=#ef4444',
-                editTooltip: 'Edit pemetaan'
-            },
-            showCustomPropertyInCompactMode: {
-                name: 'Tampilkan properti kustom dalam mode kompak',
-                desc: 'Tampilkan properti kustom saat tanggal, pratinjau, dan gambar disembunyikan.'
             },
             dateFormat: {
                 name: 'Format tanggal',
@@ -1362,7 +1406,7 @@ export const STRINGS_ID = {
             previewProperties: {
                 name: 'Properti pratinjau',
                 desc: 'Daftar properti frontmatter yang dipisahkan koma untuk memeriksa teks pratinjau. Properti pertama dengan teks akan digunakan.',
-                placeholder: 'ringkasan, deskripsi, abstrak',
+                placeholder: 'summary, description, abstract',
                 info: 'Jika tidak ada teks pratinjau yang ditemukan di properti yang ditentukan, pratinjau akan dihasilkan dari konten catatan.'
             },
             previewRows: {
@@ -1400,7 +1444,7 @@ export const STRINGS_ID = {
             featureImageExcludeProperties: {
                 name: 'Kecualikan catatan dengan properti',
                 desc: 'Daftar properti frontmatter yang dipisahkan koma. Catatan yang mengandung properti ini tidak menyimpan gambar fitur.',
-                placeholder: 'pribadi, rahasia'
+                placeholder: 'private, confidential'
             },
 
             downloadExternalFeatureImages: {
@@ -1512,6 +1556,33 @@ export const STRINGS_ID = {
                 name: 'Pertahankan properti tag setelah menghapus tag terakhir',
                 desc: 'Pertahankan properti tag frontmatter saat semua tag dihapus. Saat dinonaktifkan, properti tag dihapus dari frontmatter.'
             },
+            showProperties: {
+                name: 'Tampilkan properti',
+                desc: 'Tampilkan bagian properti di navigator.'
+            },
+            showPropertyIcons: {
+                name: 'Tampilkan ikon properti',
+                desc: 'Tampilkan ikon di samping properti di panel navigasi.'
+            },
+            inheritPropertyColors: {
+                name: 'Warisi warna properti',
+                desc: 'Nilai properti mewarisi warna dan latar belakang dari kunci propertinya.'
+            },
+            propertySortOrder: {
+                name: 'Urutan sortir properti',
+                desc: 'Klik kanan pada properti mana saja untuk mengatur urutan sortir yang berbeda untuk nilainya.',
+                options: {
+                    alphaAsc: 'A ke Z',
+                    alphaDesc: 'Z ke A',
+                    frequency: 'Frekuensi',
+                    lowToHigh: 'rendah ke tinggi',
+                    highToLow: 'tinggi ke rendah'
+                }
+            },
+            showAllPropertiesFolder: {
+                name: 'Tampilkan folder properti',
+                desc: 'Tampilkan "Properti" sebagai folder yang dapat dilipat.'
+            },
             hiddenTags: {
                 name: 'Sembunyikan tag (profil vault)',
                 desc: 'Daftar pola tag yang dipisahkan koma. Pola nama: tag* (dimulai dengan), *tag (diakhiri dengan). Pola jalur: arsip (tag dan turunan), arsip/* (hanya turunan), proyek/*/draf (wildcard tengah).',
@@ -1572,7 +1643,8 @@ export const STRINGS_ID = {
                 error: 'Pembersihan pengaturan gagal',
                 loading: 'Memeriksa metadata...',
                 statusClean: 'Tidak ada metadata untuk dibersihkan',
-                statusCounts: 'Item yatim: {folders} folder, {tags} tag, {files} file, {pinned} pin, {separators} pemisah'
+                statusCounts:
+                    'Item yatim: {folders} folder, {tags} tag, {properties} properti, {files} file, {pinned} pin, {separators} pemisah'
             },
             rebuildCache: {
                 name: 'Bangun ulang cache',
@@ -1608,9 +1680,10 @@ export const STRINGS_ID = {
                 desc: 'Field frontmatter untuk warna file. Biarkan kosong untuk menggunakan warna yang disimpan di pengaturan.',
                 placeholder: 'color'
             },
-            frontmatterSaveMetadata: {
-                name: 'Simpan ikon dan warna ke frontmatter',
-                desc: 'Secara otomatis tulis ikon dan warna file ke frontmatter menggunakan field yang dikonfigurasi di atas.'
+            frontmatterBackgroundField: {
+                name: 'Field latar belakang',
+                desc: 'Field frontmatter untuk warna latar belakang. Biarkan kosong untuk menggunakan warna latar belakang yang disimpan di pengaturan.',
+                placeholder: 'background'
             },
             frontmatterMigration: {
                 name: 'Migrasi ikon dan warna dari pengaturan',
@@ -1625,7 +1698,7 @@ export const STRINGS_ID = {
             frontmatterNameField: {
                 name: 'Field-field nama',
                 desc: 'Daftar field frontmatter dipisahkan koma. Nilai tidak kosong pertama digunakan. Kembali ke nama file.',
-                placeholder: 'judul, nama'
+                placeholder: 'title, name'
             },
             frontmatterCreatedField: {
                 name: 'Field timestamp dibuat',

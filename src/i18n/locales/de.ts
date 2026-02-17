@@ -104,6 +104,8 @@ export const STRINGS_DE = {
         folderExists: 'Ordner bereits in Lesezeichen vorhanden',
         noteExists: 'Notiz bereits in Lesezeichen vorhanden',
         tagExists: 'Tag bereits in Lesezeichen vorhanden',
+        propertyExists: 'Eigenschaft bereits in Lesezeichen vorhanden',
+        invalidProperty: 'Ungültiges Eigenschafts-Lesezeichen',
         searchExists: 'Such-Lesezeichen existiert bereits',
         emptySearchQuery: 'Geben Sie eine Suchanfrage ein, bevor Sie sie speichern',
         emptySearchName: 'Geben Sie einen Namen ein, bevor Sie die Suche speichern',
@@ -185,12 +187,12 @@ export const STRINGS_DE = {
                 properties: {
                     title: 'Eigenschaften',
                     items: [
-                        '`.key` Notizen mit benutzerdefiniertem Eigenschaftsschlüssel einschließen.',
-                        '`.key=value` Notizen mit benutzerdefiniertem Eigenschaftswert einschließen.',
+                        '`.key` Notizen mit Eigenschaftsschlüssel einschließen.',
+                        '`.key=value` Notizen mit Eigenschaftswert einschließen.',
                         '`."Reading Status"` Notizen mit einem Eigenschaftsschlüssel einschließen, der Leerzeichen enthält.',
                         '`."Reading Status"="In Progress"` Schlüssel und Werte mit Leerzeichen müssen in Anführungszeichen stehen.',
-                        '`-.key` Notizen mit benutzerdefiniertem Eigenschaftsschlüssel ausschließen.',
-                        '`-.key=value` Notizen mit benutzerdefiniertem Eigenschaftswert ausschließen.',
+                        '`-.key` Notizen mit Eigenschaftsschlüssel ausschließen.',
+                        '`-.key=value` Notizen mit Eigenschaftswert ausschließen.',
                         'Cmd/Ctrl+Klick auf eine Eigenschaft zum Hinzufügen mit AND. Cmd/Ctrl+Shift+Klick zum Hinzufügen mit OR.'
                     ]
                 },
@@ -324,6 +326,10 @@ export const STRINGS_DE = {
             showTag: 'Tag anzeigen',
             hideTag: 'Tag ausblenden'
         },
+        property: {
+            addKey: 'Eigenschaftsschlüssel hinzufügen',
+            removeKey: 'Eigenschaftsschlüssel entfernen'
+        },
         navigation: {
             addSeparator: 'Trennlinie hinzufügen',
             removeSeparator: 'Trennlinie entfernen'
@@ -377,10 +383,6 @@ export const STRINGS_DE = {
         fileIconRuleEditor: {
             addRuleAria: 'Regel hinzufügen'
         },
-        propertyColorRuleEditor: {
-            propertyPlaceholder: 'Property',
-            valuePlaceholder: 'Value'
-        },
         interfaceIcons: {
             title: 'Oberflächensymbole',
             fileItemsSection: 'Datei-Elemente',
@@ -406,13 +408,15 @@ export const STRINGS_DE = {
                 'list-new-note': 'Neue Notiz',
                 'nav-folder-open': 'Ordner geöffnet',
                 'nav-folder-closed': 'Ordner geschlossen',
-                'nav-folder-note': 'Ordnernotiz',
+                'nav-tags': 'Tags',
                 'nav-tag': 'Tag',
                 'nav-properties': 'Eigenschaften',
+                'nav-property': 'Eigenschaft',
+                'nav-property-value': 'Wert',
                 'list-pinned': 'Angeheftete Elemente',
                 'file-unfinished-task': 'Unerledigte Aufgaben',
                 'file-word-count': 'Wortanzahl',
-                'file-custom-property': 'Benutzerdefinierte Eigenschaft'
+                'file-property': 'Eigenschaft'
             }
         },
         colorPicker: {
@@ -534,6 +538,15 @@ export const STRINGS_DE = {
                 dismiss: 'zum Abbrechen',
                 add: 'zum Hinzufügen des Tags',
                 remove: 'zum Entfernen des Tags'
+            }
+        },
+        propertySuggest: {
+            placeholder: 'Eigenschaftsschlüssel auswählen...',
+            navigatePlaceholder: 'Zu Eigenschaft navigieren...',
+            instructions: {
+                navigate: 'zum Navigieren',
+                select: 'zum Hinzufügen der Eigenschaft',
+                dismiss: 'zum Abbrechen'
             }
         },
         welcome: {
@@ -689,6 +702,7 @@ export const STRINGS_DE = {
         pinAllFolderNotes: 'Alle Ordnernotizen anheften', // Command palette: Pins all folder notes to shortcuts (English: Pin all folder notes)
         navigateToFolder: 'Zu Ordner navigieren', // Command palette: Navigate to a folder using fuzzy search (English: Navigate to folder)
         navigateToTag: 'Zu Tag navigieren', // Command palette: Navigate to a tag using fuzzy search (English: Navigate to tag)
+        navigateToProperty: 'Zu Eigenschaft navigieren', // Command palette: Navigate to a property key or value using fuzzy search (English: Navigate to property)
         addShortcut: 'Zu Shortcuts hinzufügen', // Command palette: Adds the current file, folder, or tag to shortcuts (English: Add to shortcuts)
         openShortcut: 'Shortcut {number} öffnen',
         toggleDescendants: 'Nachkommen umschalten', // Command palette: Toggles showing notes from descendants (English: Toggle descendants)
@@ -730,14 +744,15 @@ export const STRINGS_DE = {
         sections: {
             general: 'Allgemein',
             notes: 'Notizen',
-            navigationPane: 'Navigationsbereich',
+            navigationPane: 'Navigation',
             calendar: 'Kalender',
             icons: 'Icon-Pakete',
             tags: 'Tags',
             folders: 'Ordner',
             folderNotes: 'Ordnernotizen',
-            foldersAndTags: 'Ordner & Tags',
-            listPane: 'Listenbereich',
+            foldersAndTags: 'Ordner',
+            tagsAndProperties: 'Tags & Eigenschaften',
+            listPane: 'Liste',
             advanced: 'Erweitert'
         },
         groups: {
@@ -755,7 +770,6 @@ export const STRINGS_DE = {
             },
             navigation: {
                 appearance: 'Darstellung',
-                shortcutsAndRecent: 'Verknüpfungen & Letzte Einträge',
                 leftSidebar: 'Linke Seitenleiste',
                 calendarIntegration: 'Kalenderintegration'
             },
@@ -770,7 +784,7 @@ export const STRINGS_DE = {
                 previewText: 'Vorschautext',
                 featureImage: 'Hauptbild',
                 tags: 'Tags',
-                customProperty: 'Benutzerdefinierte Eigenschaft (Frontmatter oder Wortzahl)',
+                properties: 'Eigenschaften',
                 date: 'Datum',
                 parentFolder: 'Übergeordneter Ordner'
             }
@@ -815,6 +829,16 @@ export const STRINGS_DE = {
                 name: 'Sortier-Eigenschaft',
                 desc: 'Wird mit der Eigenschafts-Sortierung verwendet. Notizen mit dieser Frontmatter-Eigenschaft werden zuerst aufgelistet und nach dem Eigenschaftswert sortiert. Arrays werden zu einem Wert zusammengefügt.',
                 placeholder: 'order'
+            },
+            propertySortSecondary: {
+                name: 'Sekundäre Sortierung',
+                desc: 'Wird bei der Eigenschafts-Sortierung verwendet, wenn Notizen denselben Eigenschaftswert oder keinen Eigenschaftswert haben.',
+                options: {
+                    title: 'Titel',
+                    filename: 'Dateiname',
+                    created: 'Erstellungsdatum',
+                    modified: 'Bearbeitungsdatum'
+                }
             },
             revealFileOnListChanges: {
                 name: 'Zu ausgewählter Datei bei Listenänderungen scrollen',
@@ -965,6 +989,10 @@ export const STRINGS_DE = {
                 name: 'Aktive Notiz automatisch anzeigen',
                 desc: 'Notizen automatisch anzeigen, wenn sie über Schnellauswahl, Links oder Suche geöffnet werden.'
             },
+            autoRevealShortestPath: {
+                name: 'Kürzesten Pfad verwenden',
+                desc: 'Aktiviert: Automatisches Anzeigen wählt den nächsten sichtbaren übergeordneten Ordner oder Tag. Deaktiviert: Automatisches Anzeigen wählt den tatsächlichen Ordner der Datei und den genauen Tag.'
+            },
             autoRevealIgnoreRightSidebar: {
                 name: 'Ereignisse von rechter Seitenleiste ignorieren',
                 desc: 'Aktive Notiz nicht ändern, wenn in der rechten Seitenleiste auf Notizen geklickt oder diese gewechselt werden.'
@@ -1024,6 +1052,14 @@ export const STRINGS_DE = {
             showRecentNotes: {
                 name: 'Neueste Notizen anzeigen',
                 desc: 'Den Bereich für neueste Notizen im Navigationsbereich anzeigen.'
+            },
+            hideRecentNotes: {
+                name: 'Notizen ausblenden',
+                desc: 'Wähle aus, welche Notiztypen im Bereich der neuesten Notizen ausgeblendet werden sollen.',
+                options: {
+                    none: 'Keine',
+                    folderNotes: 'Ordnernotizen'
+                }
             },
             recentNotesCount: {
                 name: 'Anzahl neuester Notizen',
@@ -1206,9 +1242,9 @@ export const STRINGS_DE = {
                 desc: 'Ausgewählte Datei in neuem Tab, geteilter Ansicht oder Fenster öffnen mit Strg+Enter.'
             },
             excludedNotes: {
-                name: 'Notizen mit Eigenschaften verstecken (Tresorprofil)',
-                desc: 'Kommagetrennte Liste von Frontmatter-Eigenschaften. Notizen mit diesen Eigenschaften werden ausgeblendet (z.B. Entwurf, privat, archiviert).',
-                placeholder: 'entwurf, privat'
+                name: 'Notizen mit Eigenschaftsregeln verstecken (Tresorprofil)',
+                desc: 'Kommagetrennte Liste von Frontmatter-Regeln. Verwenden Sie `key` oder `key=value` Einträge (z.B. status=done, published=true, archived).',
+                placeholder: 'status=done, published=true, archived'
             },
             excludedFileNamePatterns: {
                 name: 'Dateien verstecken (Tresorprofil)',
@@ -1302,33 +1338,41 @@ export const STRINGS_DE = {
                 name: 'Datei-Tags im schlanken Modus anzeigen',
                 desc: 'Tags anzeigen, wenn Datum, Vorschau und Bild ausgeblendet sind.'
             },
-            customPropertyType: {
-                name: 'Eigenschaftstyp',
-                desc: 'Wählen Sie die benutzerdefinierte Eigenschaft, die in Datei-Elementen angezeigt werden soll.',
+            showFileProperties: {
+                name: 'Datei-Eigenschaften anzeigen',
+                desc: 'Klickbare Eigenschaften in Datei-Elementen anzeigen.'
+            },
+            colorFileProperties: {
+                name: 'Datei-Eigenschaften einfärben',
+                desc: 'Eigenschaftsfarben auf Eigenschafts-Badges in Datei-Elementen anwenden.'
+            },
+            prioritizeColoredFileProperties: {
+                name: 'Farbige Eigenschaften zuerst anzeigen',
+                desc: 'Farbige Eigenschaften vor anderen Eigenschaften in Datei-Elementen sortieren.'
+            },
+            showFilePropertiesInCompactMode: {
+                name: 'Eigenschaften im Kompaktmodus anzeigen',
+                desc: 'Eigenschaften anzeigen, wenn der Kompaktmodus aktiv ist.'
+            },
+            notePropertyType: {
+                name: 'Notiz-Eigenschaft',
+                desc: 'Wählen Sie die Notiz-Eigenschaft, die in Datei-Elementen angezeigt werden soll.',
                 options: {
                     frontmatter: 'Frontmatter-Eigenschaft',
                     wordCount: 'Wortanzahl',
                     none: 'Keine'
                 }
             },
-            customPropertyFields: {
+            propertyFields: {
                 name: 'Anzuzeigende Eigenschaften',
-                desc: 'Kommagetrennte Liste von Frontmatter-Eigenschaften zur Anzeige als Badges. Listen-Eigenschaften zeigen ein Badge pro Wert. [[Wikilink]]-Werte werden als anklickbare Links angezeigt.',
-                placeholder: 'status, typ, kategorie'
+                desc: 'Kommagetrennte Liste von Frontmatter-Eigenschaften zur Anzeige im Navigationsbereich und als Badges in Datei-Elementen. Listen-Eigenschaften zeigen ein Badge pro Wert.',
+                placeholder: 'status, type, category',
+                addButtonTooltip: 'Eigenschaftsschlüssel hinzufügen',
+                emptySelectorNotice: 'Keine Eigenschaftsschlüssel im Metadaten-Cache gefunden.'
             },
-            showCustomPropertiesOnSeparateRows: {
+            showPropertiesOnSeparateRows: {
                 name: 'Eigenschaften in separaten Zeilen anzeigen',
                 desc: 'Jede Eigenschaft in einer eigenen Zeile anzeigen.'
-            },
-            customPropertyColorMap: {
-                name: 'Eigenschaftsfarben',
-                desc: 'Ordne Frontmatter-Eigenschaften und -Werte Badge-Farben zu. Eine Zuordnung pro Zeile: Eigenschaft=Farbe oder Eigenschaft:Wert=Farbe',
-                placeholder: '# Eigenschaft oder Eigenschaft:Wert Farbe\nstatus=#f59e0b\nstatus:done=#10b981\nstatus:todo=#ef4444',
-                editTooltip: 'Zuordnungen bearbeiten'
-            },
-            showCustomPropertyInCompactMode: {
-                name: 'Benutzerdefinierte Eigenschaft im Kompaktmodus anzeigen',
-                desc: 'Die benutzerdefinierte Eigenschaft anzeigen, wenn Datum, Vorschau und Bild ausgeblendet sind.'
             },
             dateFormat: {
                 name: 'Datumsformat',
@@ -1365,7 +1409,7 @@ export const STRINGS_DE = {
             previewProperties: {
                 name: 'Vorschau-Eigenschaften',
                 desc: 'Kommagetrennte Liste von Frontmatter-Eigenschaften für Vorschautext. Die erste Eigenschaft mit Text wird verwendet.',
-                placeholder: 'zusammenfassung, beschreibung, abstrakt',
+                placeholder: 'summary, description, abstract',
                 info: 'Wenn kein Vorschautext in den angegebenen Eigenschaften gefunden wird, wird die Vorschau aus dem Notizinhalt generiert.'
             },
             previewRows: {
@@ -1403,7 +1447,7 @@ export const STRINGS_DE = {
             featureImageExcludeProperties: {
                 name: 'Notizen mit Eigenschaften ausschließen',
                 desc: 'Kommagetrennte Liste von Frontmatter-Eigenschaften. Notizen mit einer dieser Eigenschaften speichern keine Feature-Bilder.',
-                placeholder: 'privat, vertraulich'
+                placeholder: 'private, confidential'
             },
             downloadExternalFeatureImages: {
                 name: 'Externe Bilder herunterladen',
@@ -1514,6 +1558,33 @@ export const STRINGS_DE = {
                 name: 'Tags-Eigenschaft nach Entfernen des letzten Tags beibehalten',
                 desc: 'Behält die Tags-Frontmatter-Eigenschaft, wenn alle Tags entfernt werden. Wenn deaktiviert, wird die Tags-Eigenschaft aus dem Frontmatter gelöscht.'
             },
+            showProperties: {
+                name: 'Eigenschaften anzeigen',
+                desc: 'Eigenschaftsbereich im Navigator anzeigen.'
+            },
+            showPropertyIcons: {
+                name: 'Eigenschafts-Symbole anzeigen',
+                desc: 'Symbole neben Eigenschaften im Navigationsbereich anzeigen.'
+            },
+            inheritPropertyColors: {
+                name: 'Eigenschaftsfarben vererben',
+                desc: 'Eigenschaftswerte erben Farbe und Hintergrund von ihrem Eigenschaftsschlüssel.'
+            },
+            propertySortOrder: {
+                name: 'Sortierreihenfolge der Eigenschaften',
+                desc: 'Rechtsklick auf eine Eigenschaft, um eine andere Sortierreihenfolge für ihre Werte festzulegen.',
+                options: {
+                    alphaAsc: 'A bis Z',
+                    alphaDesc: 'Z bis A',
+                    frequency: 'Häufigkeit',
+                    lowToHigh: 'niedrig bis hoch',
+                    highToLow: 'hoch bis niedrig'
+                }
+            },
+            showAllPropertiesFolder: {
+                name: 'Eigenschafts-Ordner anzeigen',
+                desc: '"Eigenschaften" als einklappbaren Ordner anzeigen.'
+            },
             hiddenTags: {
                 name: 'Tags verstecken (Tresorprofil)',
                 desc: 'Kommagetrennte Liste von Tag-Mustern. Namensmuster: tag* (beginnt mit), *tag (endet mit). Pfadmuster: archiv (Tag und Untergeordnete), archiv/* (nur Untergeordnete), projekte/*/entwürfe (Platzhalter in der Mitte).',
@@ -1541,7 +1612,7 @@ export const STRINGS_DE = {
             folderNoteName: {
                 name: 'Name der Ordnernotiz',
                 desc: 'Name der Ordnernotiz. Leer lassen, um denselben Namen wie der Ordner zu verwenden.',
-                placeholder: 'Leer lassen für Ordnernamen'
+                placeholder: 'index'
             },
             folderNoteNamePattern: {
                 name: 'Namensmuster der Ordnernotiz',
@@ -1574,7 +1645,8 @@ export const STRINGS_DE = {
                 error: 'Einstellungen-Bereinigung fehlgeschlagen',
                 loading: 'Metadaten werden überprüft...',
                 statusClean: 'Keine Metadaten zu bereinigen',
-                statusCounts: 'Verwaiste Elemente: {folders} Ordner, {tags} Tags, {files} Dateien, {pinned} Pins, {separators} Trennlinien'
+                statusCounts:
+                    'Verwaiste Elemente: {folders} Ordner, {tags} Tags, {properties} Eigenschaften, {files} Dateien, {pinned} Pins, {separators} Trennlinien'
             },
             rebuildCache: {
                 name: 'Cache neu aufbauen',
@@ -1603,7 +1675,7 @@ export const STRINGS_DE = {
             frontmatterNameField: {
                 name: 'Namensfelder',
                 desc: 'Kommagetrennte Liste von Frontmatter-Feldern. Erster nicht-leerer Wert wird verwendet. Fällt auf Dateinamen zurück.',
-                placeholder: 'titel, name'
+                placeholder: 'title, name'
             },
             frontmatterIconField: {
                 name: 'Icon-Feld',
@@ -1615,9 +1687,10 @@ export const STRINGS_DE = {
                 desc: 'Frontmatter-Feld für Dateifarben. Leer lassen, um Farben aus den Einstellungen zu verwenden.',
                 placeholder: 'color'
             },
-            frontmatterSaveMetadata: {
-                name: 'Icons und Farben im Frontmatter speichern',
-                desc: 'Schreibt Datei-Icons und Farben automatisch ins Frontmatter über die oben konfigurierten Felder.'
+            frontmatterBackgroundField: {
+                name: 'Hintergrundfeld',
+                desc: 'Frontmatter-Feld für Hintergrundfarben. Leer lassen, um Hintergrundfarben aus den Einstellungen zu verwenden.',
+                placeholder: 'background'
             },
             frontmatterMigration: {
                 name: 'Icons und Farben aus Einstellungen migrieren',
@@ -1632,12 +1705,12 @@ export const STRINGS_DE = {
             frontmatterCreatedField: {
                 name: 'Feld für Erstellungszeitstempel',
                 desc: 'Frontmatter-Feldname für den Erstellungszeitstempel. Leer lassen, um nur das Dateisystemdatum zu verwenden.',
-                placeholder: 'erstellt'
+                placeholder: 'created'
             },
             frontmatterModifiedField: {
                 name: 'Feld für Änderungszeitstempel',
                 desc: 'Frontmatter-Feldname für den Änderungszeitstempel. Leer lassen, um nur das Dateisystemdatum zu verwenden.',
-                placeholder: 'geändert'
+                placeholder: 'modified'
             },
             frontmatterDateFormat: {
                 name: 'Zeitstempelformat',

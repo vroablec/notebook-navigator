@@ -34,6 +34,9 @@ export interface ListPaneItem {
     type: ListPaneItemType;
     data: TFile | string; // File or header text
     parentFolder?: string | null;
+    // Folder path associated with a folder-group header.
+    // Present only when grouping by folder in the list pane.
+    headerFolderPath?: string | null;
     key: string;
     // Pre-computed file index for stable onClick handlers
     fileIndex?: number;
@@ -87,6 +90,9 @@ export interface PropertyKeyTreeItem {
     data: PropertyTreeNode;
     level: number;
     key: string;
+    color?: string;
+    backgroundColor?: string;
+    icon?: string;
 }
 
 export interface PropertyValueTreeItem {
@@ -94,6 +100,9 @@ export interface PropertyValueTreeItem {
     data: PropertyTreeNode;
     level: number;
     key: string;
+    color?: string;
+    backgroundColor?: string;
+    icon?: string;
 }
 
 export interface VirtualFolderItem {
@@ -163,6 +172,12 @@ export interface ShortcutTagNavItem extends ShortcutNavigationBase {
     displayName: string;
 }
 
+export interface ShortcutPropertyNavItem extends ShortcutNavigationBase {
+    type: typeof NavigationPaneItemType.SHORTCUT_PROPERTY;
+    propertyNodeId: string;
+    displayName: string;
+}
+
 export interface RootSpacerItem {
     type: typeof NavigationPaneItemType.ROOT_SPACER;
     key: string;
@@ -199,6 +214,7 @@ export type CombinedNavigationItem =
     | RecentNoteNavItem
     | ShortcutSearchNavItem
     | ShortcutTagNavItem
+    | ShortcutPropertyNavItem
     | RootSpacerItem
     | TopSpacerItem
     | BottomSpacerItem

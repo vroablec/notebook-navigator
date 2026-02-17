@@ -101,9 +101,17 @@ export const STRINGS_PL = {
     },
 
     shortcuts: {
+<<<<<<< patch-1
         folderExists: 'Folder jest już w skrótach',
         noteExists: 'Notatka jest już w skrótach',
         tagExists: 'Tag jest już w skrótach',
+=======
+        folderExists: 'Folder już jest w skrótach',
+        noteExists: 'Notatka już jest w skrótach',
+        tagExists: 'Tag już jest w skrótach',
+        propertyExists: 'Właściwość jest już w skrótach',
+        invalidProperty: 'Nieprawidłowy skrót właściwości',
+>>>>>>> main
         searchExists: 'Skrót wyszukiwania już istnieje',
         emptySearchQuery: 'Wprowadź wyszukiwanie przed zapisaniem',
         emptySearchName: 'Wprowadź nazwę przed zapisaniem wyszukiwania',
@@ -185,11 +193,21 @@ export const STRINGS_PL = {
                 properties: {
                     title: 'Właściwości',
                     items: [
+<<<<<<< patch-1
                         '`.key` Uwzględnij notatki z niestandardowym kluczem właściwości.',
                         '`.key=value` Uwzględnij notatki z niestandardową wartością właściwości (dopasowuje również zagnieżdżone wartości jak `value/subvalue`).',
                         '`."Reading Status"` Uwzględnij notatki z kluczem właściwości zawierającym spacje.',
                         '`."Reading Status"="In Progress"` Klucze i wartości ze spacjami muszą być ujęte w podwójne cudzysłowy.',
                         'Przytrzymaj Cmd/Ctrl i kliknij tag, aby dodać go za pomocą AND. Przytrzymaj Cmd/Ctrl i Shift, a następnie kliknij, aby dodać go za pomocą OR.'
+=======
+                        '`.key` Uwzględnij notatki z kluczem właściwości.',
+                        '`.key=value` Uwzględnij notatki z wartością właściwości.',
+                        '`."Reading Status"` Uwzględnij notatki z kluczem właściwości zawierającym spacje.',
+                        '`."Reading Status"="In Progress"` Klucze i wartości ze spacjami muszą być ujęte w podwójne cudzysłowy.',
+                        '`-.key` Wyklucz notatki z kluczem właściwości.',
+                        '`-.key=value` Wyklucz notatki z wartością właściwości.',
+                        'Cmd/Ctrl+Kliknij właściwość, aby dodać z AND. Cmd/Ctrl+Shift+Kliknij, aby dodać z OR.'
+>>>>>>> main
                     ]
                 },
                 tasks: {
@@ -321,6 +339,10 @@ export const STRINGS_PL = {
             showTag: 'Pokaż tag',
             hideTag: 'Ukryj tag'
         },
+        property: {
+            addKey: 'Dodaj klucz właściwości',
+            removeKey: 'Usuń klucz właściwości'
+        },
         navigation: {
             addSeparator: 'Dodaj separator',
             removeSeparator: 'Usuń separator'
@@ -376,10 +398,13 @@ export const STRINGS_PL = {
         fileIconRuleEditor: {
             addRuleAria: 'Dodaj regułę'
         },
+<<<<<<< patch-1
         propertyColorRuleEditor: {
             propertyPlaceholder: 'Atrybut',
             valuePlaceholder: 'Wartość'
         },
+=======
+>>>>>>> main
         interfaceIcons: {
             title: 'Ikonki interfejsu',
             fileItemsSection: 'Elementy pliku',
@@ -405,13 +430,23 @@ export const STRINGS_PL = {
                 'list-new-note': 'Nowa notatka',
                 'nav-folder-open': 'Folder otwarty',
                 'nav-folder-closed': 'Folder zamknięty',
-                'nav-folder-note': 'Notatka folderu',
+                'nav-tags': 'Tagi',
                 'nav-tag': 'Tag',
+<<<<<<< patch-1
                 'nav-properties': 'Atrybuty',
                 'list-pinned': 'Przypięte elementy',
                 'file-unfinished-task': 'Nieukończone zadania',
                 'file-word-count': 'Liczba słów',
                 'file-custom-property': 'Atrybut niestandardowy'
+=======
+                'nav-properties': 'Właściwości',
+                'nav-property': 'Właściwość',
+                'nav-property-value': 'Wartość',
+                'list-pinned': 'Przypięte elementy',
+                'file-unfinished-task': 'Nieukończone zadania',
+                'file-word-count': 'Liczba słów',
+                'file-property': 'Właściwość'
+>>>>>>> main
             }
         },
         colorPicker: {
@@ -532,6 +567,15 @@ export const STRINGS_PL = {
                 dismiss: 'aby anulować',
                 add: 'aby dodać tag',
                 remove: 'aby usunąć tag'
+            }
+        },
+        propertySuggest: {
+            placeholder: 'Wybierz klucz właściwości...',
+            navigatePlaceholder: 'Przejdź do właściwości...',
+            instructions: {
+                navigate: 'aby nawigować',
+                select: 'aby dodać właściwość',
+                dismiss: 'aby anulować'
             }
         },
         welcome: {
@@ -687,6 +731,7 @@ export const STRINGS_PL = {
         pinAllFolderNotes: 'Przypnij wszystkie notatki folderu', // Command palette: Pins all folder notes to shortcuts (English: Pin all folder notes)
         navigateToFolder: 'Przejdź do folderu', // Command palette: Navigate to a folder using fuzzy search (English: Navigate to folder)
         navigateToTag: 'Przejdź do tagu', // Command palette: Navigate to a tag using fuzzy search (English: Navigate to tag)
+        navigateToProperty: 'Przejdź do właściwości', // Command palette: Navigate to a property key or value using fuzzy search (English: Navigate to property)
         addShortcut: 'Dodaj do skrótów', // Command palette: Adds the current file, folder, or tag to shortcuts (English: Add to shortcuts)
         openShortcut: 'Otwórz skrót {number}',
         toggleDescendants: 'Przełącz podfoldery', // Command palette: Toggles showing notes from descendants (English: Toggle descendants)
@@ -727,14 +772,15 @@ export const STRINGS_PL = {
         },
         sections: {
             general: 'Ogólne',
-            navigationPane: 'Panel nawigacji',
+            navigationPane: 'Nawigacja',
             calendar: 'Kalendarz',
             icons: 'Pakiety ikon',
             folders: 'Foldery',
             folderNotes: 'Notatki folderu',
-            foldersAndTags: 'Foldery i tagi',
+            foldersAndTags: 'Foldery',
+            tagsAndProperties: 'Tagi i właściwości',
             tags: 'Tagi',
-            listPane: 'Panel listy',
+            listPane: 'Lista',
             notes: 'Notatki',
             advanced: 'Zaawansowane'
         },
@@ -753,7 +799,6 @@ export const STRINGS_PL = {
             },
             navigation: {
                 appearance: 'Wygląd',
-                shortcutsAndRecent: 'Skróty i ostatnie elementy',
                 leftSidebar: 'Lewy panel boczny',
                 calendarIntegration: 'Integracja z kalendarzem'
             },
@@ -768,7 +813,11 @@ export const STRINGS_PL = {
                 previewText: 'Tekst podglądu',
                 featureImage: 'Wyróżniony obraz',
                 tags: 'Tagi',
+<<<<<<< patch-1
                 customProperty: 'Atrybut niestandardowy (metadane lub liczba słów)',
+=======
+                properties: 'Właściwości',
+>>>>>>> main
                 date: 'Data',
                 parentFolder: 'Folder nadrzędny'
             }
@@ -813,6 +862,16 @@ export const STRINGS_PL = {
                 name: 'Atrybut do sortowania',
                 desc: 'Używane z sortowaniem według atrybutu. Notatki z tym atrybutem są widoczne jako pierwsze i sortowane według wartości. Tablice są łączone w jedną wartość.',
                 placeholder: 'order'
+            },
+            propertySortSecondary: {
+                name: 'Sortowanie drugorzędne',
+                desc: 'Używane z sortowaniem wg właściwości, gdy notatki mają tę samą wartość właściwości lub nie mają wartości.',
+                options: {
+                    title: 'Tytuł',
+                    filename: 'Nazwa pliku',
+                    created: 'Data utworzenia',
+                    modified: 'Data edycji'
+                }
             },
             revealFileOnListChanges: {
                 name: 'Przewiń do wybranego pliku podczas zmian na liście',
@@ -963,6 +1022,10 @@ export const STRINGS_PL = {
                 name: 'Pokaż aktywną notatkę',
                 desc: 'Automatycznie wyświetla notatki po otwarciu za pomocą okna szybkiego wyboru, linków lub wyszukiwania.'
             },
+            autoRevealShortestPath: {
+                name: 'Użyj najkrótszej ścieżki',
+                desc: 'Włączone: Automatyczne ujawnianie wybiera najbliższy widoczny folder nadrzędny lub tag. Wyłączone: Automatyczne ujawnianie wybiera rzeczywisty folder pliku i dokładny tag.'
+            },
             autoRevealIgnoreRightSidebar: {
                 name: 'Ignoruj zdarzenia z prawego paska bocznego',
                 desc: 'Nie zmieniaj aktywnej notatki podczas klikania lub zmiany notatek w prawym pasku bocznym.'
@@ -1022,6 +1085,14 @@ export const STRINGS_PL = {
             showRecentNotes: {
                 name: 'Pokaż ostatnie notatki',
                 desc: 'Wyświetla sekcję ostatnich notatek w panelu nawigacji.'
+            },
+            hideRecentNotes: {
+                name: 'Ukryj notatki',
+                desc: 'Wybierz typy notatek do ukrycia w sekcji ostatnich notatek.',
+                options: {
+                    none: 'Brak',
+                    folderNotes: 'Notatki folderów'
+                }
             },
             recentNotesCount: {
                 name: 'Liczba ostatnich notatek',
@@ -1223,9 +1294,15 @@ export const STRINGS_PL = {
                 }
             },
             excludedNotes: {
+<<<<<<< patch-1
                 name: 'Ukryj notatki z atrybutami (profil sejfu)',
                 desc: 'Lista atrybutów rozdzielonych przecinkami. Notatki zawierające którykolwiek z tych atrybutów zostaną ukryte (np. draft, private, archived).',
                 placeholder: 'draft, private'
+=======
+                name: 'Ukryj notatki według reguł właściwości (profil sejfu)',
+                desc: 'Lista reguł frontmatter oddzielonych przecinkami. Użyj wpisów `key` lub `key=value` (np. status=done, published=true, archived).',
+                placeholder: 'status=done, published=true, archived'
+>>>>>>> main
             },
             excludedFileNamePatterns: {
                 name: 'Ukryj pliki (profil sejfu)',
@@ -1299,15 +1376,38 @@ export const STRINGS_PL = {
                 name: 'Pokaż tagi plików w trybie kompaktowym',
                 desc: 'Wyświetla tagi, gdy data, podgląd i obraz są ukryte.'
             },
+<<<<<<< patch-1
             customPropertyType: {
                 name: 'Rodzaj atrybutu',
                 desc: 'Wybierz atrybut niestandardowy, który ma być widoczny w elementach plików.',
+=======
+            showFileProperties: {
+                name: 'Pokaż właściwości plików',
+                desc: 'Wyświetl klikalne właściwości w elementach plików.'
+            },
+            colorFileProperties: {
+                name: 'Koloruj właściwości plików',
+                desc: 'Zastosuj kolory właściwości do odznak właściwości w elementach plików.'
+            },
+            prioritizeColoredFileProperties: {
+                name: 'Wyświetl kolorowe właściwości jako pierwsze',
+                desc: 'Sortuj kolorowe właściwości przed pozostałymi właściwościami w elementach plików.'
+            },
+            showFilePropertiesInCompactMode: {
+                name: 'Pokaż właściwości w trybie kompaktowym',
+                desc: 'Wyświetlaj właściwości gdy tryb kompaktowy jest aktywny.'
+            },
+            notePropertyType: {
+                name: 'Właściwość notatki',
+                desc: 'Wybierz właściwość notatki do wyświetlenia w elementach plików.',
+>>>>>>> main
                 options: {
                     frontmatter: 'Atrybut',
                     wordCount: 'Liczba słów',
                     none: 'Brak'
                 }
             },
+<<<<<<< patch-1
             customPropertyFields: {
                 name: 'Widoczne atrybuty',
                 desc: 'Lista atrybutów rozdzielonych przecinkami, które mają być widoczne jako etykiety. Atrybuty listowe renderują jedną etykietę na każdą wartość. [[Wikilinki]] wyświetlane są jako klikalne linki.',
@@ -1327,6 +1427,19 @@ export const STRINGS_PL = {
                 name: 'Pokaż atrybut niestandardowy w trybie kompaktowym',
                 desc: 'Wyświetla atrybut niestandardowy, gdy data, podgląd i obraz są ukryte.'
             },
+=======
+            propertyFields: {
+                name: 'Właściwości do wyświetlenia',
+                desc: 'Rozdzielona przecinkami lista właściwości frontmatter do wyświetlenia w panelu nawigacji i jako odznaki w elementach plików. Właściwości z wieloma wartościami wyświetlają jedną odznakę na wartość.',
+                placeholder: 'status, type, category',
+                addButtonTooltip: 'Dodaj klucz właściwości',
+                emptySelectorNotice: 'Nie znaleziono kluczy właściwości w pamięci podręcznej metadanych.'
+            },
+            showPropertiesOnSeparateRows: {
+                name: 'Pokaż właściwości w osobnych wierszach',
+                desc: 'Wyświetl każdą właściwość w osobnym wierszu.'
+            },
+>>>>>>> main
             dateFormat: {
                 name: 'Format daty',
                 desc: 'Format widocznych dat (format Moment).',
@@ -1398,9 +1511,15 @@ export const STRINGS_PL = {
                 placeholder: 'thumbnail, featureResized, feature'
             },
             featureImageExcludeProperties: {
+<<<<<<< patch-1
                 name: 'Wyklucz notatki z atrybutami',
                 desc: 'Lista atrybutów rozdzielonych przecinkami. Notatki zawierające którykolwiek z tych atrybutów nie wyświetlają wyróżnionych obrazów.',
                 placeholder: 'prywatny, poufny'
+=======
+                name: 'Wyklucz notatki z właściwościami',
+                desc: 'Lista właściwości frontmatter oddzielonych przecinkami. Notatki zawierające dowolną z tych właściwości nie przechowują obrazów głównych.',
+                placeholder: 'private, confidential'
+>>>>>>> main
             },
 
             downloadExternalFeatureImages: {
@@ -1512,6 +1631,33 @@ export const STRINGS_PL = {
                 name: 'Zachowaj atrybut tags po usunięciu ostatniego tagu',
                 desc: 'Zachowuje atrybut tags, gdy wszystkie tagi zostaną usunięte. Gdy wyłączone, atrybut tags również zostanie usunięty.'
             },
+            showProperties: {
+                name: 'Pokaż właściwości',
+                desc: 'Wyświetl sekcję właściwości w nawigatorze.'
+            },
+            showPropertyIcons: {
+                name: 'Pokaż ikony właściwości',
+                desc: 'Wyświetl ikony obok właściwości w panelu nawigacji.'
+            },
+            inheritPropertyColors: {
+                name: 'Dziedzicz kolory właściwości',
+                desc: 'Wartości właściwości dziedziczą kolor i tło od swojego klucza właściwości.'
+            },
+            propertySortOrder: {
+                name: 'Kolejność sortowania właściwości',
+                desc: 'Kliknij prawym przyciskiem na właściwość, aby ustawić inną kolejność sortowania jej wartości.',
+                options: {
+                    alphaAsc: 'A do Z',
+                    alphaDesc: 'Z do A',
+                    frequency: 'Częstotliwość',
+                    lowToHigh: 'od niskiej',
+                    highToLow: 'od wysokiej'
+                }
+            },
+            showAllPropertiesFolder: {
+                name: 'Pokaż folder właściwości',
+                desc: 'Wyświetl "Właściwości" jako zwijany folder.'
+            },
             hiddenTags: {
                 name: 'Ukryj tagi (profil sejfu)',
                 desc: 'Lista tagów rozdzielonych przecinkami. Format nazw: tag* (zaczynające się od), *tag (kończące się na). Format ścieżek: archiwum (tag i elementy podrzędne), archiwum/* (tylko elementy podrzędne), projekty/*/szkice (dowolne w środku).',
@@ -1573,7 +1719,11 @@ export const STRINGS_PL = {
                 loading: 'Sprawdzanie metadanych...',
                 statusClean: 'Brak metadanych do wyczyszczenia',
                 statusCounts:
+<<<<<<< patch-1
                     'Niepowiązane elementy: foldery: {folders}, tagi: {tags}, pliki: {files}, przypięte: {pinned}, separatory: {separators}'
+=======
+                    'Osierocone elementy: {folders} folderów, {tags} tagów, {properties} właściwości, {files} plików, {pinned} przypiętych, {separators} separatorów'
+>>>>>>> main
             },
             rebuildCache: {
                 name: 'Odbuduj pamięć podręczną',
@@ -1601,8 +1751,13 @@ export const STRINGS_PL = {
             },
             frontmatterNameField: {
                 name: 'Pola nazwy',
+<<<<<<< patch-1
                 desc: 'Lista pól metadanych rozdzielonych przeciwnkami. Używana jest pierwsza poprawna wartość. W przypadku braku wartości używana jest nazwa pliku.',
                 placeholder: 'tytuł, nazwa'
+=======
+                desc: 'Lista pól frontmatter oddzielonych przecinkami. Używana jest pierwsza niepusta wartość. Powrót do nazwy pliku.',
+                placeholder: 'title, name'
+>>>>>>> main
             },
             frontmatterIconField: {
                 name: 'Pole ikonki',
@@ -1614,9 +1769,16 @@ export const STRINGS_PL = {
                 desc: 'Pole metadanych dla kolorów plików. Pozostaw puste, aby użyć kolorów zapisanych w ustawieniach.',
                 placeholder: 'color'
             },
+<<<<<<< patch-1
             frontmatterSaveMetadata: {
                 name: 'Zapisz ikony i kolory w metadanych',
                 desc: 'Automatycznie zapisuje ikony i kolory plików w metadanych przy pomocy skonfigurowanych powyżej pól.'
+=======
+            frontmatterBackgroundField: {
+                name: 'Pole tła',
+                desc: 'Pole frontmatter dla kolorów tła. Zostaw puste aby użyć kolorów tła zapisanych w ustawieniach.',
+                placeholder: 'background'
+>>>>>>> main
             },
             frontmatterMigration: {
                 name: 'Przenieś ikonki i kolory z ustawień',

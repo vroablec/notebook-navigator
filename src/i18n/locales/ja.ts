@@ -104,6 +104,8 @@ export const STRINGS_JA = {
         folderExists: 'フォルダは既にショートカットにあります',
         noteExists: 'ノートは既にショートカットにあります',
         tagExists: 'タグは既にショートカットにあります',
+        propertyExists: 'プロパティはすでにショートカットに追加されています',
+        invalidProperty: '無効なプロパティショートカット',
         searchExists: '検索ショートカットは既に存在します',
         emptySearchQuery: '保存前に検索クエリを入力してください',
         emptySearchName: '検索を保存する前に名前を入力してください',
@@ -184,12 +186,12 @@ export const STRINGS_JA = {
                 properties: {
                     title: 'プロパティ',
                     items: [
-                        '`.key` カスタムプロパティキーを持つノートを含める。',
-                        '`.key=value` カスタムプロパティ値を持つノートを含める。',
+                        '`.key` プロパティキーを持つノートを含める。',
+                        '`.key=value` プロパティ値を持つノートを含める。',
                         '`."Reading Status"` 空白を含むプロパティキーを持つノートを含める。',
                         '`."Reading Status"="In Progress"` 空白を含むキーと値はダブルクォートで囲む必要があります。',
-                        '`-.key` カスタムプロパティキーを持つノートを除外する。',
-                        '`-.key=value` カスタムプロパティ値を持つノートを除外する。',
+                        '`-.key` プロパティキーを持つノートを除外する。',
+                        '`-.key=value` プロパティ値を持つノートを除外する。',
                         'Cmd/Ctrl+クリックでプロパティをANDで追加。Cmd/Ctrl+Shift+クリックでORで追加。'
                     ]
                 },
@@ -323,6 +325,10 @@ export const STRINGS_JA = {
             showTag: 'タグを表示',
             hideTag: 'タグを非表示'
         },
+        property: {
+            addKey: 'プロパティキーを追加',
+            removeKey: 'プロパティキーを削除'
+        },
         navigation: {
             addSeparator: '区切り線を追加',
             removeSeparator: '区切り線を削除'
@@ -376,10 +382,6 @@ export const STRINGS_JA = {
         fileIconRuleEditor: {
             addRuleAria: 'ルールを追加'
         },
-        propertyColorRuleEditor: {
-            propertyPlaceholder: 'Property',
-            valuePlaceholder: 'Value'
-        },
         interfaceIcons: {
             title: 'インターフェースアイコン',
             fileItemsSection: 'ファイル項目',
@@ -405,13 +407,15 @@ export const STRINGS_JA = {
                 'list-new-note': '新規ノート',
                 'nav-folder-open': 'フォルダ（開）',
                 'nav-folder-closed': 'フォルダ（閉）',
-                'nav-folder-note': 'フォルダノート',
+                'nav-tags': 'タグ',
                 'nav-tag': 'タグ',
                 'nav-properties': 'プロパティ',
+                'nav-property': 'プロパティ',
+                'nav-property-value': '値',
                 'list-pinned': 'ピン留め項目',
                 'file-unfinished-task': '未完了タスク',
                 'file-word-count': '単語数',
-                'file-custom-property': 'カスタムプロパティ'
+                'file-property': 'プロパティ'
             }
         },
         colorPicker: {
@@ -532,6 +536,15 @@ export const STRINGS_JA = {
                 dismiss: 'でキャンセル',
                 add: 'タグを追加',
                 remove: 'タグを削除'
+            }
+        },
+        propertySuggest: {
+            placeholder: 'プロパティキーを選択...',
+            navigatePlaceholder: 'プロパティに移動...',
+            instructions: {
+                navigate: 'でナビゲート',
+                select: 'プロパティを追加',
+                dismiss: 'でキャンセル'
             }
         },
         welcome: {
@@ -687,6 +700,7 @@ export const STRINGS_JA = {
         pinAllFolderNotes: 'フォルダノートをすべてピン留め', // Command palette: Pins all folder notes to shortcuts (English: Pin all folder notes)
         navigateToFolder: 'フォルダにナビゲート', // Command palette: Navigate to a folder using fuzzy search (English: Navigate to folder)
         navigateToTag: 'タグにナビゲート', // Command palette: Navigate to a tag using fuzzy search (English: Navigate to tag)
+        navigateToProperty: 'プロパティに移動', // Command palette: Navigate to a property key or value using fuzzy search (English: Navigate to property)
         addShortcut: 'ショートカットに追加', // Command palette: Adds the current file, folder, or tag to shortcuts (English: Add to shortcuts)
         openShortcut: 'ショートカット {number} を開く',
         toggleDescendants: '子孫切り替え', // Command palette: Toggles showing notes from descendants (English: Toggle descendants)
@@ -728,14 +742,15 @@ export const STRINGS_JA = {
         sections: {
             general: '一般設定',
             notes: 'ノート表示',
-            navigationPane: 'フォルダ表示',
+            navigationPane: 'ナビゲーション',
             calendar: 'カレンダー',
             icons: 'アイコンパック',
             tags: 'タグ表示',
             folders: 'フォルダノート',
             folderNotes: 'フォルダノート',
-            foldersAndTags: 'フォルダとタグ',
-            listPane: 'リストペイン',
+            foldersAndTags: 'フォルダ',
+            tagsAndProperties: 'タグとプロパティ',
+            listPane: 'リスト',
             advanced: '詳細設定'
         },
         groups: {
@@ -753,7 +768,6 @@ export const STRINGS_JA = {
             },
             navigation: {
                 appearance: '外観',
-                shortcutsAndRecent: 'ショートカットと最近の項目',
                 leftSidebar: '左サイドバー',
                 calendarIntegration: 'カレンダー連携'
             },
@@ -768,7 +782,7 @@ export const STRINGS_JA = {
                 previewText: 'プレビューテキスト',
                 featureImage: 'アイキャッチ画像',
                 tags: 'タグ',
-                customProperty: 'カスタムプロパティ（フロントマターまたは文字数）',
+                properties: 'プロパティ',
                 date: '日付',
                 parentFolder: '親フォルダ'
             }
@@ -813,6 +827,16 @@ export const STRINGS_JA = {
                 name: 'ソートプロパティ',
                 desc: 'プロパティソートで使用されます。このfrontmatterプロパティを持つノートが最初にリストされ、プロパティの値でソートされます。配列は1つの値に結合されます。',
                 placeholder: 'order'
+            },
+            propertySortSecondary: {
+                name: '二次ソート',
+                desc: 'プロパティソート使用時、同じプロパティ値またはプロパティ値がないノートに適用されます。',
+                options: {
+                    title: 'タイトル',
+                    filename: 'ファイル名',
+                    created: '作成日',
+                    modified: '編集日'
+                }
             },
             revealFileOnListChanges: {
                 name: 'リスト変更時に選択ファイルへスクロール',
@@ -963,6 +987,10 @@ export const STRINGS_JA = {
                 name: 'アクティブなノートを自動表示',
                 desc: 'クイックスイッチャー、リンク、検索から開いたときに自動的にノートを表示します。'
             },
+            autoRevealShortestPath: {
+                name: '最短パスを使用',
+                desc: '有効: 自動表示は最も近い表示中の親フォルダまたはタグを選択します。無効: 自動表示はファイルの実際のフォルダと正確なタグを選択します。'
+            },
             autoRevealIgnoreRightSidebar: {
                 name: '右サイドバーのイベントを無視',
                 desc: '右サイドバーでのクリックやノートの変更時にアクティブノートを変更しません。'
@@ -1022,6 +1050,14 @@ export const STRINGS_JA = {
             showRecentNotes: {
                 name: '最近のノートを表示',
                 desc: 'ナビゲーションペインに最近のノートセクションを表示します。'
+            },
+            hideRecentNotes: {
+                name: 'ノートを非表示',
+                desc: '最近のノートセクションで非表示にするノートの種類を選択します。',
+                options: {
+                    none: 'なし',
+                    folderNotes: 'フォルダノート'
+                }
             },
             recentNotesCount: {
                 name: '最近のノート数',
@@ -1202,9 +1238,9 @@ export const STRINGS_JA = {
                 desc: 'Ctrl+Enterで選択したファイルを新しいタブ、分割、またはウィンドウで開きます。'
             },
             excludedNotes: {
-                name: 'プロパティ付きノートを非表示 (ボルトプロファイル)',
-                desc: 'カンマ区切りのフロントマター属性のリスト。これらの属性を含むノートは非表示になります（例：draft, private, archived）。',
-                placeholder: 'draft, private'
+                name: 'プロパティルールでノートを非表示 (ボルトプロファイル)',
+                desc: 'カンマ区切りのフロントマタールールのリスト。`key` または `key=value` エントリを使用します（例：status=done, published=true, archived）。',
+                placeholder: 'status=done, published=true, archived'
             },
             excludedFileNamePatterns: {
                 name: 'ファイルを非表示 (ボルトプロファイル)',
@@ -1300,33 +1336,41 @@ export const STRINGS_JA = {
                 name: 'スリムモードでファイルタグを表示',
                 desc: '日付、プレビュー、画像が非表示のときにタグを表示します。'
             },
-            customPropertyType: {
-                name: 'プロパティタイプ',
-                desc: 'ファイルアイテムに表示するカスタムプロパティを選択します。',
+            showFileProperties: {
+                name: 'ファイルプロパティを表示',
+                desc: 'ファイル項目にクリック可能なプロパティを表示します。'
+            },
+            colorFileProperties: {
+                name: 'ファイルプロパティに色を付ける',
+                desc: 'ファイル項目のプロパティバッジにプロパティの色を適用します。'
+            },
+            prioritizeColoredFileProperties: {
+                name: '色付きプロパティを先に表示',
+                desc: 'ファイル項目で色付きプロパティを他のプロパティより前に並べ替えます。'
+            },
+            showFilePropertiesInCompactMode: {
+                name: 'コンパクトモードでプロパティを表示',
+                desc: 'コンパクトモードが有効な時にプロパティを表示します。'
+            },
+            notePropertyType: {
+                name: 'ノートプロパティ',
+                desc: 'ファイル項目に表示するノートプロパティを選択します。',
                 options: {
                     frontmatter: 'フロントマタープロパティ',
                     wordCount: '文字数',
                     none: 'なし'
                 }
             },
-            customPropertyFields: {
+            propertyFields: {
                 name: '表示するプロパティ',
-                desc: 'バッジとして表示するフロントマタープロパティのカンマ区切りリスト。リスト値のプロパティは値ごとに1つのバッジを表示します。[[wikilink]]値はクリック可能なリンクとして表示されます。',
-                placeholder: 'ステータス, タイプ, カテゴリ'
+                desc: 'ナビゲーションペインとファイル項目のバッジとして表示するフロントマタープロパティのカンマ区切りリスト。リスト値のプロパティは値ごとに1つのバッジを表示します。',
+                placeholder: 'status, type, category',
+                addButtonTooltip: 'プロパティキーを追加',
+                emptySelectorNotice: 'メタデータキャッシュにプロパティキーが見つかりません。'
             },
-            showCustomPropertiesOnSeparateRows: {
+            showPropertiesOnSeparateRows: {
                 name: 'プロパティを別の行に表示',
                 desc: '各プロパティを個別の行に表示します。'
-            },
-            customPropertyColorMap: {
-                name: 'プロパティの色',
-                desc: 'フロントマターのプロパティと値をバッジの色にマッピングします。1行に1つのマッピング: プロパティ=色 または プロパティ:値=色',
-                placeholder: '# プロパティ または プロパティ:値 色\nstatus=#f59e0b\nstatus:done=#10b981\nstatus:todo=#ef4444',
-                editTooltip: 'マッピングを編集'
-            },
-            showCustomPropertyInCompactMode: {
-                name: 'スリムモードでカスタムプロパティを表示',
-                desc: '日付、プレビュー、画像が非表示のときにカスタムプロパティを表示します。'
             },
             dateFormat: {
                 name: '日付形式',
@@ -1363,7 +1407,7 @@ export const STRINGS_JA = {
             previewProperties: {
                 name: 'プレビュープロパティ',
                 desc: 'プレビューテキストを検索するフロントマタープロパティのカンマ区切りリスト。テキストがある最初のプロパティが使用されます。',
-                placeholder: '要約, 説明, 概要',
+                placeholder: 'summary, description, abstract',
                 info: '指定されたプロパティにプレビューテキストが見つからない場合、プレビューはノートの内容から生成されます。'
             },
             previewRows: {
@@ -1401,7 +1445,7 @@ export const STRINGS_JA = {
             featureImageExcludeProperties: {
                 name: 'プロパティを持つノートを除外',
                 desc: 'フロントマタープロパティのカンマ区切りリスト。これらのプロパティを含むノートはフィーチャー画像を保存しません。',
-                placeholder: 'プライベート, 機密'
+                placeholder: 'private, confidential'
             },
 
             downloadExternalFeatureImages: {
@@ -1513,6 +1557,33 @@ export const STRINGS_JA = {
                 name: '最後のタグを削除した後も tags プロパティを保持',
                 desc: 'すべてのタグが削除されても frontmatter の tags プロパティを保持します。無効にすると、tags プロパティは frontmatter から削除されます。'
             },
+            showProperties: {
+                name: 'プロパティを表示',
+                desc: 'ナビゲーターにプロパティセクションを表示します。'
+            },
+            showPropertyIcons: {
+                name: 'プロパティアイコンを表示',
+                desc: 'ナビゲーションペインのプロパティの横にアイコンを表示します。'
+            },
+            inheritPropertyColors: {
+                name: 'プロパティの色を継承',
+                desc: 'プロパティ値がプロパティキーの色と背景色を継承します。'
+            },
+            propertySortOrder: {
+                name: 'プロパティの並べ替え順',
+                desc: '任意のプロパティを右クリックして、その値に別の並べ替え順を設定します。',
+                options: {
+                    alphaAsc: 'A から Z',
+                    alphaDesc: 'Z から A',
+                    frequency: '頻度',
+                    lowToHigh: '低い順',
+                    highToLow: '高い順'
+                }
+            },
+            showAllPropertiesFolder: {
+                name: 'プロパティフォルダを表示',
+                desc: '「プロパティ」を折りたたみ可能なフォルダとして表示します。'
+            },
             hiddenTags: {
                 name: 'タグを非表示 (ボルトプロファイル)',
                 desc: 'カンマ区切りのタグパターンリスト。名前パターン: tag*（で始まる）、*tag（で終わる）。パスパターン: archive（タグと子孫）、archive/*（子孫のみ）、projects/*/drafts（中間ワイルドカード）。',
@@ -1540,7 +1611,7 @@ export const STRINGS_JA = {
             folderNoteName: {
                 name: 'フォルダノート名',
                 desc: 'フォルダノートの名前。空のままにするとフォルダと同じ名前を使用します。',
-                placeholder: 'フォルダ名には空のまま'
+                placeholder: 'index'
             },
             folderNoteNamePattern: {
                 name: 'フォルダノート名パターン',
@@ -1573,7 +1644,8 @@ export const STRINGS_JA = {
                 error: '設定のクリーンアップに失敗しました',
                 loading: 'メタデータを確認中...',
                 statusClean: 'クリーンアップするメタデータはありません',
-                statusCounts: '孤立した項目: {folders} フォルダ, {tags} タグ, {files} ファイル, {pinned} ピン, {separators} セパレーター'
+                statusCounts:
+                    '孤立した項目: {folders} フォルダ, {tags} タグ, {properties} プロパティ, {files} ファイル, {pinned} ピン, {separators} セパレーター'
             },
             rebuildCache: {
                 name: 'キャッシュを再構築',
@@ -1602,7 +1674,7 @@ export const STRINGS_JA = {
             frontmatterNameField: {
                 name: '名前フィールド（複数可）',
                 desc: 'フロントマターフィールドのカンマ区切りリスト。最初の空でない値を使用。ファイル名にフォールバック。',
-                placeholder: 'タイトル, 名前'
+                placeholder: 'title, name'
             },
             frontmatterIconField: {
                 name: 'アイコンフィールド',
@@ -1614,9 +1686,10 @@ export const STRINGS_JA = {
                 desc: 'ファイルカラー用のフロントマターフィールド。空のままにすると設定に保存された色を使用。',
                 placeholder: 'color'
             },
-            frontmatterSaveMetadata: {
-                name: 'フロントマターにアイコンと色を保存',
-                desc: '上記で設定したフィールドを使ってファイルのアイコンと色を自動的にフロントマターに書き込みます。'
+            frontmatterBackgroundField: {
+                name: '背景フィールド',
+                desc: '背景色用のフロントマターフィールド。空のままにすると設定に保存された背景色を使用。',
+                placeholder: 'background'
             },
             frontmatterMigration: {
                 name: '設定からアイコンと色を移行',
@@ -1631,12 +1704,12 @@ export const STRINGS_JA = {
             frontmatterCreatedField: {
                 name: '作成タイムスタンプフィールド',
                 desc: '作成タイムスタンプのフロントマターフィールド名。空のままにするとファイルシステムの日付のみを使用。',
-                placeholder: '作成日'
+                placeholder: 'created'
             },
             frontmatterModifiedField: {
                 name: '変更タイムスタンプフィールド',
                 desc: '変更タイムスタンプのフロントマターフィールド名。空のままにするとファイルシステムの日付のみを使用。',
-                placeholder: '更新日'
+                placeholder: 'modified'
             },
             frontmatterDateFormat: {
                 name: 'タイムスタンプ形式',

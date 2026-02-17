@@ -105,6 +105,8 @@ export const STRINGS_FA = {
         folderExists: 'پوشه در میانبرها وجود دارد',
         noteExists: 'یادداشت در میانبرها وجود دارد',
         tagExists: 'برچسب در میانبرها وجود دارد',
+        propertyExists: 'ویژگی از قبل در میانبرها وجود دارد',
+        invalidProperty: 'میانبر ویژگی نامعتبر',
         searchExists: 'میانبر جستجو وجود دارد',
         emptySearchQuery: 'قبل از ذخیره، عبارت جستجو را وارد کنید',
         emptySearchName: 'قبل از ذخیره جستجو، نامی وارد کنید',
@@ -185,12 +187,12 @@ export const STRINGS_FA = {
                 properties: {
                     title: 'ویژگی‌ها',
                     items: [
-                        '`.key` شامل کردن یادداشت‌هایی با کلید ویژگی سفارشی.',
-                        '`.key=value` شامل کردن یادداشت‌هایی با مقدار ویژگی سفارشی.',
+                        '`.key` شامل کردن یادداشت‌هایی با کلید ویژگی.',
+                        '`.key=value` شامل کردن یادداشت‌هایی با مقدار ویژگی.',
                         '`."Reading Status"` شامل کردن یادداشت‌هایی با کلید ویژگی حاوی فاصله.',
                         '`."Reading Status"="In Progress"` کلیدها و مقادیر حاوی فاصله باید در گیومه دوتایی قرار گیرند.',
-                        '`-.key` حذف یادداشت‌هایی با کلید ویژگی سفارشی.',
-                        '`-.key=value` حذف یادداشت‌هایی با مقدار ویژگی سفارشی.',
+                        '`-.key` حذف یادداشت‌هایی با کلید ویژگی.',
+                        '`-.key=value` حذف یادداشت‌هایی با مقدار ویژگی.',
                         'Cmd/Ctrl+کلیک روی ویژگی برای افزودن با AND. Cmd/Ctrl+Shift+کلیک برای افزودن با OR.'
                     ]
                 },
@@ -323,6 +325,10 @@ export const STRINGS_FA = {
             showTag: 'نمایش برچسب',
             hideTag: 'مخفی کردن برچسب'
         },
+        property: {
+            addKey: 'افزودن کلید ویژگی',
+            removeKey: 'حذف کلید ویژگی'
+        },
         navigation: {
             addSeparator: 'افزودن جداکننده',
             removeSeparator: 'حذف جداکننده'
@@ -376,10 +382,6 @@ export const STRINGS_FA = {
         fileIconRuleEditor: {
             addRuleAria: 'افزودن قانون'
         },
-        propertyColorRuleEditor: {
-            propertyPlaceholder: 'Property',
-            valuePlaceholder: 'Value'
-        },
         interfaceIcons: {
             title: 'آیکون‌های رابط کاربری',
             fileItemsSection: 'آیتم‌های فایل',
@@ -405,13 +407,15 @@ export const STRINGS_FA = {
                 'list-new-note': 'یادداشت جدید',
                 'nav-folder-open': 'پوشه باز',
                 'nav-folder-closed': 'پوشه بسته',
-                'nav-folder-note': 'یادداشت پوشه',
+                'nav-tags': 'برچسب‌ها',
                 'nav-tag': 'برچسب',
                 'nav-properties': 'ویژگی‌ها',
+                'nav-property': 'ویژگی',
+                'nav-property-value': 'مقدار',
                 'list-pinned': 'آیتم‌های سنجاق شده',
                 'file-unfinished-task': 'وظایف ناتمام',
                 'file-word-count': 'تعداد کلمات',
-                'file-custom-property': 'ویژگی سفارشی'
+                'file-property': 'ویژگی'
             }
         },
         colorPicker: {
@@ -533,6 +537,15 @@ export const STRINGS_FA = {
                 dismiss: 'برای بستن',
                 add: 'برای افزودن برچسب',
                 remove: 'برای حذف برچسب'
+            }
+        },
+        propertySuggest: {
+            placeholder: 'انتخاب کلید ویژگی...',
+            navigatePlaceholder: 'رفتن به ویژگی...',
+            instructions: {
+                navigate: 'برای ناوبری',
+                select: 'برای افزودن ویژگی',
+                dismiss: 'برای بستن'
             }
         },
         welcome: {
@@ -687,6 +700,7 @@ export const STRINGS_FA = {
         pinAllFolderNotes: 'سنجاق کردن همه یادداشت‌های پوشه',
         navigateToFolder: 'رفتن به پوشه',
         navigateToTag: 'رفتن به برچسب',
+        navigateToProperty: 'رفتن به ویژگی',
         addShortcut: 'افزودن به میانبرها',
         openShortcut: 'باز کردن میانبر {number}',
         toggleDescendants: 'تغییر زیرمجموعه‌ها',
@@ -727,14 +741,15 @@ export const STRINGS_FA = {
         },
         sections: {
             general: 'عمومی',
-            navigationPane: 'پنل ناوبری',
+            navigationPane: 'ناوبری',
             calendar: 'تقویم',
             icons: 'بسته‌های آیکون',
             folders: 'پوشه‌ها',
             folderNotes: 'یادداشت‌های پوشه',
-            foldersAndTags: 'پوشه‌ها و برچسب‌ها',
+            foldersAndTags: 'پوشه‌ها',
+            tagsAndProperties: 'برچسب‌ها و ویژگی‌ها',
             tags: 'برچسب‌ها',
-            listPane: 'پنل لیست',
+            listPane: 'لیست',
             notes: 'یادداشت‌ها',
             advanced: 'پیشرفته'
         },
@@ -753,7 +768,6 @@ export const STRINGS_FA = {
             },
             navigation: {
                 appearance: 'ظاهر',
-                shortcutsAndRecent: 'میانبرها و موارد اخیر',
                 leftSidebar: 'نوار کناری چپ',
                 calendarIntegration: 'یکپارچه‌سازی تقویم'
             },
@@ -768,7 +782,7 @@ export const STRINGS_FA = {
                 previewText: 'متن پیش‌نمایش',
                 featureImage: 'تصویر ویژه',
                 tags: 'برچسب‌ها',
-                customProperty: 'ویژگی سفارشی (فرانت‌متر یا تعداد کلمات)',
+                properties: 'ویژگی‌ها',
                 date: 'تاریخ',
                 parentFolder: 'پوشه والد'
             }
@@ -813,6 +827,16 @@ export const STRINGS_FA = {
                 name: 'ویژگی مرتب‌سازی',
                 desc: 'با مرتب‌سازی ویژگی استفاده می‌شود. یادداشت‌هایی که این ویژگی frontmatter را دارند ابتدا نمایش داده شده و بر اساس مقدار ویژگی مرتب می‌شوند. آرایه‌ها به یک مقدار تبدیل می‌شوند.',
                 placeholder: 'order'
+            },
+            propertySortSecondary: {
+                name: 'مرتب‌سازی ثانویه',
+                desc: 'با مرتب‌سازی بر اساس ویژگی استفاده می‌شود، زمانی که یادداشت‌ها مقدار ویژگی یکسان یا بدون مقدار ویژگی باشند.',
+                options: {
+                    title: 'عنوان',
+                    filename: 'نام فایل',
+                    created: 'تاریخ ایجاد',
+                    modified: 'تاریخ ویرایش'
+                }
             },
             revealFileOnListChanges: {
                 name: 'اسکرول به فایل انتخابی هنگام تغییر لیست',
@@ -963,6 +987,10 @@ export const STRINGS_FA = {
                 name: 'نمایش خودکار یادداشت فعال',
                 desc: 'یادداشت‌ها را هنگام باز شدن از Quick Switcher، لینک‌ها یا جستجو به طور خودکار نمایش دهید.'
             },
+            autoRevealShortestPath: {
+                name: 'استفاده از کوتاه‌ترین مسیر',
+                desc: 'فعال: نمایش خودکار نزدیک‌ترین پوشه یا برچسب قابل مشاهده را انتخاب می‌کند. غیرفعال: نمایش خودکار پوشه واقعی فایل و برچسب دقیق را انتخاب می‌کند.'
+            },
             autoRevealIgnoreRightSidebar: {
                 name: 'نادیده گرفتن رویدادها از نوار کناری راست',
                 desc: 'یادداشت فعال را هنگام کلیک یا تغییر یادداشت‌ها در نوار کناری راست تغییر ندهید.'
@@ -1022,6 +1050,14 @@ export const STRINGS_FA = {
             showRecentNotes: {
                 name: 'نمایش یادداشت‌های اخیر',
                 desc: 'بخش یادداشت‌های اخیر را در پنل ناوبری نمایش دهید.'
+            },
+            hideRecentNotes: {
+                name: 'پنهان کردن یادداشت‌ها',
+                desc: 'انتخاب کنید کدام انواع یادداشت در بخش یادداشت‌های اخیر پنهان شوند.',
+                options: {
+                    none: 'هیچ‌کدام',
+                    folderNotes: 'یادداشت‌های پوشه'
+                }
             },
             recentNotesCount: {
                 name: 'تعداد یادداشت‌های اخیر',
@@ -1223,9 +1259,9 @@ export const STRINGS_FA = {
                 }
             },
             excludedNotes: {
-                name: 'مخفی کردن یادداشت‌ها با ویژگی‌ها (پروفایل خزانه)',
-                desc: 'لیست ویژگی‌های فرانت‌متر جدا شده با کاما. یادداشت‌های حاوی هر یک از این ویژگی‌ها مخفی می‌شوند (مثل پیش‌نویس، خصوصی، بایگانی).',
-                placeholder: 'پیش‌نویس، خصوصی'
+                name: 'مخفی کردن یادداشت‌ها با قوانین ویژگی (پروفایل خزانه)',
+                desc: 'لیست قوانین فرانت‌متر جدا شده با کاما. از ورودی‌های `key` یا `key=value` استفاده کنید (مثل status=done, published=true, archived).',
+                placeholder: 'status=done, published=true, archived'
             },
             excludedFileNamePatterns: {
                 name: 'مخفی کردن فایل‌ها (پروفایل خزانه)',
@@ -1298,33 +1334,41 @@ export const STRINGS_FA = {
                 name: 'نمایش برچسب‌های فایل در حالت فشرده',
                 desc: 'برچسب‌ها را هنگامی که تاریخ، پیش‌نمایش و تصویر مخفی هستند نمایش دهید.'
             },
-            customPropertyType: {
-                name: 'نوع ویژگی',
-                desc: 'ویژگی سفارشی را برای نمایش در آیتم‌های فایل انتخاب کنید.',
+            showFileProperties: {
+                name: 'نمایش ویژگی‌های فایل',
+                desc: 'نمایش ویژگی‌های قابل کلیک در آیتم‌های فایل.'
+            },
+            colorFileProperties: {
+                name: 'رنگ‌آمیزی ویژگی‌های فایل',
+                desc: 'رنگ‌های ویژگی را روی نشان‌های ویژگی در آیتم‌های فایل اعمال کنید.'
+            },
+            prioritizeColoredFileProperties: {
+                name: 'نمایش ویژگی‌های رنگی در اولویت',
+                desc: 'ویژگی‌های رنگی را قبل از ویژگی‌های دیگر روی آیتم‌های فایل مرتب کنید.'
+            },
+            showFilePropertiesInCompactMode: {
+                name: 'نمایش ویژگی‌ها در حالت فشرده',
+                desc: 'نمایش ویژگی‌ها هنگام فعال بودن حالت فشرده.'
+            },
+            notePropertyType: {
+                name: 'ویژگی یادداشت',
+                desc: 'ویژگی یادداشت را برای نمایش در موارد فایل انتخاب کنید.',
                 options: {
                     frontmatter: 'ویژگی Frontmatter',
                     wordCount: 'تعداد کلمات',
                     none: 'هیچ‌کدام'
                 }
             },
-            customPropertyFields: {
+            propertyFields: {
                 name: 'ویژگی‌ها برای نمایش',
-                desc: 'لیست ویژگی‌های frontmatter جدا شده با کاما برای نمایش به صورت نشان. ویژگی‌های با مقادیر لیستی یک نشان برای هر مقدار نمایش می‌دهند. مقادیر [[wikilink]] به صورت لینک‌های قابل کلیک نمایش داده می‌شوند.',
-                placeholder: 'وضعیت، نوع، دسته‌بندی'
+                desc: 'فهرست ویژگی‌های فرانت‌متر جدا شده با کاما برای نمایش در پنل ناوبری و به عنوان نشان در موارد فایل. ویژگی‌های فهرستی یک نشان به ازای هر مقدار نمایش می‌دهند.',
+                placeholder: 'status, type, category',
+                addButtonTooltip: 'افزودن کلید ویژگی',
+                emptySelectorNotice: 'کلید ویژگی‌ای در حافظه نهان فراداده یافت نشد.'
             },
-            showCustomPropertiesOnSeparateRows: {
+            showPropertiesOnSeparateRows: {
                 name: 'نمایش ویژگی‌ها در ردیف‌های جداگانه',
                 desc: 'هر ویژگی را در ردیف جداگانه نمایش می‌دهد.'
-            },
-            customPropertyColorMap: {
-                name: 'رنگ‌های ویژگی',
-                desc: 'نگاشت ویژگی‌ها و مقادیر فرانت‌متر به رنگ‌های نشان. یک نگاشت در هر خط: ویژگی=رنگ یا ویژگی:مقدار=رنگ',
-                placeholder: '# ویژگی یا ویژگی:مقدار رنگ\nstatus=#f59e0b\nstatus:done=#10b981\nstatus:todo=#ef4444',
-                editTooltip: 'ویرایش نگاشت‌ها'
-            },
-            showCustomPropertyInCompactMode: {
-                name: 'نمایش ویژگی سفارشی در حالت فشرده',
-                desc: 'ویژگی سفارشی را هنگامی که تاریخ، پیش‌نمایش و تصویر مخفی هستند نمایش دهید.'
             },
             dateFormat: {
                 name: 'قالب تاریخ',
@@ -1361,7 +1405,7 @@ export const STRINGS_FA = {
             previewProperties: {
                 name: 'ویژگی‌های پیش‌نمایش',
                 desc: 'لیست ویژگی‌های فرانت‌متر جدا شده با کاما برای بررسی متن پیش‌نمایش. اولین ویژگی با متن استفاده می‌شود.',
-                placeholder: 'خلاصه، توضیحات، چکیده',
+                placeholder: 'summary, description, abstract',
                 info: 'اگر متن پیش‌نمایش در ویژگی‌های مشخص‌شده یافت نشود، پیش‌نمایش از محتوای یادداشت تولید می‌شود.'
             },
             previewRows: {
@@ -1399,7 +1443,7 @@ export const STRINGS_FA = {
             featureImageExcludeProperties: {
                 name: 'استثنای یادداشت‌ها با ویژگی‌ها',
                 desc: 'لیست ویژگی‌های فرانت‌متر جدا شده با کاما. یادداشت‌هایی که هر یک از این ویژگی‌ها را دارند، تصاویر ویژه را ذخیره نمی‌کنند.',
-                placeholder: 'خصوصی, محرمانه'
+                placeholder: 'private, confidential'
             },
 
             downloadExternalFeatureImages: {
@@ -1511,6 +1555,33 @@ export const STRINGS_FA = {
                 name: 'حفظ ویژگی برچسب‌ها بعد از حذف آخرین برچسب',
                 desc: 'ویژگی برچسب‌های فرانت‌متر را هنگام حذف همه برچسب‌ها حفظ کنید. وقتی غیرفعال، ویژگی برچسب‌ها از فرانت‌متر حذف می‌شود.'
             },
+            showProperties: {
+                name: 'نمایش ویژگی‌ها',
+                desc: 'نمایش بخش ویژگی‌ها در ناوبر.'
+            },
+            showPropertyIcons: {
+                name: 'نمایش نمادهای ویژگی',
+                desc: 'نمایش نمادها در کنار ویژگی‌ها در پنل ناوبری.'
+            },
+            inheritPropertyColors: {
+                name: 'ارث‌بری رنگ‌های ویژگی',
+                desc: 'مقادیر ویژگی رنگ و پس‌زمینه را از کلید ویژگی به ارث می‌برند.'
+            },
+            propertySortOrder: {
+                name: 'ترتیب مرتب‌سازی ویژگی‌ها',
+                desc: 'برای تنظیم ترتیب مرتب‌سازی متفاوت برای مقادیر هر ویژگی، روی آن راست‌کلیک کنید.',
+                options: {
+                    alphaAsc: 'الف تا ی',
+                    alphaDesc: 'ی تا الف',
+                    frequency: 'فراوانی',
+                    lowToHigh: 'کم به زیاد',
+                    highToLow: 'زیاد به کم'
+                }
+            },
+            showAllPropertiesFolder: {
+                name: 'نمایش پوشه ویژگی‌ها',
+                desc: 'نمایش "ویژگی‌ها" به عنوان پوشه جمع‌شدنی.'
+            },
             hiddenTags: {
                 name: 'مخفی کردن برچسب‌ها (پروفایل خزانه)',
                 desc: 'لیست الگوهای برچسب جدا شده با کاما. الگوهای نام: tag* (شروع با)، *tag (پایان با). الگوهای مسیر: archive (برچسب و فرزندان)، archive/* (فقط فرزندان)، projects/*/drafts (wildcard میانی).',
@@ -1538,7 +1609,7 @@ export const STRINGS_FA = {
             folderNoteName: {
                 name: 'نام یادداشت پوشه',
                 desc: 'نام یادداشت پوشه بدون پسوند. برای استفاده از نام پوشه خالی بگذارید.',
-                placeholder: 'فهرست'
+                placeholder: 'index'
             },
             folderNoteNamePattern: {
                 name: 'الگوی نام یادداشت پوشه',
@@ -1571,7 +1642,8 @@ export const STRINGS_FA = {
                 error: 'پاکسازی تنظیمات ناموفق بود',
                 loading: 'بررسی متادیتا...',
                 statusClean: 'متادیتایی برای پاکسازی نیست',
-                statusCounts: 'آیتم‌های یتیم: {folders} پوشه، {tags} برچسب، {files} فایل، {pinned} سنجاق، {separators} جداکننده'
+                statusCounts:
+                    'آیتم‌های یتیم: {folders} پوشه، {tags} برچسب، {properties} ویژگی، {files} فایل، {pinned} سنجاق، {separators} جداکننده'
             },
             rebuildCache: {
                 name: 'بازسازی کش',
@@ -1600,16 +1672,17 @@ export const STRINGS_FA = {
             frontmatterIconField: {
                 name: 'فیلد آیکون',
                 desc: 'فیلد فرانت‌متر برای آیکون‌های فایل. برای استفاده از آیکون‌های ذخیره‌شده در تنظیمات خالی بگذارید.',
-                placeholder: 'آیکون'
+                placeholder: 'icon'
             },
             frontmatterColorField: {
                 name: 'فیلد رنگ',
                 desc: 'فیلد فرانت‌متر برای رنگ‌های فایل. برای استفاده از رنگ‌های ذخیره‌شده در تنظیمات خالی بگذارید.',
-                placeholder: 'رنگ'
+                placeholder: 'color'
             },
-            frontmatterSaveMetadata: {
-                name: 'ذخیره آیکون‌ها و رنگ‌ها در فرانت‌متر',
-                desc: 'به طور خودکار آیکون‌ها و رنگ‌های فایل را با استفاده از فیلدهای پیکربندی‌شده بالا در فرانت‌متر بنویسید.'
+            frontmatterBackgroundField: {
+                name: 'فیلد پس‌زمینه',
+                desc: 'فیلد فرانت‌متر برای رنگ‌های پس‌زمینه. برای استفاده از رنگ‌های پس‌زمینه ذخیره‌شده در تنظیمات خالی بگذارید.',
+                placeholder: 'background'
             },
             frontmatterMigration: {
                 name: 'مهاجرت آیکون‌ها و رنگ‌ها از تنظیمات',
@@ -1624,17 +1697,17 @@ export const STRINGS_FA = {
             frontmatterNameField: {
                 name: 'فیلدهای نام',
                 desc: 'لیست فیلدهای فرانت‌متر جداشده با کاما. اولین مقدار غیرخالی استفاده می‌شود. به نام فایل برمی‌گردد.',
-                placeholder: 'عنوان, نام'
+                placeholder: 'title, name'
             },
             frontmatterCreatedField: {
                 name: 'فیلد زمان ایجاد',
                 desc: 'نام فیلد فرانت‌متر برای زمان ایجاد. برای استفاده فقط از تاریخ سیستم فایل خالی بگذارید.',
-                placeholder: 'ایجاد'
+                placeholder: 'created'
             },
             frontmatterModifiedField: {
                 name: 'فیلد زمان تغییر',
                 desc: 'نام فیلد فرانت‌متر برای زمان تغییر. برای استفاده فقط از تاریخ سیستم فایل خالی بگذارید.',
-                placeholder: 'تغییر'
+                placeholder: 'modified'
             },
             frontmatterDateFormat: {
                 name: 'قالب زمان',

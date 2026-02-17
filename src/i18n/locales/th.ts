@@ -105,6 +105,8 @@ export const STRINGS_TH = {
         folderExists: 'โฟลเดอร์อยู่ในทางลัดแล้ว',
         noteExists: 'โน้ตอยู่ในทางลัดแล้ว',
         tagExists: 'แท็กอยู่ในทางลัดแล้ว',
+        propertyExists: 'คุณสมบัติมีอยู่ในทางลัดแล้ว',
+        invalidProperty: 'ทางลัดคุณสมบัติไม่ถูกต้อง',
         searchExists: 'ทางลัดการค้นหามีอยู่แล้ว',
         emptySearchQuery: 'กรอกคำค้นหาก่อนบันทึก',
         emptySearchName: 'กรอกชื่อก่อนบันทึกการค้นหา',
@@ -185,12 +187,12 @@ export const STRINGS_TH = {
                 properties: {
                     title: 'คุณสมบัติ',
                     items: [
-                        '`.key` รวมโน้ตที่มีคีย์คุณสมบัติกำหนดเอง',
-                        '`.key=value` รวมโน้ตที่มีค่าคุณสมบัติกำหนดเอง',
+                        '`.key` รวมโน้ตที่มีคีย์คุณสมบัติ',
+                        '`.key=value` รวมโน้ตที่มีค่าคุณสมบัติ',
                         '`."Reading Status"` รวมโน้ตที่มีคีย์คุณสมบัติที่มีช่องว่าง',
                         '`."Reading Status"="In Progress"` คีย์และค่าที่มีช่องว่างต้องอยู่ในเครื่องหมายคำพูดคู่',
-                        '`-.key` ไม่รวมโน้ตที่มีคีย์คุณสมบัติกำหนดเอง',
-                        '`-.key=value` ไม่รวมโน้ตที่มีค่าคุณสมบัติกำหนดเอง',
+                        '`-.key` ไม่รวมโน้ตที่มีคีย์คุณสมบัติ',
+                        '`-.key=value` ไม่รวมโน้ตที่มีค่าคุณสมบัติ',
                         'Cmd/Ctrl+คลิกคุณสมบัติเพื่อเพิ่มด้วย AND Cmd/Ctrl+Shift+คลิกเพื่อเพิ่มด้วย OR'
                     ]
                 },
@@ -323,6 +325,10 @@ export const STRINGS_TH = {
             showTag: 'แสดงแท็ก',
             hideTag: 'ซ่อนแท็ก'
         },
+        property: {
+            addKey: 'เพิ่มคีย์คุณสมบัติ',
+            removeKey: 'ลบคีย์คุณสมบัติ'
+        },
         navigation: {
             addSeparator: 'เพิ่มตัวคั่น',
             removeSeparator: 'นำตัวคั่นออก'
@@ -376,10 +382,6 @@ export const STRINGS_TH = {
         fileIconRuleEditor: {
             addRuleAria: 'เพิ่มกฎ'
         },
-        propertyColorRuleEditor: {
-            propertyPlaceholder: 'Property',
-            valuePlaceholder: 'Value'
-        },
         interfaceIcons: {
             title: 'ไอคอนอินเทอร์เฟซ',
             fileItemsSection: 'รายการไฟล์',
@@ -405,13 +407,15 @@ export const STRINGS_TH = {
                 'list-new-note': 'โน้ตใหม่',
                 'nav-folder-open': 'โฟลเดอร์เปิด',
                 'nav-folder-closed': 'โฟลเดอร์ปิด',
-                'nav-folder-note': 'โน้ตโฟลเดอร์',
+                'nav-tags': 'แท็ก',
                 'nav-tag': 'แท็ก',
                 'nav-properties': 'คุณสมบัติ',
+                'nav-property': 'คุณสมบัติ',
+                'nav-property-value': 'ค่า',
                 'list-pinned': 'รายการที่ปักหมุด',
                 'file-unfinished-task': 'งานที่ยังไม่เสร็จ',
                 'file-word-count': 'จำนวนคำ',
-                'file-custom-property': 'คุณสมบัติที่กำหนดเอง'
+                'file-property': 'คุณสมบัติ'
             }
         },
         colorPicker: {
@@ -532,6 +536,15 @@ export const STRINGS_TH = {
                 dismiss: 'เพื่อปิด',
                 add: 'เพื่อเพิ่มแท็ก',
                 remove: 'เพื่อนำแท็กออก'
+            }
+        },
+        propertySuggest: {
+            placeholder: 'เลือกคีย์คุณสมบัติ...',
+            navigatePlaceholder: 'นำทางไปยังคุณสมบัติ...',
+            instructions: {
+                navigate: 'เพื่อนำทาง',
+                select: 'เพื่อเพิ่มคุณสมบัติ',
+                dismiss: 'เพื่อปิด'
             }
         },
         welcome: {
@@ -686,6 +699,7 @@ export const STRINGS_TH = {
         pinAllFolderNotes: 'ปักหมุดโน้ตโฟลเดอร์ทั้งหมด',
         navigateToFolder: 'นำทางไปยังโฟลเดอร์',
         navigateToTag: 'นำทางไปยังแท็ก',
+        navigateToProperty: 'นำทางไปยังคุณสมบัติ',
         addShortcut: 'เพิ่มในทางลัด',
         openShortcut: 'เปิดทางลัด {number}',
         toggleDescendants: 'สลับลูกหลาน',
@@ -726,14 +740,15 @@ export const STRINGS_TH = {
         },
         sections: {
             general: 'ทั่วไป',
-            navigationPane: 'แผงนำทาง',
+            navigationPane: 'นำทาง',
             calendar: 'ปฏิทิน',
             icons: 'ชุดไอคอน',
             folders: 'โฟลเดอร์',
             folderNotes: 'โน้ตโฟลเดอร์',
-            foldersAndTags: 'โฟลเดอร์ & แท็ก',
+            foldersAndTags: 'โฟลเดอร์',
+            tagsAndProperties: 'แท็กและคุณสมบัติ',
             tags: 'แท็ก',
-            listPane: 'แผงรายการ',
+            listPane: 'รายการ',
             notes: 'โน้ต',
             advanced: 'ขั้นสูง'
         },
@@ -752,7 +767,6 @@ export const STRINGS_TH = {
             },
             navigation: {
                 appearance: 'ลักษณะ',
-                shortcutsAndRecent: 'ทางลัดและรายการล่าสุด',
                 leftSidebar: 'แถบด้านซ้าย',
                 calendarIntegration: 'การรวมปฏิทิน'
             },
@@ -767,7 +781,7 @@ export const STRINGS_TH = {
                 previewText: 'ข้อความตัวอย่าง',
                 featureImage: 'รูปภาพเด่น',
                 tags: 'แท็ก',
-                customProperty: 'คุณสมบัติกำหนดเอง (ฟรอนต์แมตเตอร์หรือจำนวนคำ)',
+                properties: 'คุณสมบัติ',
                 date: 'วันที่',
                 parentFolder: 'โฟลเดอร์หลัก'
             }
@@ -812,6 +826,16 @@ export const STRINGS_TH = {
                 name: 'คุณสมบัติสำหรับเรียงลำดับ',
                 desc: 'ใช้กับการเรียงลำดับตามคุณสมบัติ โน้ตที่มีคุณสมบัติ frontmatter นี้จะแสดงก่อนและเรียงตามค่าคุณสมบัติ อาร์เรย์จะรวมเป็นค่าเดียว',
                 placeholder: 'order'
+            },
+            propertySortSecondary: {
+                name: 'การเรียงลำดับรอง',
+                desc: 'ใช้กับการเรียงตามคุณสมบัติ เมื่อโน้ตมีค่าคุณสมบัติเดียวกันหรือไม่มีค่าคุณสมบัติ',
+                options: {
+                    title: 'ชื่อเรื่อง',
+                    filename: 'ชื่อไฟล์',
+                    created: 'วันที่สร้าง',
+                    modified: 'วันที่แก้ไข'
+                }
             },
             revealFileOnListChanges: {
                 name: 'เลื่อนไปยังไฟล์ที่เลือกเมื่อรายการเปลี่ยนแปลง',
@@ -962,6 +986,10 @@ export const STRINGS_TH = {
                 name: 'แสดงโน้ตที่ใช้งานอัตโนมัติ',
                 desc: 'แสดงโน้ตอัตโนมัติเมื่อเปิดจาก Quick Switcher, ลิงก์, หรือการค้นหา'
             },
+            autoRevealShortestPath: {
+                name: 'ใช้เส้นทางสั้นที่สุด',
+                desc: 'เปิด: การเปิดเผยอัตโนมัติจะเลือกโฟลเดอร์หรือแท็กบรรพบุรุษที่ใกล้ที่สุดที่มองเห็นได้ ปิด: การเปิดเผยอัตโนมัติจะเลือกโฟลเดอร์จริงและแท็กที่ตรงกันของไฟล์'
+            },
             autoRevealIgnoreRightSidebar: {
                 name: 'ละเว้นเหตุการณ์จากแถบด้านขวา',
                 desc: 'อย่าเปลี่ยนโน้ตที่ใช้งานเมื่อคลิกหรือเปลี่ยนโน้ตในแถบด้านขวา'
@@ -1021,6 +1049,14 @@ export const STRINGS_TH = {
             showRecentNotes: {
                 name: 'แสดงโน้ตล่าสุด',
                 desc: 'แสดงส่วนโน้ตล่าสุดในแผงนำทาง'
+            },
+            hideRecentNotes: {
+                name: 'ซ่อนโน้ต',
+                desc: 'เลือกประเภทโน้ตที่ต้องการซ่อนในส่วนโน้ตล่าสุด',
+                options: {
+                    none: 'ไม่มี',
+                    folderNotes: 'โน้ตโฟลเดอร์'
+                }
             },
             recentNotesCount: {
                 name: 'จำนวนโน้ตล่าสุด',
@@ -1222,9 +1258,9 @@ export const STRINGS_TH = {
                 }
             },
             excludedNotes: {
-                name: 'ซ่อนโน้ตที่มีคุณสมบัติ (โปรไฟล์ห้องนิรภัย)',
-                desc: 'รายการคุณสมบัติ frontmatter คั่นด้วยเครื่องหมายจุลภาค โน้ตที่มีคุณสมบัติเหล่านี้จะถูกซ่อน (เช่น ฉบับร่าง, ส่วนตัว, เก็บถาวร)',
-                placeholder: 'ฉบับร่าง, ส่วนตัว'
+                name: 'ซ่อนโน้ตตามกฎคุณสมบัติ (โปรไฟล์ห้องนิรภัย)',
+                desc: 'รายการกฎ frontmatter คั่นด้วยเครื่องหมายจุลภาค ใช้รูปแบบ `key` หรือ `key=value` (เช่น status=done, published=true, archived)',
+                placeholder: 'status=done, published=true, archived'
             },
             excludedFileNamePatterns: {
                 name: 'ซ่อนไฟล์ (โปรไฟล์ห้องนิรภัย)',
@@ -1297,33 +1333,41 @@ export const STRINGS_TH = {
                 name: 'แสดงแท็กไฟล์ในโหมดกะทัดรัด',
                 desc: 'แสดงแท็กเมื่อวันที่ ตัวอย่าง และรูปภาพถูกซ่อน'
             },
-            customPropertyType: {
-                name: 'ประเภทคุณสมบัติ',
-                desc: 'เลือกคุณสมบัติกำหนดเองที่จะแสดงในรายการไฟล์',
+            showFileProperties: {
+                name: 'แสดงคุณสมบัติไฟล์',
+                desc: 'แสดงคุณสมบัติที่คลิกได้ในรายการไฟล์'
+            },
+            colorFileProperties: {
+                name: 'ระบายสีคุณสมบัติไฟล์',
+                desc: 'ใช้สีคุณสมบัติกับป้ายคุณสมบัติบนรายการไฟล์'
+            },
+            prioritizeColoredFileProperties: {
+                name: 'แสดงคุณสมบัติที่มีสีก่อน',
+                desc: 'เรียงคุณสมบัติที่มีสีก่อนคุณสมบัติอื่นบนรายการไฟล์'
+            },
+            showFilePropertiesInCompactMode: {
+                name: 'แสดงคุณสมบัติในโหมดกะทัดรัด',
+                desc: 'แสดงคุณสมบัติเมื่อโหมดกะทัดรัดเปิดใช้งาน'
+            },
+            notePropertyType: {
+                name: 'คุณสมบัติโน้ต',
+                desc: 'เลือกคุณสมบัติโน้ตที่จะแสดงในรายการไฟล์',
                 options: {
                     frontmatter: 'คุณสมบัติ Frontmatter',
                     wordCount: 'จำนวนคำ',
                     none: 'ไม่มี'
                 }
             },
-            customPropertyFields: {
+            propertyFields: {
                 name: 'คุณสมบัติที่จะแสดง',
-                desc: 'รายการคุณสมบัติ frontmatter คั่นด้วยเครื่องหมายจุลภาคเพื่อแสดงเป็นป้าย คุณสมบัติที่มีค่าเป็นรายการจะแสดงหนึ่งป้ายต่อค่า ค่าในรูปแบบ [[wikilink]] จะแสดงเป็นลิงก์ที่คลิกได้',
-                placeholder: 'สถานะ, ประเภท, หมวดหมู่'
+                desc: 'รายการคุณสมบัติ frontmatter คั่นด้วยเครื่องหมายจุลภาค เพื่อแสดงในแผงนำทางและเป็นป้ายในรายการไฟล์ คุณสมบัติที่เป็นรายการจะแสดงหนึ่งป้ายต่อค่า',
+                placeholder: 'status, type, category',
+                addButtonTooltip: 'เพิ่มคีย์คุณสมบัติ',
+                emptySelectorNotice: 'ไม่พบคีย์คุณสมบัติในแคชเมตาดาต้า'
             },
-            showCustomPropertiesOnSeparateRows: {
+            showPropertiesOnSeparateRows: {
                 name: 'แสดงคุณสมบัติแยกเป็นบรรทัด',
                 desc: 'แสดงแต่ละคุณสมบัติในบรรทัดของตัวเอง'
-            },
-            customPropertyColorMap: {
-                name: 'สีคุณสมบัติ',
-                desc: 'กำหนดคุณสมบัติและค่า frontmatter ให้กับสีป้าย หนึ่งการกำหนดต่อบรรทัด: คุณสมบัติ=สี หรือ คุณสมบัติ:ค่า=สี',
-                placeholder: '# คุณสมบัติ หรือ คุณสมบัติ:ค่า สี\nstatus=#f59e0b\nstatus:done=#10b981\nstatus:todo=#ef4444',
-                editTooltip: 'แก้ไขการกำหนด'
-            },
-            showCustomPropertyInCompactMode: {
-                name: 'แสดงคุณสมบัติกำหนดเองในโหมดกะทัดรัด',
-                desc: 'แสดงคุณสมบัติกำหนดเองเมื่อวันที่ ตัวอย่าง และรูปภาพถูกซ่อน'
             },
             dateFormat: {
                 name: 'รูปแบบวันที่',
@@ -1398,7 +1442,7 @@ export const STRINGS_TH = {
             featureImageExcludeProperties: {
                 name: 'ยกเว้นโน้ตที่มีคุณสมบัติ',
                 desc: 'รายการคุณสมบัติ frontmatter คั่นด้วยเครื่องหมายจุลภาค โน้ตที่มีคุณสมบัติใดๆ เหล่านี้จะไม่เก็บภาพเด่น',
-                placeholder: 'ส่วนตัว, ลับ'
+                placeholder: 'private, confidential'
             },
 
             downloadExternalFeatureImages: {
@@ -1510,6 +1554,33 @@ export const STRINGS_TH = {
                 name: 'เก็บคุณสมบัติแท็กหลังนำแท็กสุดท้ายออก',
                 desc: 'เก็บคุณสมบัติแท็ก frontmatter เมื่อนำแท็กทั้งหมดออก เมื่อปิดใช้งาน คุณสมบัติแท็กจะถูกลบออกจาก frontmatter'
             },
+            showProperties: {
+                name: 'แสดงคุณสมบัติ',
+                desc: 'แสดงส่วนคุณสมบัติในตัวนำทาง'
+            },
+            showPropertyIcons: {
+                name: 'แสดงไอคอนคุณสมบัติ',
+                desc: 'แสดงไอคอนข้างคุณสมบัติในแผงนำทาง'
+            },
+            inheritPropertyColors: {
+                name: 'สืบทอดสีคุณสมบัติ',
+                desc: 'ค่าคุณสมบัติจะสืบทอดสีและพื้นหลังจากคีย์คุณสมบัติ'
+            },
+            propertySortOrder: {
+                name: 'ลำดับการเรียงคุณสมบัติ',
+                desc: 'คลิกขวาที่คุณสมบัติใดก็ได้เพื่อตั้งค่าลำดับการเรียงที่แตกต่างสำหรับค่าต่างๆ',
+                options: {
+                    alphaAsc: 'ก ถึง ฮ',
+                    alphaDesc: 'ฮ ถึง ก',
+                    frequency: 'ความถี่',
+                    lowToHigh: 'ต่ำไปสูง',
+                    highToLow: 'สูงไปต่ำ'
+                }
+            },
+            showAllPropertiesFolder: {
+                name: 'แสดงโฟลเดอร์คุณสมบัติ',
+                desc: 'แสดง "คุณสมบัติ" เป็นโฟลเดอร์ที่พับได้'
+            },
             hiddenTags: {
                 name: 'ซ่อนแท็ก (โปรไฟล์ห้องนิรภัย)',
                 desc: 'รายการรูปแบบแท็กคั่นด้วยเครื่องหมายจุลภาค รูปแบบชื่อ: tag* (ขึ้นต้นด้วย), *tag (ลงท้ายด้วย) รูปแบบเส้นทาง: archive (แท็กและลูกหลาน), archive/* (ลูกหลานเท่านั้น), projects/*/drafts (wildcard ตรงกลาง)',
@@ -1570,7 +1641,8 @@ export const STRINGS_TH = {
                 error: 'ล้างการตั้งค่าล้มเหลว',
                 loading: 'กำลังตรวจสอบเมตาดาต้า...',
                 statusClean: 'ไม่มีเมตาดาต้าให้ล้าง',
-                statusCounts: 'รายการกำพร้า: {folders} โฟลเดอร์, {tags} แท็ก, {files} ไฟล์, {pinned} ปักหมุด, {separators} ตัวคั่น'
+                statusCounts:
+                    'รายการกำพร้า: {folders} โฟลเดอร์, {tags} แท็ก, {properties} คุณสมบัติ, {files} ไฟล์, {pinned} ปักหมุด, {separators} ตัวคั่น'
             },
             rebuildCache: {
                 name: 'สร้างแคชใหม่',
@@ -1606,9 +1678,10 @@ export const STRINGS_TH = {
                 desc: 'ฟิลด์ frontmatter สำหรับสีไฟล์ เว้นว่างเพื่อใช้สีที่เก็บในการตั้งค่า',
                 placeholder: 'color'
             },
-            frontmatterSaveMetadata: {
-                name: 'บันทึกไอคอนและสีไปยัง frontmatter',
-                desc: 'เขียนไอคอนและสีไฟล์ไปยัง frontmatter อัตโนมัติโดยใช้ฟิลด์ที่กำหนดค่าด้านบน'
+            frontmatterBackgroundField: {
+                name: 'ฟิลด์พื้นหลัง',
+                desc: 'ฟิลด์ frontmatter สำหรับสีพื้นหลัง เว้นว่างเพื่อใช้สีพื้นหลังที่เก็บในการตั้งค่า',
+                placeholder: 'background'
             },
             frontmatterMigration: {
                 name: 'ย้ายไอคอนและสีจากการตั้งค่า',
@@ -1623,7 +1696,7 @@ export const STRINGS_TH = {
             frontmatterNameField: {
                 name: 'ฟิลด์ชื่อ (หลายรายการ)',
                 desc: 'รายการฟิลด์ frontmatter คั่นด้วยเครื่องหมายจุลภาค ใช้ค่าแรกที่ไม่ว่าง กลับไปใช้ชื่อไฟล์',
-                placeholder: 'หัวข้อ, ชื่อ'
+                placeholder: 'title, name'
             },
             frontmatterCreatedField: {
                 name: 'ฟิลด์ timestamp สร้าง',

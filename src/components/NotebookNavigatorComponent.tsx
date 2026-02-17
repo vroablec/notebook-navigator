@@ -37,8 +37,17 @@ import { strings } from '../i18n';
 import { runAsyncAction } from '../utils/async';
 import { useUpdateNotice } from '../hooks/useUpdateNotice';
 import { FolderSuggestModal } from '../modals/FolderSuggestModal';
+import { buildPropertyNodeSuggestions, PropertyNodeSuggestModal } from '../modals/PropertyNodeSuggestModal';
 import { TagSuggestModal } from '../modals/TagSuggestModal';
-import { FILE_PANE_DIMENSIONS, ItemType, NAVPANE_MEASUREMENTS, type BackgroundMode, type DualPaneOrientation } from '../types';
+import {
+    FILE_PANE_DIMENSIONS,
+    ItemType,
+    NAVPANE_MEASUREMENTS,
+    TAGGED_TAG_ID,
+    UNTAGGED_TAG_ID,
+    type BackgroundMode,
+    type DualPaneOrientation
+} from '../types';
 import { getSelectedPath, getFilesForSelection } from '../utils/selectionUtils';
 import { normalizeNavigationPath } from '../utils/navigationIndex';
 import { deleteSelectedFiles, deleteSelectedFolder } from '../utils/deleteOperations';
@@ -93,9 +102,11 @@ export interface NotebookNavigatorHandle {
     addShortcutForCurrentSelection: () => Promise<void>;
     navigateToFolder: (folder: TFolder, options?: NavigateToFolderOptions) => void;
     navigateToTag: (tagPath: string) => void;
+    navigateToProperty: (propertyNodeId: string) => void;
     addDateFilterToSearch: (dateToken: string) => void;
     navigateToFolderWithModal: () => void;
     navigateToTagWithModal: () => void;
+    navigateToPropertyWithModal: () => void;
     addTagToSelectedFiles: () => Promise<void>;
     removeTagFromSelectedFiles: () => Promise<void>;
     removeAllTagsFromSelectedFiles: () => Promise<void>;
@@ -463,10 +474,17 @@ export const NotebookNavigatorComponent = React.memo(
         );
 
         // Use navigator reveal logic
-        const { revealFileInActualFolder, revealFileInNearestFolder, navigateToFolder, navigateToTag, revealTag } = useNavigatorReveal({
+        const {
+            revealFileInActualFolder,
+            revealFileInNearestFolder,
+            navigateToFolder,
+            navigateToTag,
+            navigateToProperty,
+            revealTag,
+            revealProperty
+        } = useNavigatorReveal({
             app,
             navigationPaneRef,
-            listPaneRef,
             focusNavigationPane: focusNavigationPaneCallback,
             focusFilesPane: focusFilesPaneCallback
         });
@@ -660,13 +678,23 @@ export const NotebookNavigatorComponent = React.memo(
                     });
                 },
                 createNoteInSelectedFolder: async () => {
-                    if (!selectionState.selectedFolder) {
-                        showNotice(strings.fileSystem.errors.noFolderSelected, { variant: 'warning' });
+                    if (selectionState.selectedFolder) {
+                        await fileSystemOps.createNewFile(selectionState.selectedFolder);
                         return;
                     }
 
-                    // Use the same logic as the context menu
-                    await fileSystemOps.createNewFile(selectionState.selectedFolder);
+                    if (
+                        selectionState.selectionType === ItemType.TAG &&
+                        selectionState.selectedTag &&
+                        selectionState.selectedTag !== TAGGED_TAG_ID &&
+                        selectionState.selectedTag !== UNTAGGED_TAG_ID
+                    ) {
+                        const sourcePath = selectionState.selectedFile?.path ?? app.workspace.getActiveFile()?.path ?? '';
+                        await fileSystemOps.createNewFileForTag(selectionState.selectedTag, sourcePath);
+                        return;
+                    }
+
+                    showNotice(strings.fileSystem.errors.noFolderSelected, { variant: 'warning' });
                 },
                 createNoteFromTemplateInSelectedFolder: async () => {
                     if (!selectionState.selectedFolder) {
@@ -742,6 +770,7 @@ export const NotebookNavigatorComponent = React.memo(
                 },
                 navigateToFolder,
                 navigateToTag,
+                navigateToProperty,
                 addDateFilterToSearch: handleModifySearchWithDateFilter,
                 navigateToFolderWithModal: () => {
                     // Show the folder selection modal for navigation
@@ -768,8 +797,20 @@ export const NotebookNavigatorComponent = React.memo(
                         },
                         strings.modals.tagSuggest.navigatePlaceholder,
                         strings.modals.tagSuggest.instructions.select,
-                        true, // Include untagged option
                         false // Do not allow creating tags for navigation
+                    );
+                    modal.open();
+                },
+                navigateToPropertyWithModal: () => {
+                    const suggestions = propertyTreeService ? buildPropertyNodeSuggestions(propertyTreeService.getPropertyTree()) : [];
+                    const modal = new PropertyNodeSuggestModal(
+                        app,
+                        suggestions,
+                        nodeId => {
+                            navigateToProperty(nodeId);
+                        },
+                        strings.modals.propertySuggest.navigatePlaceholder,
+                        strings.modals.propertySuggest.instructions.navigate
                     );
                     modal.open();
                 },
@@ -851,6 +892,7 @@ export const NotebookNavigatorComponent = React.memo(
             selectionDispatch,
             navigateToFolder,
             navigateToTag,
+            navigateToProperty,
             uiState.singlePane,
             uiState.currentSinglePaneView,
             uiState.focusedPane,
@@ -1026,6 +1068,7 @@ export const NotebookNavigatorComponent = React.memo(
                         onExecuteSearchShortcut={handleSearchShortcutExecution}
                         onNavigateToFolder={navigateToFolder}
                         onRevealTag={revealTag}
+                        onRevealProperty={revealProperty}
                         onRevealFile={revealFileInNearestFolder}
                         onRevealShortcutFile={handleShortcutNoteReveal}
                         onModifySearchWithTag={handleModifySearchWithTag}
@@ -1036,6 +1079,7 @@ export const NotebookNavigatorComponent = React.memo(
                         ref={listPaneRef}
                         rootContainerRef={containerRef}
                         onSearchTokensChange={handleSearchTokensChange}
+                        onNavigateToFolder={navigateToFolder}
                         resizeHandleProps={!uiState.singlePane ? resizeHandleProps : undefined}
                     />
                     {shouldRenderSinglePaneCalendar ? (

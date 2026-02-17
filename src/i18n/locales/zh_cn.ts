@@ -104,6 +104,8 @@ export const STRINGS_ZH_CN = {
         folderExists: '文件夹已在快捷方式中',
         noteExists: '笔记已在快捷方式中',
         tagExists: '标签已在快捷方式中',
+        propertyExists: '属性已在快捷方式中',
+        invalidProperty: '无效的属性快捷方式',
         searchExists: '搜索快捷方式已存在',
         emptySearchQuery: '保存前请输入搜索查询',
         emptySearchName: '保存搜索前请输入名称',
@@ -184,12 +186,12 @@ export const STRINGS_ZH_CN = {
                 properties: {
                     title: '属性',
                     items: [
-                        '`.key` 包含具有自定义属性键的笔记。',
-                        '`.key=value` 包含具有自定义属性值的笔记。',
+                        '`.key` 包含具有属性键的笔记。',
+                        '`.key=value` 包含具有属性值的笔记。',
                         '`."Reading Status"` 包含属性键包含空格的笔记。',
                         '`."Reading Status"="In Progress"` 包含空格的键和值必须用双引号括起来。',
-                        '`-.key` 排除具有自定义属性键的笔记。',
-                        '`-.key=value` 排除具有自定义属性值的笔记。',
+                        '`-.key` 排除具有属性键的笔记。',
+                        '`-.key=value` 排除具有属性值的笔记。',
                         'Cmd/Ctrl+点击属性以 AND 方式添加。Cmd/Ctrl+Shift+点击以 OR 方式添加。'
                     ]
                 },
@@ -323,6 +325,10 @@ export const STRINGS_ZH_CN = {
             showTag: '显示标签',
             hideTag: '隐藏标签'
         },
+        property: {
+            addKey: '添加属性键',
+            removeKey: '删除属性键'
+        },
         navigation: {
             addSeparator: '添加分隔符',
             removeSeparator: '移除分隔符'
@@ -376,10 +382,6 @@ export const STRINGS_ZH_CN = {
         fileIconRuleEditor: {
             addRuleAria: '添加规则'
         },
-        propertyColorRuleEditor: {
-            propertyPlaceholder: 'Property',
-            valuePlaceholder: 'Value'
-        },
         interfaceIcons: {
             title: '界面图标',
             fileItemsSection: '文件项目',
@@ -405,13 +407,15 @@ export const STRINGS_ZH_CN = {
                 'list-new-note': '新建笔记',
                 'nav-folder-open': '文件夹打开',
                 'nav-folder-closed': '文件夹关闭',
-                'nav-folder-note': '文件夹笔记',
+                'nav-tags': '标签',
                 'nav-tag': '标签',
                 'nav-properties': '属性',
+                'nav-property': '属性',
+                'nav-property-value': '值',
                 'list-pinned': '固定项目',
                 'file-unfinished-task': '未完成任务',
                 'file-word-count': '字数统计',
-                'file-custom-property': '自定义属性'
+                'file-property': '属性'
             }
         },
         colorPicker: {
@@ -532,6 +536,15 @@ export const STRINGS_ZH_CN = {
                 dismiss: '取消',
                 add: '添加标签',
                 remove: '移除标签'
+            }
+        },
+        propertySuggest: {
+            placeholder: '选择属性键...',
+            navigatePlaceholder: '导航到属性...',
+            instructions: {
+                navigate: '导航',
+                select: '添加属性',
+                dismiss: '取消'
             }
         },
         welcome: {
@@ -685,6 +698,7 @@ export const STRINGS_ZH_CN = {
         pinAllFolderNotes: '固定所有文件夹笔记', // Command palette: Pins all folder notes to shortcuts (English: Pin all folder notes)
         navigateToFolder: '导航到文件夹', // Command palette: Navigate to a folder using fuzzy search (English: Navigate to folder)
         navigateToTag: '导航到标签', // Command palette: Navigate to a tag using fuzzy search (English: Navigate to tag)
+        navigateToProperty: '导航到属性', // Command palette: Navigate to a property key or value using fuzzy search (English: Navigate to property)
         addShortcut: '添加到快捷方式', // Command palette: Adds the current file, folder, or tag to shortcuts (English: Add to shortcuts)
         openShortcut: '打开快捷方式 {number}',
         toggleDescendants: '切换后代', // Command palette: Toggles showing notes from descendants (English: Toggle descendants)
@@ -726,14 +740,15 @@ export const STRINGS_ZH_CN = {
         sections: {
             general: '通用',
             notes: '笔记',
-            navigationPane: '导航窗格',
+            navigationPane: '导航',
             calendar: '导航日历',
             icons: '图标包',
             tags: '标签',
             folders: '文件夹',
             folderNotes: '文件夹笔记',
-            foldersAndTags: '文件夹与标签',
-            listPane: '列表窗格',
+            foldersAndTags: '文件夹',
+            tagsAndProperties: '标签与属性',
+            listPane: '列表',
             advanced: '高级'
         },
         groups: {
@@ -751,7 +766,6 @@ export const STRINGS_ZH_CN = {
             },
             navigation: {
                 appearance: '外观',
-                shortcutsAndRecent: '快捷方式和最近项目',
                 leftSidebar: '左侧边栏',
                 calendarIntegration: '日历集成'
             },
@@ -766,7 +780,7 @@ export const STRINGS_ZH_CN = {
                 previewText: '预览文本',
                 featureImage: '特色图片',
                 tags: '标签',
-                customProperty: '自定义属性（frontmatter 或字数）',
+                properties: '属性',
                 date: '日期',
                 parentFolder: '父文件夹'
             }
@@ -811,6 +825,16 @@ export const STRINGS_ZH_CN = {
                 name: '排序属性',
                 desc: '用于属性排序。具有此 frontmatter 属性的笔记首先列出，并按属性值排序。数组合并为单一值。',
                 placeholder: 'order'
+            },
+            propertySortSecondary: {
+                name: '次要排序',
+                desc: '与属性排序配合使用，当笔记具有相同的属性值或没有属性值时生效。',
+                options: {
+                    title: '标题',
+                    filename: '文件名',
+                    created: '创建日期',
+                    modified: '编辑日期'
+                }
             },
             revealFileOnListChanges: {
                 name: '列表变更时滚动到选定文件',
@@ -961,6 +985,10 @@ export const STRINGS_ZH_CN = {
                 name: '自动定位活动笔记',
                 desc: '从快速切换器、链接或搜索打开笔记时自动显示。'
             },
+            autoRevealShortestPath: {
+                name: '使用最短路径',
+                desc: '启用：自动显示选择最近的可见祖先文件夹或标签。禁用：自动显示选择文件的实际文件夹和精确标签。'
+            },
             autoRevealIgnoreRightSidebar: {
                 name: '忽略右侧边栏事件',
                 desc: '在右侧边栏中点击或更改笔记时不更改活动笔记。'
@@ -1020,6 +1048,14 @@ export const STRINGS_ZH_CN = {
             showRecentNotes: {
                 name: '显示最近笔记',
                 desc: '在导航窗格中显示最近笔记部分。'
+            },
+            hideRecentNotes: {
+                name: '隐藏笔记',
+                desc: '选择在最近笔记部分中隐藏的笔记类型。',
+                options: {
+                    none: '无',
+                    folderNotes: '文件夹笔记'
+                }
             },
             recentNotesCount: {
                 name: '最近笔记数量',
@@ -1200,9 +1236,9 @@ export const STRINGS_ZH_CN = {
                 desc: '按 Ctrl+Enter 在新标签页、分栏或窗口中打开所选文件。'
             },
             excludedNotes: {
-                name: '隐藏带属性的笔记 (库配置)',
-                desc: '逗号分隔的前置元数据属性列表。包含任何这些属性的笔记将被隐藏（例如：draft, private, archived）。',
-                placeholder: 'draft, private'
+                name: '按属性规则隐藏笔记 (库配置)',
+                desc: '逗号分隔的前置元数据规则列表。使用 `key` 或 `key=value` 条目（例如：status=done, published=true, archived）。',
+                placeholder: 'status=done, published=true, archived'
             },
             excludedFileNamePatterns: {
                 name: '隐藏文件 (库配置)',
@@ -1297,33 +1333,41 @@ export const STRINGS_ZH_CN = {
                 name: '在精简模式中显示文件标签',
                 desc: '当日期、预览和图像被隐藏时显示标签。'
             },
-            customPropertyType: {
-                name: '属性类型',
-                desc: '选择要在文件项中显示的自定义属性。',
+            showFileProperties: {
+                name: '显示文件属性',
+                desc: '在文件项中显示可点击的属性。'
+            },
+            colorFileProperties: {
+                name: '为文件属性着色',
+                desc: '将属性颜色应用到文件项的属性徽章上。'
+            },
+            prioritizeColoredFileProperties: {
+                name: '优先显示彩色属性',
+                desc: '在文件项中将彩色属性排列在其他属性之前。'
+            },
+            showFilePropertiesInCompactMode: {
+                name: '在精简模式中显示属性',
+                desc: '精简模式启用时显示属性。'
+            },
+            notePropertyType: {
+                name: '笔记属性',
+                desc: '选择要在文件项中显示的笔记属性。',
                 options: {
                     frontmatter: '前置元数据属性',
                     wordCount: '字数统计',
                     none: '无'
                 }
             },
-            customPropertyFields: {
+            propertyFields: {
                 name: '要显示的属性',
-                desc: '以逗号分隔的前置元数据属性列表，用于显示为标签。列表值属性每个值显示一个标签。[[wikilink]] 格式的值将显示为可点击链接。',
-                placeholder: '状态, 类型, 分类'
+                desc: '以逗号分隔的 frontmatter 属性列表，用于在导航窗格和文件项中作为徽章显示。列表值属性每个值显示一个徽章。',
+                placeholder: 'status, type, category',
+                addButtonTooltip: '添加属性键',
+                emptySelectorNotice: '在元数据缓存中未找到属性键。'
             },
-            showCustomPropertiesOnSeparateRows: {
+            showPropertiesOnSeparateRows: {
                 name: '在单独的行中显示属性',
                 desc: '将每个属性显示在单独的行中。'
-            },
-            customPropertyColorMap: {
-                name: '属性颜色',
-                desc: '将前置元数据属性和值映射到徽章颜色。每行一个映射：属性=颜色 或 属性:值=颜色',
-                placeholder: '# 属性 或 属性:值 颜色\nstatus=#f59e0b\nstatus:done=#10b981\nstatus:todo=#ef4444',
-                editTooltip: '编辑映射'
-            },
-            showCustomPropertyInCompactMode: {
-                name: '在精简模式中显示自定义属性',
-                desc: '当日期、预览和图像被隐藏时显示自定义属性。'
             },
             dateFormat: {
                 name: '日期格式',
@@ -1360,7 +1404,7 @@ export const STRINGS_ZH_CN = {
             previewProperties: {
                 name: '预览属性',
                 desc: '用于查找预览文本的前置属性的逗号分隔列表。将使用第一个包含文本的属性。',
-                placeholder: '摘要, 描述, 概要',
+                placeholder: 'summary, description, abstract',
                 info: '如果在指定的属性中找不到预览文本，预览将从笔记内容中生成。'
             },
             previewRows: {
@@ -1398,7 +1442,7 @@ export const STRINGS_ZH_CN = {
             featureImageExcludeProperties: {
                 name: '排除含有属性的笔记',
                 desc: '逗号分隔的前置元数据属性列表。包含这些属性的笔记不会存储特色图片。',
-                placeholder: '私密, 机密'
+                placeholder: 'private, confidential'
             },
 
             downloadExternalFeatureImages: {
@@ -1510,6 +1554,33 @@ export const STRINGS_ZH_CN = {
                 name: '删除最后一个标签后保留 tags 属性',
                 desc: '当所有标签被删除时保留 frontmatter 中的 tags 属性。禁用时,tags 属性将从 frontmatter 中删除。'
             },
+            showProperties: {
+                name: '显示属性',
+                desc: '在导航器中显示属性部分。'
+            },
+            showPropertyIcons: {
+                name: '显示属性图标',
+                desc: '在导航窗格中属性旁边显示图标。'
+            },
+            inheritPropertyColors: {
+                name: '继承属性颜色',
+                desc: '属性值继承其属性键的颜色和背景色。'
+            },
+            propertySortOrder: {
+                name: '属性排序方式',
+                desc: '右键点击任意属性以设置其值的不同排序方式。',
+                options: {
+                    alphaAsc: 'A 到 Z',
+                    alphaDesc: 'Z 到 A',
+                    frequency: '频率',
+                    lowToHigh: '从低到高',
+                    highToLow: '从高到低'
+                }
+            },
+            showAllPropertiesFolder: {
+                name: '显示属性文件夹',
+                desc: '将"属性"显示为可折叠文件夹。'
+            },
             hiddenTags: {
                 name: '隐藏标签 (库配置)',
                 desc: '逗号分隔的标签模式列表。名称模式：tag*（以...开头）、*tag（以...结尾）。路径模式：archive（标签及其后代）、archive/*（仅后代）、projects/*/drafts（中间通配符）。',
@@ -1537,7 +1608,7 @@ export const STRINGS_ZH_CN = {
             folderNoteName: {
                 name: '文件夹笔记名称',
                 desc: '文件夹笔记的名称。留空以使用与文件夹相同的名称。',
-                placeholder: '留空以使用文件夹名称'
+                placeholder: 'index'
             },
             folderNoteNamePattern: {
                 name: '文件夹笔记名称模式',
@@ -1570,7 +1641,7 @@ export const STRINGS_ZH_CN = {
                 error: '设置清理失败',
                 loading: '正在检查元数据...',
                 statusClean: '没有需要清理的元数据',
-                statusCounts: '孤立项目：{folders} 文件夹，{tags} 标签，{files} 文件，{pinned} 置顶，{separators} 分隔符'
+                statusCounts: '孤立项目：{folders} 文件夹，{tags} 标签，{properties} 属性，{files} 文件，{pinned} 置顶，{separators} 分隔符'
             },
             rebuildCache: {
                 name: '重建缓存',
@@ -1599,7 +1670,7 @@ export const STRINGS_ZH_CN = {
             frontmatterNameField: {
                 name: '名称字段（多个）',
                 desc: '逗号分隔的前言字段列表。使用第一个非空值。回退到文件名。',
-                placeholder: '标题, 名称'
+                placeholder: 'title, name'
             },
             frontmatterIconField: {
                 name: '图标字段',
@@ -1611,9 +1682,10 @@ export const STRINGS_ZH_CN = {
                 desc: '文件颜色的前言字段。留空使用存储在设置中的颜色。',
                 placeholder: 'color'
             },
-            frontmatterSaveMetadata: {
-                name: '将图标和颜色保存到前言',
-                desc: '使用上面配置的字段自动将文件图标和颜色写入前言。'
+            frontmatterBackgroundField: {
+                name: '背景字段',
+                desc: '背景颜色的前言字段。留空使用存储在设置中的背景颜色。',
+                placeholder: 'background'
             },
             frontmatterMigration: {
                 name: '从设置迁移图标和颜色',
@@ -1628,12 +1700,12 @@ export const STRINGS_ZH_CN = {
             frontmatterCreatedField: {
                 name: '创建时间戳字段',
                 desc: '创建时间戳的前言字段名称。留空仅使用文件系统日期。',
-                placeholder: '创建时间'
+                placeholder: 'created'
             },
             frontmatterModifiedField: {
                 name: '修改时间戳字段',
                 desc: '修改时间戳的前言字段名称。留空仅使用文件系统日期。',
-                placeholder: '修改时间'
+                placeholder: 'modified'
             },
             frontmatterDateFormat: {
                 name: '时间戳格式',

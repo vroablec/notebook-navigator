@@ -39,7 +39,7 @@ import {
     type CalendarNoteKind
 } from '../../utils/calendarNotes';
 import { getFolderNote, getFolderNoteDetectionSettings, isFolderNote, isSupportedFolderNoteExtension } from '../../utils/folderNotes';
-import { isFolderInExcludedFolder, shouldExcludeFile } from '../../utils/fileFilters';
+import { createFrontmatterPropertyExclusionMatcher, isFolderInExcludedFolder, shouldExcludeFileWithMatcher } from '../../utils/fileFilters';
 import { getEffectiveFrontmatterExclusions, isFileHiddenBySettings } from '../../utils/exclusionUtils';
 import { runAsyncAction } from '../../utils/async';
 import { getMomentApi, resolveMomentLocale, type MomentInstance } from '../../utils/moment';
@@ -62,7 +62,7 @@ import { getTemplaterCreateNewNoteFromTemplate } from '../../utils/templaterInte
 import { getLeafSplitLocation } from '../../utils/workspaceSplit';
 import { openFileInContext } from '../../utils/openFileInContext';
 import {
-    isPropertyFeatureEnabled,
+    canRestorePropertySelectionNodeId,
     isPropertySelectionNodeIdConfigured,
     isPropertyTreeNodeId,
     parseStoredPropertySelectionNodeId,
@@ -161,11 +161,11 @@ function resolveStoredCommandSelection(plugin: NotebookNavigatorPlugin, currentF
     let selectedTag: string | null = null;
     let selectedFolder: TFolder | null = null;
 
-    if (isPropertyFeatureEnabled(plugin.settings)) {
+    if (plugin.settings.showProperties) {
         try {
             const savedPropertyRaw = localStorage.get<unknown>(STORAGE_KEYS.selectedPropertyKey);
             selectedProperty = parseStoredPropertySelectionNodeId(savedPropertyRaw);
-            if (selectedProperty && !isPropertySelectionNodeIdConfigured(plugin.settings, selectedProperty)) {
+            if (selectedProperty && !canRestorePropertySelectionNodeId(plugin.settings, selectedProperty)) {
                 selectedProperty = null;
                 try {
                     localStorage.remove(STORAGE_KEYS.selectedPropertyKey);
@@ -315,7 +315,7 @@ function getSelectedTagForCommand(plugin: NotebookNavigatorPlugin): string | nul
 }
 
 function getSelectedPropertyForCommand(plugin: NotebookNavigatorPlugin): PropertySelectionNodeId | null {
-    if (!isPropertyFeatureEnabled(plugin.settings)) {
+    if (!plugin.settings.showProperties) {
         return null;
     }
 
@@ -515,6 +515,9 @@ async function openCalendarNoteForToday(plugin: NotebookNavigatorPlugin, kind: C
     const fallbackLocale = momentApi.locale() || 'en';
     const requestedDisplayLocale = (currentLanguage || fallbackLocale).replace(/_/g, '-');
     const displayLocale = resolveMomentLocale(requestedDisplayLocale, momentApi, fallbackLocale);
+    const requestedCalendarRulesLocale =
+        plugin.settings.calendarLocale === 'system-default' ? displayLocale : plugin.settings.calendarLocale;
+    const calendarRulesLocale = resolveMomentLocale(requestedCalendarRulesLocale, momentApi, displayLocale);
 
     if (kind === 'day' && plugin.settings.calendarIntegrationMode === 'daily-notes') {
         const dailyNoteSettings = getCoreDailyNoteSettings(plugin.app);
@@ -564,7 +567,7 @@ async function openCalendarNoteForToday(plugin: NotebookNavigatorPlugin, kind: C
         return;
     }
 
-    const dateForPath = resolveCalendarCustomNotePathDate(kind, date, momentPattern, displayLocale);
+    const dateForPath = resolveCalendarCustomNotePathDate(kind, date, momentPattern, displayLocale, calendarRulesLocale);
 
     const settings = { calendarCustomRootFolder: getActiveVaultProfile(plugin.settings).periodicNotesFolder };
     const expected = buildCustomCalendarFilePathForPattern(dateForPath, settings, config.calendarCustomFilePattern, config.fallbackPattern);
@@ -1103,6 +1106,7 @@ export default function registerNavigatorCommands(plugin: NotebookNavigatorPlugi
 
                 const { showHiddenItems } = plugin.getUXPreferences();
                 const effectiveExcludedFiles = getEffectiveFrontmatterExclusions(plugin.settings, showHiddenItems);
+                const effectiveExcludedFileMatcher = createFrontmatterPropertyExclusionMatcher(effectiveExcludedFiles);
                 const hiddenFolders = getActiveHiddenFolders(plugin.settings);
 
                 const eligible: TFile[] = [];
@@ -1125,7 +1129,10 @@ export default function registerNavigatorCommands(plugin: NotebookNavigatorPlugi
                         return;
                     }
 
-                    if (effectiveExcludedFiles.length > 0 && shouldExcludeFile(file, effectiveExcludedFiles, plugin.app)) {
+                    if (
+                        effectiveExcludedFileMatcher.hasCriteria &&
+                        shouldExcludeFileWithMatcher(file, effectiveExcludedFileMatcher, plugin.app)
+                    ) {
                         return;
                     }
 
@@ -1262,6 +1269,21 @@ export default function registerNavigatorCommands(plugin: NotebookNavigatorPlugi
                 const view = await ensureNavigatorOpen(plugin);
                 if (view) {
                     await view.navigateToTagWithModal();
+                }
+            });
+        }
+    });
+
+    // Command to show a modal for navigating to any property key or value
+    plugin.addCommand({
+        id: 'navigate-to-property',
+        name: strings.commands.navigateToProperty,
+        callback: () => {
+            // Wrap property navigation with error handling
+            runAsyncAction(async () => {
+                const view = await ensureNavigatorOpen(plugin);
+                if (view) {
+                    await view.navigateToPropertyWithModal();
                 }
             });
         }

@@ -104,6 +104,8 @@ export const STRINGS_ZH_TW = {
         folderExists: '資料夾已在捷徑中',
         noteExists: '筆記已在捷徑中',
         tagExists: '標籤已在捷徑中',
+        propertyExists: '屬性已在捷徑中',
+        invalidProperty: '無效的屬性捷徑',
         searchExists: '搜尋捷徑已存在',
         emptySearchQuery: '儲存前請輸入搜尋查詢',
         emptySearchName: '儲存搜尋前請輸入名稱',
@@ -184,12 +186,12 @@ export const STRINGS_ZH_TW = {
                 properties: {
                     title: '屬性',
                     items: [
-                        '`.key` 包含具有自訂屬性鍵的筆記。',
-                        '`.key=value` 包含具有自訂屬性值的筆記。',
+                        '`.key` 包含具有屬性鍵的筆記。',
+                        '`.key=value` 包含具有屬性值的筆記。',
                         '`."Reading Status"` 包含屬性鍵包含空格的筆記。',
                         '`."Reading Status"="In Progress"` 包含空格的鍵和值必須用雙引號括起來。',
-                        '`-.key` 排除具有自訂屬性鍵的筆記。',
-                        '`-.key=value` 排除具有自訂屬性值的筆記。',
+                        '`-.key` 排除具有屬性鍵的筆記。',
+                        '`-.key=value` 排除具有屬性值的筆記。',
                         'Cmd/Ctrl+點擊屬性以 AND 方式新增。Cmd/Ctrl+Shift+點擊以 OR 方式新增。'
                     ]
                 },
@@ -323,6 +325,10 @@ export const STRINGS_ZH_TW = {
             showTag: '顯示標籤',
             hideTag: '隱藏標籤'
         },
+        property: {
+            addKey: '新增屬性鍵',
+            removeKey: '移除屬性鍵'
+        },
         navigation: {
             addSeparator: '新增分隔線',
             removeSeparator: '移除分隔線'
@@ -376,10 +382,6 @@ export const STRINGS_ZH_TW = {
         fileIconRuleEditor: {
             addRuleAria: '新增規則'
         },
-        propertyColorRuleEditor: {
-            propertyPlaceholder: 'Property',
-            valuePlaceholder: 'Value'
-        },
         interfaceIcons: {
             title: '介面圖示',
             fileItemsSection: '檔案項目',
@@ -405,13 +407,15 @@ export const STRINGS_ZH_TW = {
                 'list-new-note': '新建筆記',
                 'nav-folder-open': '資料夾開啟',
                 'nav-folder-closed': '資料夾關閉',
-                'nav-folder-note': '資料夾筆記',
+                'nav-tags': '標籤',
                 'nav-tag': '標籤',
                 'nav-properties': '屬性',
+                'nav-property': '屬性',
+                'nav-property-value': '值',
                 'list-pinned': '釘選項目',
                 'file-unfinished-task': '未完成任務',
                 'file-word-count': '字數統計',
-                'file-custom-property': '自訂屬性'
+                'file-property': '屬性'
             }
         },
         colorPicker: {
@@ -532,6 +536,15 @@ export const STRINGS_ZH_TW = {
                 dismiss: '取消',
                 add: '新增標籤',
                 remove: '移除標籤'
+            }
+        },
+        propertySuggest: {
+            placeholder: '選擇屬性鍵...',
+            navigatePlaceholder: '導航到屬性...',
+            instructions: {
+                navigate: '導覽',
+                select: '新增屬性',
+                dismiss: '取消'
             }
         },
         welcome: {
@@ -685,6 +698,7 @@ export const STRINGS_ZH_TW = {
         pinAllFolderNotes: '釘選所有資料夾筆記',
         navigateToFolder: '導覽至資料夾',
         navigateToTag: '導覽至標籤',
+        navigateToProperty: '導航到屬性',
         addShortcut: '新增至捷徑',
         openShortcut: '開啟捷徑 {number}',
         toggleDescendants: '切換後代',
@@ -726,14 +740,15 @@ export const STRINGS_ZH_TW = {
         sections: {
             general: '一般',
             notes: '筆記',
-            navigationPane: '導覽窗格',
+            navigationPane: '導覽',
             calendar: '導覽日曆',
             icons: '圖示包',
             tags: '標籤',
             folders: '資料夾',
             folderNotes: '資料夾筆記',
-            foldersAndTags: '資料夾與標籤',
-            listPane: '列表窗格',
+            foldersAndTags: '資料夾',
+            tagsAndProperties: '標籤與屬性',
+            listPane: '列表',
             advanced: '進階'
         },
         groups: {
@@ -751,7 +766,6 @@ export const STRINGS_ZH_TW = {
             },
             navigation: {
                 appearance: '外觀',
-                shortcutsAndRecent: '捷徑和最近項目',
                 leftSidebar: '左側邊欄',
                 calendarIntegration: '行事曆整合'
             },
@@ -766,7 +780,7 @@ export const STRINGS_ZH_TW = {
                 previewText: '預覽文字',
                 featureImage: '特色圖片',
                 tags: '標籤',
-                customProperty: '自訂屬性（frontmatter 或字數）',
+                properties: '屬性',
                 date: '日期',
                 parentFolder: '父資料夾'
             }
@@ -811,6 +825,16 @@ export const STRINGS_ZH_TW = {
                 name: '排序屬性',
                 desc: '用於屬性排序。具有此 frontmatter 屬性的筆記首先列出，並按屬性值排序。陣列合併為單一值。',
                 placeholder: 'order'
+            },
+            propertySortSecondary: {
+                name: '次要排序',
+                desc: '與屬性排序配合使用，當筆記具有相同的屬性值或沒有屬性值時生效。',
+                options: {
+                    title: '標題',
+                    filename: '檔案名稱',
+                    created: '建立日期',
+                    modified: '編輯日期'
+                }
             },
             revealFileOnListChanges: {
                 name: '列表變更時捲動到選定檔案',
@@ -961,6 +985,10 @@ export const STRINGS_ZH_TW = {
                 name: '自動定位使用中的筆記',
                 desc: '從快速切換器、連結或搜尋開啟筆記時自動顯示。'
             },
+            autoRevealShortestPath: {
+                name: '使用最短路徑',
+                desc: '啟用：自動顯示選擇最近的可見祖先資料夾或標籤。停用：自動顯示選擇檔案的實際資料夾和精確標籤。'
+            },
             autoRevealIgnoreRightSidebar: {
                 name: '忽略右側邊欄事件',
                 desc: '在右側邊欄中點按或變更筆記時不變更使用中的筆記。'
@@ -1020,6 +1048,14 @@ export const STRINGS_ZH_TW = {
             showRecentNotes: {
                 name: '顯示最近筆記',
                 desc: '在導覽窗格中顯示最近筆記區段。'
+            },
+            hideRecentNotes: {
+                name: '隱藏筆記',
+                desc: '選擇在最近筆記區段中隱藏的筆記類型。',
+                options: {
+                    none: '無',
+                    folderNotes: '資料夾筆記'
+                }
             },
             recentNotesCount: {
                 name: '最近筆記數量',
@@ -1200,9 +1236,9 @@ export const STRINGS_ZH_TW = {
                 desc: '按 Ctrl+Enter 在新分頁、分割或視窗中開啟所選檔案。'
             },
             excludedNotes: {
-                name: '隱藏帶有屬性的筆記（保險庫設定檔）',
-                desc: '逗號分隔的前置中繼資料屬性列表。包含任何這些屬性的筆記將被隱藏（例如：draft, private, archived）。',
-                placeholder: 'draft, private'
+                name: '依屬性規則隱藏筆記（保險庫設定檔）',
+                desc: '逗號分隔的前置中繼資料規則列表。使用 `key` 或 `key=value` 條目（例如：status=done, published=true, archived）。',
+                placeholder: 'status=done, published=true, archived'
             },
             excludedFileNamePatterns: {
                 name: '隱藏檔案（保險庫設定檔）',
@@ -1296,33 +1332,41 @@ export const STRINGS_ZH_TW = {
                 name: '在精簡模式中顯示檔案標籤',
                 desc: '當日期、預覽和圖片被隱藏時顯示標籤。'
             },
-            customPropertyType: {
-                name: '屬性類型',
-                desc: '選擇要在檔案項目中顯示的自訂屬性。',
+            showFileProperties: {
+                name: '顯示檔案屬性',
+                desc: '在檔案項目中顯示可點擊的屬性。'
+            },
+            colorFileProperties: {
+                name: '為檔案屬性著色',
+                desc: '將屬性顏色套用到檔案項目的屬性徽章上。'
+            },
+            prioritizeColoredFileProperties: {
+                name: '優先顯示彩色屬性',
+                desc: '在檔案項目中將彩色屬性排列在其他屬性之前。'
+            },
+            showFilePropertiesInCompactMode: {
+                name: '在精簡模式中顯示屬性',
+                desc: '精簡模式啟用時顯示屬性。'
+            },
+            notePropertyType: {
+                name: '筆記屬性',
+                desc: '選擇要在檔案項目中顯示的筆記屬性。',
                 options: {
                     frontmatter: '前置中繼資料屬性',
                     wordCount: '字數統計',
                     none: '無'
                 }
             },
-            customPropertyFields: {
+            propertyFields: {
                 name: '要顯示的屬性',
-                desc: '以逗號分隔的前置中繼資料屬性清單，用於顯示為標籤。清單值屬性每個值顯示一個標籤。[[wikilink]] 格式的值會顯示為可點擊連結。',
-                placeholder: 'status, type, category'
+                desc: '以逗號分隔的 frontmatter 屬性清單，用於在導覽面板和檔案項目中作為徽章顯示。清單值屬性每個值顯示一個徽章。',
+                placeholder: 'status, type, category',
+                addButtonTooltip: '新增屬性鍵',
+                emptySelectorNotice: '在中繼資料快取中未找到屬性鍵。'
             },
-            showCustomPropertiesOnSeparateRows: {
+            showPropertiesOnSeparateRows: {
                 name: '在個別行中顯示屬性',
                 desc: '將每個屬性顯示在個別行中。'
-            },
-            customPropertyColorMap: {
-                name: '屬性顏色',
-                desc: '將前置資料屬性和值對應到徽章顏色。每行一個對應：屬性=顏色 或 屬性:值=顏色',
-                placeholder: '# 屬性 或 屬性:值 顏色\nstatus=#f59e0b\nstatus:done=#10b981\nstatus:todo=#ef4444',
-                editTooltip: '編輯對應'
-            },
-            showCustomPropertyInCompactMode: {
-                name: '在精簡模式中顯示自訂屬性',
-                desc: '當日期、預覽和圖片被隱藏時顯示自訂屬性。'
             },
             dateFormat: {
                 name: '日期格式',
@@ -1359,7 +1403,7 @@ export const STRINGS_ZH_TW = {
             previewProperties: {
                 name: '預覽屬性',
                 desc: '用於尋找預覽文字的前置屬性的逗號分隔列表。將使用第一個包含文字的屬性。',
-                placeholder: '摘要, 描述, 概要',
+                placeholder: 'summary, description, abstract',
                 info: '如果在指定的屬性中找不到預覽文字，預覽將從筆記內容中產生。'
             },
             previewRows: {
@@ -1397,7 +1441,7 @@ export const STRINGS_ZH_TW = {
             featureImageExcludeProperties: {
                 name: '排除含有屬性的筆記',
                 desc: '逗號分隔的前置中繼資料屬性列表。包含這些屬性的筆記不會儲存特色圖片。',
-                placeholder: '私密, 機密'
+                placeholder: 'private, confidential'
             },
 
             downloadExternalFeatureImages: {
@@ -1509,6 +1553,33 @@ export const STRINGS_ZH_TW = {
                 name: '刪除最後一個標籤後保留 tags 屬性',
                 desc: '當所有標籤被刪除時保留 frontmatter 中的 tags 屬性。停用時，tags 屬性將從 frontmatter 中刪除。'
             },
+            showProperties: {
+                name: '顯示屬性',
+                desc: '在導覽器中顯示屬性區段。'
+            },
+            showPropertyIcons: {
+                name: '顯示屬性圖示',
+                desc: '在導覽面板中屬性旁邊顯示圖示。'
+            },
+            inheritPropertyColors: {
+                name: '繼承屬性顏色',
+                desc: '屬性值繼承其屬性鍵的顏色和背景色。'
+            },
+            propertySortOrder: {
+                name: '屬性排序方式',
+                desc: '右鍵點擊任意屬性以設定其值的不同排序方式。',
+                options: {
+                    alphaAsc: 'A 到 Z',
+                    alphaDesc: 'Z 到 A',
+                    frequency: '頻率',
+                    lowToHigh: '由低到高',
+                    highToLow: '由高到低'
+                }
+            },
+            showAllPropertiesFolder: {
+                name: '顯示屬性資料夾',
+                desc: '將「屬性」顯示為可摺疊資料夾。'
+            },
             hiddenTags: {
                 name: '隱藏標籤（保險庫設定檔）',
                 desc: '逗號分隔的標籤模式列表。名稱模式：tag*（以...開頭）、*tag（以...結尾）。路徑模式：archive（標籤及其後代）、archive/*（僅後代）、projects/*/drafts（中間萬用字元）。',
@@ -1569,7 +1640,7 @@ export const STRINGS_ZH_TW = {
                 error: '設定清理失敗',
                 loading: '正在檢查中繼資料...',
                 statusClean: '沒有需要清理的中繼資料',
-                statusCounts: '孤立項目：{folders} 資料夾，{tags} 標籤，{files} 檔案，{pinned} 釘選，{separators} 分隔線'
+                statusCounts: '孤立項目：{folders} 資料夾，{tags} 標籤，{properties} 屬性，{files} 檔案，{pinned} 釘選，{separators} 分隔線'
             },
             rebuildCache: {
                 name: '重建快取',
@@ -1598,7 +1669,7 @@ export const STRINGS_ZH_TW = {
             frontmatterNameField: {
                 name: '名稱欄位（多個）',
                 desc: '逗號分隔的前置欄位列表。使用第一個非空值。回退到檔名。',
-                placeholder: '標題, 名稱'
+                placeholder: 'title, name'
             },
             frontmatterIconField: {
                 name: '圖示欄位',
@@ -1610,9 +1681,10 @@ export const STRINGS_ZH_TW = {
                 desc: '檔案顏色的前置欄位。留空使用儲存在設定中的顏色。',
                 placeholder: 'color'
             },
-            frontmatterSaveMetadata: {
-                name: '將圖示和顏色儲存到前置',
-                desc: '使用上面設定的欄位自動將檔案圖示和顏色寫入前置。'
+            frontmatterBackgroundField: {
+                name: '背景欄位',
+                desc: '背景顏色的前置欄位。留空使用儲存在設定中的背景顏色。',
+                placeholder: 'background'
             },
             frontmatterMigration: {
                 name: '從設定遷移圖示和顏色',
@@ -1627,12 +1699,12 @@ export const STRINGS_ZH_TW = {
             frontmatterCreatedField: {
                 name: '建立時間戳記欄位',
                 desc: '建立時間戳記的前置欄位名稱。留空僅使用檔案系統日期。',
-                placeholder: '建立時間'
+                placeholder: 'created'
             },
             frontmatterModifiedField: {
                 name: '修改時間戳記欄位',
                 desc: '修改時間戳記的前置欄位名稱。留空僅使用檔案系統日期。',
-                placeholder: '修改時間'
+                placeholder: 'modified'
             },
             frontmatterDateFormat: {
                 name: '時間戳記格式',

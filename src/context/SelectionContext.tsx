@@ -30,6 +30,7 @@ import type { TagDeleteEventPayload, TagRenameEventPayload } from '../services/T
 import { useServices } from './ServicesContext';
 import { normalizeTagPath } from '../utils/tagUtils';
 import {
+    canRestorePropertySelectionNodeId,
     isPropertyFeatureEnabled,
     isPropertySelectionNodeIdConfigured,
     parseStoredPropertySelectionNodeId,
@@ -47,7 +48,16 @@ export interface SelectionState {
     selectedFiles: Set<string>; // Changed from single file to Set of file paths
     anchorIndex: number | null; // Anchor position for multi-selection
     lastMovementDirection: 'up' | 'down' | null; // Track direction for expand/contract
-    isRevealOperation: boolean; // Flag to track if the current selection is from a REVEAL_FILE action
+    /**
+     * True after a `REVEAL_FILE` action.
+     *
+     * Cleared by non-reveal selection actions such as `SET_SELECTED_FOLDER`, `SET_SELECTED_TAG`, `SET_SELECTED_PROPERTY`,
+     * `SET_SELECTED_FILE`, `SET_SELECTION_TYPE`, and `CLEAR_SELECTION`.
+     *
+     * Scroll hooks treat reveal operations as explicit scroll requests (via `requestScroll`) and suppress selection-driven
+     * auto-scroll while this flag is true.
+     */
+    isRevealOperation: boolean;
     isFolderChangeWithAutoSelect: boolean; // Flag to track if we just changed folders and auto-selected a file
     isKeyboardNavigation: boolean; // Flag to track if selection is from Tab/Right arrow navigation
     isFolderNavigation: boolean; // Flag to track if we just navigated to a different folder
@@ -70,6 +80,7 @@ export type SelectionAction =
           preserveFolder?: boolean;
           isManualReveal?: boolean;
           targetTag?: string | null;
+          targetProperty?: PropertySelectionNodeId | null;
           source?: SelectionRevealSource;
           targetFolder?: TFolder | null;
       }
@@ -267,6 +278,8 @@ function selectionReducer(state: SelectionState, action: SelectionAction, app?: 
                 return state;
             }
 
+            // `REVEAL_FILE` marks the selection update as a reveal operation so scroll behavior is driven by explicit
+            // `requestScroll(...)` calls instead of selection-change auto-scroll effects.
             const normalizedTargetTag = action.targetTag === undefined ? undefined : normalizeTagPath(action.targetTag);
             const newSelectedFiles = new Set<string>();
             newSelectedFiles.add(action.file.path);
@@ -334,6 +347,47 @@ function selectionReducer(state: SelectionState, action: SelectionAction, app?: 
                 };
             }
 
+            // Auto-reveals: Check if we have a target property
+            if (action.targetProperty !== undefined) {
+                if (action.targetProperty) {
+                    // Switch to or stay in property view
+                    return {
+                        ...state,
+                        selectionType: 'property',
+                        selectedProperty: action.targetProperty,
+                        selectedFolder: null,
+                        selectedTag: null,
+                        selectedFiles: newSelectedFiles,
+                        selectedFile: action.file,
+                        anchorIndex: null,
+                        lastMovementDirection: null,
+                        isRevealOperation: true,
+                        isFolderChangeWithAutoSelect: false,
+                        isKeyboardNavigation: false,
+                        revealSource
+                    };
+                }
+
+                // No property to reveal, switch to folder view
+                const newFolder =
+                    targetFolder ?? (action.preserveFolder && state.selectedFolder ? state.selectedFolder : action.file.parent);
+                return {
+                    ...state,
+                    selectionType: 'folder',
+                    selectedFolder: newFolder,
+                    selectedTag: null,
+                    selectedProperty: null,
+                    selectedFiles: newSelectedFiles,
+                    selectedFile: action.file,
+                    anchorIndex: null,
+                    lastMovementDirection: null,
+                    isRevealOperation: true,
+                    isFolderChangeWithAutoSelect: false,
+                    isKeyboardNavigation: false,
+                    revealSource
+                };
+            }
+
             // When targetTag is not specified, preserve current view type
             const shouldPreserveTag = state.selectionType === 'tag' && state.selectedTag;
             if (shouldPreserveTag) {
@@ -343,6 +397,25 @@ function selectionReducer(state: SelectionState, action: SelectionAction, app?: 
                     selectedTag: state.selectedTag,
                     selectedFolder: null,
                     selectedProperty: null,
+                    selectedFiles: newSelectedFiles,
+                    selectedFile: action.file,
+                    anchorIndex: null,
+                    lastMovementDirection: null,
+                    isRevealOperation: true,
+                    isFolderChangeWithAutoSelect: false,
+                    isKeyboardNavigation: false,
+                    revealSource
+                };
+            }
+
+            const shouldPreserveProperty = state.selectionType === 'property' && state.selectedProperty;
+            if (shouldPreserveProperty) {
+                return {
+                    ...state,
+                    selectionType: 'property',
+                    selectedProperty: state.selectedProperty,
+                    selectedFolder: null,
+                    selectedTag: null,
                     selectedFiles: newSelectedFiles,
                     selectedFile: action.file,
                     anchorIndex: null,
@@ -617,7 +690,7 @@ export function SelectionProvider({
         }
 
         let savedPropertySelection: PropertySelectionNodeId | null = null;
-        if (propertyFeatureEnabled) {
+        if (settings.showProperties) {
             try {
                 const savedPropertyRaw = localStorage.get<unknown>(STORAGE_KEYS.selectedPropertyKey);
                 savedPropertySelection = parseStoredPropertySelectionNodeId(savedPropertyRaw);
@@ -625,7 +698,7 @@ export function SelectionProvider({
                 console.error('Failed to load selected property from localStorage:', error);
             }
         }
-        if (savedPropertySelection && !isPropertySelectionNodeIdConfigured(settings, savedPropertySelection)) {
+        if (savedPropertySelection && !canRestorePropertySelectionNodeId(settings, savedPropertySelection)) {
             savedPropertySelection = null;
             try {
                 localStorage.remove(STORAGE_KEYS.selectedPropertyKey);
@@ -706,7 +779,7 @@ export function SelectionProvider({
             isFolderNavigation: false,
             revealSource: null
         };
-    }, [app.vault, propertyFeatureEnabled, settings]);
+    }, [app.vault, settings]);
 
     const [state, dispatch] = useReducer(
         (state: SelectionState, action: SelectionAction) => selectionReducer(state, action, app),
@@ -950,10 +1023,13 @@ export function SelectionProvider({
 
     // Persist selected property to localStorage with error handling
     useEffect(() => {
-        if (!propertyFeatureEnabled && state.selectionType === 'property') {
+        const keepPropertiesRootSelection =
+            settings.showProperties && state.selectionType === 'property' && state.selectedProperty === PROPERTIES_ROOT_VIRTUAL_FOLDER_ID;
+
+        if (!propertyFeatureEnabled && state.selectionType === 'property' && !keepPropertiesRootSelection) {
             dispatch({ type: 'SET_SELECTED_FOLDER', folder: app.vault.getRoot() });
         }
-    }, [app.vault, dispatch, propertyFeatureEnabled, state.selectionType]);
+    }, [app.vault, dispatch, propertyFeatureEnabled, settings.showProperties, state.selectedProperty, state.selectionType]);
 
     useEffect(() => {
         if (!propertyFeatureEnabled) {

@@ -105,6 +105,8 @@ export const STRINGS_UK = {
         folderExists: 'Папка вже в ярликах',
         noteExists: 'Нотатка вже в ярликах',
         tagExists: 'Тег вже в ярликах',
+        propertyExists: 'Властивість вже є в закладках',
+        invalidProperty: 'Недійсне закладка властивості',
         searchExists: 'Ярлик пошуку вже існує',
         emptySearchQuery: 'Введіть пошуковий запит перед збереженням',
         emptySearchName: 'Введіть назву перед збереженням пошуку',
@@ -186,12 +188,12 @@ export const STRINGS_UK = {
                 properties: {
                     title: 'Властивості',
                     items: [
-                        '`.key` Включити нотатки з користувацьким ключем властивості.',
-                        '`.key=value` Включити нотатки з користувацьким значенням властивості.',
+                        '`.key` Включити нотатки з ключем властивості.',
+                        '`.key=value` Включити нотатки з значенням властивості.',
                         '`."Reading Status"` Включити нотатки з ключем властивості, що містить пробіли.',
                         '`."Reading Status"="In Progress"` Ключі та значення з пробілами повинні бути в подвійних лапках.',
-                        '`-.key` Виключити нотатки з користувацьким ключем властивості.',
-                        '`-.key=value` Виключити нотатки з користувацьким значенням властивості.',
+                        '`-.key` Виключити нотатки з ключем властивості.',
+                        '`-.key=value` Виключити нотатки з значенням властивості.',
                         'Cmd/Ctrl+Клік на властивість для додавання з AND. Cmd/Ctrl+Shift+Клік для додавання з OR.'
                     ]
                 },
@@ -324,6 +326,10 @@ export const STRINGS_UK = {
             showTag: 'Показати тег',
             hideTag: 'Сховати тег'
         },
+        property: {
+            addKey: 'Додати ключ властивості',
+            removeKey: 'Видалити ключ властивості'
+        },
         navigation: {
             addSeparator: 'Додати роздільник',
             removeSeparator: 'Вилучити роздільник'
@@ -377,10 +383,6 @@ export const STRINGS_UK = {
         fileIconRuleEditor: {
             addRuleAria: 'Додати правило'
         },
-        propertyColorRuleEditor: {
-            propertyPlaceholder: 'Property',
-            valuePlaceholder: 'Value'
-        },
         interfaceIcons: {
             title: 'Іконки інтерфейсу',
             fileItemsSection: 'Елементи файлу',
@@ -406,13 +408,15 @@ export const STRINGS_UK = {
                 'list-new-note': 'Нова нотатка',
                 'nav-folder-open': 'Папка відкрита',
                 'nav-folder-closed': 'Папка закрита',
-                'nav-folder-note': 'Нотатка папки',
+                'nav-tags': 'Теги',
                 'nav-tag': 'Тег',
                 'nav-properties': 'Властивості',
+                'nav-property': 'Властивість',
+                'nav-property-value': 'Значення',
                 'list-pinned': 'Закріплені елементи',
                 'file-unfinished-task': 'Незавершені завдання',
                 'file-word-count': 'Кількість слів',
-                'file-custom-property': 'Користувацька властивість'
+                'file-property': 'Властивість'
             }
         },
         colorPicker: {
@@ -533,6 +537,15 @@ export const STRINGS_UK = {
                 dismiss: 'для закриття',
                 add: 'для додавання тегу',
                 remove: 'для вилучення тегу'
+            }
+        },
+        propertySuggest: {
+            placeholder: 'Виберіть ключ властивості...',
+            navigatePlaceholder: 'Перейти до властивості...',
+            instructions: {
+                navigate: 'для навігації',
+                select: 'для додавання властивості',
+                dismiss: 'для закриття'
             }
         },
         welcome: {
@@ -687,6 +700,7 @@ export const STRINGS_UK = {
         pinAllFolderNotes: 'Закріпити всі нотатки папок', // Command palette: Pins all folder notes to shortcuts (English: Pin all folder notes)
         navigateToFolder: 'Перейти до папки', // Command palette: Navigate to a folder using fuzzy search (English: Navigate to folder)
         navigateToTag: 'Перейти до тегу', // Command palette: Navigate to a tag using fuzzy search (English: Navigate to tag)
+        navigateToProperty: 'Перейти до властивості', // Command palette: Navigate to a property key or value using fuzzy search (English: Navigate to property)
         addShortcut: 'Додати до ярликів', // Command palette: Adds the current file, folder, or tag to shortcuts (English: Add to shortcuts)
         openShortcut: 'Відкрити ярлик {number}',
         toggleDescendants: 'Перемкнути нащадків', // Command palette: Toggles showing notes from descendants (English: Toggle descendants)
@@ -727,14 +741,15 @@ export const STRINGS_UK = {
         },
         sections: {
             general: 'Загальне',
-            navigationPane: 'Панель навігації',
+            navigationPane: 'Навігація',
             calendar: 'Календар',
             icons: 'Пакети іконок',
             folders: 'Папки',
             folderNotes: 'Нотатки папок',
-            foldersAndTags: 'Папки та теги',
+            foldersAndTags: 'Папки',
+            tagsAndProperties: 'Теги та властивості',
             tags: 'Теги',
-            listPane: 'Панель списку',
+            listPane: 'Список',
             notes: 'Нотатки',
             advanced: 'Розширені'
         },
@@ -753,7 +768,6 @@ export const STRINGS_UK = {
             },
             navigation: {
                 appearance: 'Вигляд',
-                shortcutsAndRecent: 'Ярлики та нещодавні елементи',
                 leftSidebar: 'Ліва бічна панель',
                 calendarIntegration: 'Інтеграція з календарем'
             },
@@ -768,7 +782,7 @@ export const STRINGS_UK = {
                 previewText: 'Текст попереднього перегляду',
                 featureImage: 'Зображення запису',
                 tags: 'Теги',
-                customProperty: 'Користувацька властивість (метадані або кількість слів)',
+                properties: 'Властивості',
                 date: 'Дата',
                 parentFolder: 'Батьківська папка'
             }
@@ -813,6 +827,16 @@ export const STRINGS_UK = {
                 name: 'Властивість сортування',
                 desc: "Використовується з сортуванням за властивістю. Нотатки з цією властивістю frontmatter відображаються першими і сортуються за значенням властивості. Масиви об'єднуються в одне значення.",
                 placeholder: 'order'
+            },
+            propertySortSecondary: {
+                name: 'Вторинне сортування',
+                desc: 'Використовується при сортуванні за властивістю, коли нотатки мають однакове значення властивості або не мають значення.',
+                options: {
+                    title: 'Заголовок',
+                    filename: 'Назва файлу',
+                    created: 'Дата створення',
+                    modified: 'Дата редагування'
+                }
             },
             revealFileOnListChanges: {
                 name: 'Прокручувати до вибраного файлу при змінах списку',
@@ -963,6 +987,10 @@ export const STRINGS_UK = {
                 name: 'Автоматично показувати активну нотатку',
                 desc: 'Автоматично показувати нотатки при відкритті з Швидкого перемикача, посилань або пошуку.'
             },
+            autoRevealShortestPath: {
+                name: 'Використовувати найкоротший шлях',
+                desc: 'Увімкнено: Автопоказ обирає найближчу видиму батьківську теку або тег. Вимкнено: Автопоказ обирає фактичну теку файлу та точний тег.'
+            },
             autoRevealIgnoreRightSidebar: {
                 name: 'Ігнорувати події з правої бічної панелі',
                 desc: 'Не змінювати активну нотатку при натисканні або зміні нотаток у правій бічній панелі.'
@@ -1022,6 +1050,14 @@ export const STRINGS_UK = {
             showRecentNotes: {
                 name: 'Показувати останні нотатки',
                 desc: 'Відображати розділ останніх нотаток у панелі навігації.'
+            },
+            hideRecentNotes: {
+                name: 'Приховати нотатки',
+                desc: 'Оберіть типи нотаток для приховування в розділі останніх нотаток.',
+                options: {
+                    none: 'Жодного',
+                    folderNotes: 'Нотатки папок'
+                }
             },
             recentNotesCount: {
                 name: 'Кількість останніх нотаток',
@@ -1223,9 +1259,9 @@ export const STRINGS_UK = {
                 }
             },
             excludedNotes: {
-                name: 'Приховати нотатки з властивостями (профіль сховища)',
-                desc: 'Список властивостей frontmatter, розділених комами. Нотатки, що містять будь-яку з цих властивостей, будуть приховані (наприклад, чернетка, приватний, архів).',
-                placeholder: 'чернетка, приватний'
+                name: 'Приховати нотатки за правилами властивостей (профіль сховища)',
+                desc: 'Список правил frontmatter, розділених комами. Використовуйте записи `key` або `key=value` (наприклад, status=done, published=true, archived).',
+                placeholder: 'status=done, published=true, archived'
             },
             excludedFileNamePatterns: {
                 name: 'Приховати файли (профіль сховища)',
@@ -1299,33 +1335,41 @@ export const STRINGS_UK = {
                 name: 'Показувати теги файлів у компактному режимі',
                 desc: 'Відображати теги, коли дата, попередній перегляд та зображення приховані.'
             },
-            customPropertyType: {
-                name: 'Тип властивості',
-                desc: 'Виберіть користувацьку властивість для відображення в елементах файлів.',
+            showFileProperties: {
+                name: 'Показувати властивості файлів',
+                desc: 'Відображати клікабельні властивості в елементах файлів.'
+            },
+            colorFileProperties: {
+                name: 'Забарвлювати властивості файлів',
+                desc: 'Застосовувати кольори властивостей до значків властивостей на елементах файлів.'
+            },
+            prioritizeColoredFileProperties: {
+                name: 'Показувати кольорові властивості першими',
+                desc: 'Сортувати кольорові властивості перед іншими властивостями на елементах файлів.'
+            },
+            showFilePropertiesInCompactMode: {
+                name: 'Показувати властивості в компактному режимі',
+                desc: 'Відображати властивості при активному компактному режимі.'
+            },
+            notePropertyType: {
+                name: 'Властивість нотатки',
+                desc: 'Виберіть властивість нотатки для відображення в елементах файлів.',
                 options: {
                     frontmatter: 'Властивість frontmatter',
                     wordCount: 'Кількість слів',
                     none: 'Немає'
                 }
             },
-            customPropertyFields: {
+            propertyFields: {
                 name: 'Властивості для відображення',
-                desc: 'Список властивостей frontmatter через кому для відображення як значки. Властивості зі списковими значеннями показують один значок на кожне значення. Значення у форматі [[wikilink]] відображаються як посилання, на які можна натиснути.',
-                placeholder: 'статус, тип, категорія'
+                desc: 'Список властивостей метаданих через кому для відображення на панелі навігації та у вигляді значків в елементах файлів. Властивості зі списком значень відображають один значок на значення.',
+                placeholder: 'status, type, category',
+                addButtonTooltip: 'Додати ключ властивості',
+                emptySelectorNotice: 'Ключі властивостей не знайдено в кеші метаданих.'
             },
-            showCustomPropertiesOnSeparateRows: {
+            showPropertiesOnSeparateRows: {
                 name: 'Показувати властивості в окремих рядках',
                 desc: 'Показувати кожну властивість у власному рядку.'
-            },
-            customPropertyColorMap: {
-                name: 'Кольори властивостей',
-                desc: 'Зіставлення властивостей і значень frontmatter з кольорами значків. Одне зіставлення на рядок: властивість=колір або властивість:значення=колір',
-                placeholder: '# Властивість або властивість:значення колір\nstatus=#f59e0b\nstatus:done=#10b981\nstatus:todo=#ef4444',
-                editTooltip: 'Редагувати зіставлення'
-            },
-            showCustomPropertyInCompactMode: {
-                name: 'Показувати користувацьку властивість у компактному режимі',
-                desc: 'Відображати користувацьку властивість, коли дата, попередній перегляд та зображення приховані.'
             },
             dateFormat: {
                 name: 'Формат дати',
@@ -1362,7 +1406,7 @@ export const STRINGS_UK = {
             previewProperties: {
                 name: 'Властивості попереднього перегляду',
                 desc: 'Список властивостей frontmatter для перевірки на текст попереднього перегляду, розділених комами. Буде використано першу властивість з текстом.',
-                placeholder: 'підсумок, опис, анотація',
+                placeholder: 'summary, description, abstract',
                 info: 'Якщо текст попереднього перегляду не знайдено у вказаних властивостях, попередній перегляд буде згенеровано з вмісту нотатки.'
             },
             previewRows: {
@@ -1400,7 +1444,7 @@ export const STRINGS_UK = {
             featureImageExcludeProperties: {
                 name: 'Виключити нотатки з властивостями',
                 desc: 'Список властивостей frontmatter, розділених комами. Нотатки, що містять будь-яку з цих властивостей, не зберігають головні зображення.',
-                placeholder: 'приватне, конфіденційне'
+                placeholder: 'private, confidential'
             },
 
             downloadExternalFeatureImages: {
@@ -1512,6 +1556,33 @@ export const STRINGS_UK = {
                 name: 'Зберігати властивість tags після видалення останнього тегу',
                 desc: 'Зберігати властивість tags у frontmatter, коли всі теги видалено. При вимкненні властивість tags видаляється з frontmatter.'
             },
+            showProperties: {
+                name: 'Показати властивості',
+                desc: 'Відображати розділ властивостей у навігаторі.'
+            },
+            showPropertyIcons: {
+                name: 'Показати значки властивостей',
+                desc: 'Відображати значки поряд із властивостями на панелі навігації.'
+            },
+            inheritPropertyColors: {
+                name: 'Успадковувати кольори властивостей',
+                desc: 'Значення властивостей успадковують колір та фон від ключа властивості.'
+            },
+            propertySortOrder: {
+                name: 'Порядок сортування властивостей',
+                desc: 'Клацніть правою кнопкою миші на властивість, щоб задати інший порядок сортування її значень.',
+                options: {
+                    alphaAsc: 'А до Я',
+                    alphaDesc: 'Я до А',
+                    frequency: 'Частота',
+                    lowToHigh: 'за зростанням',
+                    highToLow: 'за спаданням'
+                }
+            },
+            showAllPropertiesFolder: {
+                name: 'Показати папку властивостей',
+                desc: 'Відображати «Властивості» як згортувану папку.'
+            },
             hiddenTags: {
                 name: 'Приховати теги (профіль сховища)',
                 desc: 'Список шаблонів тегів, розділених комами. Шаблони назв: тег* (починається з), *тег (закінчується на). Шаблони шляхів: архів (тег і нащадки), архів/* (лише нащадки), проекти/*/чернетки (символ підстановки посередині).',
@@ -1573,7 +1644,7 @@ export const STRINGS_UK = {
                 loading: 'Перевірка метаданих...',
                 statusClean: 'Немає метаданих для очищення',
                 statusCounts:
-                    'Осиротілі елементи: {folders} папок, {tags} тегів, {files} файлів, {pinned} закріплень, {separators} роздільників'
+                    'Осиротілі елементи: {folders} папок, {tags} тегів, {properties} властивостей, {files} файлів, {pinned} закріплень, {separators} роздільників'
             },
             rebuildCache: {
                 name: 'Перебудувати кеш',
@@ -1602,16 +1673,17 @@ export const STRINGS_UK = {
             frontmatterIconField: {
                 name: 'Поле іконки',
                 desc: 'Поле frontmatter для іконок файлів. Залиште порожнім для використання іконок, збережених у налаштуваннях.',
-                placeholder: 'іконка'
+                placeholder: 'icon'
             },
             frontmatterColorField: {
                 name: 'Поле кольору',
                 desc: 'Поле frontmatter для кольорів файлів. Залиште порожнім для використання кольорів, збережених у налаштуваннях.',
-                placeholder: 'колір'
+                placeholder: 'color'
             },
-            frontmatterSaveMetadata: {
-                name: 'Зберігати іконки та кольори у frontmatter',
-                desc: 'Автоматично записувати іконки та кольори файлів у frontmatter, використовуючи налаштовані вище поля.'
+            frontmatterBackgroundField: {
+                name: 'Поле фону',
+                desc: 'Поле frontmatter для кольорів фону. Залиште порожнім для використання кольорів фону, збережених у налаштуваннях.',
+                placeholder: 'background'
             },
             frontmatterMigration: {
                 name: 'Перенести іконки та кольори з налаштувань',
@@ -1626,17 +1698,17 @@ export const STRINGS_UK = {
             frontmatterNameField: {
                 name: 'Поля назви',
                 desc: 'Список полів frontmatter через кому. Використовується перше непорожнє значення. Повертається до назви файлу.',
-                placeholder: 'заголовок, назва'
+                placeholder: 'title, name'
             },
             frontmatterCreatedField: {
                 name: 'Поле часової мітки створення',
                 desc: 'Назва поля frontmatter для часової мітки створення. Залиште порожнім для використання лише дати файлової системи.',
-                placeholder: 'створено'
+                placeholder: 'created'
             },
             frontmatterModifiedField: {
                 name: 'Поле часової мітки зміни',
                 desc: 'Назва поля frontmatter для часової мітки зміни. Залиште порожнім для використання лише дати файлової системи.',
-                placeholder: 'змінено'
+                placeholder: 'modified'
             },
             frontmatterDateFormat: {
                 name: 'Формат часової мітки',

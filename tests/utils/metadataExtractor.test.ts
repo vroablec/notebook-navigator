@@ -128,3 +128,20 @@ describe('extractMetadataFromCache - name extraction', () => {
         expect(result.fn).toBe('From array');
     });
 });
+
+describe('extractMetadataFromCache - background extraction', () => {
+    it('extracts background color from configured frontmatter field', () => {
+        const settings = createSettings({
+            frontmatterBackgroundField: 'background'
+        });
+        const metadata: CachedMetadata = {
+            frontmatter: {
+                background: '#112233'
+            }
+        };
+
+        const result = extractMetadataFromCache(metadata, settings);
+
+        expect(result.background).toBe('#112233');
+    });
+});

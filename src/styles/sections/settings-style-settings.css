@@ -221,7 +221,7 @@ settings:
         default-light: '#'
         default-dark: '#'
     -
-        id: nn-theme-file-custom-property-border-color
+        id: nn-theme-file-property-border-color
         title: Custom property pill border color
         description: Border color on custom property pills without custom colors.
         type: variable-themed-color
@@ -239,7 +239,7 @@ settings:
         default-light: '#'
         default-dark: '#'
     -
-        id: nn-theme-file-selected-custom-property-border-color
+        id: nn-theme-file-selected-property-border-color
         title: Selected custom property pill border color
         description: Border color on custom property pills without custom colors in selected files.
         type: variable-themed-color
@@ -897,7 +897,7 @@ settings:
         default-light: '#'
         default-dark: '#'
     -
-        id: nn-theme-file-custom-property-color
+        id: nn-theme-file-property-color
         title: Custom property text color
         description: Text color for custom property pill.
         type: variable-themed-color
@@ -905,7 +905,7 @@ settings:
         default-light: '#'
         default-dark: '#'
     -
-        id: nn-theme-file-custom-property-bg
+        id: nn-theme-file-property-bg
         title: Custom property background
         description: Background color for custom property pill.
         type: variable-themed-color
@@ -923,7 +923,7 @@ settings:
         max: 10
         step: 1
     -
-        id: nn-theme-file-custom-property-border-radius
+        id: nn-theme-file-property-border-radius
         title: Custom property pill border radius
         description: Corner radius for custom property pills.
         type: variable-number-slider
@@ -999,7 +999,7 @@ settings:
         default-light: '#'
         default-dark: '#'
     -
-        id: nn-theme-file-selected-custom-property-color
+        id: nn-theme-file-selected-property-color
         title: Selected custom property text color
         description: Text color for custom property pill when selected.
         type: variable-themed-color
@@ -1007,7 +1007,7 @@ settings:
         default-light: '#'
         default-dark: '#'
     -
-        id: nn-theme-file-selected-custom-property-bg
+        id: nn-theme-file-selected-property-bg
         title: Selected custom property background
         description: Background color for custom property pill when selected.
         type: variable-themed-color
@@ -1055,7 +1055,7 @@ settings:
         default-light: '#'
         default-dark: '#'
     -
-        id: nn-theme-file-selected-inactive-custom-property-color
+        id: nn-theme-file-selected-inactive-property-color
         title: Selected custom property text color (inactive)
         description: Text color for custom property pill when file is selected and pane is inactive.
         type: variable-themed-color
@@ -1063,7 +1063,7 @@ settings:
         default-light: '#'
         default-dark: '#'
     -
-        id: nn-theme-file-selected-inactive-custom-property-bg
+        id: nn-theme-file-selected-inactive-property-bg
         title: Selected custom property background (inactive)
         description: Background color for custom property pill when file is selected and pane is inactive.
         type: variable-themed-color

@@ -29,7 +29,7 @@
  */
 
 import { useMemo, useState, useEffect, useRef } from 'react';
-import { TFile, TFolder, debounce } from 'obsidian';
+import { TFile, TFolder, debounce, normalizePath } from 'obsidian';
 import { useServices } from '../context/ServicesContext';
 import { OperationType } from '../services/CommandQueueService';
 import { useFileCache } from '../context/StorageContext';
@@ -39,13 +39,19 @@ import type { ListPaneItem } from '../types/virtualization';
 import { TIMEOUTS } from '../types/obsidian-extended';
 import { DateUtils } from '../utils/dateUtils';
 import { collectPinnedPaths } from '../utils/fileFinder';
-import { shouldExcludeFile, createHiddenFileNameMatcher, isFolderInExcludedFolder } from '../utils/fileFilters';
+import {
+    createFrontmatterPropertyExclusionMatcher,
+    createHiddenFileNameMatcher,
+    isFolderInExcludedFolder,
+    shouldExcludeFileWithMatcher
+} from '../utils/fileFilters';
 import {
     getDateField,
     getEffectiveSortOption,
     isDateSortOption,
-    isPropertySortOption,
     naturalCompare,
+    shouldRefreshOnFileModifyForSort,
+    shouldRefreshOnMetadataChangeForSort,
     resolveDefaultDateField
 } from '../utils/sortUtils';
 import { strings } from '../i18n';
@@ -193,6 +199,10 @@ export function useListPaneData({
         return selectedFolder.path;
     }, [selectionType, selectedFolder]);
     const { hiddenFolders, hiddenFileProperties, hiddenFileNames, hiddenTags, hiddenFileTags, fileVisibility } = activeProfile;
+    const hiddenFilePropertyMatcher = useMemo(
+        () => createFrontmatterPropertyExclusionMatcher(hiddenFileProperties),
+        [hiddenFileProperties]
+    );
     const listConfig = useMemo(
         () => ({
             pinnedNotes: settings.pinnedNotes,
@@ -269,6 +279,9 @@ export function useListPaneData({
         settings.pinnedNotes,
         settings.defaultFolderSort,
         settings.propertySortKey,
+        settings.propertySortSecondary,
+        settings.propertyFields,
+        settings.showProperties,
         settings.folderSortOverrides,
         settings.tagSortOverrides,
         propertyTreeService,
@@ -469,20 +482,20 @@ export function useListPaneData({
 
         const resolveNormalizedProperties = (
             path: string,
-            customProperty: { fieldKey: string; value: string }[] | null
+            properties: { fieldKey: string; value: string }[] | null
         ): Map<string, string[]> => {
             const cached = normalizedPropertyCache.get(path);
             if (cached) {
                 return cached;
             }
 
-            if (!customProperty || customProperty.length === 0) {
+            if (!properties || properties.length === 0) {
                 normalizedPropertyCache.set(path, emptyProperties);
                 return emptyProperties;
             }
 
             const normalizedValues = new Map<string, Set<string>>();
-            customProperty.forEach(entry => {
+            properties.forEach(entry => {
                 const normalizedKey = casefold(entry.fieldKey);
                 if (!normalizedKey) {
                     return;
@@ -529,7 +542,7 @@ export function useListPaneData({
             }
 
             if (needsPropertyLookup) {
-                const propertyValuesByKey = resolveNormalizedProperties(file.path, fileData?.customProperty ?? null);
+                const propertyValuesByKey = resolveNormalizedProperties(file.path, fileData?.properties ?? null);
                 if (matchOptions) {
                     matchOptions = { ...matchOptions, propertyValuesByKey };
                 } else {
@@ -611,7 +624,7 @@ export function useListPaneData({
         const db = getDB();
         const records = db.getFiles(files.map(file => file.path));
         const shouldCheckFolders = hiddenFolders.length > 0;
-        const shouldCheckFrontmatter = hiddenFileProperties.length > 0;
+        const shouldCheckFrontmatter = hiddenFilePropertyMatcher.hasCriteria;
         const shouldCheckFileNames = hiddenFileNames.length > 0;
         const shouldCheckFileTags = hiddenFileTags.length > 0;
         const fileNameMatcher = shouldCheckFileNames ? createHiddenFileNameMatcher(hiddenFileNames) : null;
@@ -637,7 +650,7 @@ export function useListPaneData({
             let hiddenByFrontmatter = false;
             if (shouldCheckFrontmatter && file.extension === 'md') {
                 if (record?.metadata?.hidden === undefined) {
-                    hiddenByFrontmatter = shouldExcludeFile(file, hiddenFileProperties, app);
+                    hiddenByFrontmatter = shouldExcludeFileWithMatcher(file, hiddenFilePropertyMatcher, app);
                 } else {
                     hiddenByFrontmatter = Boolean(record.metadata?.hidden);
                 }
@@ -658,7 +671,7 @@ export function useListPaneData({
         });
 
         return result;
-    }, [files, getDB, hiddenFolders, hiddenFileProperties, hiddenFileNames, hiddenFileTags, showHiddenItems, app]);
+    }, [files, getDB, hiddenFolders, hiddenFilePropertyMatcher, hiddenFileNames, hiddenFileTags, showHiddenItems, app]);
 
     /**
      * Build the complete list of items for rendering, including:
@@ -826,15 +839,18 @@ export function useListPaneData({
                     sortKey: string;
                     files: TFile[];
                     isCurrentFolder: boolean;
+                    folderPath: string | null;
                 }
             >();
 
             // Determines which folder group a file belongs to based on its parent path
-            const resolveFolderGroup = (file: TFile): { key: string; label: string; sortKey: string; isCurrentFolder: boolean } => {
+            const resolveFolderGroup = (
+                file: TFile
+            ): { key: string; label: string; sortKey: string; isCurrentFolder: boolean; folderPath: string | null } => {
                 const parent = file.parent;
                 // Files at vault root
                 if (!(parent instanceof TFolder)) {
-                    return { key: 'folder:/', label: vaultRootLabel, sortKey: vaultRootSortKey, isCurrentFolder: false };
+                    return { key: 'folder:/', label: vaultRootLabel, sortKey: vaultRootSortKey, isCurrentFolder: false, folderPath: null };
                 }
 
                 // When viewing a folder, group by immediate parent folder
@@ -842,7 +858,14 @@ export function useListPaneData({
                     // Files directly in the selected folder
                     if (parent.path === baseFolderPath) {
                         const label = baseFolderName ?? parent.name;
-                        return { key: `folder:${baseFolderPath}`, label, sortKey: `0-${label.toLowerCase()}`, isCurrentFolder: true };
+                        const folderPath = baseFolderPath === '/' ? null : baseFolderPath;
+                        return {
+                            key: `folder:${baseFolderPath}`,
+                            label,
+                            sortKey: `0-${label.toLowerCase()}`,
+                            isCurrentFolder: true,
+                            folderPath
+                        };
                     }
                     // Files in subfolders - group by first level subfolder name
                     if (basePrefix && parent.path.startsWith(basePrefix)) {
@@ -850,11 +873,15 @@ export function useListPaneData({
                         const [firstSegment] = relativePath.split('/');
                         if (firstSegment && firstSegment.length > 0) {
                             const label = firstSegment;
+                            const folderPath = normalizePath(
+                                !baseFolderPath || baseFolderPath === '/' ? label : `${baseFolderPath}/${label}`
+                            );
                             return {
                                 key: `folder:${baseFolderPath}/${label}`,
                                 label,
                                 sortKey: `1-${label.toLowerCase()}`,
-                                isCurrentFolder: false
+                                isCurrentFolder: false,
+                                folderPath
                             };
                         }
                     }
@@ -865,19 +892,25 @@ export function useListPaneData({
                 const [topLevel] = parentPath.split('/');
                 if (topLevel && topLevel.length > 0) {
                     const label = topLevel;
-                    return { key: `folder:/${label}`, label, sortKey: `1-${label.toLowerCase()}`, isCurrentFolder: false };
+                    return {
+                        key: `folder:/${label}`,
+                        label,
+                        sortKey: `1-${label.toLowerCase()}`,
+                        isCurrentFolder: false,
+                        folderPath: topLevel
+                    };
                 }
 
                 // Fallback to vault root
-                return { key: 'folder:/', label: vaultRootLabel, sortKey: vaultRootSortKey, isCurrentFolder: false };
+                return { key: 'folder:/', label: vaultRootLabel, sortKey: vaultRootSortKey, isCurrentFolder: false, folderPath: null };
             };
 
             // Collect files into folder groups
             unpinnedFiles.forEach(file => {
-                const { key, label, sortKey, isCurrentFolder } = resolveFolderGroup(file);
+                const { key, label, sortKey, isCurrentFolder, folderPath } = resolveFolderGroup(file);
                 let group = folderGroups.get(key);
                 if (!group) {
-                    group = { label, sortKey, files: [], isCurrentFolder };
+                    group = { label, sortKey, files: [], isCurrentFolder, folderPath };
                     folderGroups.set(key, group);
                 }
                 group.files.push(file);
@@ -913,6 +946,7 @@ export function useListPaneData({
                     items.push({
                         type: ListPaneItemType.HEADER,
                         data: group.label,
+                        headerFolderPath: group.folderPath,
                         key: `header-${group.key}`
                     });
                 }
@@ -1022,8 +1056,8 @@ export function useListPaneData({
             if (!pendingRefreshRef.current) return;
             if (!operationActiveRef.current) {
                 pendingRefreshRef.current = false;
-                // Run any pending scheduled refresh immediately
-                scheduleRefresh.run();
+                // Queue a refresh after operation completion.
+                scheduleRefresh();
             }
         };
 
@@ -1037,10 +1071,27 @@ export function useListPaneData({
                 }
             });
         }
+        let unsubscribePropertyTree: (() => void) | null = null;
+        if (selectionType === ItemType.PROPERTY && selectedProperty && propertyTreeService) {
+            unsubscribePropertyTree = propertyTreeService.addTreeUpdateListener(() => {
+                if (operationActiveRef.current) {
+                    pendingRefreshRef.current = true;
+                    return;
+                }
+                scheduleRefresh();
+            });
+        }
 
-        const isModifiedSort = sortOption.startsWith('modified');
-        const propertySortKey = settings.propertySortKey.trim();
-        const shouldRefreshOnMetadataChange = isPropertySortOption(sortOption) && propertySortKey.length > 0;
+        const shouldRefreshOnFileModify = shouldRefreshOnFileModifyForSort(sortOption, settings.propertySortSecondary);
+        const shouldRefreshOnMetadataChange = shouldRefreshOnMetadataChangeForSort({
+            sortOption,
+            propertySortKey: settings.propertySortKey,
+            propertySortSecondary: settings.propertySortSecondary,
+            useFrontmatterMetadata: settings.useFrontmatterMetadata,
+            frontmatterNameField: settings.frontmatterNameField,
+            frontmatterCreatedField: settings.frontmatterCreatedField,
+            frontmatterModifiedField: settings.frontmatterModifiedField
+        });
 
         const vaultEvents = [
             app.vault.on('create', () => {
@@ -1065,7 +1116,7 @@ export function useListPaneData({
                 }
             }),
             app.vault.on('modify', file => {
-                if (!isModifiedSort) {
+                if (!shouldRefreshOnFileModify) {
                     return;
                 }
                 if (!(file instanceof TFile)) {
@@ -1136,11 +1187,11 @@ export function useListPaneData({
             }
 
             // Check if file's hidden state changed (frontmatter property added/removed) to trigger rebuild
-            if (hiddenFileProperties.length > 0 && file.extension === 'md') {
+            if (hiddenFilePropertyMatcher.hasCriteria && file.extension === 'md') {
                 const db = getDB();
                 const record = db.getFile(file.path);
                 const wasExcluded = Boolean(record?.metadata?.hidden);
-                const isCurrentlyExcluded = shouldExcludeFile(file, hiddenFileProperties, app);
+                const isCurrentlyExcluded = shouldExcludeFileWithMatcher(file, hiddenFilePropertyMatcher, app);
 
                 if (isCurrentlyExcluded !== wasExcluded) {
                     if (operationActiveRef.current) {
@@ -1176,14 +1227,14 @@ export function useListPaneData({
         const db = getDB();
         const dbUnsubscribe = db.onContentChange(changes => {
             let shouldRefresh = false;
+            const isPropertyView = selectionType === ItemType.PROPERTY && selectedProperty;
 
             // React to tag/property changes that affect the current view
             const hasTagChanges = changes.some(change => change.changes.tags !== undefined);
-            const hasPropertyChanges = changes.some(change => change.changes.customProperty !== undefined);
+            const hasPropertyChanges = changes.some(change => change.changes.properties !== undefined);
             if (hasTagChanges || hasPropertyChanges) {
                 const isTagView = selectionType === ItemType.TAG && selectedTag;
                 const isFolderView = selectionType === ItemType.FOLDER && selectedFolder;
-                const isPropertyView = selectionType === ItemType.PROPERTY && selectedProperty;
 
                 if (isTagView && hasTagChanges) {
                     shouldRefresh = true;
@@ -1208,14 +1259,16 @@ export function useListPaneData({
                 } else if (isPropertyView) {
                     if (hasPropertyChanges) {
                         shouldRefresh = true;
-                    } else if (hasTagChanges && hiddenFileTags.length > 0 && !showHiddenItems) {
-                        shouldRefresh = true;
+                    } else if (hasTagChanges) {
+                        const hasTagChangesInCurrentList = changes.some(change => basePathSet.has(change.path));
+                        const shouldRefreshForTagVisibility = hiddenFileTags.length > 0 && !showHiddenItems;
+                        shouldRefresh = hasTagChangesInCurrentList || shouldRefreshForTagVisibility;
                     }
                 }
             }
 
             // React to metadata changes that may update hidden-state styling
-            if (!shouldRefresh && hiddenFileProperties.length > 0 && showHiddenItems) {
+            if (!shouldRefresh && hiddenFilePropertyMatcher.hasCriteria && showHiddenItems) {
                 const metadataPaths = changes.filter(change => change.changes.metadata !== undefined).map(change => change.path);
                 if (metadataPaths.length > 0) {
                     shouldRefresh = metadataPaths.some(path => basePathSet.has(path));
@@ -1245,6 +1298,7 @@ export function useListPaneData({
             app.metadataCache.offref(metadataEvent);
             dbUnsubscribe();
             if (unsubscribeCQ) unsubscribeCQ();
+            if (unsubscribePropertyTree) unsubscribePropertyTree();
             // Cancel any pending scheduled refresh to avoid stray updates
             scheduleRefresh.cancel();
         };
@@ -1255,16 +1309,22 @@ export function useListPaneData({
         selectedFolder,
         selectedProperty,
         includeDescendantNotes,
-        hiddenFileProperties,
+        hiddenFilePropertyMatcher,
         hiddenFolders,
         hiddenFileTags,
         showHiddenItems,
         hasTaskSearchFilters,
         getDB,
         commandQueue,
+        propertyTreeService,
         basePathSet,
         sortOption,
-        settings.propertySortKey
+        settings.propertySortKey,
+        settings.propertySortSecondary,
+        settings.useFrontmatterMetadata,
+        settings.frontmatterNameField,
+        settings.frontmatterCreatedField,
+        settings.frontmatterModifiedField
     ]);
 
     return {

@@ -23,10 +23,10 @@ import { ConfirmModal } from '../modals/ConfirmModal';
 import { FolderSuggestModal } from '../modals/FolderSuggestModal';
 import { InputModal } from '../modals/InputModal';
 import { NotebookNavigatorSettings } from '../settings';
-import { NavigationItemType } from '../types';
+import { NavigationItemType, TAGGED_TAG_ID, UNTAGGED_TAG_ID } from '../types';
 import type { VisibilityPreferences } from '../types';
 import { ExtendedApp, TIMEOUTS, OBSIDIAN_COMMANDS } from '../types/obsidian-extended';
-import { createFileWithOptions, createDatabaseContent } from '../utils/fileCreationUtils';
+import { createFileWithOptions, createDatabaseContent, generateUniqueFilename } from '../utils/fileCreationUtils';
 import { cleanupExclusionPatterns, isPathInExcludedFolder } from '../utils/fileFilters';
 import {
     containsForbiddenNameCharactersAllPlatforms,
@@ -62,6 +62,7 @@ import {
 import { EXCALIDRAW_PLUGIN_ID, TLDRAW_PLUGIN_ID } from '../constants/pluginIds';
 import { createDrawingWithPlugin, DrawingType, getDrawingFilePath, getDrawingTemplate } from '../utils/drawingFileUtils';
 import { resolveFolderDisplayName } from '../utils/folderDisplayName';
+import { normalizeTagPath } from '../utils/tagUtils';
 
 /**
  * Selection context for file operations
@@ -539,6 +540,51 @@ export class FileSystemOperations {
             content: '',
             errorKey: 'createFile'
         });
+    }
+
+    /**
+     * Creates a new markdown file in the user's configured default location and adds the selected tag in frontmatter.
+     * Uses Obsidian's markdown file creation API so plugin hooks run on creation.
+     * @param tagPath - Canonical tag path without # prefix
+     * @param sourcePath - Current file path used for "same folder as current file" preference
+     * @returns The created file or null when creation fails
+     */
+    async createNewFileForTag(tagPath: string, sourcePath?: string): Promise<TFile | null> {
+        const normalizedTag = normalizeTagPath(tagPath);
+        if (!normalizedTag || normalizedTag === TAGGED_TAG_ID || normalizedTag === UNTAGGED_TAG_ID) {
+            return null;
+        }
+
+        try {
+            const activeFilePath = this.app.workspace.getActiveFile()?.path ?? '';
+            const sourceFilePath = sourcePath?.trim().length ? sourcePath : activeFilePath;
+            const defaultParent = this.app.fileManager.getNewFileParent(sourceFilePath ?? '');
+            const targetFolder = defaultParent instanceof TFolder ? defaultParent : this.app.vault.getRoot();
+            const fileName = generateUniqueFilename(targetFolder.path, strings.fileSystem.defaultNames.untitled, 'md', this.app);
+            const file = await this.app.fileManager.createNewMarkdownFile(targetFolder, fileName);
+
+            try {
+                // Mutate frontmatter through Obsidian's API so YAML serialization matches other tag operations.
+                await this.app.fileManager.processFrontMatter(file, (frontmatter: Record<string, unknown>) => {
+                    frontmatter.tags = [normalizedTag];
+                });
+            } catch (error) {
+                console.error('[Notebook Navigator] Failed to update created note tags', error);
+                showNotice(strings.dragDrop.errors.failedToAddTag.replace('{tag}', `#${normalizedTag}`), { variant: 'warning' });
+            }
+
+            const leaf = this.app.workspace.getLeaf(false);
+            await leaf.openFile(file, { state: { mode: 'source' }, active: true });
+
+            window.setTimeout(() => {
+                executeCommand(this.app, OBSIDIAN_COMMANDS.EDIT_FILE_TITLE);
+            }, TIMEOUTS.FILE_OPERATION_DELAY);
+
+            return file;
+        } catch (error) {
+            this.notifyError(strings.fileSystem.errors.createFile, error);
+            return null;
+        }
     }
 
     /**

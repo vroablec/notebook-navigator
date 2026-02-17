@@ -18,7 +18,7 @@
 
 import type { TFile } from 'obsidian';
 import type { FeatureImageStatus, FileData } from '../storage/IndexedDBStorage';
-import type { CustomPropertyType } from '../settings/types';
+import type { NotePropertyType } from '../settings/types';
 import { isImageFile } from './fileTypeUtils';
 
 /**
@@ -107,99 +107,91 @@ export function shouldShowFeatureImageArea({
     return featureImageStatus === 'has';
 }
 
-export function shouldShowCustomPropertyRow({
-    customPropertyType,
-    showCustomPropertyInCompactMode,
+export function shouldShowPropertyRow({
+    notePropertyType,
+    showFileProperties,
+    showFilePropertiesInCompactMode,
     isCompactMode,
     file,
     wordCount,
-    customProperty
+    properties
 }: {
-    customPropertyType: CustomPropertyType;
-    showCustomPropertyInCompactMode: boolean;
+    notePropertyType: NotePropertyType;
+    showFileProperties: boolean;
+    showFilePropertiesInCompactMode: boolean;
     isCompactMode: boolean;
     file: TFile | null;
     wordCount: FileData['wordCount'] | undefined;
-    customProperty: FileData['customProperty'] | undefined;
+    properties: FileData['properties'] | undefined;
 }): boolean {
-    if (customPropertyType === 'none') {
-        return false;
-    }
-
     if (!file || file.extension !== 'md') {
         return false;
     }
 
-    if (isCompactMode && !showCustomPropertyInCompactMode) {
+    if (isCompactMode && !showFilePropertiesInCompactMode) {
         return false;
     }
 
-    if (customPropertyType === 'wordCount') {
-        // Don't show `0`: it can mean "no words", a huge file (content read skipped), or an Excalidraw document.
-        return typeof wordCount === 'number' && Number.isFinite(wordCount) && wordCount > 0;
-    }
+    const hasWordCount = notePropertyType === 'wordCount' && typeof wordCount === 'number' && Number.isFinite(wordCount) && wordCount > 0;
+    const hasPropertyValues = showFileProperties && Boolean(properties && properties.some(entry => entry.value.trim().length > 0));
 
-    // Custom property values are stored as an array; an empty array means there are no pills to render.
-    return Boolean(customProperty && customProperty.length > 0);
+    return hasWordCount || hasPropertyValues;
 }
 
-export function getCustomPropertyRowCount({
-    customPropertyType,
-    showCustomPropertiesOnSeparateRows,
-    showCustomPropertyInCompactMode,
+export function getPropertyRowCount({
+    notePropertyType,
+    showFileProperties,
+    showPropertiesOnSeparateRows,
+    showFilePropertiesInCompactMode,
     isCompactMode,
     file,
     wordCount,
-    customProperty
+    properties
 }: {
-    customPropertyType: CustomPropertyType;
-    showCustomPropertiesOnSeparateRows: boolean;
-    showCustomPropertyInCompactMode: boolean;
+    notePropertyType: NotePropertyType;
+    showFileProperties: boolean;
+    showPropertiesOnSeparateRows: boolean;
+    showFilePropertiesInCompactMode: boolean;
     isCompactMode: boolean;
     file: TFile | null;
     wordCount: FileData['wordCount'] | undefined;
-    customProperty: FileData['customProperty'] | undefined;
+    properties: FileData['properties'] | undefined;
 }): number {
-    // Computes the number of visual rows the custom property area will occupy.
+    // Computes the number of visual rows the property area will occupy.
     // This is used by the list pane virtualizer height estimator and must stay consistent with FileItem rendering.
-    const shouldShow = shouldShowCustomPropertyRow({
-        customPropertyType,
-        showCustomPropertyInCompactMode,
+    const shouldShow = shouldShowPropertyRow({
+        notePropertyType,
+        showFileProperties,
+        showFilePropertiesInCompactMode,
         isCompactMode,
         file,
         wordCount,
-        customProperty
+        properties
     });
 
     if (!shouldShow) {
-        // No custom property row will be rendered.
+        // No property row will be rendered.
         return 0;
     }
 
-    if (customPropertyType === 'wordCount') {
-        // Word count is always rendered as a single pill row.
-        return 1;
+    const wordCountEnabled =
+        notePropertyType === 'wordCount' && typeof wordCount === 'number' && Number.isFinite(wordCount) && wordCount > 0;
+    const wordCountPillCount = wordCountEnabled ? 1 : 0;
+
+    const propertyRowCount =
+        showFileProperties && properties
+            ? new Set(properties.filter(entry => entry.value.trim().length > 0).map(entry => entry.fieldKey.trim())).size
+            : 0;
+    const totalRowCount = wordCountPillCount + propertyRowCount;
+    if (totalRowCount === 0) {
+        return 0;
     }
 
-    const shouldUseSeparateRows = customPropertyType === 'frontmatter' && showCustomPropertiesOnSeparateRows;
+    const shouldUseSeparateRows = showPropertiesOnSeparateRows;
     if (!shouldUseSeparateRows) {
-        // Frontmatter values are rendered as pills on a single row when separate-row mode is disabled.
+        // Property values are rendered as pills on a single row when separate-row mode is disabled.
         return 1;
     }
 
-    if (!customProperty) {
-        // `shouldShowCustomPropertyRow` checks for non-empty arrays, but keep this guard for typed inputs.
-        return 0;
-    }
-
-    let rowCount = 0;
-    for (const entry of customProperty) {
-        // FileItem filters out empty/whitespace-only values, so the virtualizer estimator must do the same.
-        if (entry.value.trim().length === 0) {
-            continue;
-        }
-        rowCount += 1;
-    }
-
-    return rowCount;
+    return totalRowCount;
 }

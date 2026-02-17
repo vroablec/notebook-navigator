@@ -49,7 +49,7 @@ class FakeDb {
             featureImage?: Blob | null;
             featureImageKey?: string | null;
             metadata?: FileData['metadata'];
-            customProperty?: FileData['customProperty'];
+            properties?: FileData['properties'];
         }[];
         provider?: ContentProviderType;
         processedMtimeUpdates?: { path: string; mtime: number; expectedPreviousMtime: number }[];
@@ -114,7 +114,7 @@ function createFileData(overrides: Partial<FileData>): FileData {
         wordCount: null,
         taskTotal: 0,
         taskUnfinished: 0,
-        customProperty: null,
+        properties: null,
         previewStatus: 'unprocessed',
         featureImage: null,
         featureImageStatus: 'unprocessed',
@@ -190,7 +190,7 @@ describe('MarkdownPipelineContentProvider feature image errors', () => {
         const settings: NotebookNavigatorSettings = {
             ...DEFAULT_SETTINGS,
             showFilePreview: false,
-            customPropertyType: 'none',
+            notePropertyType: 'none',
             showFeatureImage: true,
             featureImageProperties: ['thumbnail']
         };

@@ -179,7 +179,7 @@ exposed through `ServicesContext`.
 
 Central coordinator for folder, tag, and file metadata. Delegates to specialized sub-services. Reads frontmatter-derived
 metadata from IndexedDB when `useFrontmatterMetadata` is enabled. File icon/color writes and migrations use frontmatter
-when both `useFrontmatterMetadata` and `saveMetadataToFrontmatter` are enabled.
+when `useFrontmatterMetadata` is enabled.
 
 **Location:** `src/services/MetadataService.ts`
 

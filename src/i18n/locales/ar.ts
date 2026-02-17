@@ -105,6 +105,8 @@ export const STRINGS_AR = {
         folderExists: 'المجلد موجود بالفعل في الاختصارات',
         noteExists: 'الملاحظة موجودة بالفعل في الاختصارات',
         tagExists: 'الوسم موجود بالفعل في الاختصارات',
+        propertyExists: 'الخاصية موجودة بالفعل في الاختصارات',
+        invalidProperty: 'اختصار خاصية غير صالح',
         searchExists: 'اختصار البحث موجود بالفعل',
         emptySearchQuery: 'أدخل استعلام بحث قبل حفظه',
         emptySearchName: 'أدخل اسمًا قبل حفظ البحث',
@@ -185,12 +187,12 @@ export const STRINGS_AR = {
                 properties: {
                     title: 'الخصائص',
                     items: [
-                        '`.key` تضمين الملاحظات التي تحتوي على مفتاح خاصية مخصص.',
-                        '`.key=value` تضمين الملاحظات التي تحتوي على قيمة خاصية مخصصة.',
+                        '`.key` تضمين الملاحظات التي تحتوي على مفتاح خاصية.',
+                        '`.key=value` تضمين الملاحظات التي تحتوي على قيمة خاصية.',
                         '`."Reading Status"` تضمين الملاحظات التي تحتوي على مفتاح خاصية يتضمن مسافات.',
                         '`."Reading Status"="In Progress"` المفاتيح والقيم التي تحتوي على مسافات يجب وضعها بين علامات اقتباس مزدوجة.',
-                        '`-.key` استبعاد الملاحظات التي تحتوي على مفتاح خاصية مخصص.',
-                        '`-.key=value` استبعاد الملاحظات التي تحتوي على قيمة خاصية مخصصة.',
+                        '`-.key` استبعاد الملاحظات التي تحتوي على مفتاح خاصية.',
+                        '`-.key=value` استبعاد الملاحظات التي تحتوي على قيمة خاصية.',
                         'Cmd/Ctrl+انقر على خاصية للإضافة بـ AND. Cmd/Ctrl+Shift+انقر للإضافة بـ OR.'
                     ]
                 },
@@ -323,6 +325,10 @@ export const STRINGS_AR = {
             showTag: 'إظهار الوسم',
             hideTag: 'إخفاء الوسم'
         },
+        property: {
+            addKey: 'إضافة مفتاح خاصية',
+            removeKey: 'إزالة مفتاح خاصية'
+        },
         navigation: {
             addSeparator: 'إضافة فاصل',
             removeSeparator: 'إزالة الفاصل'
@@ -376,10 +382,6 @@ export const STRINGS_AR = {
         fileIconRuleEditor: {
             addRuleAria: 'إضافة قاعدة'
         },
-        propertyColorRuleEditor: {
-            propertyPlaceholder: 'Property',
-            valuePlaceholder: 'Value'
-        },
         interfaceIcons: {
             title: 'أيقونات الواجهة',
             fileItemsSection: 'عناصر الملفات',
@@ -405,13 +407,15 @@ export const STRINGS_AR = {
                 'list-new-note': 'ملاحظة جديدة',
                 'nav-folder-open': 'مجلد مفتوح',
                 'nav-folder-closed': 'مجلد مغلق',
-                'nav-folder-note': 'ملاحظة المجلد',
+                'nav-tags': 'علامات',
                 'nav-tag': 'وسم',
                 'nav-properties': 'الخصائص',
+                'nav-property': 'خاصية',
+                'nav-property-value': 'قيمة',
                 'list-pinned': 'العناصر المثبتة',
                 'file-unfinished-task': 'مهام غير مكتملة',
                 'file-word-count': 'عدد الكلمات',
-                'file-custom-property': 'خاصية مخصصة'
+                'file-property': 'خاصية'
             }
         },
         colorPicker: {
@@ -532,6 +536,15 @@ export const STRINGS_AR = {
                 dismiss: 'للإغلاق',
                 add: 'لإضافة وسم',
                 remove: 'لإزالة وسم'
+            }
+        },
+        propertySuggest: {
+            placeholder: 'اختر مفتاح خاصية...',
+            navigatePlaceholder: 'انتقل إلى خاصية...',
+            instructions: {
+                navigate: 'للتنقل',
+                select: 'لإضافة خاصية',
+                dismiss: 'للإغلاق'
             }
         },
         welcome: {
@@ -686,6 +699,7 @@ export const STRINGS_AR = {
         pinAllFolderNotes: 'تثبيت جميع ملاحظات المجلدات', // Command palette: Pins all folder notes to shortcuts (English: Pin all folder notes)
         navigateToFolder: 'الانتقال إلى مجلد', // Command palette: Navigate to a folder using fuzzy search (English: Navigate to folder)
         navigateToTag: 'الانتقال إلى وسم', // Command palette: Navigate to a tag using fuzzy search (English: Navigate to tag)
+        navigateToProperty: 'الانتقال إلى خاصية', // Command palette: Navigate to a property key or value using fuzzy search (English: Navigate to property)
         addShortcut: 'إضافة إلى الاختصارات', // Command palette: Adds the current file, folder, or tag to shortcuts (English: Add to shortcuts)
         openShortcut: 'فتح الاختصار {number}',
         toggleDescendants: 'تبديل الفروع', // Command palette: Toggles showing notes from descendants (English: Toggle descendants)
@@ -726,14 +740,15 @@ export const STRINGS_AR = {
         },
         sections: {
             general: 'عام',
-            navigationPane: 'لوحة التنقل',
+            navigationPane: 'التنقل',
             calendar: 'التقويم',
             icons: 'حزم الأيقونات',
             folders: 'مجلدات',
             folderNotes: 'ملاحظات المجلد',
-            foldersAndTags: 'مجلدات ووسوم',
+            foldersAndTags: 'مجلدات',
+            tagsAndProperties: 'الوسوم والخصائص',
             tags: 'وسوم',
-            listPane: 'لوحة القائمة',
+            listPane: 'القائمة',
             notes: 'ملاحظات',
             advanced: 'متقدم'
         },
@@ -752,7 +767,6 @@ export const STRINGS_AR = {
             },
             navigation: {
                 appearance: 'المظهر',
-                shortcutsAndRecent: 'الاختصارات والعناصر الأخيرة',
                 leftSidebar: 'الشريط الجانبي الأيسر',
                 calendarIntegration: 'تكامل التقويم'
             },
@@ -767,7 +781,7 @@ export const STRINGS_AR = {
                 previewText: 'نص المعاينة',
                 featureImage: 'الصورة المميزة',
                 tags: 'الوسوم',
-                customProperty: 'خاصية مخصصة (البيانات الوصفية أو عدد الكلمات)',
+                properties: 'الخصائص',
                 date: 'التاريخ',
                 parentFolder: 'المجلد الأصلي'
             }
@@ -812,6 +826,16 @@ export const STRINGS_AR = {
                 name: 'خاصية الترتيب',
                 desc: 'تُستخدم مع ترتيب الخاصية. الملاحظات التي تحتوي على هذه الخاصية في الواجهة الأمامية تُعرض أولاً وتُرتب حسب قيمة الخاصية. يتم دمج المصفوفات في قيمة واحدة.',
                 placeholder: 'order'
+            },
+            propertySortSecondary: {
+                name: 'الترتيب الثانوي',
+                desc: 'يُستخدم مع ترتيب الخاصية عندما تكون للملاحظات نفس قيمة الخاصية أو بدون قيمة خاصية.',
+                options: {
+                    title: 'العنوان',
+                    filename: 'اسم الملف',
+                    created: 'تاريخ الإنشاء',
+                    modified: 'تاريخ التعديل'
+                }
             },
             revealFileOnListChanges: {
                 name: 'التمرير إلى الملف المحدد عند تغيير القائمة',
@@ -962,6 +986,10 @@ export const STRINGS_AR = {
                 name: 'الكشف التلقائي عن الملاحظة النشطة',
                 desc: 'الكشف تلقائيًا عن الملاحظات عند فتحها من المبدل السريع أو الروابط أو البحث.'
             },
+            autoRevealShortestPath: {
+                name: 'استخدام أقصر مسار',
+                desc: 'مفعّل: يختار الكشف التلقائي أقرب مجلد أصل أو وسم مرئي. معطّل: يختار الكشف التلقائي المجلد الفعلي للملف والوسم الدقيق.'
+            },
             autoRevealIgnoreRightSidebar: {
                 name: 'تجاهل الأحداث من الشريط الجانبي الأيمن',
                 desc: 'عدم تغيير الملاحظة النشطة عند النقر أو تغيير الملاحظات في الشريط الجانبي الأيمن.'
@@ -1021,6 +1049,14 @@ export const STRINGS_AR = {
             showRecentNotes: {
                 name: 'إظهار الملاحظات الحديثة',
                 desc: 'عرض قسم الملاحظات الحديثة في لوحة التنقل.'
+            },
+            hideRecentNotes: {
+                name: 'إخفاء الملاحظات',
+                desc: 'اختر أنواع الملاحظات المراد إخفاؤها في قسم الملاحظات الحديثة.',
+                options: {
+                    none: 'لا شيء',
+                    folderNotes: 'ملاحظات المجلدات'
+                }
             },
             recentNotesCount: {
                 name: 'عدد الملاحظات الحديثة',
@@ -1222,9 +1258,9 @@ export const STRINGS_AR = {
                 }
             },
             excludedNotes: {
-                name: 'إخفاء الملاحظات ذات الخصائص (ملف الخزنة)',
-                desc: 'قائمة مفصولة بفاصلة من خصائص البيانات الأمامية. الملاحظات التي تحتوي على أي من هذه الخصائص ستكون مخفية (مثل draft، private، archived).',
-                placeholder: 'draft, private'
+                name: 'إخفاء الملاحظات بقواعد الخصائص (ملف الخزنة)',
+                desc: 'قائمة مفصولة بفاصلة من قواعد البيانات الأمامية. استخدم إدخالات `key` أو `key=value` (مثل status=done, published=true, archived).',
+                placeholder: 'status=done, published=true, archived'
             },
             excludedFileNamePatterns: {
                 name: 'إخفاء الملفات (ملف الخزنة)',
@@ -1297,33 +1333,41 @@ export const STRINGS_AR = {
                 name: 'إظهار وسوم الملفات في الوضع المضغوط',
                 desc: 'عرض الوسوم عند إخفاء التاريخ والمعاينة والصورة.'
             },
-            customPropertyType: {
-                name: 'نوع الخاصية',
-                desc: 'حدد الخاصية المخصصة لعرضها في عناصر الملفات.',
+            showFileProperties: {
+                name: 'إظهار خصائص الملفات',
+                desc: 'عرض الخصائص القابلة للنقر في عناصر الملفات.'
+            },
+            colorFileProperties: {
+                name: 'تلوين خصائص الملفات',
+                desc: 'تطبيق ألوان الخصائص على شارات الخصائص في عناصر الملفات.'
+            },
+            prioritizeColoredFileProperties: {
+                name: 'إظهار الخصائص الملونة أولاً',
+                desc: 'ترتيب الخصائص الملونة قبل الخصائص الأخرى في عناصر الملفات.'
+            },
+            showFilePropertiesInCompactMode: {
+                name: 'إظهار الخصائص في الوضع المضغوط',
+                desc: 'عرض الخصائص عند تفعيل الوضع المضغوط.'
+            },
+            notePropertyType: {
+                name: 'خاصية الملاحظة',
+                desc: 'حدد خاصية الملاحظة لعرضها في عناصر الملفات.',
                 options: {
                     frontmatter: 'خاصية الواجهة الأمامية',
                     wordCount: 'عدد الكلمات',
                     none: 'لا شيء'
                 }
             },
-            customPropertyFields: {
+            propertyFields: {
                 name: 'الخصائص للعرض',
-                desc: 'قائمة خصائص frontmatter مفصولة بفواصل لعرضها كشارات. الخصائص ذات القيم المتعددة تعرض شارة واحدة لكل قيمة. قيم [[wikilink]] تُعرض كروابط قابلة للنقر.',
-                placeholder: 'الحالة، النوع، الفئة'
+                desc: 'قائمة خصائص الواجهة الأمامية مفصولة بفواصل لعرضها في لوحة التنقل وكشارات في عناصر الملفات. الخصائص ذات القوائم تعرض شارة واحدة لكل قيمة.',
+                placeholder: 'status, type, category',
+                addButtonTooltip: 'إضافة مفتاح خاصية',
+                emptySelectorNotice: 'لم يتم العثور على مفاتيح خصائص في ذاكرة البيانات الوصفية.'
             },
-            showCustomPropertiesOnSeparateRows: {
+            showPropertiesOnSeparateRows: {
                 name: 'إظهار الخصائص في صفوف منفصلة',
                 desc: 'عرض كل خاصية في صف منفصل.'
-            },
-            customPropertyColorMap: {
-                name: 'ألوان الخصائص',
-                desc: 'ربط خصائص وقيم البيانات الوصفية بألوان الشارات. رابط واحد لكل سطر: خاصية=لون أو خاصية:قيمة=لون',
-                placeholder: '# خاصية أو خاصية:قيمة لون\nstatus=#f59e0b\nstatus:done=#10b981\nstatus:todo=#ef4444',
-                editTooltip: 'تحرير الروابط'
-            },
-            showCustomPropertyInCompactMode: {
-                name: 'إظهار الخاصية المخصصة في الوضع المضغوط',
-                desc: 'عرض الخاصية المخصصة عند إخفاء التاريخ والمعاينة والصورة.'
             },
             dateFormat: {
                 name: 'تنسيق التاريخ',
@@ -1398,7 +1442,7 @@ export const STRINGS_AR = {
             featureImageExcludeProperties: {
                 name: 'استبعاد الملاحظات ذات الخصائص',
                 desc: 'قائمة مفصولة بفاصلة من خصائص البيانات الأمامية. الملاحظات التي تحتوي على أي من هذه الخصائص لا تخزن صور العرض.',
-                placeholder: 'خاص, سري'
+                placeholder: 'private, confidential'
             },
 
             downloadExternalFeatureImages: {
@@ -1510,6 +1554,33 @@ export const STRINGS_AR = {
                 name: 'الاحتفاظ بخاصية الوسوم بعد إزالة آخر وسم',
                 desc: 'الاحتفاظ بخاصية الوسوم في البيانات الأمامية عند إزالة جميع الوسوم. عند التعطيل، يتم حذف خاصية الوسوم من البيانات الأمامية.'
             },
+            showProperties: {
+                name: 'إظهار الخصائص',
+                desc: 'عرض قسم الخصائص في المتصفح.'
+            },
+            showPropertyIcons: {
+                name: 'إظهار أيقونات الخصائص',
+                desc: 'عرض الأيقونات بجانب الخصائص في لوحة التنقل.'
+            },
+            inheritPropertyColors: {
+                name: 'وراثة ألوان الخصائص',
+                desc: 'قيم الخصائص ترث اللون والخلفية من مفتاح الخاصية.'
+            },
+            propertySortOrder: {
+                name: 'ترتيب فرز الخصائص',
+                desc: 'انقر بزر الماوس الأيمن على أي خاصية لتعيين ترتيب فرز مختلف لقيمها.',
+                options: {
+                    alphaAsc: 'أ إلى ي',
+                    alphaDesc: 'ي إلى أ',
+                    frequency: 'التكرار',
+                    lowToHigh: 'من الأقل إلى الأعلى',
+                    highToLow: 'من الأعلى إلى الأقل'
+                }
+            },
+            showAllPropertiesFolder: {
+                name: 'إظهار مجلد الخصائص',
+                desc: 'عرض "الخصائص" كمجلد قابل للطي.'
+            },
             hiddenTags: {
                 name: 'إخفاء الوسوم (ملف الخزنة)',
                 desc: 'قائمة مفصولة بفاصلة من أنماط الوسوم. أنماط الأسماء: tag* (تبدأ بـ)، *tag (تنتهي بـ). أنماط المسارات: archive (الوسم وفروعه)، archive/* (الفروع فقط)، projects/*/drafts (حرف بدل وسطي).',
@@ -1570,7 +1641,8 @@ export const STRINGS_AR = {
                 error: 'فشل تنظيف الإعدادات',
                 loading: 'جارٍ فحص البيانات الوصفية...',
                 statusClean: 'لا توجد بيانات وصفية لتنظيفها',
-                statusCounts: 'عناصر يتيمة: {folders} مجلدات، {tags} وسوم، {files} ملفات، {pinned} تثبيتات، {separators} فواصل'
+                statusCounts:
+                    'عناصر يتيمة: {folders} مجلدات، {tags} وسوم، {properties} خصائص، {files} ملفات، {pinned} تثبيتات، {separators} فواصل'
             },
             rebuildCache: {
                 name: 'إعادة بناء الذاكرة المؤقتة',
@@ -1606,9 +1678,10 @@ export const STRINGS_AR = {
                 desc: 'حقل البيانات الأمامية لألوان الملفات. اتركه فارغًا لاستخدام الألوان المخزنة في الإعدادات.',
                 placeholder: 'color'
             },
-            frontmatterSaveMetadata: {
-                name: 'حفظ الأيقونات والألوان في البيانات الأمامية',
-                desc: 'كتابة أيقونات وألوان الملفات تلقائيًا إلى البيانات الأمامية باستخدام الحقول المكونة أعلاه.'
+            frontmatterBackgroundField: {
+                name: 'حقل الخلفية',
+                desc: 'حقل البيانات الأمامية لألوان الخلفية. اتركه فارغًا لاستخدام ألوان الخلفية المخزنة في الإعدادات.',
+                placeholder: 'background'
             },
             frontmatterMigration: {
                 name: 'ترحيل الأيقونات والألوان من الإعدادات',
@@ -1623,7 +1696,7 @@ export const STRINGS_AR = {
             frontmatterNameField: {
                 name: 'حقول الاسم',
                 desc: 'قائمة حقول البيانات الأمامية مفصولة بفواصل. يُستخدم أول قيمة غير فارغة. يعود لاسم الملف.',
-                placeholder: 'عنوان, اسم'
+                placeholder: 'title, name'
             },
             frontmatterCreatedField: {
                 name: 'حقل طابع وقت الإنشاء',

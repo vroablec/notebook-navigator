@@ -16,92 +16,24 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Platform, Setting } from 'obsidian';
+import { Setting } from 'obsidian';
 import { strings } from '../../i18n';
 import { isFolderNoteCreationPreference } from '../../types/folderNote';
-import { isAlphaSortOrder, isTagSortOrder } from '../types';
+import { isAlphaSortOrder } from '../types';
 import type { SettingsTabContext } from './SettingsTabContext';
 import { createSettingGroupFactory } from '../settingGroups';
 import { addSettingSyncModeToggle } from '../syncModeToggle';
-import { setElementVisible, wireToggleSettingWithSubSettings } from '../subSettings';
+import { wireToggleSettingWithSubSettings } from '../subSettings';
 import { FilePathInputSuggest } from '../../suggest/FilePathInputSuggest';
 import { FOLDER_NOTE_NAME_PATTERN_PLACEHOLDER } from '../../utils/folderNoteName';
 import { normalizeOptionalVaultFilePath } from '../../utils/pathUtils';
 
-/** Renders the folders and tags settings tab */
-export function renderFoldersTagsTab(context: SettingsTabContext): void {
+/** Renders the folders settings tab */
+export function renderFoldersTab(context: SettingsTabContext): void {
     const { containerEl, plugin, addToggleSetting } = context;
     const createGroup = createSettingGroupFactory(containerEl);
 
-    const topGroup = createGroup(undefined);
-
-    if (!Platform.isMobile) {
-        addToggleSetting(
-            topGroup.addSetting,
-            strings.settings.items.autoSelectFirstFileOnFocusChange.name,
-            strings.settings.items.autoSelectFirstFileOnFocusChange.desc,
-            () => plugin.settings.autoSelectFirstFileOnFocusChange,
-            value => {
-                plugin.settings.autoSelectFirstFileOnFocusChange = value;
-            }
-        );
-    }
-
-    addToggleSetting(
-        topGroup.addSetting,
-        strings.settings.items.autoExpandNavItems.name,
-        strings.settings.items.autoExpandNavItems.desc,
-        () => plugin.settings.autoExpandNavItems,
-        value => {
-            plugin.settings.autoExpandNavItems = value;
-        }
-    );
-
-    if (!Platform.isMobile) {
-        const springLoadedFoldersSetting = topGroup.addSetting(setting => {
-            setting.setName(strings.settings.items.springLoadedFolders.name).setDesc(strings.settings.items.springLoadedFolders.desc);
-        });
-        const springLoadedFoldersSubSettings = wireToggleSettingWithSubSettings(
-            springLoadedFoldersSetting,
-            () => plugin.settings.springLoadedFolders,
-            async value => {
-                plugin.settings.springLoadedFolders = value;
-                await plugin.saveSettingsAndUpdate();
-            }
-        );
-
-        new Setting(springLoadedFoldersSubSettings)
-            .setName(strings.settings.items.springLoadedFoldersInitialDelay.name)
-            .setDesc(strings.settings.items.springLoadedFoldersInitialDelay.desc)
-            .addSlider(slider =>
-                slider
-                    .setLimits(0.1, 2, 0.1)
-                    .setValue(plugin.settings.springLoadedFoldersInitialDelay)
-                    .setInstant(false)
-                    .setDynamicTooltip()
-                    .onChange(async value => {
-                        plugin.settings.springLoadedFoldersInitialDelay = Math.round(value * 10) / 10;
-                        await plugin.saveSettingsAndUpdate();
-                    })
-            );
-
-        new Setting(springLoadedFoldersSubSettings)
-            .setName(strings.settings.items.springLoadedFoldersSubsequentDelay.name)
-            .setDesc(strings.settings.items.springLoadedFoldersSubsequentDelay.desc)
-            .addSlider(slider =>
-                slider
-                    .setLimits(0.1, 2, 0.1)
-                    .setValue(plugin.settings.springLoadedFoldersSubsequentDelay)
-                    .setInstant(false)
-                    .setDynamicTooltip()
-                    .onChange(async value => {
-                        plugin.settings.springLoadedFoldersSubsequentDelay = Math.round(value * 10) / 10;
-                        await plugin.saveSettingsAndUpdate();
-                    })
-            );
-    }
-
-    const foldersGroup = createGroup(strings.settings.sections.folders);
+    const foldersGroup = createGroup(undefined);
 
     addToggleSetting(
         foldersGroup.addSetting,
@@ -256,97 +188,4 @@ export function renderFoldersTagsTab(context: SettingsTabContext): void {
                 await plugin.saveSettingsAndUpdate();
             })
         );
-
-    const tagsGroup = createGroup(strings.settings.sections.tags);
-
-    const showTagsSetting = tagsGroup.addSetting(setting => {
-        setting.setName(strings.settings.items.showTags.name).setDesc(strings.settings.items.showTags.desc);
-    });
-    const tagSubSettingsEl = wireToggleSettingWithSubSettings(
-        showTagsSetting,
-        () => plugin.settings.showTags,
-        async value => {
-            plugin.settings.showTags = value;
-            await plugin.saveSettingsAndUpdate();
-            context.notifyShowTagsVisibility(value);
-        }
-    );
-
-    new Setting(tagSubSettingsEl)
-        .setName(strings.settings.items.showTagIcons.name)
-        .setDesc(strings.settings.items.showTagIcons.desc)
-        .addToggle(toggle =>
-            toggle.setValue(plugin.settings.showTagIcons).onChange(async value => {
-                plugin.settings.showTagIcons = value;
-                await plugin.saveSettingsAndUpdate();
-            })
-        );
-
-    new Setting(tagSubSettingsEl)
-        .setName(strings.settings.items.inheritTagColors.name)
-        .setDesc(strings.settings.items.inheritTagColors.desc)
-        .addToggle(toggle =>
-            toggle.setValue(plugin.settings.inheritTagColors).onChange(async value => {
-                plugin.settings.inheritTagColors = value;
-                await plugin.saveSettingsAndUpdate();
-            })
-        );
-
-    /** Setting for choosing tag sort order in the navigation pane */
-    const tagSortOrderSetting = new Setting(tagSubSettingsEl)
-        .setName(strings.settings.items.tagSortOrder.name)
-        .setDesc(strings.settings.items.tagSortOrder.desc)
-        .addDropdown(dropdown => {
-            const frequencyAscLabel = `${strings.settings.items.tagSortOrder.options.frequency} (${strings.settings.items.tagSortOrder.options.lowToHigh})`;
-            const frequencyDescLabel = `${strings.settings.items.tagSortOrder.options.frequency} (${strings.settings.items.tagSortOrder.options.highToLow})`;
-
-            dropdown
-                .addOption('alpha-asc', strings.settings.items.tagSortOrder.options.alphaAsc)
-                .addOption('alpha-desc', strings.settings.items.tagSortOrder.options.alphaDesc)
-                .addOption('frequency-asc', frequencyAscLabel)
-                .addOption('frequency-desc', frequencyDescLabel)
-                .setValue(plugin.getTagSortOrder())
-                .onChange(value => {
-                    if (!isTagSortOrder(value)) {
-                        return;
-                    }
-                    plugin.setTagSortOrder(value);
-                });
-        });
-
-    addSettingSyncModeToggle({ setting: tagSortOrderSetting, plugin, settingId: 'tagSortOrder' });
-
-    new Setting(tagSubSettingsEl)
-        .setName(strings.settings.items.showAllTagsFolder.name)
-        .setDesc(strings.settings.items.showAllTagsFolder.desc)
-        .addToggle(toggle =>
-            toggle.setValue(plugin.settings.showAllTagsFolder).onChange(async value => {
-                plugin.settings.showAllTagsFolder = value;
-                await plugin.saveSettingsAndUpdate();
-            })
-        );
-
-    new Setting(tagSubSettingsEl)
-        .setName(strings.settings.items.showUntagged.name)
-        .setDesc(strings.settings.items.showUntagged.desc)
-        .addToggle(toggle =>
-            toggle.setValue(plugin.settings.showUntagged).onChange(async value => {
-                plugin.settings.showUntagged = value;
-                await plugin.saveSettingsAndUpdate();
-            })
-        );
-
-    new Setting(tagSubSettingsEl)
-        .setName(strings.settings.items.keepEmptyTagsProperty.name)
-        .setDesc(strings.settings.items.keepEmptyTagsProperty.desc)
-        .addToggle(toggle =>
-            toggle.setValue(plugin.settings.keepEmptyTagsProperty).onChange(async value => {
-                plugin.settings.keepEmptyTagsProperty = value;
-                await plugin.saveSettingsAndUpdate();
-            })
-        );
-
-    context.registerShowTagsListener(visible => {
-        setElementVisible(tagSubSettingsEl, visible);
-    });
 }

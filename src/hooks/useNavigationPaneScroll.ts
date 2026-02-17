@@ -408,6 +408,15 @@ export function useNavigationPaneScroll({
     useEffect(() => {
         if (!selectedPath || !rowVirtualizer || !isScrollContainerReady) return;
 
+        if (selectionState.isRevealOperation) {
+            // Reveal operations issue explicit `requestScroll(...)` calls. Keep the previous-state refs in sync but
+            // skip selection-driven auto-scroll while the reveal flag is set.
+            prevSelectedPathRef.current = selectedPath;
+            prevVisibleRef.current = isScrollContainerReady;
+            prevFocusedPaneRef.current = uiState.focusedPane;
+            return;
+        }
+
         const currentSelectionType = selectedItemType ?? ItemType.FOLDER;
         const suppressShortcutScroll = settings.skipAutoScroll && selectionState.revealSource === 'shortcut';
 
@@ -459,6 +468,7 @@ export function useNavigationPaneScroll({
         selectedPath,
         rowVirtualizer,
         isScrollContainerReady,
+        selectionState.isRevealOperation,
         uiState.focusedPane,
         showHiddenItems,
         selectedItemType,
@@ -476,6 +486,13 @@ export function useNavigationPaneScroll({
      */
     useEffect(() => {
         if (!selectedPath || !selectedItemType || !rowVirtualizer || !isScrollContainerReady) {
+            return;
+        }
+
+        if (selectionState.isRevealOperation) {
+            // Tag/property reveals request scroll explicitly. This deferred-scroll effect is for restored selections
+            // where the navigation rows may not exist yet.
+            prevSelectedDeferredPathRef.current = selectedPath;
             return;
         }
 
@@ -523,6 +540,7 @@ export function useNavigationPaneScroll({
         selectedPath,
         rowVirtualizer,
         isScrollContainerReady,
+        selectionState.isRevealOperation,
         showHiddenItems,
         resolveIndex,
         activeShortcutKey,

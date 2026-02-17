@@ -20,11 +20,15 @@ import type { FileData } from '../storage/IndexedDBStorage';
 import type { PropertyTreeNode, PropertyTreeNodeId } from '../types/storage';
 import { PROPERTIES_ROOT_VIRTUAL_FOLDER_ID } from '../types';
 import type { NotebookNavigatorSettings } from '../settings';
+import type { IPropertyTreeProvider } from '../interfaces/IPropertyTreeProvider';
 import { isPathInExcludedFolder } from './fileFilters';
 import { getCachedCommaSeparatedList } from './commaSeparatedListUtils';
+import { normalizePropertyTreeValuePath, parseStrictWikiLink } from './propertyUtils';
 import { casefold } from './recordUtils';
 import { naturalCompare } from './sortUtils';
 import { isRecord } from './typeGuards';
+
+export { normalizePropertyTreeValuePath };
 
 export interface BuildPropertyTreeOptions {
     excludedFolderPatterns?: string[];
@@ -45,10 +49,13 @@ export interface PropertyTreeDatabaseLike {
     forEachFile: (callback: (path: string, fileData: FileData) => void) => void;
 }
 
-type PropertyTreeFilePropertyEntry = NonNullable<FileData['customProperty']>[number];
+type PropertyTreeFilePropertyEntry = NonNullable<FileData['properties']>[number];
+export type PropertyNodeSourceFile = { data: FileData };
 
 let propertyKeyDirectPathCache: WeakMap<PropertyTreeNode, Set<string>> | null = null;
 const configuredPropertyKeyCache = new Map<string, ReadonlySet<string>>();
+let propertyNodeIdSetCache: WeakMap<readonly PropertyNodeSourceFile[], Map<string, ReadonlySet<string>>> | null = null;
+let configuredPropertyKeyTokenCache: WeakMap<ReadonlySet<string>, string> | null = null;
 const PROPERTY_BOOLEAN_VALUE_PATHS = new Set(['true', 'false']);
 
 function getPropertyKeyDirectPathCache(): WeakMap<PropertyTreeNode, Set<string>> {
@@ -56,6 +63,36 @@ function getPropertyKeyDirectPathCache(): WeakMap<PropertyTreeNode, Set<string>>
         propertyKeyDirectPathCache = new WeakMap();
     }
     return propertyKeyDirectPathCache;
+}
+
+function getPropertyNodeIdSetCache(): WeakMap<readonly PropertyNodeSourceFile[], Map<string, ReadonlySet<string>>> {
+    if (!propertyNodeIdSetCache) {
+        propertyNodeIdSetCache = new WeakMap();
+    }
+    return propertyNodeIdSetCache;
+}
+
+function getConfiguredPropertyKeyTokenCache(): WeakMap<ReadonlySet<string>, string> {
+    if (!configuredPropertyKeyTokenCache) {
+        configuredPropertyKeyTokenCache = new WeakMap();
+    }
+    return configuredPropertyKeyTokenCache;
+}
+
+function getConfiguredPropertyKeyToken(configuredKeys: ReadonlySet<string>): string {
+    if (configuredKeys.size === 0) {
+        return '';
+    }
+
+    const tokenCache = getConfiguredPropertyKeyTokenCache();
+    const cachedToken = tokenCache.get(configuredKeys);
+    if (cachedToken !== undefined) {
+        return cachedToken;
+    }
+
+    const token = Array.from(configuredKeys).sort().join(',');
+    tokenCache.set(configuredKeys, token);
+    return token;
 }
 
 /**
@@ -156,11 +193,117 @@ function getOrBuildDirectPropertyKeyPaths(keyNode: PropertyTreeNode): Set<string
 }
 
 export function isPropertyFeatureEnabled(settings: NotebookNavigatorSettings): boolean {
-    if (settings.customPropertyType !== 'frontmatter') {
+    if (!settings.showProperties) {
         return false;
     }
 
-    return getConfiguredPropertyKeySet(settings.customPropertyFields).size > 0;
+    return getConfiguredPropertyKeySet(settings.propertyFields).size > 0;
+}
+
+export function determinePropertyToReveal(
+    properties: FileData['properties'],
+    currentSelection: PropertySelectionNodeId | null,
+    settings: NotebookNavigatorSettings,
+    includeDescendantNotes: boolean
+): PropertySelectionNodeId | null {
+    if (!properties || properties.length === 0) {
+        return null;
+    }
+
+    const configuredKeys = getConfiguredPropertyKeySet(settings.propertyFields);
+    if (configuredKeys.size === 0) {
+        return null;
+    }
+
+    const seenNodeIds = new Set<string>();
+    const orderedCandidates: PropertySelectionNodeId[] = [];
+    const candidatesByKey = new Map<
+        string,
+        {
+            keyNodeId: PropertyTreeNodeId;
+            hasKeyOnlyValue: boolean;
+            valueNodeIds: PropertyTreeNodeId[];
+            valueNodeIdSet: Set<PropertyTreeNodeId>;
+        }
+    >();
+
+    const registerCandidate = (nodeId: PropertySelectionNodeId): void => {
+        if (seenNodeIds.has(nodeId)) {
+            return;
+        }
+        seenNodeIds.add(nodeId);
+        orderedCandidates.push(nodeId);
+    };
+
+    for (const entry of properties) {
+        const normalizedKey = normalizePropertyTreeKey(entry.fieldKey);
+        if (!normalizedKey || !configuredKeys.has(normalizedKey)) {
+            continue;
+        }
+
+        let keyCandidate = candidatesByKey.get(normalizedKey);
+        if (!keyCandidate) {
+            keyCandidate = {
+                keyNodeId: buildPropertyKeyNodeId(normalizedKey),
+                hasKeyOnlyValue: false,
+                valueNodeIds: [],
+                valueNodeIdSet: new Set()
+            };
+            candidatesByKey.set(normalizedKey, keyCandidate);
+        }
+
+        const normalizedValuePath = normalizePropertyTreeValuePath(entry.value);
+        if (isPropertyKeyOnlyValuePath(normalizedValuePath, entry.valueKind)) {
+            keyCandidate.hasKeyOnlyValue = true;
+            registerCandidate(keyCandidate.keyNodeId);
+            continue;
+        }
+
+        if (!normalizedValuePath) {
+            continue;
+        }
+
+        const valueNodeId = buildPropertyValueNodeId(normalizedKey, normalizedValuePath);
+        if (!keyCandidate.valueNodeIdSet.has(valueNodeId)) {
+            keyCandidate.valueNodeIdSet.add(valueNodeId);
+            keyCandidate.valueNodeIds.push(valueNodeId);
+        }
+        registerCandidate(valueNodeId);
+    }
+
+    if (orderedCandidates.length === 0) {
+        return null;
+    }
+
+    if (currentSelection === PROPERTIES_ROOT_VIRTUAL_FOLDER_ID) {
+        return includeDescendantNotes ? currentSelection : (orderedCandidates[0] ?? null);
+    }
+
+    if (currentSelection) {
+        const parsed = parsePropertyNodeId(currentSelection);
+        if (parsed) {
+            const candidateForKey = candidatesByKey.get(parsed.key);
+            if (candidateForKey) {
+                if (!parsed.valuePath) {
+                    if (includeDescendantNotes || candidateForKey.hasKeyOnlyValue) {
+                        return candidateForKey.keyNodeId;
+                    }
+
+                    return candidateForKey.valueNodeIds[0] ?? null;
+                }
+
+                const normalizedSelectionValuePath = normalizePropertyTreeValuePath(parsed.valuePath);
+                if (normalizedSelectionValuePath) {
+                    const selectionValueNodeId = buildPropertyValueNodeId(parsed.key, normalizedSelectionValuePath);
+                    if (candidateForKey.valueNodeIdSet.has(selectionValueNodeId)) {
+                        return selectionValueNodeId;
+                    }
+                }
+            }
+        }
+    }
+
+    return orderedCandidates[0] ?? null;
 }
 
 function normalizePropertyTreeKey(value: string): string {
@@ -232,14 +375,14 @@ function sortPropertyTreeNodes(tree: Map<string, PropertyTreeNode>): Map<string,
     return sortedTree;
 }
 
-export function getConfiguredPropertyKeySet(customPropertyFields: string): ReadonlySet<string> {
-    const cached = configuredPropertyKeyCache.get(customPropertyFields);
+export function getConfiguredPropertyKeySet(propertyFields: string): ReadonlySet<string> {
+    const cached = configuredPropertyKeyCache.get(propertyFields);
     if (cached) {
         return cached;
     }
 
     const keys = new Set<string>();
-    for (const fieldName of getCachedCommaSeparatedList(customPropertyFields)) {
+    for (const fieldName of getCachedCommaSeparatedList(propertyFields)) {
         const normalized = casefold(fieldName);
         if (!normalized) {
             continue;
@@ -247,8 +390,94 @@ export function getConfiguredPropertyKeySet(customPropertyFields: string): Reado
         keys.add(normalized);
     }
 
-    configuredPropertyKeyCache.set(customPropertyFields, keys);
+    configuredPropertyKeyCache.set(propertyFields, keys);
     return keys;
+}
+
+/**
+ * Builds canonical property node ids from database file metadata for configured keys.
+ * Results are cached by dbFiles array identity and configured-key token.
+ */
+function buildConfiguredPropertyNodeIdSet(
+    dbFiles: readonly PropertyNodeSourceFile[],
+    configuredKeys: ReadonlySet<string>
+): ReadonlySet<string> {
+    if (configuredKeys.size === 0 || dbFiles.length === 0) {
+        return new Set<string>();
+    }
+
+    const keyToken = getConfiguredPropertyKeyToken(configuredKeys);
+    if (!keyToken) {
+        return new Set<string>();
+    }
+
+    const cache = getPropertyNodeIdSetCache();
+    const perFilesCache = cache.get(dbFiles);
+    if (perFilesCache) {
+        const cached = perFilesCache.get(keyToken);
+        if (cached) {
+            return cached;
+        }
+    }
+
+    const nodeIds = new Set<string>();
+    dbFiles.forEach(file => {
+        const properties = file.data.properties;
+        if (!properties || properties.length === 0) {
+            return;
+        }
+
+        properties.forEach(entry => {
+            const normalizedKey = casefold(entry.fieldKey);
+            if (!normalizedKey || !configuredKeys.has(normalizedKey)) {
+                return;
+            }
+
+            nodeIds.add(buildPropertyKeyNodeId(normalizedKey));
+
+            const normalizedValuePath = normalizePropertyTreeValuePath(entry.value);
+            if (!normalizedValuePath || isPropertyKeyOnlyValuePath(normalizedValuePath, entry.valueKind)) {
+                return;
+            }
+
+            nodeIds.add(buildPropertyValueNodeId(normalizedKey, normalizedValuePath));
+        });
+    });
+
+    if (perFilesCache) {
+        perFilesCache.set(keyToken, nodeIds);
+    } else {
+        cache.set(dbFiles, new Map([[keyToken, nodeIds]]));
+    }
+
+    return nodeIds;
+}
+
+/**
+ * Creates a property-node validator for configured property keys.
+ * Returns null when no validator can be created from the provided inputs.
+ */
+export function createConfiguredPropertyNodeValidator(params: {
+    propertyFields: string;
+    dbFiles?: readonly PropertyNodeSourceFile[] | null;
+    propertyTreeProvider?: Pick<IPropertyTreeProvider, 'findNode' | 'hasNodes'> | null;
+}): ((nodeId: string) => boolean) | null {
+    const { propertyFields, dbFiles, propertyTreeProvider } = params;
+    const configuredKeys = getConfiguredPropertyKeySet(propertyFields);
+    if (configuredKeys.size === 0) {
+        return () => false;
+    }
+
+    if (dbFiles) {
+        const nodeIds = buildConfiguredPropertyNodeIdSet(dbFiles, configuredKeys);
+        return nodeId => nodeIds.has(nodeId);
+    }
+
+    if (!propertyTreeProvider || !propertyTreeProvider.hasNodes()) {
+        return null;
+    }
+
+    return nodeId => propertyTreeProvider.findNode(nodeId) !== null;
 }
 
 export function isPropertySelectionNodeIdConfigured(
@@ -264,7 +493,19 @@ export function isPropertySelectionNodeIdConfigured(
         return false;
     }
 
-    return getConfiguredPropertyKeySet(settings.customPropertyFields).has(parsed.key);
+    return getConfiguredPropertyKeySet(settings.propertyFields).has(parsed.key);
+}
+
+export function canRestorePropertySelectionNodeId(settings: NotebookNavigatorSettings, selectionNodeId: PropertySelectionNodeId): boolean {
+    if (!settings.showProperties) {
+        return false;
+    }
+
+    if (selectionNodeId === PROPERTIES_ROOT_VIRTUAL_FOLDER_ID) {
+        return true;
+    }
+
+    return isPropertySelectionNodeIdConfigured(settings, selectionNodeId);
 }
 
 /**
@@ -294,7 +535,12 @@ export function resolvePropertySelectionNodeId(
         return keyNode.id;
     }
 
-    const valueNodeId = buildPropertyValueNodeId(parsed.key, parsed.valuePath);
+    const normalizedSelectionValuePath = normalizePropertyTreeValuePath(parsed.valuePath);
+    if (!normalizedSelectionValuePath) {
+        return keyNode.id;
+    }
+
+    const valueNodeId = buildPropertyValueNodeId(parsed.key, normalizedSelectionValuePath);
     if (keyNode.children.has(valueNodeId)) {
         return valueNodeId;
     }
@@ -319,6 +565,93 @@ export function buildPropertyKeyNodeId(normalizedKey: string): PropertyTreeNodeI
 
 export function buildPropertyValueNodeId(normalizedKey: string, normalizedValuePath: string): PropertyTreeNodeId {
     return `${PROPERTY_NODE_ID_PREFIX}${encodePropertyNodeSegment(normalizedKey)}${PROPERTY_NODE_ID_VALUE_DELIMITER}${encodePropertyNodeSegment(normalizedValuePath)}`;
+}
+
+export function normalizePropertyNodeId(nodeId: string): PropertyTreeNodeId | null {
+    const parsed = parsePropertyNodeId(nodeId);
+    if (!parsed) {
+        return null;
+    }
+
+    const normalizedKey = casefold(parsed.key);
+    if (!normalizedKey) {
+        return null;
+    }
+
+    if (!parsed.valuePath) {
+        return buildPropertyKeyNodeId(normalizedKey);
+    }
+
+    const normalizedValuePath = normalizePropertyTreeValuePath(parsed.valuePath);
+    if (!normalizedValuePath) {
+        return null;
+    }
+
+    return buildPropertyValueNodeId(normalizedKey, normalizedValuePath);
+}
+
+export function resolvePropertyShortcutNodeId(
+    hydratedNodeId: string | null | undefined,
+    shortcutNodeId: string | null | undefined
+): string | null {
+    const nodeId = hydratedNodeId ?? shortcutNodeId;
+    if (!nodeId) {
+        return null;
+    }
+
+    return normalizePropertyNodeId(nodeId) ?? nodeId;
+}
+
+export function resolvePropertyTreeNode(params: {
+    nodeId: string;
+    propertyTreeService?: Pick<IPropertyTreeProvider, 'findNode' | 'getKeyNode'> | null;
+    propertyTree?: ReadonlyMap<string, PropertyTreeNode> | null;
+}): { normalizedNodeId: PropertyTreeNodeId; node: PropertyTreeNode } | null {
+    const { nodeId, propertyTreeService, propertyTree } = params;
+    const normalizedNodeId = normalizePropertyNodeId(nodeId);
+    if (!normalizedNodeId) {
+        return null;
+    }
+
+    const direct = propertyTreeService?.findNode(normalizedNodeId);
+    if (direct) {
+        return { normalizedNodeId, node: direct };
+    }
+
+    const parsed = parsePropertyNodeId(normalizedNodeId);
+    if (!parsed) {
+        return null;
+    }
+
+    const keyNode = propertyTreeService?.getKeyNode(parsed.key) ?? propertyTree?.get(parsed.key) ?? null;
+    if (!keyNode) {
+        return null;
+    }
+
+    if (!parsed.valuePath) {
+        return { normalizedNodeId: keyNode.id, node: keyNode };
+    }
+
+    const valueNode = keyNode.children.get(normalizedNodeId) ?? null;
+    if (!valueNode) {
+        return null;
+    }
+
+    return { normalizedNodeId, node: valueNode };
+}
+
+export function normalizePropertyKeyNodeId(nodeId: string): PropertyTreeNodeId | null {
+    const parsed = parsePropertyNodeId(nodeId);
+    if (!parsed) {
+        return null;
+    }
+
+    const normalizedKey = casefold(parsed.key);
+    if (!normalizedKey) {
+        return null;
+    }
+
+    return buildPropertyKeyNodeId(normalizedKey);
 }
 
 export function getPropertyKeyNodeIdFromNodeId(nodeId: string): string | null {
@@ -372,12 +705,18 @@ export function isPropertyTreeNodeId(value: string): value is PropertyTreeNodeId
     return parsePropertyNodeId(value) !== null;
 }
 
-export function normalizePropertyTreeValuePath(rawValue: string): string {
-    return casefold(rawValue);
-}
-
 function normalizePropertyTreeDisplayValuePath(rawValue: string): string {
-    return rawValue.trim();
+    const trimmedValue = rawValue.trim();
+    if (!trimmedValue) {
+        return '';
+    }
+
+    const wikiLink = parseStrictWikiLink(trimmedValue);
+    if (wikiLink) {
+        return wikiLink.displayText;
+    }
+
+    return trimmedValue;
 }
 
 function getSelectedPropertyNodeId(selection: PropertySelectionValue | null): PropertySelectionNodeId | null {
@@ -475,12 +814,12 @@ export function buildPropertyTreeFromDatabase(
             return;
         }
 
-        const customProperty = fileData.customProperty;
-        if (!customProperty || customProperty.length === 0) {
+        const properties = fileData.properties;
+        if (!properties || properties.length === 0) {
             return;
         }
 
-        for (const propertyEntry of customProperty) {
+        for (const propertyEntry of properties) {
             const normalizedKey = normalizePropertyTreeKey(propertyEntry.fieldKey);
             if (!normalizedKey) {
                 continue;

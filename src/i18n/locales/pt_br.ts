@@ -105,6 +105,8 @@ export const STRINGS_PT_BR = {
         folderExists: 'Pasta já está nos atalhos',
         noteExists: 'Nota já está nos atalhos',
         tagExists: 'Tag já está nos atalhos',
+        propertyExists: 'Propriedade já está nos atalhos',
+        invalidProperty: 'Atalho de propriedade inválido',
         searchExists: 'Atalho de pesquisa já existe',
         emptySearchQuery: 'Digite uma consulta antes de salvar',
         emptySearchName: 'Digite um nome antes de salvar a pesquisa',
@@ -187,12 +189,12 @@ export const STRINGS_PT_BR = {
                 properties: {
                     title: 'Propriedades',
                     items: [
-                        '`.key` Incluir notas com chave de propriedade personalizada.',
-                        '`.key=value` Incluir notas com valor de propriedade personalizada.',
+                        '`.key` Incluir notas com chave de propriedade.',
+                        '`.key=value` Incluir notas com valor de propriedade.',
                         '`."Reading Status"` Incluir notas com uma chave de propriedade que contém espaços.',
                         '`."Reading Status"="In Progress"` Chaves e valores com espaços devem estar entre aspas duplas.',
-                        '`-.key` Excluir notas com chave de propriedade personalizada.',
-                        '`-.key=value` Excluir notas com valor de propriedade personalizada.',
+                        '`-.key` Excluir notas com chave de propriedade.',
+                        '`-.key=value` Excluir notas com valor de propriedade.',
                         'Cmd/Ctrl+Clique em uma propriedade para adicionar com AND. Cmd/Ctrl+Shift+Clique para adicionar com OR.'
                     ]
                 },
@@ -325,6 +327,10 @@ export const STRINGS_PT_BR = {
             showTag: 'Mostrar tag',
             hideTag: 'Ocultar tag'
         },
+        property: {
+            addKey: 'Adicionar chave de propriedade',
+            removeKey: 'Remover chave de propriedade'
+        },
         navigation: {
             addSeparator: 'Adicionar separador',
             removeSeparator: 'Remover separador'
@@ -378,10 +384,6 @@ export const STRINGS_PT_BR = {
         fileIconRuleEditor: {
             addRuleAria: 'Adicionar regra'
         },
-        propertyColorRuleEditor: {
-            propertyPlaceholder: 'Property',
-            valuePlaceholder: 'Value'
-        },
         interfaceIcons: {
             title: 'Ícones da interface',
             fileItemsSection: 'Itens de arquivo',
@@ -407,13 +409,15 @@ export const STRINGS_PT_BR = {
                 'list-new-note': 'Nova nota',
                 'nav-folder-open': 'Pasta aberta',
                 'nav-folder-closed': 'Pasta fechada',
-                'nav-folder-note': 'Nota da pasta',
+                'nav-tags': 'Tags',
                 'nav-tag': 'Tag',
                 'nav-properties': 'Propriedades',
+                'nav-property': 'Propriedade',
+                'nav-property-value': 'Valor',
                 'list-pinned': 'Itens fixados',
                 'file-unfinished-task': 'Tarefas inacabadas',
                 'file-word-count': 'Contagem de palavras',
-                'file-custom-property': 'Propriedade personalizada'
+                'file-property': 'Propriedade'
             }
         },
         colorPicker: {
@@ -535,6 +539,15 @@ export const STRINGS_PT_BR = {
                 dismiss: 'para descartar',
                 add: 'para adicionar tag',
                 remove: 'para remover tag'
+            }
+        },
+        propertySuggest: {
+            placeholder: 'Selecionar chave de propriedade...',
+            navigatePlaceholder: 'Navegar para propriedade...',
+            instructions: {
+                navigate: 'para navegar',
+                select: 'para adicionar propriedade',
+                dismiss: 'para descartar'
             }
         },
         welcome: {
@@ -690,6 +703,7 @@ export const STRINGS_PT_BR = {
         pinAllFolderNotes: 'Fixar todas as notas de pasta',
         navigateToFolder: 'Navegar para pasta',
         navigateToTag: 'Navegar para tag',
+        navigateToProperty: 'Navegar para propriedade',
         addShortcut: 'Adicionar aos atalhos',
         openShortcut: 'Abrir atalho {number}',
         toggleDescendants: 'Alternar descendentes',
@@ -730,14 +744,15 @@ export const STRINGS_PT_BR = {
         },
         sections: {
             general: 'Geral',
-            navigationPane: 'Painel de navegação',
+            navigationPane: 'Navegação',
             calendar: 'Calendário',
             icons: 'Pacotes de ícones',
             folders: 'Pastas',
             folderNotes: 'Notas de pasta',
-            foldersAndTags: 'Pastas e tags',
+            foldersAndTags: 'Pastas',
+            tagsAndProperties: 'Tags e propriedades',
             tags: 'Tags',
-            listPane: 'Painel de lista',
+            listPane: 'Lista',
             notes: 'Notas',
             advanced: 'Avançado'
         },
@@ -756,7 +771,6 @@ export const STRINGS_PT_BR = {
             },
             navigation: {
                 appearance: 'Aparência',
-                shortcutsAndRecent: 'Atalhos e itens recentes',
                 leftSidebar: 'Barra lateral esquerda',
                 calendarIntegration: 'Integração do calendário'
             },
@@ -771,7 +785,7 @@ export const STRINGS_PT_BR = {
                 previewText: 'Texto de pré-visualização',
                 featureImage: 'Imagem de destaque',
                 tags: 'Tags',
-                customProperty: 'Propriedade personalizada (frontmatter ou contagem de palavras)',
+                properties: 'Propriedades',
                 date: 'Data',
                 parentFolder: 'Pasta superior'
             }
@@ -816,6 +830,16 @@ export const STRINGS_PT_BR = {
                 name: 'Propriedade de ordenação',
                 desc: 'Usado com a ordenação por propriedade. Notas com esta propriedade frontmatter são listadas primeiro e ordenadas pelo valor da propriedade. Arrays são combinados em um único valor.',
                 placeholder: 'order'
+            },
+            propertySortSecondary: {
+                name: 'Ordenação secundária',
+                desc: 'Usada com a ordenação por propriedade quando as notas têm o mesmo valor de propriedade ou não têm valor.',
+                options: {
+                    title: 'Título',
+                    filename: 'Nome do arquivo',
+                    created: 'Data de criação',
+                    modified: 'Data de edição'
+                }
             },
             revealFileOnListChanges: {
                 name: 'Rolar para o arquivo selecionado em mudanças da lista',
@@ -966,6 +990,10 @@ export const STRINGS_PT_BR = {
                 name: 'Revelar automaticamente a nota ativa',
                 desc: 'Revelar automaticamente notas quando abertas pelo Alternador Rápido, links ou pesquisa.'
             },
+            autoRevealShortestPath: {
+                name: 'Usar caminho mais curto',
+                desc: 'Ativado: A revelação automática seleciona a pasta ancestral ou tag visível mais próxima. Desativado: A revelação automática seleciona a pasta real do arquivo e a tag exata.'
+            },
             autoRevealIgnoreRightSidebar: {
                 name: 'Ignorar eventos da barra lateral direita',
                 desc: 'Não alterar a nota ativa ao clicar ou alterar notas na barra lateral direita.'
@@ -1025,6 +1053,14 @@ export const STRINGS_PT_BR = {
             showRecentNotes: {
                 name: 'Mostrar notas recentes',
                 desc: 'Exibir a seção de notas recentes no painel de navegação.'
+            },
+            hideRecentNotes: {
+                name: 'Ocultar notas',
+                desc: 'Escolher os tipos de notas a ocultar na seção de notas recentes.',
+                options: {
+                    none: 'Nenhum',
+                    folderNotes: 'Notas de pasta'
+                }
             },
             recentNotesCount: {
                 name: 'Contagem de notas recentes',
@@ -1228,9 +1264,9 @@ export const STRINGS_PT_BR = {
                 }
             },
             excludedNotes: {
-                name: 'Ocultar notas com propriedades (perfil do cofre)',
-                desc: 'Lista separada por vírgulas de propriedades do frontmatter. Notas contendo qualquer uma dessas propriedades serão ocultadas (por exemplo, rascunho, privado, arquivado).',
-                placeholder: 'rascunho, privado'
+                name: 'Ocultar notas com regras de propriedade (perfil do cofre)',
+                desc: 'Lista separada por vírgulas de regras de frontmatter. Use entradas `key` ou `key=value` (por exemplo, status=done, published=true, archived).',
+                placeholder: 'status=done, published=true, archived'
             },
             excludedFileNamePatterns: {
                 name: 'Ocultar arquivos (perfil do cofre)',
@@ -1304,33 +1340,41 @@ export const STRINGS_PT_BR = {
                 name: 'Mostrar tags de arquivo no modo compacto',
                 desc: 'Exibir tags quando data, visualização e imagem estão ocultas.'
             },
-            customPropertyType: {
-                name: 'Tipo de propriedade',
-                desc: 'Selecione a propriedade personalizada a exibir nos itens de arquivo.',
+            showFileProperties: {
+                name: 'Mostrar propriedades de arquivo',
+                desc: 'Exibir propriedades clicáveis nos itens de arquivo.'
+            },
+            colorFileProperties: {
+                name: 'Colorir propriedades de arquivo',
+                desc: 'Aplicar cores de propriedade aos emblemas de propriedade nos itens de arquivo.'
+            },
+            prioritizeColoredFileProperties: {
+                name: 'Mostrar propriedades coloridas primeiro',
+                desc: 'Ordenar propriedades coloridas antes de outras propriedades nos itens de arquivo.'
+            },
+            showFilePropertiesInCompactMode: {
+                name: 'Mostrar propriedades no modo compacto',
+                desc: 'Exibir propriedades quando o modo compacto está ativo.'
+            },
+            notePropertyType: {
+                name: 'Propriedade da nota',
+                desc: 'Selecione a propriedade da nota para exibir nos itens de arquivo.',
                 options: {
                     frontmatter: 'Propriedade frontmatter',
                     wordCount: 'Contagem de palavras',
                     none: 'Nenhum'
                 }
             },
-            customPropertyFields: {
+            propertyFields: {
                 name: 'Propriedades a exibir',
-                desc: 'Lista de propriedades frontmatter separadas por vírgulas para exibir como emblemas. Propriedades com valores de lista exibem um emblema por valor. Valores em formato [[wikilink]] são exibidos como links clicáveis.',
-                placeholder: 'status, tipo, categoria'
+                desc: 'Lista de propriedades de metadados separada por vírgulas para exibir no painel de navegação e como emblemas nos itens de arquivo. Propriedades com múltiplos valores exibem um emblema por valor.',
+                placeholder: 'status, type, category',
+                addButtonTooltip: 'Adicionar chave de propriedade',
+                emptySelectorNotice: 'Nenhuma chave de propriedade encontrada no cache de metadados.'
             },
-            showCustomPropertiesOnSeparateRows: {
+            showPropertiesOnSeparateRows: {
                 name: 'Mostrar propriedades em linhas separadas',
                 desc: 'Mostrar cada propriedade na sua própria linha.'
-            },
-            customPropertyColorMap: {
-                name: 'Cores de propriedade',
-                desc: 'Associa propriedades e valores de frontmatter a cores de emblema. Uma associação por linha: propriedade=cor ou propriedade:valor=cor',
-                placeholder: '# Propriedade ou propriedade:valor cor\nstatus=#f59e0b\nstatus:done=#10b981\nstatus:todo=#ef4444',
-                editTooltip: 'Editar associações'
-            },
-            showCustomPropertyInCompactMode: {
-                name: 'Mostrar propriedade personalizada no modo compacto',
-                desc: 'Exibir a propriedade personalizada quando data, visualização e imagem estão ocultas.'
             },
             dateFormat: {
                 name: 'Formato de data',
@@ -1367,7 +1411,7 @@ export const STRINGS_PT_BR = {
             previewProperties: {
                 name: 'Propriedades de visualização',
                 desc: 'Lista separada por vírgulas de propriedades do frontmatter para verificar texto de visualização. A primeira propriedade com texto será usada.',
-                placeholder: 'resumo, descrição, abstrato',
+                placeholder: 'summary, description, abstract',
                 info: 'Se nenhum texto de visualização for encontrado nas propriedades especificadas, a visualização será gerada a partir do conteúdo da nota.'
             },
             previewRows: {
@@ -1405,7 +1449,7 @@ export const STRINGS_PT_BR = {
             featureImageExcludeProperties: {
                 name: 'Excluir notas com propriedades',
                 desc: 'Lista separada por vírgulas de propriedades do frontmatter. Notas contendo qualquer uma dessas propriedades não armazenam imagens de destaque.',
-                placeholder: 'privado, confidencial'
+                placeholder: 'private, confidential'
             },
 
             downloadExternalFeatureImages: {
@@ -1517,6 +1561,33 @@ export const STRINGS_PT_BR = {
                 name: 'Manter propriedade de tags após remover última tag',
                 desc: 'Manter a propriedade de tags do frontmatter quando todas as tags forem removidas. Quando desativado, a propriedade de tags é excluída do frontmatter.'
             },
+            showProperties: {
+                name: 'Mostrar propriedades',
+                desc: 'Exibir a seção de propriedades no navegador.'
+            },
+            showPropertyIcons: {
+                name: 'Mostrar ícones de propriedades',
+                desc: 'Exibir ícones ao lado das propriedades no painel de navegação.'
+            },
+            inheritPropertyColors: {
+                name: 'Herdar cores de propriedade',
+                desc: 'Os valores de propriedade herdam a cor e o fundo da sua chave de propriedade.'
+            },
+            propertySortOrder: {
+                name: 'Ordem de classificação de propriedades',
+                desc: 'Clique com o botão direito em qualquer propriedade para definir uma ordem de classificação diferente para seus valores.',
+                options: {
+                    alphaAsc: 'A a Z',
+                    alphaDesc: 'Z a A',
+                    frequency: 'Frequência',
+                    lowToHigh: 'baixo a alto',
+                    highToLow: 'alto a baixo'
+                }
+            },
+            showAllPropertiesFolder: {
+                name: 'Mostrar pasta de propriedades',
+                desc: 'Exibir "Propriedades" como uma pasta recolhível.'
+            },
             hiddenTags: {
                 name: 'Ocultar tags (perfil do cofre)',
                 desc: 'Lista de padrões de tags separados por vírgulas. Padrões de nome: tag* (começa com), *tag (termina com). Padrões de caminho: arquivo (tag e descendentes), arquivo/* (apenas descendentes), projetos/*/rascunhos (curinga intermediário).',
@@ -1544,7 +1615,7 @@ export const STRINGS_PT_BR = {
             folderNoteName: {
                 name: 'Nome da nota de pasta',
                 desc: 'Nome da nota de pasta sem extensão. Deixe em branco para usar o mesmo nome da pasta.',
-                placeholder: 'índice'
+                placeholder: 'index'
             },
             folderNoteNamePattern: {
                 name: 'Padrão de nome da nota de pasta',
@@ -1577,7 +1648,8 @@ export const STRINGS_PT_BR = {
                 error: 'Falha na limpeza de configurações',
                 loading: 'Verificando metadados...',
                 statusClean: 'Sem metadados para limpar',
-                statusCounts: 'Itens órfãos: {folders} pastas, {tags} tags, {files} arquivos, {pinned} fixações, {separators} separadores'
+                statusCounts:
+                    'Itens órfãos: {folders} pastas, {tags} tags, {properties} propriedades, {files} arquivos, {pinned} fixações, {separators} separadores'
             },
             rebuildCache: {
                 name: 'Reconstruir cache',
@@ -1606,16 +1678,17 @@ export const STRINGS_PT_BR = {
             frontmatterIconField: {
                 name: 'Campo de ícone',
                 desc: 'Campo do frontmatter para ícones de arquivo. Deixe em branco para usar ícones armazenados nas configurações.',
-                placeholder: 'ícone'
+                placeholder: 'icon'
             },
             frontmatterColorField: {
                 name: 'Campo de cor',
                 desc: 'Campo do frontmatter para cores de arquivo. Deixe em branco para usar cores armazenadas nas configurações.',
-                placeholder: 'cor'
+                placeholder: 'color'
             },
-            frontmatterSaveMetadata: {
-                name: 'Salvar ícones e cores no frontmatter',
-                desc: 'Escrever automaticamente ícones e cores de arquivo no frontmatter usando os campos configurados acima.'
+            frontmatterBackgroundField: {
+                name: 'Campo de fundo',
+                desc: 'Campo do frontmatter para cores de fundo. Deixe em branco para usar cores de fundo armazenadas nas configurações.',
+                placeholder: 'background'
             },
             frontmatterMigration: {
                 name: 'Migrar ícones e cores das configurações',
@@ -1630,17 +1703,17 @@ export const STRINGS_PT_BR = {
             frontmatterNameField: {
                 name: 'Campos de nome',
                 desc: 'Lista de campos frontmatter separados por vírgula. O primeiro valor não vazio é usado. Usa o nome do arquivo como alternativa.',
-                placeholder: 'título, nome'
+                placeholder: 'title, name'
             },
             frontmatterCreatedField: {
                 name: 'Campo de timestamp de criação',
                 desc: 'Nome do campo do frontmatter para o timestamp de criação. Deixe em branco para usar apenas a data do sistema de arquivos.',
-                placeholder: 'criado'
+                placeholder: 'created'
             },
             frontmatterModifiedField: {
                 name: 'Campo de timestamp de modificação',
                 desc: 'Nome do campo do frontmatter para o timestamp de modificação. Deixe em branco para usar apenas a data do sistema de arquivos.',
-                placeholder: 'modificado'
+                placeholder: 'modified'
             },
             frontmatterDateFormat: {
                 name: 'Formato de timestamp',

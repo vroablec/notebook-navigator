@@ -34,7 +34,7 @@ export interface BatchContentUpdate {
     featureImage?: Blob | null;
     featureImageKey?: string | null;
     metadata?: FileData['metadata'];
-    customProperty?: FileData['customProperty'];
+    properties?: FileData['properties'];
 }
 
 export interface ProviderProcessedMtimeUpdate {
@@ -187,9 +187,9 @@ export async function runBatchUpdateFileContentAndProviderProcessedMtimes(
                         changes.taskUnfinished = normalizedTaskCounters.taskUnfinished;
                         hasContentChanges = true;
                     }
-                    if (guardedUpdate.customProperty !== undefined) {
-                        newData.customProperty = guardedUpdate.customProperty;
-                        changes.customProperty = guardedUpdate.customProperty;
+                    if (guardedUpdate.properties !== undefined) {
+                        newData.properties = guardedUpdate.properties;
+                        changes.properties = guardedUpdate.properties;
                         hasContentChanges = true;
                     }
                     if (guardedUpdate.preview !== undefined) {
@@ -315,7 +315,7 @@ export async function runBatchUpdateFileContentAndProviderProcessedMtimes(
                             changes.wordCount !== undefined ||
                             changes.taskTotal !== undefined ||
                             changes.taskUnfinished !== undefined ||
-                            changes.customProperty !== undefined;
+                            changes.properties !== undefined;
                         const hasMetadataUpdates = changes.metadata !== undefined || changes.tags !== undefined;
                         const updateType = hasContentUpdates && hasMetadataUpdates ? 'both' : hasContentUpdates ? 'content' : 'metadata';
                         changeNotifications.push({ path, changes, changeType: updateType });

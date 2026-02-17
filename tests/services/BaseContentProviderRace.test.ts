@@ -36,7 +36,7 @@ class FakeDB {
             featureImage?: Blob | null;
             featureImageKey?: string | null;
             metadata?: FileData['metadata'];
-            customProperty?: FileData['customProperty'];
+            properties?: FileData['properties'];
         }[];
         provider?: ContentProviderType;
         processedMtimeUpdates?: { path: string; mtime: number; expectedPreviousMtime: number }[];
@@ -129,7 +129,7 @@ function createFileData(overrides: Partial<FileData>): FileData {
         wordCount: null,
         taskTotal: 0,
         taskUnfinished: 0,
-        customProperty: null,
+        properties: null,
         previewStatus: 'unprocessed',
         featureImage: null,
         featureImageStatus: 'unprocessed',

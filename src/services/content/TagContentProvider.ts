@@ -31,8 +31,9 @@ export class TagContentProvider extends BaseContentProvider {
     // When tags are regenerated due to a metadata-only change, `markFilesForRegeneration()` resets `tagsMtime` to 0.
     // If Obsidian has not populated tags in the metadata cache yet, defer clearing existing tags for a few retries.
     private static readonly EMPTY_TAGS_RETRY_LIMIT = 2;
+    private static readonly EMPTY_TAGS_RECENT_FILE_WINDOW_MS = 15_000;
 
-    // Tracks consecutive empty-tag reads for files with `tagsMtime === 0` and existing non-empty tags.
+    // Tracks consecutive empty-tag reads for files with `tagsMtime === 0`.
     // Returning `processed:false` triggers BaseContentProvider retry scheduling.
     private readonly emptyTagRetryCounts = new Map<string, number>();
 
@@ -100,8 +101,15 @@ export class TagContentProvider extends BaseContentProvider {
             const rawTags = getAllTags(metadata);
             const tags = extractFileTagsFromRawTags(rawTags);
 
-            const shouldDeferClearing =
+            const shouldDeferExistingTagClearing =
                 fileData !== null && fileData.tagsMtime === 0 && fileData.tags !== null && fileData.tags.length > 0 && tags.length === 0;
+            const shouldDeferInitialEmptyTags =
+                fileData !== null &&
+                fileData.tagsMtime === 0 &&
+                fileData.tags === null &&
+                tags.length === 0 &&
+                Date.now() - job.file.stat.mtime <= TagContentProvider.EMPTY_TAGS_RECENT_FILE_WINDOW_MS;
+            const shouldDeferClearing = shouldDeferExistingTagClearing || shouldDeferInitialEmptyTags;
 
             if (!shouldDeferClearing) {
                 this.emptyTagRetryCounts.delete(job.path);

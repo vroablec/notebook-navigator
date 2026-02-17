@@ -17,9 +17,11 @@
  */
 
 import { describe, expect, it } from 'vitest';
-import type { CustomPropertyItem, FileData } from '../src/storage/IndexedDBStorage';
+import type { PropertyItem, FileData } from '../src/storage/IndexedDBStorage';
 import { PROPERTIES_ROOT_VIRTUAL_FOLDER_ID } from '../src/types';
+import { DEFAULT_SETTINGS } from '../src/settings/defaultSettings';
 import {
+    canRestorePropertySelectionNodeId,
     type PropertyTreeDatabaseLike,
     buildPropertyKeyNodeId,
     buildPropertyTreeFromDatabase,
@@ -36,10 +38,10 @@ import {
 
 interface MockFile {
     path: string;
-    customProperty: CustomPropertyItem[] | null;
+    properties: PropertyItem[] | null;
 }
 
-function createFileData(customProperty: CustomPropertyItem[] | null): FileData {
+function createFileData(properties: PropertyItem[] | null): FileData {
     return {
         mtime: 0,
         markdownPipelineMtime: 0,
@@ -50,7 +52,7 @@ function createFileData(customProperty: CustomPropertyItem[] | null): FileData {
         wordCount: null,
         taskTotal: 0,
         taskUnfinished: 0,
-        customProperty,
+        properties,
         previewStatus: 'unprocessed',
         featureImage: null,
         featureImageStatus: 'unprocessed',
@@ -62,7 +64,7 @@ function createFileData(customProperty: CustomPropertyItem[] | null): FileData {
 function createMockDb(files: MockFile[]): PropertyTreeDatabaseLike {
     const payload = files.map(file => ({
         path: file.path,
-        data: createFileData(file.customProperty)
+        data: createFileData(file.properties)
     }));
 
     return {
@@ -77,11 +79,11 @@ describe('buildPropertyTreeFromDatabase', () => {
         const db = createMockDb([
             {
                 path: 'notes/a.md',
-                customProperty: [{ fieldKey: 'Status', value: 'Work/Finished' }]
+                properties: [{ fieldKey: 'Status', value: 'Work/Finished' }]
             },
             {
                 path: 'notes/b.md',
-                customProperty: [{ fieldKey: 'status', value: 'work/Started' }]
+                properties: [{ fieldKey: 'status', value: 'work/Started' }]
             }
         ]);
 
@@ -105,19 +107,64 @@ describe('buildPropertyTreeFromDatabase', () => {
         expect(startedNode?.notesWithValue).toEqual(new Set(['notes/b.md']));
     });
 
+    it('uses wiki-link display text for value node labels', () => {
+        const rawValue = '[[Tech Insights/2026/Tech Insights 2026 Week 7|Tech Insights 2026 Week 7]]';
+        const db = createMockDb([
+            {
+                path: 'notes/a.md',
+                properties: [{ fieldKey: 'Status', value: rawValue }]
+            }
+        ]);
+
+        const tree = buildPropertyTreeFromDatabase(db, {
+            includedPropertyKeys: new Set(['status'])
+        });
+        const keyNode = tree.get('status');
+        const valueNode = keyNode?.children.get(buildPropertyValueNodeId('status', normalizePropertyTreeValuePath(rawValue)));
+
+        expect(valueNode?.name).toBe('Tech Insights 2026 Week 7');
+        expect(valueNode?.displayPath).toBe('Tech Insights 2026 Week 7');
+    });
+
+    it('treats plain text and strict wiki-link aliases as the same canonical value', () => {
+        const plainValue = 'Tech Insights 2026 Week 7';
+        const wikiLinkValue = '[[Tech Insights/2026/Tech Insights 2026 Week 7|Tech Insights 2026 Week 7]]';
+        const db = createMockDb([
+            {
+                path: 'notes/plain.md',
+                properties: [{ fieldKey: 'Status', value: plainValue }]
+            },
+            {
+                path: 'notes/wikilink.md',
+                properties: [{ fieldKey: 'Status', value: wikiLinkValue }]
+            }
+        ]);
+
+        const tree = buildPropertyTreeFromDatabase(db, {
+            includedPropertyKeys: new Set(['status'])
+        });
+        const keyNode = tree.get('status');
+        const canonicalValueNodeId = buildPropertyValueNodeId('status', normalizePropertyTreeValuePath(plainValue));
+        const canonicalValueNode = keyNode?.children.get(canonicalValueNodeId);
+
+        expect(normalizePropertyTreeValuePath(plainValue)).toBe(normalizePropertyTreeValuePath(wikiLinkValue));
+        expect(keyNode?.children.size).toBe(1);
+        expect(canonicalValueNode?.notesWithValue).toEqual(new Set(['notes/plain.md', 'notes/wikilink.md']));
+    });
+
     it('respects included paths, excluded folders, and included property keys', () => {
         const db = createMockDb([
             {
                 path: 'notes/keep.md',
-                customProperty: [{ fieldKey: 'Status', value: '  Work // Done / ' }]
+                properties: [{ fieldKey: 'Status', value: '  Work // Done / ' }]
             },
             {
                 path: 'notes/skip-key.md',
-                customProperty: [{ fieldKey: 'Priority', value: 'High' }]
+                properties: [{ fieldKey: 'Priority', value: 'High' }]
             },
             {
                 path: 'archive/hidden.md',
-                customProperty: [{ fieldKey: 'Status', value: 'Hidden/Value' }]
+                properties: [{ fieldKey: 'Status', value: 'Hidden/Value' }]
             }
         ]);
 
@@ -145,11 +192,11 @@ describe('buildPropertyTreeFromDatabase', () => {
         const db = createMockDb([
             {
                 path: 'notes/first.md',
-                customProperty: [{ fieldKey: 'Status', value: '  Work // Done / ' }]
+                properties: [{ fieldKey: 'Status', value: '  Work // Done / ' }]
             },
             {
                 path: 'notes/second.md',
-                customProperty: [{ fieldKey: 'status', value: 'work // done /' }]
+                properties: [{ fieldKey: 'status', value: 'work // done /' }]
             }
         ]);
 
@@ -168,15 +215,15 @@ describe('buildPropertyTreeFromDatabase', () => {
         const db = createMockDb([
             {
                 path: 'notes/status.md',
-                customProperty: [{ fieldKey: 'Status', value: 'Open' }]
+                properties: [{ fieldKey: 'Status', value: 'Open' }]
             },
             {
                 path: 'notes/priority.md',
-                customProperty: [{ fieldKey: 'Priority', value: 'High' }]
+                properties: [{ fieldKey: 'Priority', value: 'High' }]
             },
             {
                 path: 'notes/mood.md',
-                customProperty: [{ fieldKey: 'Mood', value: 'Calm' }]
+                properties: [{ fieldKey: 'Mood', value: 'Calm' }]
             }
         ]);
 
@@ -192,11 +239,11 @@ describe('buildPropertyTreeFromDatabase', () => {
         const db = createMockDb([
             {
                 path: 'notes/status.md',
-                customProperty: [{ fieldKey: 'Status', value: 'Open' }]
+                properties: [{ fieldKey: 'Status', value: 'Open' }]
             },
             {
                 path: 'notes/priority.md',
-                customProperty: [{ fieldKey: 'Priority', value: 'High' }]
+                properties: [{ fieldKey: 'Priority', value: 'High' }]
             }
         ]);
 
@@ -211,11 +258,11 @@ describe('buildPropertyTreeFromDatabase', () => {
         const db = createMockDb([
             {
                 path: 'notes/status.md',
-                customProperty: [{ fieldKey: 'Status', value: 'Open' }]
+                properties: [{ fieldKey: 'Status', value: 'Open' }]
             },
             {
                 path: 'notes/priority.md',
-                customProperty: [{ fieldKey: 'Priority', value: 'High' }]
+                properties: [{ fieldKey: 'Priority', value: 'High' }]
             }
         ]);
 
@@ -231,19 +278,19 @@ describe('buildPropertyTreeFromDatabase', () => {
         const db = createMockDb([
             {
                 path: 'notes/status-zeta.md',
-                customProperty: [{ fieldKey: 'Status', value: 'Work/Zeta' }]
+                properties: [{ fieldKey: 'Status', value: 'Work/Zeta' }]
             },
             {
                 path: 'notes/zeta.md',
-                customProperty: [{ fieldKey: 'Zeta', value: 'One' }]
+                properties: [{ fieldKey: 'Zeta', value: 'One' }]
             },
             {
                 path: 'notes/alpha.md',
-                customProperty: [{ fieldKey: 'Alpha', value: 'Two' }]
+                properties: [{ fieldKey: 'Alpha', value: 'Two' }]
             },
             {
                 path: 'notes/status-alpha.md',
-                customProperty: [{ fieldKey: 'status', value: 'Work/Alpha' }]
+                properties: [{ fieldKey: 'status', value: 'Work/Alpha' }]
             }
         ]);
 
@@ -269,7 +316,7 @@ describe('buildPropertyTreeFromDatabase', () => {
         const db = createMockDb([
             {
                 path: 'notes/empty.md',
-                customProperty: [{ fieldKey: 'Status', value: '   ' }]
+                properties: [{ fieldKey: 'Status', value: '   ' }]
             }
         ]);
 
@@ -289,11 +336,11 @@ describe('buildPropertyTreeFromDatabase', () => {
         const db = createMockDb([
             {
                 path: 'notes/true.md',
-                customProperty: [{ fieldKey: 'Status', value: 'true', valueKind: 'boolean' }]
+                properties: [{ fieldKey: 'Status', value: 'true', valueKind: 'boolean' }]
             },
             {
                 path: 'notes/false.md',
-                customProperty: [{ fieldKey: 'Status', value: 'false', valueKind: 'boolean' }]
+                properties: [{ fieldKey: 'Status', value: 'false', valueKind: 'boolean' }]
             }
         ]);
 
@@ -310,11 +357,11 @@ describe('buildPropertyTreeFromDatabase', () => {
         const db = createMockDb([
             {
                 path: 'notes/true-string.md',
-                customProperty: [{ fieldKey: 'Status', value: 'true', valueKind: 'string' }]
+                properties: [{ fieldKey: 'Status', value: 'true', valueKind: 'string' }]
             },
             {
                 path: 'notes/false-string.md',
-                customProperty: [{ fieldKey: 'Status', value: 'false', valueKind: 'string' }]
+                properties: [{ fieldKey: 'Status', value: 'false', valueKind: 'string' }]
             }
         ]);
 
@@ -338,27 +385,27 @@ describe('property value matching', () => {
         const db = createMockDb([
             {
                 path: 'notes/a.md',
-                customProperty: [{ fieldKey: 'Status', value: 'Work/Done' }]
+                properties: [{ fieldKey: 'Status', value: 'Work/Done' }]
             },
             {
                 path: 'notes/b.md',
-                customProperty: [{ fieldKey: 'Status', value: 'Work/Blocked' }]
+                properties: [{ fieldKey: 'Status', value: 'Work/Blocked' }]
             },
             {
                 path: 'notes/c.md',
-                customProperty: [{ fieldKey: 'Status', value: 'Work' }]
+                properties: [{ fieldKey: 'Status', value: 'Work' }]
             },
             {
                 path: 'notes/d.md',
-                customProperty: [{ fieldKey: 'Status', value: 'Personal/Home' }]
+                properties: [{ fieldKey: 'Status', value: 'Personal/Home' }]
             },
             {
                 path: 'notes/e.md',
-                customProperty: [{ fieldKey: 'Status', value: '   ' }]
+                properties: [{ fieldKey: 'Status', value: '   ' }]
             },
             {
                 path: 'notes/f.md',
-                customProperty: [
+                properties: [
                     { fieldKey: 'Status', value: 'true', valueKind: 'boolean' },
                     { fieldKey: 'Status', value: 'Work/Done' }
                 ]
@@ -395,11 +442,11 @@ describe('property value matching', () => {
         const db = createMockDb([
             {
                 path: 'notes/a.md',
-                customProperty: [{ fieldKey: 'Status', value: 'Work/Done' }]
+                properties: [{ fieldKey: 'Status', value: 'Work/Done' }]
             },
             {
                 path: 'notes/b.md',
-                customProperty: [{ fieldKey: 'Status', value: 'Work/Blocked' }]
+                properties: [{ fieldKey: 'Status', value: 'Work/Blocked' }]
             }
         ]);
 
@@ -448,7 +495,7 @@ describe('property selection resolution', () => {
         const db = createMockDb([
             {
                 path: 'notes/a.md',
-                customProperty: [{ fieldKey: 'Status', value: 'true', valueKind: 'boolean' }]
+                properties: [{ fieldKey: 'Status', value: 'true', valueKind: 'boolean' }]
             }
         ]);
         const tree = buildPropertyTreeFromDatabase(db, {
@@ -474,7 +521,7 @@ describe('property selection resolution', () => {
         const db = createMockDb([
             {
                 path: 'notes/a.md',
-                customProperty: [{ fieldKey: 'Status', value: 'true', valueKind: 'string' }]
+                properties: [{ fieldKey: 'Status', value: 'true', valueKind: 'string' }]
             }
         ]);
         const tree = buildPropertyTreeFromDatabase(db, {
@@ -484,5 +531,45 @@ describe('property selection resolution', () => {
         const valueSelection = buildPropertyValueNodeId('status', normalizePropertyTreeValuePath('true'));
         const resolved = resolvePropertySelectionNodeId(tree, valueSelection);
         expect(resolved).toBe(valueSelection);
+    });
+
+    it('resolves legacy wiki-link value selections to the canonical value node', () => {
+        const rawValue = '[[Tech Insights/2026/Tech Insights 2026 Week 7|Tech Insights 2026 Week 7]]';
+        const db = createMockDb([
+            {
+                path: 'notes/a.md',
+                properties: [{ fieldKey: 'Status', value: rawValue }]
+            }
+        ]);
+        const tree = buildPropertyTreeFromDatabase(db, {
+            includedPropertyKeys: new Set(['status'])
+        });
+
+        const legacySelection = buildPropertyValueNodeId('status', rawValue.toLowerCase());
+        const canonicalSelection = buildPropertyValueNodeId('status', normalizePropertyTreeValuePath(rawValue));
+        const resolved = resolvePropertySelectionNodeId(tree, legacySelection);
+        expect(resolved).toBe(canonicalSelection);
+    });
+});
+
+describe('property selection restore', () => {
+    it('allows restoring properties root when properties section is shown and no fields are configured', () => {
+        const settings = {
+            ...DEFAULT_SETTINGS,
+            showProperties: true,
+            propertyFields: ''
+        };
+
+        expect(canRestorePropertySelectionNodeId(settings, PROPERTIES_ROOT_VIRTUAL_FOLDER_ID)).toBe(true);
+    });
+
+    it('rejects restoring properties root when properties section is hidden', () => {
+        const settings = {
+            ...DEFAULT_SETTINGS,
+            showProperties: false,
+            propertyFields: 'status'
+        };
+
+        expect(canRestorePropertySelectionNodeId(settings, PROPERTIES_ROOT_VIRTUAL_FOLDER_ID)).toBe(false);
     });
 });

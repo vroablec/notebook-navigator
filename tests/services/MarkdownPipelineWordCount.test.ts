@@ -40,7 +40,7 @@ function createSettings(overrides?: Partial<NotebookNavigatorSettings>): Noteboo
         ...DEFAULT_SETTINGS,
         showFilePreview: false,
         showFeatureImage: false,
-        customPropertyType: 'wordCount',
+        notePropertyType: 'wordCount',
         ...overrides
     };
 }
@@ -128,7 +128,7 @@ function createFileData(overrides: Partial<FileData>): FileData {
         wordCount: null,
         taskTotal: 0,
         taskUnfinished: 0,
-        customProperty: null,
+        properties: null,
         previewStatus: 'unprocessed',
         featureImage: null,
         featureImageStatus: 'unprocessed',
@@ -156,8 +156,7 @@ describe('MarkdownPipelineContentProvider word count', () => {
         const settings = createSettings({
             showFilePreview: true,
             showFeatureImage: false,
-            customPropertyFields: '',
-            customPropertyColorMap: {}
+            propertyFields: ''
         });
         const provider = new TestMarkdownPipelineContentProvider(context.app);
         const file = createFile('notes/note.md');
@@ -186,8 +185,7 @@ describe('MarkdownPipelineContentProvider word count', () => {
         const settings = createSettings({
             showFilePreview: true,
             showFeatureImage: false,
-            customPropertyFields: '',
-            customPropertyColorMap: {}
+            propertyFields: ''
         });
         const provider = new TestMarkdownPipelineContentProvider(context.app);
         const file = createFile('notes/note.md');

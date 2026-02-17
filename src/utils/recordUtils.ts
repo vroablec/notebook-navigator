@@ -134,6 +134,25 @@ export function casefold(value: string): string {
     return trimmed.toLowerCase();
 }
 
+export function sortAndDedupeByComparator<T>(values: readonly T[], compare: (left: T, right: T) => number): T[] {
+    if (values.length === 0) {
+        return [];
+    }
+
+    const sorted = [...values].sort(compare);
+    const unique: T[] = [sorted[0]];
+
+    for (let index = 1; index < sorted.length; index += 1) {
+        const current = sorted[index];
+        const previous = unique[unique.length - 1];
+        if (compare(current, previous) !== 0) {
+            unique.push(current);
+        }
+    }
+
+    return unique;
+}
+
 export interface CaseInsensitiveKeyMatcher {
     hasKeys: boolean;
     matches: (record: Record<string, unknown> | null | undefined) => boolean;
@@ -156,13 +175,7 @@ export function createCaseInsensitiveKeyMatcher(keys: string[]): CaseInsensitive
         return EMPTY_CASE_INSENSITIVE_KEY_MATCHER;
     }
 
-    normalized.sort();
-    const unique: string[] = [];
-    normalized.forEach(key => {
-        if (unique.length === 0 || unique[unique.length - 1] !== key) {
-            unique.push(key);
-        }
-    });
+    const unique = sortAndDedupeByComparator(normalized, (left, right) => left.localeCompare(right));
 
     const cacheKey = unique.join('\u0000');
     const cached = caseInsensitiveKeyMatcherCache.get(cacheKey);
