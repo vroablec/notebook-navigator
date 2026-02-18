@@ -555,6 +555,10 @@ export class FileSystemOperations {
             return null;
         }
 
+        const tagTreeService = this.getTagTreeService();
+        const tagNode = tagTreeService?.findTagNode(normalizedTag);
+        const resolvedTagPath = tagNode?.displayPath ?? normalizedTag;
+
         try {
             const activeFilePath = this.app.workspace.getActiveFile()?.path ?? '';
             const sourceFilePath = sourcePath?.trim().length ? sourcePath : activeFilePath;
@@ -566,11 +570,11 @@ export class FileSystemOperations {
             try {
                 // Mutate frontmatter through Obsidian's API so YAML serialization matches other tag operations.
                 await this.app.fileManager.processFrontMatter(file, (frontmatter: Record<string, unknown>) => {
-                    frontmatter.tags = [normalizedTag];
+                    frontmatter.tags = [resolvedTagPath];
                 });
             } catch (error) {
                 console.error('[Notebook Navigator] Failed to update created note tags', error);
-                showNotice(strings.dragDrop.errors.failedToAddTag.replace('{tag}', `#${normalizedTag}`), { variant: 'warning' });
+                showNotice(strings.dragDrop.errors.failedToAddTag.replace('{tag}', `#${resolvedTagPath}`), { variant: 'warning' });
             }
 
             const leaf = this.app.workspace.getLeaf(false);

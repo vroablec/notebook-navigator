@@ -79,7 +79,8 @@ const RELEASE_NOTES: ReleaseNote[] = [
         date: '2026-02-18',
         showOnUpdate: false,
         fixed: [
-            'Fixed an issue where the calendar could use locale week rules for custom week patterns using ISO week tokens ("W" or "G").'
+            'Fixed an issue where the calendar could use locale week rules for custom week patterns using ISO week tokens ("W" or "G").',
+            'Fixed an issue where new notes created from tag view wrote the selected tag in lowercase in note properties.'
         ]
     },
     {
