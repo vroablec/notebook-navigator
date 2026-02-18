@@ -215,6 +215,54 @@ describe('sort refresh triggers', () => {
 
         expect(
             shouldRefreshOnMetadataChangeForSort({
+                sortOption: 'title-asc',
+                propertySortKey: '',
+                propertySortSecondary: 'created',
+                useFrontmatterMetadata: true,
+                frontmatterNameField: 'title',
+                frontmatterCreatedField: '',
+                frontmatterModifiedField: ''
+            })
+        ).toBe(true);
+
+        expect(
+            shouldRefreshOnMetadataChangeForSort({
+                sortOption: 'created-desc',
+                propertySortKey: '',
+                propertySortSecondary: 'created',
+                useFrontmatterMetadata: true,
+                frontmatterNameField: '',
+                frontmatterCreatedField: 'created',
+                frontmatterModifiedField: ''
+            })
+        ).toBe(true);
+
+        expect(
+            shouldRefreshOnMetadataChangeForSort({
+                sortOption: 'created-desc',
+                propertySortKey: '',
+                propertySortSecondary: 'created',
+                useFrontmatterMetadata: false,
+                frontmatterNameField: '',
+                frontmatterCreatedField: 'created',
+                frontmatterModifiedField: ''
+            })
+        ).toBe(false);
+
+        expect(
+            shouldRefreshOnMetadataChangeForSort({
+                sortOption: 'modified-asc',
+                propertySortKey: '',
+                propertySortSecondary: 'created',
+                useFrontmatterMetadata: true,
+                frontmatterNameField: '',
+                frontmatterCreatedField: '',
+                frontmatterModifiedField: 'modified'
+            })
+        ).toBe(true);
+
+        expect(
+            shouldRefreshOnMetadataChangeForSort({
                 sortOption: 'property-asc',
                 propertySortKey: 'order',
                 propertySortSecondary: 'title',

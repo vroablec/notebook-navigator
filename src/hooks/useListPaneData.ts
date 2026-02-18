@@ -1324,7 +1324,8 @@ export function useListPaneData({
         settings.useFrontmatterMetadata,
         settings.frontmatterNameField,
         settings.frontmatterCreatedField,
-        settings.frontmatterModifiedField
+        settings.frontmatterModifiedField,
+        settings.frontmatterDateFormat
     ]);
 
     return {

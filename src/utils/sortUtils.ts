@@ -57,6 +57,23 @@ export function shouldRefreshOnMetadataChangeForSort(params: {
         frontmatterModifiedField
     } = params;
     if (!isPropertySortOption(sortOption)) {
+        // Date/title sorts depend on frontmatter values when configured; metadata changes must refresh the ordering.
+        if (!useFrontmatterMetadata) {
+            return false;
+        }
+
+        if (sortOption.startsWith('created')) {
+            return frontmatterCreatedField.trim().length > 0;
+        }
+
+        if (sortOption.startsWith('modified')) {
+            return frontmatterModifiedField.trim().length > 0;
+        }
+
+        if (sortOption.startsWith('title')) {
+            return frontmatterNameField.trim().length > 0;
+        }
+
         return false;
     }
 
