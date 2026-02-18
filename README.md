@@ -6,7 +6,7 @@ Read in your language: [English](https://notebooknavigator.com/docs.html) • [�
 
 ![Notebook Navigator Screenshot](https://github.com/johansan/notebook-navigator/blob/main/images/notebook-navigator.png?raw=true)
 
-Turn Obsidian into a fast, customizable notes browser with folders, tags and shortcuts in one view.
+Turn Obsidian into a fast, customizable notes browser with folders, tags, properties and shortcuts in one view.
 Visual previews. Full keyboard navigation. Dual-pane layout. Mobile optimized. Works with 100,000+ notes.
 
 If you love using Notebook Navigator, please consider [☕️ Buying me a coffee](https://buymeacoffee.com/johansan) or [Sponsor on GitHub ❤️](https://github.com/sponsors/johansan).
@@ -21,8 +21,6 @@ If you love using Notebook Navigator, please consider [☕️ Buying me a coffee
 2. **Enable community plugins** - Go to Settings → Community plugins → Turn on community plugins
 3. **Install Notebook Navigator** - Click "Browse" → Search for "Notebook Navigator" → Install
 4. **Install Style Settings (optional)** - For customizing colors and appearance, install [Style Settings](https://github.com/mgmeyers/obsidian-style-settings) plugin by searching for "Style Settings" in Community plugins
-
-For precise image management, consider also installing [Pixel Perfect Image](https://github.com/johansan/pixel-perfect-image) which lets you resize images to exact pixel dimensions and perform advanced image operations.
 
 <br>
 
@@ -247,6 +245,7 @@ Set custom hotkeys for these commands in Obsidian's Hotkeys settings:
 - `Notebook Navigator: Open all files` Opens all notes in the currently selected folder or tag. When opening 15 or more files, shows a confirmation dialog
 - `Notebook Navigator: Navigate to folder` Search dialog to jump to any folder
 - `Notebook Navigator: Navigate to tag` Search dialog to jump to any tag
+- `Notebook Navigator: Navigate to property` Search dialog to jump to any property key or value
 - `Notebook Navigator: Add to shortcuts` Adds the current file, folder, or tag to shortcuts
 - `Notebook Navigator: Open shortcut 1-9` Opens shortcut by its position in the shortcuts list
 - `Notebook Navigator: Search` Opens quick search field or focuses it if already open. Search persists between sessions. **Suggestion:** Bind to a shortcut key like `Cmd/Ctrl+Shift+S` for quick file filtering
@@ -313,6 +312,7 @@ Set custom hotkeys for these commands in Obsidian's Hotkeys settings:
 | `notebook-navigator:open-all-files`         | Notebook Navigator: Open all files                                                                   |
 | `notebook-navigator:navigate-to-folder`     | Notebook Navigator: Navigate to folder                                                               |
 | `notebook-navigator:navigate-to-tag`        | Notebook Navigator: Navigate to tag                                                                  |
+| `notebook-navigator:navigate-to-property`   | Notebook Navigator: Navigate to property                                                             |
 | `notebook-navigator:add-shortcut`           | Notebook Navigator: Add to shortcuts                                                                 |
 | `notebook-navigator:open-shortcut-1`        | Notebook Navigator: Open shortcut 1                                                                  |
 | `notebook-navigator:open-shortcut-2`        | Notebook Navigator: Open shortcut 2                                                                  |
@@ -358,7 +358,7 @@ Set custom hotkeys for these commands in Obsidian's Hotkeys settings:
 
 ### 9.1 Interface
 
-- **Dual-pane layout** - Navigation pane (folders/tags) and list pane (files)
+- **Dual-pane layout** - Navigation pane (folders/tags/properties) and list pane (files)
 - **Single-pane mode** - Navigation and list views with animated transitions
 - **Resizable panes** - Horizontal or vertical split orientation
 - **Independent UI zoom** - Scale Notebook Navigator without changing Obsidian zoom
@@ -374,6 +374,7 @@ Set custom hotkeys for these commands in Obsidian's Hotkeys settings:
 - **Calendar** - Daily notes calendar with day selection, feature image previews, and vertical split support
 - **Folder tree** - Expand/collapse navigation with manual root folder ordering
 - **Tag tree** - Hierarchical tags with configurable root tag ordering
+- **Property browser** - Browse file properties organized by key and value with file counts, custom colors, icons, and drag and drop
 - **Auto-reveal active file** - Folder expansion and scroll-to-selection
 - **Keyboard and commands** - Configurable hotkeys, next/previous file commands, open shortcut 1–9 commands
 
@@ -381,11 +382,11 @@ Set custom hotkeys for these commands in Obsidian's Hotkeys settings:
 
 - **Pin notes** - Keep important notes at the top of folders and tags
 - **Folder notes** - Set/detach folder notes, pin folder notes, open in new tab option
-- **Tag operations** - Add/remove/clear tags, rename/delete tags, drag-and-drop tag hierarchy
+- **Tag operations** - Add/remove/clear tags, rename/delete tags, create note in tag, drag-and-drop tag hierarchy
 - **Custom sort and grouping** - Override sort/group settings per folder or tag
 - **Per-folder/tag appearances** - Title rows, preview rows, compact mode, descendants toggle
 - **Hidden content** - Hidden folders/tags/notes/files with patterns, frontmatter properties, and tag-based filtering per vault profile
-- **Color and icon system** - Folder/tag/file colors, icon packs, emoji/Lucide icons, frontmatter read/write, icon mapping by file name and file type category
+- **Color and icon system** - Folder/tag/property/file colors, icon packs, emoji/Lucide icons, frontmatter read/write, icon mapping by file name and file type category
 - **Name warnings** - Warn about forbidden filesystem characters and characters that break Obsidian links when naming files and folders
 
 ### 9.4 File display
