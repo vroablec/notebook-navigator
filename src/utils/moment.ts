@@ -35,6 +35,8 @@ export interface MomentInstance {
     diff(other: MomentInstance, unit: string): number;
     week(): number;
     weekYear(): number;
+    isoWeek(): number;
+    isoWeekYear(): number;
     month(): number;
     year(): number;
     date(): number;

@@ -25,6 +25,7 @@ import { useSettingsState } from '../../context/SettingsContext';
 import { useFileCacheOptional } from '../../context/StorageContext';
 import { getDBInstanceOrNull, isShutdownInProgress, waitForDatabaseInitialization } from '../../storage/fileOperations';
 import { runAsyncAction } from '../../utils/async';
+import { getCalendarCustomWeekAnchorUnit } from '../../utils/calendarCustomNotePatterns';
 import { getDailyNoteFile, getDailyNoteSettings as getCoreDailyNoteSettings } from '../../utils/dailyNotes';
 import { getMomentApi, resolveMomentLocale, type MomentInstance } from '../../utils/moment';
 import { useFileOpener } from '../../hooks/useFileOpener';
@@ -299,14 +300,29 @@ export function Calendar({
         return resolveMomentLocale(requested, momentApi, displayLocale);
     }, [displayLocale, momentApi, settings.calendarLocale]);
 
+    const isCustomCalendar = settings.calendarIntegrationMode === 'notebook-navigator';
+    const weekNotesEnabled = isCustomCalendar && settings.calendarCustomWeekPattern.trim() !== '';
+
+    const effectiveWeekMode = useMemo<'iso' | 'locale'>(() => {
+        if (!weekNotesEnabled) {
+            return 'locale';
+        }
+
+        const anchorUnit = getCalendarCustomWeekAnchorUnit(settings.calendarCustomWeekPattern);
+        return anchorUnit === 'isoWeek' ? 'iso' : 'locale';
+    }, [settings.calendarCustomWeekPattern, weekNotesEnabled]);
+
     const weekStartsOn = useMemo(() => {
+        if (effectiveWeekMode === 'iso') {
+            return 1;
+        }
         if (!momentApi) {
             return 1;
         }
         const localeData = momentApi().locale(calendarRulesLocale).localeData();
         const firstDay = localeData.firstDayOfWeek();
         return typeof firstDay === 'number' && Number.isInteger(firstDay) && firstDay >= 0 && firstDay <= 6 ? firstDay : 1;
-    }, [calendarRulesLocale, momentApi]);
+    }, [calendarRulesLocale, effectiveWeekMode, momentApi]);
 
     const weekdays = useMemo(() => {
         if (!momentApi) {
@@ -436,8 +452,8 @@ export function Calendar({
         for (let weekOffset = 0; weekOffset < weekCount; weekOffset++) {
             const weekStart = windowStart.clone().add(weekOffset, 'week');
             const weekMoment = weekStart.clone().locale(calendarRulesLocale);
-            const weekNumber = weekMoment.week();
-            const weekYear = weekMoment.weekYear();
+            const weekNumber = effectiveWeekMode === 'iso' ? weekMoment.isoWeek() : weekMoment.week();
+            const weekYear = effectiveWeekMode === 'iso' ? weekMoment.isoWeekYear() : weekMoment.weekYear();
 
             const days: CalendarDay[] = [];
             for (let dayOffset = 0; dayOffset < 7; dayOffset++) {
@@ -457,7 +473,16 @@ export function Calendar({
         }
 
         return visibleWeeks;
-    }, [calendarRulesLocale, cursorDate, getExistingDayNoteFile, momentApi, vaultVersion, weeksToShowSetting, weekStartsOn]);
+    }, [
+        calendarRulesLocale,
+        cursorDate,
+        effectiveWeekMode,
+        getExistingDayNoteFile,
+        momentApi,
+        vaultVersion,
+        weeksToShowSetting,
+        weekStartsOn
+    ]);
 
     const visibleDayNotePaths = useMemo(() => {
         const paths = new Set<string>();
@@ -689,8 +714,6 @@ export function Calendar({
     const showCompactHeaderInlineInfoButton = showHeaderHelpButton;
     const showInfoInNavRow = false;
 
-    const isCustomCalendar = settings.calendarIntegrationMode === 'notebook-navigator';
-    const weekNotesEnabled = isCustomCalendar && settings.calendarCustomWeekPattern.trim() !== '';
     const monthNotesEnabled = isCustomCalendar && settings.calendarCustomMonthPattern.trim() !== '';
     const quarterNotesEnabled = isCustomCalendar && settings.calendarCustomQuarterPattern.trim() !== '';
     const yearNotesEnabled = isCustomCalendar && settings.calendarCustomYearPattern.trim() !== '';
