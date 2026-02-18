@@ -76,7 +76,7 @@ export interface ReleaseNote {
 const RELEASE_NOTES: ReleaseNote[] = [
     {
         version: '2.4.0',
-        date: '2026-02-17',
+        date: '2026-02-18',
         showOnUpdate: true,
         new: [
             '==Property browser==. You can now browse file properties in the navigation pane. Properties are organized in a tree showing property keys and their values with file counts, just like tags. Supports custom colors, icons, context menus, and drag and drop. Just right-click "Properties" and choose "Add property key" to get started!',
@@ -93,7 +93,8 @@ const RELEASE_NOTES: ReleaseNote[] = [
         ],
         improved: [
             'Subfolder group headers in list pane ==are now clickable when grouping by folder==.',
-            'The setting "Hide notes with properties" was renamed to "Hide notes with property rules". ==You can now hide properties with specific keys values==, like status=done, or published=true.'
+            'The setting "Hide notes with properties" was renamed to "Hide notes with property rules". ==You can now hide properties with specific keys values==, like status=done, or published=true.',
+            '==Tags and properties in File Item now show custom icons== within the pills if set. This makes it much easier to know which property is showing.'
         ],
         changed: [
             'Removed the setting ==Save icons and colors to frontmatter==. Icons and colors are now always saved to frontmatter if frontmatter metadata is enabled.',
