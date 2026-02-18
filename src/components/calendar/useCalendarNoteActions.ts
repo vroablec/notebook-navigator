@@ -17,13 +17,14 @@
  */
 
 import React, { useCallback } from 'react';
-import { App, Menu, Notice, TFile } from 'obsidian';
+import { App, Menu, TFile } from 'obsidian';
 import { strings } from '../../i18n';
 import { ConfirmModal } from '../../modals/ConfirmModal';
 import type { FileSystemOperations } from '../../services/FileSystemService';
 import type { NotebookNavigatorSettings } from '../../settings/types';
 import { runAsyncAction } from '../../utils/async';
 import { createDailyNote, getDailyNoteFilename, type DailyNoteSettings } from '../../utils/dailyNotes';
+import { showNotice } from '../../utils/noticeUtils';
 import { createCalendarMarkdownFile, getCalendarTemplatePath } from '../../utils/calendarNotes';
 import type { MomentApi, MomentInstance } from '../../utils/moment';
 import { resolveUXIconForMenu } from '../../utils/uxIcons';
@@ -120,7 +121,7 @@ export function useCalendarNoteActions({
                 momentApi
             });
             if (!resolvedPath) {
-                new Notice(resolverContext.config.parsingErrorText);
+                showNotice(resolverContext.config.parsingErrorText);
                 return;
             }
 
@@ -140,7 +141,7 @@ export function useCalendarNoteActions({
                     created = await createCalendarMarkdownFile(app, resolvedPath.folderPath, resolvedPath.fileName, templatePath);
                 } catch (error) {
                     console.error('Failed to create calendar note', error);
-                    new Notice(strings.common.unknownError);
+                    showNotice(strings.common.unknownError);
                     return;
                 }
 
@@ -191,7 +192,7 @@ export function useCalendarNoteActions({
             if (settings.calendarIntegrationMode === 'daily-notes') {
                 const resolvedDailySettings = dailyNoteSettings;
                 if (!resolvedDailySettings) {
-                    new Notice(strings.navigationCalendar.dailyNotesNotEnabled);
+                    showNotice(strings.navigationCalendar.dailyNotesNotEnabled);
                     return;
                 }
 
