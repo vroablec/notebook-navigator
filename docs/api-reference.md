@@ -33,7 +33,7 @@ Templater:
 const nn = app.plugins.plugins['notebook-navigator']?.api;
 
 if (nn) {
-  // Pin the current file in both folder and tag contexts
+  // Pin the current file in folder, tag, and property contexts
   const file = tp.config.target_file;
   await nn.metadata.pin(file);
   new Notice('File pinned in Notebook Navigator');

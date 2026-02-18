@@ -300,7 +300,7 @@ graph TD
 
 **Location**: `src/components/NavigationRootReorderPanel.tsx`
 
-- Displays reorderable sections, folder lists, and tag lists when root reorder mode is active.
+- Displays reorderable sections, folder lists, tag lists, and property lists when root reorder mode is active.
 - Provides drop indicators, drag handle labels, and reset buttons that reset root ordering to alphabetical defaults.
 - Updates scroll container data attributes to reflect drop targets for visual feedback.
 
@@ -369,6 +369,7 @@ graph TD
 
 - Displays folder name, icon, colours, note counts, folder note indicator, and tooltip counts.
 - Handles expand/collapse, selection, sibling toggles (Alt+click), context menus, and hidden/excluded state rendering.
+- Uses `nav-folder-open` / `nav-folder-closed` interface icons for expanded/collapsed folders when no custom folder icon is set.
 - Sets Obsidian icons in `useEffect` to avoid blocking React renders and updates tooltips only on desktop.
 
 ### TagTreeItem
@@ -390,7 +391,7 @@ graph TD
 
 **Location**: `src/components/ShortcutItem.tsx`
 
-- Presents folder, note, search, and tag shortcuts with labels, counts, drag handles, and missing indicators.
+- Presents folder, note, search, tag, and property shortcuts with labels, counts, drag handles, and missing indicators.
 - Shares styling with navigation rows through `NavigationListRow` and participates in dnd-kit sortable reordering.
 
 ### RootFolderReorderItem
@@ -398,7 +399,7 @@ graph TD
 **Location**: `src/components/RootFolderReorderItem.tsx`
 
 - Specialized `NavigationListRow` wrapper for root reorder mode with drag handles and reset actions.
-- Supports folders, tags, and section headers, including missing-item styling, inside dnd-kit sortable lists.
+- Supports folders, tags, properties, and section headers, including missing-item styling, inside dnd-kit sortable lists.
 
 ## Virtualization Strategy
 

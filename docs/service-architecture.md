@@ -219,8 +219,8 @@ when `useFrontmatterMetadata` is enabled.
   - Validates settings-backed property metadata against configured property fields.
 
 - **FileMetadataService** (`src/services/metadata/FileMetadataService.ts`)
-  - Manages pinned notes per folder/tag context.
-  - Stores file icons and colors with frontmatter fallback and migration.
+  - Manages pinned notes per folder/tag/property context.
+  - Stores file icons and colors with frontmatter writes, settings fallback, and migration.
   - Updates metadata during file rename/delete and syncs with IndexedDB cache.
 
 - **NavigationSeparatorService** (`src/services/metadata/NavigationSeparatorService.ts`)

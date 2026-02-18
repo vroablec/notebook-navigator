@@ -26,7 +26,7 @@ Updated: February 18, 2026
 
 Notebook Navigator stores user configuration in `data.json` and uses rebuildable caches for file-derived data.
 
-- **Settings** (`data.json`): user configuration, vault profiles, appearance overrides, pinned notes, and folder/tag/property/file metadata maps.
+- **Settings** (`data.json`): user configuration, vault profiles, appearance overrides, pinned notes, folder/tag/property metadata maps, and fallback file icon/color maps.
 - **Vault-scoped local storage**: device-local UI state, recent notes/icons, and version/migration markers.
 - **IndexedDB cache**: per-file records and derived content state, with separate stores for preview text and feature image blobs.
 - **In-memory caches**: synchronous mirror of the IndexedDB main records and bounded LRUs for preview text and feature image blobs.
@@ -264,8 +264,9 @@ React render paths.
 
 - Vault profiles (`vaultProfiles`) with hidden patterns, banners, and shortcuts.
 - Feature toggles and UI configuration (folders/tags behavior, list layout, note preview/feature image options, formatting).
-- Folder/tag/property/file metadata maps: icons, colors, background colors, sort overrides, and appearance overrides.
-- Pinned notes (`pinnedNotes`) keyed by file path with separate `folder` / `tag` contexts.
+- Folder/tag/property metadata maps in settings: icons, colors, background colors, sort overrides, and appearance overrides.
+- File icon/color settings maps (`fileIcons`, `fileColors`) used as fallback and migration sources when frontmatter metadata writes are unavailable.
+- Pinned notes (`pinnedNotes`) keyed by file path with separate `folder` / `tag` / `property` contexts.
 - External icon provider enablement (`externalIconProviders`) and keyboard shortcut configuration (`keyboardShortcuts`).
 - Runtime metadata maps and ordering: navigation separators, root folder/tag/property order, custom vault name, recent user colors, release tracking.
 
