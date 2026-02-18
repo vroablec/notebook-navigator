@@ -208,6 +208,7 @@ export function useStorageVaultSync(params: {
                                         scheduleTagTreeRebuild();
                                     }
                                     if (isPropertyFeatureEnabled(settings)) {
+                                        // Flush rebuild after cache removals so deleted files are reflected in the property tree counts.
                                         schedulePropertyTreeRebuild({ flush: true });
                                     }
                                 }

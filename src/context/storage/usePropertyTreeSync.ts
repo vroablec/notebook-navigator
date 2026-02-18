@@ -17,7 +17,7 @@
  */
 
 import { useCallback, useEffect, useMemo, useRef, type Dispatch, type RefObject, type SetStateAction } from 'react';
-import { App, debounce, TFile } from 'obsidian';
+import { App, debounce, TAbstractFile, TFile, TFolder } from 'obsidian';
 import type { Debouncer } from 'obsidian';
 import { TIMEOUTS } from '../../types/obsidian-extended';
 import type { PropertyTreeService } from '../../services/PropertyTreeService';
@@ -350,6 +350,48 @@ export function usePropertyTreeSync(params: {
         showHiddenItems,
         stoppedRef
     ]);
+
+    useEffect(() => {
+        if (!isStorageReady || !isPropertyTreeEnabled) {
+            return;
+        }
+
+        // Rebuild property tree when vault delete/rename events change markdown or folder paths.
+        const shouldTriggerRebuild = (file: TAbstractFile): boolean => {
+            if (file instanceof TFile) {
+                return file.extension === 'md';
+            }
+            return file instanceof TFolder;
+        };
+
+        const handleDelete = (file: TAbstractFile) => {
+            if (stoppedRef.current) {
+                return;
+            }
+            if (!shouldTriggerRebuild(file)) {
+                return;
+            }
+            schedulePropertyTreeRebuild();
+        };
+
+        const handleRename = (file: TAbstractFile) => {
+            if (stoppedRef.current) {
+                return;
+            }
+            if (!shouldTriggerRebuild(file)) {
+                return;
+            }
+            schedulePropertyTreeRebuild();
+        };
+
+        const deleteRef = app.vault.on('delete', handleDelete);
+        const renameRef = app.vault.on('rename', handleRename);
+
+        return () => {
+            app.vault.offref(deleteRef);
+            app.vault.offref(renameRef);
+        };
+    }, [app.vault, isStorageReady, isPropertyTreeEnabled, schedulePropertyTreeRebuild, stoppedRef]);
 
     return { rebuildPropertyTree, schedulePropertyTreeRebuild, cancelPropertyTreeRebuildDebouncer };
 }
