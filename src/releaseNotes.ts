@@ -75,6 +75,14 @@ export interface ReleaseNote {
  */
 const RELEASE_NOTES: ReleaseNote[] = [
     {
+        version: '2.4.1',
+        date: '2026-02-18',
+        showOnUpdate: false,
+        fixed: [
+            'Fixed an issue where the calendar could use locale week rules for custom week patterns using ISO week tokens ("W" or "G").'
+        ]
+    },
+    {
         version: '2.4.0',
         date: '2026-02-18',
         showOnUpdate: true,
