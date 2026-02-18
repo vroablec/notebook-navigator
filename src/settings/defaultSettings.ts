@@ -254,7 +254,7 @@ export const DEFAULT_SETTINGS: NotebookNavigatorSettings = {
     prioritizeColoredFileProperties: true,
     notePropertyType: 'none',
     showFilePropertiesInCompactMode: false,
-    showPropertiesOnSeparateRows: true,
+    showPropertiesOnSeparateRows: false,
     showFileDate: true,
     // Default to showing modified date when sorting alphabetically
     alphabeticalDateMode: 'modified',
