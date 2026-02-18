@@ -311,7 +311,6 @@ export function usePropertyTreeSync(params: {
             let shouldFlush = false;
             let activeFilePath: string | null = null;
             let activeFileResolved = false;
-
             for (const change of changes) {
                 const hasPropertyChange = change.changes.properties !== undefined;
                 const hasTagVisibilityChange = shouldRebuildOnTagVisibilityChanges && change.changes.tags !== undefined;

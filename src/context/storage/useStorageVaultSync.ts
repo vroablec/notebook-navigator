@@ -30,7 +30,7 @@ import { getDBInstance, markFilesForRegeneration, recordFileChanges, removeFiles
 import { runAsyncAction } from '../../utils/async';
 import { isMarkdownPath, isPdfFile } from '../../utils/fileTypeUtils';
 import { isPropertyFeatureEnabled } from '../../utils/propertyTree';
-import { filterFilesRequiringMetadataSources, filterPdfFilesRequiringThumbnails } from '../storageQueueFilters';
+import { filterPdfFilesRequiringThumbnails } from '../storageQueueFilters';
 import { getCacheRebuildProgressTypes, getContentWorkTotal, getMetadataDependentTypes } from './storageContentTypes';
 
 /**
@@ -416,15 +416,8 @@ export function useStorageVaultSync(params: {
                     try {
                         // Obsidian's metadata cache can change after initial indexing even when the file mtime did
                         // not trigger a "modify" handler in the expected order. Mark the file for regeneration so
-                        // tags/metadata providers re-run against the updated cache.
-                        const db = getDBInstance();
-                        const record = db.getFile(file.path);
-                        const fileAlreadyNeedsWork =
-                            record !== null && filterFilesRequiringMetadataSources([file], metadataDependentTypes, liveSettings).length > 0;
-
-                        if (!record || !fileAlreadyNeedsWork) {
-                            await markFilesForRegeneration([file]);
-                        }
+                        // metadata-dependent providers re-run against the updated cache snapshot.
+                        await markFilesForRegeneration([file]);
                     } catch (error: unknown) {
                         console.error('Failed to mark file for regeneration:', error);
                         return;
