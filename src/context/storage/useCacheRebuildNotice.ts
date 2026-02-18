@@ -42,6 +42,8 @@ export function useCacheRebuildNotice(params: { app: App; stoppedRef: RefObject<
 
     const cacheRebuildNoticeRef = useRef<ReturnType<typeof showNotice> | null>(null);
     const cacheRebuildIntervalRef = useRef<number | null>(null);
+    const noticeRecreateAttemptsRef = useRef(0);
+    const maxNoticeRecreateAttempts = 2;
 
     const clearCacheRebuildNotice = useCallback(() => {
         if (cacheRebuildIntervalRef.current !== null) {
@@ -58,6 +60,7 @@ export function useCacheRebuildNotice(params: { app: App; stoppedRef: RefObject<
             }
             cacheRebuildNoticeRef.current = null;
         }
+        noticeRecreateAttemptsRef.current = 0;
     }, []);
 
     const startCacheRebuildNotice = useCallback(
@@ -133,6 +136,8 @@ export function useCacheRebuildNotice(params: { app: App; stoppedRef: RefObject<
             // a sticky notice on screen forever.
             const maxInitialWaitMs = 60_000;
 
+            noticeRecreateAttemptsRef.current = 0;
+
             cacheRebuildIntervalRef.current = window.setInterval(() => {
                 if (stoppedRef.current) {
                     clearCacheRebuildNotice();
@@ -142,7 +147,12 @@ export function useCacheRebuildNotice(params: { app: App; stoppedRef: RefObject<
                 const notice = cacheRebuildNoticeRef.current;
                 const container = notice?.containerEl;
                 if (!container || !container.isConnected) {
-                    createCacheRebuildNotice();
+                    if (noticeRecreateAttemptsRef.current < maxNoticeRecreateAttempts) {
+                        noticeRecreateAttemptsRef.current += 1;
+                        createCacheRebuildNotice();
+                    }
+                } else if (noticeRecreateAttemptsRef.current !== 0) {
+                    noticeRecreateAttemptsRef.current = 0;
                 }
 
                 const getFileByPath = (path: string): TFile | null => {

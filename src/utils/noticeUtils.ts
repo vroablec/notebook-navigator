@@ -52,6 +52,15 @@ export function showNotice(message: string | DocumentFragment, options?: ShowNot
     const notice = new Notice(message, options?.timeout);
     const container = notice.containerEl;
     if (container) {
+        if (!container.isConnected) {
+            const parent = container.parentElement;
+            if (parent && parent.classList.contains('notice-container') && !parent.isConnected) {
+                const body = container.ownerDocument?.body ?? null;
+                if (body) {
+                    body.appendChild(parent);
+                }
+            }
+        }
         if (options?.variant === 'success') {
             container.addClass('mod-success');
         } else if (options?.variant === 'warning') {
