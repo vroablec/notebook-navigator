@@ -208,7 +208,7 @@ export function useStorageVaultSync(params: {
                                         scheduleTagTreeRebuild();
                                     }
                                     if (isPropertyFeatureEnabled(settings)) {
-                                        schedulePropertyTreeRebuild();
+                                        schedulePropertyTreeRebuild({ flush: true });
                                     }
                                 }
                             } catch (error: unknown) {
