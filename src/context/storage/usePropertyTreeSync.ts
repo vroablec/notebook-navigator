@@ -123,6 +123,8 @@ export function usePropertyTreeSync(params: {
     const propertyTreeRebuildDebouncerRef = useRef<Debouncer<[], void> | null>(null);
     const isPropertyTreeEnabled = useMemo(() => shouldEnablePropertyTree(settings), [settings]);
     const propertyTreeRebuildReadyGateRef = useRef(false);
+    const previousPropertyFieldsRef = useRef(settings.propertyFields);
+    const previousShowPropertiesRef = useRef(settings.showProperties);
 
     useEffect(() => {
         hiddenFoldersRef.current = hiddenFolders;
@@ -178,7 +180,6 @@ export function usePropertyTreeSync(params: {
         if (!debouncer) {
             return;
         }
-
         try {
             debouncer.cancel();
         } catch {
@@ -192,11 +193,12 @@ export function usePropertyTreeSync(params: {
 
     const schedulePropertyTreeRebuild = useCallback(
         (options?: SchedulePropertyTreeRebuildOptions) => {
+            const liveSettings = latestSettingsRef.current;
             if (stoppedRef.current || !isStorageReadyRef.current) {
                 return;
             }
 
-            if (!shouldEnablePropertyTree(latestSettingsRef.current)) {
+            if (!shouldEnablePropertyTree(liveSettings)) {
                 clearPropertyTree();
                 return;
             }
@@ -234,30 +236,54 @@ export function usePropertyTreeSync(params: {
     );
 
     useEffect(() => {
+        const previousPropertyFields = previousPropertyFieldsRef.current;
+        const previousShowProperties = previousShowPropertiesRef.current;
+        const propertyFieldsChanged = previousPropertyFields !== settings.propertyFields;
+        const showPropertiesChanged = previousShowProperties !== settings.showProperties;
+        const commitCurrentSettingsSnapshot = () => {
+            previousPropertyFieldsRef.current = settings.propertyFields;
+            previousShowPropertiesRef.current = settings.showProperties;
+        };
+
         if (!isStorageReady) {
             // Resets the ready gate so the next ready transition is ignored.
             propertyTreeRebuildReadyGateRef.current = false;
+            commitCurrentSettingsSnapshot();
             return;
         }
 
         if (!propertyTreeRebuildReadyGateRef.current) {
             // Initial cache build creates the property tree before storage is marked ready.
             propertyTreeRebuildReadyGateRef.current = true;
+            commitCurrentSettingsSnapshot();
             return;
         }
 
         if (!isPropertyTreeEnabled) {
             clearPropertyTree();
+            commitCurrentSettingsSnapshot();
+            return;
+        }
+
+        const visibleMarkdownFileCount = getVisibleMarkdownFiles().length;
+        // Property-field changes are followed by markdown metadata regeneration.
+        // Skip the immediate rebuild here and let the incoming metadata batch trigger it.
+        const shouldDeferPropertyFieldRebuild =
+            propertyFieldsChanged && !showPropertiesChanged && settings.showProperties && visibleMarkdownFileCount > 0;
+        if (shouldDeferPropertyFieldRebuild) {
+            commitCurrentSettingsSnapshot();
             return;
         }
 
         schedulePropertyTreeRebuild();
+        commitCurrentSettingsSnapshot();
     }, [
         showHiddenItems,
         isStorageReady,
         isPropertyTreeEnabled,
         schedulePropertyTreeRebuild,
         clearPropertyTree,
+        getVisibleMarkdownFiles,
         hiddenFolders,
         hiddenFileProperties,
         hiddenFileNames,
@@ -308,7 +334,9 @@ export function usePropertyTreeSync(params: {
             }
 
             if (hasRelevantChanges) {
-                schedulePropertyTreeRebuild({ flush: shouldFlush });
+                // Flush only when the active file is the sole file in the batch.
+                const shouldFlushNow = shouldFlush && changes.every(change => change.path === activeFilePath);
+                schedulePropertyTreeRebuild({ flush: shouldFlushNow });
             }
         });
 

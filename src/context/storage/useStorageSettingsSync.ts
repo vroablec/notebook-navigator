@@ -154,15 +154,27 @@ export function useStorageSettingsSync(params: {
                 return;
             }
 
+            const metadataDependentTypes = getMetadataDependentTypes(newSettings);
+            const affectedProviderTypeSet = new Set<ContentProviderType>(affectedProviders);
+            // Queue only metadata providers that were affected by this settings change.
+            const metadataTypesToQueue = metadataDependentTypes.filter(type => affectedProviderTypeSet.has(type));
+            // Enabling feature images requires markdown pipeline reprocessing for markdown files.
+            if (enabledFeatureImages && !metadataTypesToQueue.includes('markdownPipeline')) {
+                metadataTypesToQueue.push('markdownPipeline');
+            }
+            const shouldQueueContent = metadataTypesToQueue.length > 0 || enabledFeatureImages;
+            if (!shouldQueueContent) {
+                return;
+            }
+
             const allFiles = getIndexableFiles();
             if (stoppedRef.current || !contentRegistryRef.current) {
                 return;
             }
 
-            const metadataDependentTypes = getMetadataDependentTypes(newSettings);
             const { markdownFiles } = queueIndexableFilesForContentGeneration(allFiles, newSettings);
-            if (metadataDependentTypes.length > 0) {
-                queueMetadataContentWhenReady(markdownFiles, metadataDependentTypes, newSettings);
+            if (metadataTypesToQueue.length > 0) {
+                queueMetadataContentWhenReady(markdownFiles, metadataTypesToQueue, newSettings);
             }
         },
         [
