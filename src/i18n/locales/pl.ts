@@ -466,7 +466,8 @@ export const STRINGS_PL = {
             files: 'pliki',
             inlineParsingWarning: {
                 title: 'Zgodność tagów w treści',
-                message: '{tag} zawiera znaki, których Obsidian nie może przetworzyć w tagach w treści. Nie ma to wpływu na tagi w atrybutach.',
+                message:
+                    '{tag} zawiera znaki, których Obsidian nie może przetworzyć w tagach w treści. Nie ma to wpływu na tagi w atrybutach.',
                 confirm: 'Użyj mimo to'
             }
         },
@@ -1209,7 +1210,8 @@ export const STRINGS_PL = {
                 desc: 'Przywraca wszystkie ustawienia Notebook Navigator do wartości domyślnych.',
                 buttonText: 'Przywróć wszystkie ustawienia',
                 confirmTitle: 'Przywrócić wszystkie ustawienia?',
-                confirmMessage: 'Spowoduje to przywrócenie wszystkich ustawień Notebook Navigator do wartości domyślnych. Nie można cofnąć tej czynności.',
+                confirmMessage:
+                    'Spowoduje to przywrócenie wszystkich ustawień Notebook Navigator do wartości domyślnych. Nie można cofnąć tej czynności.',
                 confirmButtonText: 'Przywróć wszystkie ustawienia',
                 notice: 'Przywrócono wszystkie ustawienia. Uruchom ponownie Obsidian lub ponownie otwórz Notebook Navigator, aby zastosować zmiany.',
                 error: 'Nie udało się przywrócić ustawień.'
