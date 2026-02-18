@@ -1,6 +1,6 @@
 # Notebook Navigator Startup Process
 
-Updated: February 10, 2026
+Updated: February 18, 2026
 
 ## Table of Contents
 
@@ -122,8 +122,8 @@ show progress.
    - `RecentNotesService` starts recording file-open history.
 8. Construct core services and controllers:
    - `WorkspaceCoordinator` and `HomepageController` manage view activation and homepage flow.
-   - `MetadataService`, `TagOperations`, `TagTreeService`, and `CommandQueueService`.
-   - `FileSystemOperations` wired with tag tree and visibility preferences.
+   - `MetadataService`, `TagOperations`, `TagTreeService`, `PropertyTreeService`, and `CommandQueueService`.
+   - `FileSystemOperations` wired with tag tree, property tree, and visibility preferences.
    - `OmnisearchService`, `NotebookNavigatorAPI`, and `ReleaseCheckService`.
    - `ExternalIconProviderController` initializes icon providers and syncs settings.
 9. Register view, commands, settings tab, and workspace integrations.
@@ -158,7 +158,7 @@ or calendar placement changes run after layout/settings updates.
    - `ServicesProvider` (Obsidian app, services, and platform flags)
    - `ShortcutsProvider` (pinned shortcut hydration and operations)
    - `StorageProvider` (IndexedDB access and content pipeline)
-   - `ExpansionProvider` (expanded folders and tags)
+   - `ExpansionProvider` (expanded folders, tags, and properties)
    - `SelectionProvider` (selected items plus rename listeners from the plugin)
    - `UIStateProvider` (pane focus and layout mode)
 3. `NotebookNavigatorContainer` renders a skeleton until `StorageContext.isStorageReady` is true.
@@ -246,11 +246,11 @@ tag extraction and markdown pipeline processing:
      - Modified files patch the stored `mtime` without clearing existing provider outputs. Providers compare their
        processed mtime fields (`markdownPipelineMtime`, `tagsMtime`, `metadataMtime`, `fileThumbnailsMtime`) against
        `file.stat.mtime` to detect stale content.
-4. Rebuild tag tree via `rebuildTagTree()` (`buildTagTreeFromDatabase`).
+4. Rebuild tag and property trees via `rebuildTagTree()` and `rebuildPropertyTree()`.
 5. Mark storage as ready (`setIsStorageReady(true)` and `NotebookNavigatorAPI.setStorageReady(true)`).
 6. Queue content generation:
    - Determine metadata-dependent provider types with `getMetadataDependentTypes(settings)`:
-     - Always includes `markdownPipeline` (word count, preview/custom property/feature image pipelines).
+     - Always includes `markdownPipeline` (word count, task counters, preview/property/feature image pipelines).
      - Includes `tags` when `showTags` is enabled.
      - Includes `metadata` when frontmatter metadata is enabled or hidden-file frontmatter rules are active.
    - `queueMetadataContentWhenReady(markdownFiles, metadataDependentTypes, settings)` filters to files needing work, waits for
@@ -265,6 +265,7 @@ tag extraction and markdown pipeline processing:
 - Renames seed `MemoryFileCache` with the old record, move preview/feature-image artifacts, then schedule a diff to reconcile mtimes.
 - Metadata cache `changed` events can force regeneration (`markFilesForRegeneration`) so providers re-run even when file mtimes do not change (processed mtimes reset to `0` without clearing existing outputs).
 - When files are removed and tags are enabled, tag tree rebuild is scheduled.
+- When files are removed and properties are enabled, property tree rebuild is scheduled (flushed after removals).
 
 #### Data Flow Diagram
 
@@ -281,7 +282,7 @@ graph TD
     C --> D["removeFilesFromCache (toRemove)"]
     C --> E["recordFileChanges (toAdd/toUpdate)"]
 
-    D --> F[rebuildTagTree]
+    D --> F[rebuildTagTree + rebuildPropertyTree]
     E --> F
 
     F --> G[Mark storage ready<br/>notify API]
@@ -319,6 +320,7 @@ cleanup is performed manually from settings.
 
 - Folder colors, icons, sort settings, and background colors for deleted/renamed folders
 - Tag colors, icons, sort settings, and background colors for removed tags
+- Property colors, icons, and sort overrides for property nodes no longer present
 - Pinned notes that no longer exist
 - Custom appearances for non-existent items
 - Navigation separators for missing targets
@@ -338,9 +340,10 @@ Content is generated asynchronously in the background by the ContentProviderRegi
    - MarkdownPipelineContentProvider (markdown): runs when any of the following are true:
      - `markdownPipelineMtime !== file.stat.mtime`
      - `wordCount === null`
+     - `taskTotal === null` or `taskUnfinished === null`
      - `showFilePreview` is enabled and `previewStatus === 'unprocessed'`
      - `showFeatureImage` is enabled and (`featureImageKey === null` or `featureImageStatus === 'unprocessed'`)
-     - Custom properties are configured and `customProperty === null`
+     - Property pills are configured and `properties === null`
    - FeatureImageContentProvider (PDFs): `fileThumbnailsMtime !== file.stat.mtime`, `featureImageStatus === 'unprocessed'`,
      `featureImageKey === null`, or `featureImageKey` mismatches the expected PDF key
    - MetadataContentProvider (markdown): `metadata === null`, `metadataMtime !== file.stat.mtime`, or hidden-state tracking requires an update
@@ -353,7 +356,7 @@ Content is generated asynchronously in the background by the ContentProviderRegi
 
 3. **Processing**: Each provider processes files independently
    - TagContentProvider: Extracts tags from Obsidian's metadata cache (`getAllTags(metadata)`)
-   - MarkdownPipelineContentProvider: Uses metadata cache for frontmatter/offsets, reads markdown content when needed, runs preview/custom property/feature image processors
+   - MarkdownPipelineContentProvider: Uses metadata cache for frontmatter/offsets, reads markdown content when needed, runs preview/word count/task/property/feature image processors
    - FeatureImageContentProvider: Generates thumbnails for non-markdown files (PDF cover thumbnails)
    - MetadataContentProvider: Extracts configured frontmatter fields and hidden state from Obsidian's metadata cache
 
@@ -365,6 +368,7 @@ Content is generated asynchronously in the background by the ContentProviderRegi
 
 6. **UI Updates**: StorageContext listens for database changes
    - Tag changes trigger tag tree rebuild (buildTagTreeFromDatabase)
+   - Property-related changes trigger property tree rebuild (`buildPropertyTreeFromDatabase`)
    - Components re-render with new content via React context
 
 #### Cache rebuild progress notice
@@ -395,6 +399,7 @@ The plugin uses debouncers in a few specific places where Obsidian emits bursty 
 
 - Vault syncing uses Obsidian `debounce(..., TIMEOUTS.FILE_OPERATION_DELAY)` to collapse create/delete bursts into one diff.
 - Tag tree rebuilds use Obsidian `debounce(..., TIMEOUTS.DEBOUNCE_TAG_TREE)` because tag updates can arrive in batches.
+- Property tree rebuilds use the same `TIMEOUTS.DEBOUNCE_TAG_TREE` debouncer to batch rapid updates.
 - Content providers use `TIMEOUTS.DEBOUNCE_CONTENT` (a `setTimeout`) to coalesce queueing before starting a processing batch.
 
 ## Shutdown Process
@@ -413,6 +418,7 @@ The plugin uses debouncers in a few specific places where Obsidian emits bursty 
    - Recent data listeners
 4. Release service instances:
    - `MetadataService` and `TagOperations` references set to `null`
+   - `PropertyTreeService` reference set to `null`
    - `CommandQueueService.clearAllOperations()` then set to `null`
    - `OmnisearchService` reference cleared
    - `RecentDataManager` reference cleared after disposal

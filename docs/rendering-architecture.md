@@ -1,6 +1,6 @@
 # Notebook Navigator Rendering Architecture
 
-Updated: February 10, 2026
+Updated: February 18, 2026
 
 ## Table of Contents
 
@@ -27,7 +27,7 @@ The calendar right-sidebar view renders `CalendarRightSidebar`, which hosts `Cal
 date-filter actions to the main navigator view.
 
 Storage is provided through `StorageContext`, which coordinates `IndexedDBStorage`, an in-memory mirror, and the
-`ContentProviderRegistry`. Components read cached preview data, metadata, and tag trees synchronously during render, and
+`ContentProviderRegistry`. Components read cached preview data, metadata, and tag/property trees synchronously during render, and
 row components that need live content updates subscribe to the storage instance (`IndexedDBStorage.onFileContentChange`).
 
 Context providers isolate concerns such as settings, UX preferences, recent data, services, shortcuts, expansion state,
@@ -59,9 +59,9 @@ Components that need push-based updates (for example `FileItem`) subscribe to th
 
 Expensive data shaping lives outside component bodies. Examples:
 
-- `useNavigationPaneData` builds the combined folder/tag/shortcut tree, computes note counts, resolves icons and
+- `useNavigationPaneData` builds the combined folder/tag/property/shortcut tree, computes note counts, resolves icons and
   colours, and tracks virtual folders, banners, pinned shortcuts, and section ordering.
-- `useNavigationRootReorder` exposes drag-and-drop reorder state and render helpers for root folders, tags, and section
+- `useNavigationRootReorder` exposes drag-and-drop reorder state and render helpers for root folders, tags, properties, and section
   headers.
 - `useListPaneData` assembles list pane items (pinned files, top spacer, date headers, search metadata, hidden item
   flags) and keeps lookup maps for virtualized scrolling and multi-selection.
@@ -78,11 +78,11 @@ Nine providers wrap the primary navigator React tree:
   shortcuts, calendar visibility)
 - `RecentDataContext` – recent notes list and recent icon history sourced from local storage
 - `ServicesContext` – Obsidian app handles plus file system operations, command queue, metadata service, tag operations,
-  tag tree service, Omnisearch integration, and release check service
+  tag tree service, property tree service, Omnisearch integration, and release check service
 - `ShortcutsContext` – pinned shortcut hydration, add/remove/reorder operations, and lookup maps
-- `StorageContext` – IndexedDB mirror, tag tree, synchronous metadata accessors, cache rebuild entry points
-- `ExpansionContext` – expanded folders, tags, shortcuts, recent notes, and virtual folders
-- `SelectionContext` – selected folder/tag/file, multi-selection tracking, reveal targets, and selection dispatchers
+- `StorageContext` – IndexedDB mirror, tag/property trees, synchronous metadata accessors, cache rebuild entry points
+- `ExpansionContext` – expanded folders, tags, properties, shortcuts, recent notes, and virtual folders
+- `SelectionContext` – selected folder/tag/property/file, multi-selection tracking, reveal targets, and selection dispatchers
 - `UIStateContext` – pane mode (single vs dual), focused pane, current single-pane view, navigation pane width, pinned
   shortcuts toggle
 
@@ -168,7 +168,7 @@ graph TD
   the provider stack
   (`Settings → UXPreferences → RecentData → Services → Shortcuts → Storage → Expansion → Selection → UIState`).
 - Applies Android font compensation to the view container and propagates it to the rendered mobile root.
-- Exposes imperative handlers to the plugin (cache rebuild, reveal actions, folder/tag modal navigation, search toggle,
+- Exposes imperative handlers to the plugin (cache rebuild, reveal actions, folder/tag/property modal navigation, search toggle,
   delete/move operations, shortcut creation).
 - Dispatches `notebook-navigator-visible` on mobile when the drawer becomes visible so scroll hooks can resume pending
   reveal operations.
@@ -274,8 +274,8 @@ graph TD
   and `useNavigationPaneKeyboard`.
 - Renders a sticky overlay stack (header, vault title, Android toolbar, pinned banner, pinned shortcuts/recent), an
   optional unpinned `NavigationBanner`, and either the virtualized tree or `NavigationRootReorderPanel`.
-- Handles folder/tag drag targets and uses dnd-kit sortable contexts for shortcut reordering.
-- Integrates context menus (`buildFolderMenu`, `buildTagMenu`, `buildFileMenu`) and frontmatter exclusion logic for
+- Handles folder/tag/property drag targets and uses dnd-kit sortable contexts for shortcut reordering.
+- Integrates context menus (`buildFolderMenu`, `buildTagMenu`, `buildPropertyMenu`, `buildFileMenu`) and frontmatter exclusion logic for
   hidden items.
 - Measures overlay and bottom overlay heights via `useMeasuredElementHeight` and passes `scrollMargin`,
   `scrollPaddingStart`, and `scrollPaddingEnd` to `useNavigationPaneScroll` so `scrollToIndex` aligns rows below the
@@ -378,6 +378,13 @@ graph TD
 - Renders hierarchical tags with indentation, note counts (current vs descendants), tag icons/colours, and missing-state
   styles for hidden tags.
 - Supports expand/collapse, context menus, tag reveal, drag-and-drop, and optional shortcut drag handles.
+
+### PropertyTreeItem
+
+**Location**: `src/components/PropertyTreeItem.tsx`
+
+- Renders property key/value nodes with indentation, note counts, icons/colours, and missing-state styling.
+- Supports expand/collapse, context menus, property reveal, drag-and-drop, and child sort override indicators.
 
 ### ShortcutItem
 
@@ -496,7 +503,7 @@ hidden (mobile drawers, dual-pane toggles).
 
 `useNavigationPaneData` and `useListPaneData` debounce vault-driven rebuilds with `debounce` from Obsidian, reuse `Map`
 instances for lookup tables, and return shortcut/selection metadata so `React.memo` components receive stable props.
-`StorageContext` batches diff calculations, content provider queues, and tag tree rebuilds so UI components only react
+`StorageContext` batches diff calculations, content provider queues, and tag/property tree rebuilds so UI components only react
 to finalized updates.
 
 ### 3. Memoized Components
@@ -542,7 +549,7 @@ sequenceDiagram
     ST->>ST: Register vault + settings listeners
     ST->>NC: Set isStorageReady=true
     NC->>UI: Mount NotebookNavigatorComponent
-    ST->>DH: Expose synchronous getters and tag tree
+    ST->>DH: Expose synchronous getters and tag/property trees
     DH->>UI: Build navigation/list item arrays
     UI->>MC: Read data synchronously during render
 ```
@@ -564,7 +571,7 @@ sequenceDiagram
     ST->>CP: Queue derived content generation
     CP->>DB: Persist derived content updates
     DB->>MC: Mirror changes in memory
-    ST->>DH: Increment change versions, rebuild tag tree if needed
+    ST->>DH: Increment change versions, rebuild tag/property trees if needed
     DH->>UI: Recompute virtualized item arrays
     UI->>UI: Rerender affected rows via virtualization
 ```
