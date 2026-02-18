@@ -111,8 +111,6 @@ export async function runBatchUpdateFileContentAndProviderProcessedMtimes(
     const previewTextUpdates: { path: string; previewText: string; previewStatus: PreviewStatus }[] = [];
     let createdRecordWithoutKnownMtime = 0;
     const createdRecordWithoutKnownMtimeExamples: string[] = [];
-    let skippedProviderContentUpdates = 0;
-    const skippedProviderContentUpdateExamples: { path: string; expectedPreviousMtime: number; actualPreviousMtime: number }[] = [];
 
     await new Promise<void>((resolve, reject) => {
         const op = 'batchUpdateFileContentAndProviderProcessedMtimes';
@@ -138,23 +136,12 @@ export async function runBatchUpdateFileContentAndProviderProcessedMtimes(
                 const changes: FileContentChange['changes'] = {};
                 let hasContentChanges = false;
                 const providerField = provider ? getProviderProcessedMtimeField(provider) : null;
-                const expectedPreviousMtime = processedMtimeUpdate?.expectedPreviousMtime ?? null;
                 const shouldApplyProviderContent =
                     !provider ||
                     !processedMtimeUpdate ||
                     !providerField ||
                     newData[providerField] === processedMtimeUpdate.expectedPreviousMtime;
                 const guardedUpdate = shouldApplyProviderContent ? update : null;
-                if (provider && providerField && update && expectedPreviousMtime !== null && !shouldApplyProviderContent) {
-                    skippedProviderContentUpdates += 1;
-                    if (skippedProviderContentUpdateExamples.length < 5) {
-                        skippedProviderContentUpdateExamples.push({
-                            path,
-                            expectedPreviousMtime,
-                            actualPreviousMtime: newData[providerField]
-                        });
-                    }
-                }
                 const hasFeatureImageUpdate = guardedUpdate?.featureImageKey !== undefined || guardedUpdate?.featureImage !== undefined;
                 const featureImageMutation =
                     guardedUpdate && hasFeatureImageUpdate
@@ -379,13 +366,6 @@ export async function runBatchUpdateFileContentAndProviderProcessedMtimes(
         console.error('[IndexedDB] Created file record without known mtime during content update', {
             count: createdRecordWithoutKnownMtime,
             examples: createdRecordWithoutKnownMtimeExamples
-        });
-    }
-    if (provider && skippedProviderContentUpdates > 0) {
-        console.log('[IndexedDB] Skipped stale provider content updates', {
-            provider,
-            count: skippedProviderContentUpdates,
-            examples: skippedProviderContentUpdateExamples
         });
     }
 }
