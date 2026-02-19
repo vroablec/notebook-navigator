@@ -90,8 +90,8 @@ export const STRINGS_PL = {
                 'Wypełniona kropka pod dniem oznacza, że jest do niego dołączona notatka. Pusta kropka oznacza, że są do niego przypisane zadania do wykonania.',
                 'Jeśli notatka zawiera obrazek, pojawia się on jako tło dnia.'
             ],
-            dateFilterCmdCtrl: '`Kliknij datę przytrzymując klawisz Cmd/Ctrl, aby filtrować według tej daty na liście plików.',
-            dateFilterOptionAlt: '`Kliknij datę przytrzymując klawisz Option/Alt, aby filtrować według tej daty na liście plików.'
+            dateFilterCmdCtrl: '`Kliknij datę przytrzymując Cmd/Ctrl, aby filtrować według tej daty na liście plików.',
+            dateFilterOptionAlt: '`Kliknij datę przytrzymując Option/Alt, aby filtrować według tej daty na liście plików.'
         }
     },
 
@@ -160,7 +160,7 @@ export const STRINGS_PL = {
         searchHelpModal: {
             intro: 'Połącz nazwy plików, tagi, daty i filtry w jednym zapytaniu (np. „meeting #work @thisweek has:task”). Zainstaluj wtyczkę Omnisearch, aby korzystać z wyszukiwania pełnotekstowego.',
             introSwitching:
-                'Przełączaj się między wyszukiwaniem z filtrem a wyszukiwaniem Omnisearch za pomocą klawiszy strzałek w górę/w dół lub klikając ikonę wyszukiwania.',
+                'Przełączaj się między wyszukiwaniem z filtrem a wyszukiwaniem Omnisearch za pomocą strzałek w górę i w dół lub klikając ikonkę wyszukiwania.',
             sections: {
                 fileNames: {
                     title: 'Nazwy plików',
@@ -203,7 +203,7 @@ export const STRINGS_PL = {
                         '`-has:task` Wyklucz notatki z nieukończonymi zadaniami.',
                         '`folder:meetings` Uwzględnij notatki z folderu o nazwie `meetings`.',
                         '`folder:/work/meetings` Uwzględnij notatki tylko z `work/meetings` (bez podfolderów).',
-                        '`folder:/` Uwzględnij notatki tylko w folderze głównym sejfu.',
+                        '`folder:/` Uwzględnij notatki tylko z folderu głównego sejfu.',
                         '`-folder:archive` Wyklucz notatki z folderu o nazwie `archive`.',
                         '`-folder:/archive` Wyklucz notatki tylko z `archive` (bez podfolderów).',
                         '`ext:md` Uwzględnij notatki z rozszerzeniem `md` (`ext:.md` jest również obsługiwane).',
@@ -326,8 +326,8 @@ export const STRINGS_PL = {
             hideTag: 'Ukryj tag'
         },
         property: {
-            addKey: 'Dodaj klucz właściwości',
-            removeKey: 'Usuń klucz właściwości'
+            addKey: 'Dodaj atrybut',
+            removeKey: 'Usuń atrybut'
         },
         navigation: {
             addSeparator: 'Dodaj separator',
@@ -541,11 +541,11 @@ export const STRINGS_PL = {
             }
         },
         propertySuggest: {
-            placeholder: 'Wybierz klucz właściwości...',
-            navigatePlaceholder: 'Przejdź do właściwości...',
+            placeholder: 'Wybierz atrybut...',
+            navigatePlaceholder: 'Przejdź do atrybutu...',
             instructions: {
                 navigate: 'aby nawigować',
-                select: 'aby dodać właściwość',
+                select: 'aby dodać atrybut',
                 dismiss: 'aby anulować'
             }
         },
@@ -674,7 +674,7 @@ export const STRINGS_PL = {
     // Plugin commands
     commands: {
         open: 'Otwórz', // Command palette: Opens the Notebook Navigator view (English: Open)
-        toggleLeftSidebar: 'Przełącz lewy pasek boczny', // Command palette: Toggles left sidebar, opening Notebook Navigator when uncollapsing (English: Toggle left sidebar)
+        toggleLeftSidebar: 'Przełącz lewy panel boczny', // Command palette: Toggles left sidebar, opening Notebook Navigator when uncollapsing (English: Toggle left sidebar)
         openHomepage: 'Otwórz stronę główną', // Command palette: Opens the Notebook Navigator view and loads the homepage file (English: Open homepage)
         openDailyNote: 'Otwórz notatkę dnia',
         openWeeklyNote: 'Otwórz notatkę tygodnia',
@@ -702,7 +702,7 @@ export const STRINGS_PL = {
         pinAllFolderNotes: 'Przypnij wszystkie notatki folderu', // Command palette: Pins all folder notes to shortcuts (English: Pin all folder notes)
         navigateToFolder: 'Przejdź do folderu', // Command palette: Navigate to a folder using fuzzy search (English: Navigate to folder)
         navigateToTag: 'Przejdź do tagu', // Command palette: Navigate to a tag using fuzzy search (English: Navigate to tag)
-        navigateToProperty: 'Przejdź do właściwości', // Command palette: Navigate to a property key or value using fuzzy search (English: Navigate to property)
+        navigateToProperty: 'Przejdź do atrybutu', // Command palette: Navigate to a property key or value using fuzzy search (English: Navigate to property)
         addShortcut: 'Dodaj do skrótów', // Command palette: Adds the current file, folder, or tag to shortcuts (English: Add to shortcuts)
         openShortcut: 'Otwórz skrót {number}',
         toggleDescendants: 'Przełącz podfoldery', // Command palette: Toggles showing notes from descendants (English: Toggle descendants)
@@ -749,7 +749,7 @@ export const STRINGS_PL = {
             folders: 'Foldery',
             folderNotes: 'Notatki folderu',
             foldersAndTags: 'Foldery',
-            tagsAndProperties: 'Tagi i właściwości',
+            tagsAndProperties: 'Tagi i atrybuty',
             tags: 'Tagi',
             listPane: 'Lista',
             notes: 'Notatki',
@@ -763,7 +763,7 @@ export const STRINGS_PL = {
                 behavior: 'Zachowanie',
                 keyboardNavigation: 'Nawigacja klawiaturą',
                 view: 'Wygląd',
-                icons: 'Ikony',
+                icons: 'Ikonki',
                 desktopAppearance: 'Wygląd na komputerze',
                 mobileAppearance: 'Wygląd mobilny',
                 formatting: 'Formatowanie'
@@ -832,7 +832,7 @@ export const STRINGS_PL = {
             },
             propertySortSecondary: {
                 name: 'Sortowanie drugorzędne',
-                desc: 'Używane z sortowaniem wg właściwości, gdy notatki mają tę samą wartość właściwości lub nie mają wartości.',
+                desc: 'Używane z sortowaniem według atrybutów, gdy notatki mają taką samą wartość lub jej nie mają.',
                 options: {
                     title: 'Tytuł',
                     filename: 'Nazwa pliku',
@@ -875,7 +875,7 @@ export const STRINGS_PL = {
             },
             defaultListMode: {
                 name: 'Domyślny tryb listy',
-                desc: 'Wybierz domyślny układ listy. Opcja "Standardowy" wyświetla tytuł, datę, opis i tekst podglądu. Opcja "Kompaktowy" wyświetla tylko tytuł. Zastąp wygląd dla poszczególnych folderów.',
+                desc: 'Wybierz domyślny układ listy. Opcja "Standardowy" wyświetla tytuł, datę, opis i tekst podglądu. Opcja "Kompaktowy" wyświetla tylko tytuł. Można to zmienić dla konkretnych folderów.',
                 options: {
                     standard: 'Standardowy',
                     compact: 'Kompaktowy'
@@ -883,11 +883,11 @@ export const STRINGS_PL = {
             },
             showFileIcons: {
                 name: 'Pokaż ikonki plików',
-                desc: 'Wyświetla ikonki plików z wyrównaniem do lewej strony. Wyłączenie tej opcji powoduje usunięcie zarówno ikonek, jak i wcięć. Priorytet: ikonka zadań niezakończonych > ikonka niestandardowa > ikonka nazwy pliku > ikonka typu pliku > ikonka domyślna.'
+                desc: 'Wyświetla ikonki plików z wyrównaniem do lewej strony. Wyłączenie tej opcji powoduje usunięcie zarówno ikonek, jak i wcięć. Priorytet: ikonka nieukończonych zadań > ikonka niestandardowa > ikonka nazwy pliku > ikonka typu pliku > ikonka domyślna.'
             },
             showFileIconUnfinishedTask: {
                 name: 'Ikonka nieukończonych zadań',
-                desc: 'Wyświetla ikonkę zadania, gdy notatka zawiera niezakończone zadania.'
+                desc: 'Wyświetla ikonkę, gdy notatka zawiera niezakończone zadania.'
             },
             showFilenameMatchIcons: {
                 name: 'Ikonki na podstawie nazwy pliku',
@@ -920,7 +920,7 @@ export const STRINGS_PL = {
             },
             compactItemHeightScaleText: {
                 name: 'Skalowanie tekstu z wysokością trybu kompaktowego',
-                desc: 'Skaluje tekst kompaktowej listy, gdy wysokość elementu zostanie zmniejszona.'
+                desc: 'Skaluje tekst na kompaktowej liście, gdy wysokość elementu zostanie zmniejszona.'
             },
             showParentFolder: {
                 name: 'Pokaż folder nadrzędny',
@@ -982,8 +982,8 @@ export const STRINGS_PL = {
             toolbarButtons: {
                 name: 'Przyciski paska narzędzi',
                 desc: 'Wybierz, które przyciski mają być wyświetlane na pasku narzędzi. Ukryte przyciski pozostają dostępne za pośrednictwem palety poleceń i w menu.',
-                navigationLabel: 'Pasek nawigacji',
-                listLabel: 'Pasek listy'
+                navigationLabel: 'Panel nawigacji',
+                listLabel: 'Panel listy'
             },
             autoRevealActiveNote: {
                 name: 'Pokaż aktywną notatkę',
@@ -1071,10 +1071,10 @@ export const STRINGS_PL = {
             },
             calendarPlacement: {
                 name: 'Położenie kalendarza',
-                desc: 'Wyświetla w lewym lub prawym pasku bocznym.',
+                desc: 'Umieść kalendarz w lewym lub prawym panelu bocznym.',
                 options: {
-                    leftSidebar: 'Lewy pasek boczny',
-                    rightSidebar: 'Prawy pasek boczny'
+                    leftSidebar: 'Lewy panel boczny',
+                    rightSidebar: 'Prawy panel boczny'
                 }
             },
             calendarLeftPlacement: {
@@ -1082,7 +1082,7 @@ export const STRINGS_PL = {
                 desc: 'Gdzie kalendarz jest wyświetlany w trybie pojedynczego panelu.',
                 options: {
                     navigationPane: 'Panel nawigacji',
-                    below: 'Poniżej paneli'
+                    below: 'Pod panelami'
                 }
             },
             calendarLocale: {
@@ -1197,7 +1197,7 @@ export const STRINGS_PL = {
             },
             showTooltipPath: {
                 name: 'Pokaż ścieżkę',
-                desc: 'Po najechaniu kursorem wyświetla ścieżkę folderu poniżej nazw notatek.'
+                desc: 'Po najechaniu kursorem wyświetla ścieżkę folderu pod nazwami notatek.'
             },
             resetPaneSeparator: {
                 name: 'Przywróć położenie separatora paneli',
@@ -1273,7 +1273,7 @@ export const STRINGS_PL = {
             },
             vaultProfiles: {
                 name: 'Profil sejfu',
-                desc: 'Profile przechowują widoczność typów plików, ukryte pliki, ukryte foldery, ukryte tagi, ukryte notatki, skróty i pasek nawigacji. Przełącz profile w nagłówku panelu nawigacji.',
+                desc: 'Profile przechowują widoczność typów plików, ukryte pliki, ukryte foldery, ukryte tagi, ukryte notatki, skróty i panel nawigacji. Przełącz profile w nagłówku panelu nawigacji.',
                 defaultName: 'Domyślny',
                 addButton: 'Dodaj profil',
                 editProfilesButton: 'Edytuj profile',
@@ -1493,7 +1493,7 @@ export const STRINGS_PL = {
             },
             collapseBehavior: {
                 name: 'Zwiń elementy',
-                desc: 'Wybierz na co wpływa przycisk rozwiń/zwiń wszystko.',
+                desc: 'Wybierz na co wpływa przycisk służący do zwijania i rozwijania elementów.',
                 options: {
                     all: 'Wszystkie foldery i tagi',
                     foldersOnly: 'Tylko foldery',
@@ -1502,7 +1502,7 @@ export const STRINGS_PL = {
             },
             smartCollapse: {
                 name: 'Zachowaj wybrany element rozwinięty',
-                desc: 'Podczas zwijania, zachowaj obecnie wybrany folder lub tag oraz elementy nadrzędne rozwinięte.'
+                desc: 'Podczas zwijania, zachowaj aktywny folder lub tag oraz elementy nadrzędne rozwinięte.'
             },
             navIndent: {
                 name: 'Wcięcie w strukturze',
@@ -1560,31 +1560,31 @@ export const STRINGS_PL = {
                 desc: 'Zachowuje atrybut tags, gdy wszystkie tagi zostaną usunięte. Gdy wyłączone, atrybut tags również zostanie usunięty.'
             },
             showProperties: {
-                name: 'Pokaż właściwości',
-                desc: 'Wyświetl sekcję właściwości w nawigatorze.'
+                name: 'Pokaż atrybuty',
+                desc: 'Wyświetl sekcję atrybutów w panelu nawigacji.'
             },
             showPropertyIcons: {
-                name: 'Pokaż ikony właściwości',
-                desc: 'Wyświetl ikony obok właściwości w panelu nawigacji.'
+                name: 'Pokaż ikonki atrybutów',
+                desc: 'Wyświetl ikonki obok atrybutów w panelu nawigacji.'
             },
             inheritPropertyColors: {
-                name: 'Dziedzicz kolory właściwości',
-                desc: 'Wartości właściwości dziedziczą kolor i tło od swojego klucza właściwości.'
+                name: 'Dziedzicz kolory atrybutów',
+                desc: 'Wartości dziedziczą kolor i tło atrybutu.'
             },
             propertySortOrder: {
-                name: 'Kolejność sortowania właściwości',
-                desc: 'Kliknij prawym przyciskiem na właściwość, aby ustawić inną kolejność sortowania jej wartości.',
+                name: 'Kolejność sortowania atrybutów',
+                desc: 'Kliknij prawym przyciskiem atrybut, aby zmienić kolejność sortowania wartości.',
                 options: {
                     alphaAsc: 'A do Z',
                     alphaDesc: 'Z do A',
-                    frequency: 'Częstotliwość',
-                    lowToHigh: 'od niskiej',
-                    highToLow: 'od wysokiej'
+                    frequency: 'liczba wystąpień',
+                    lowToHigh: 'rosnąco',
+                    highToLow: 'malejąco'
                 }
             },
             showAllPropertiesFolder: {
-                name: 'Pokaż folder właściwości',
-                desc: 'Wyświetl "Właściwości" jako zwijany folder.'
+                name: 'Pokaż folder atrybutów',
+                desc: 'Wyświetl "Atrybuty" jako zwijany folder.'
             },
             hiddenTags: {
                 name: 'Ukryj tagi (profil sejfu)',
@@ -1749,8 +1749,8 @@ export const STRINGS_PL = {
                 withMetadata: 'z metadanymi'
             },
             metadataInfo: {
-                successfullyParsed: 'Pomyślnie przetworzono',
-                itemsWithName: 'elementy z nazwą',
+                successfullyParsed: 'Pomyślnie przetworzono elementy',
+                itemsWithName: 'z nazwą',
                 withCreatedDate: 'z datą utworzenia',
                 withModifiedDate: 'z datą modyfikacji',
                 withIcon: 'z ikonką',
