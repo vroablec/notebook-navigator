@@ -679,7 +679,9 @@ describe('TagOperations tag rename workflow', () => {
         const tagOperations = createTagOperationsInstance();
         vi.spyOn(tagOperations, 'executeRename').mockResolvedValue({
             renamed: 0,
-            total: 2
+            total: 2,
+            skipped: 0,
+            failed: 0
         });
         const metadataSpy = vi.spyOn(tagOperations, 'updateTagMetadataAfterRename');
         const shortcutsSpy = vi.spyOn(tagOperations, 'updateTagShortcutsAfterRename');
@@ -695,7 +697,9 @@ describe('TagOperations tag rename workflow', () => {
         const tagOperations = createTagOperationsInstance();
         vi.spyOn(tagOperations, 'executeRename').mockResolvedValue({
             renamed: 3,
-            total: 3
+            total: 3,
+            skipped: 0,
+            failed: 0
         });
         const metadataSpy = vi.spyOn(tagOperations, 'updateTagMetadataAfterRename').mockResolvedValue(undefined);
         const shortcutsSpy = vi.spyOn(tagOperations, 'updateTagShortcutsAfterRename').mockResolvedValue(undefined);
@@ -707,11 +711,36 @@ describe('TagOperations tag rename workflow', () => {
         expect(shortcutsSpy).toHaveBeenCalledWith('projects', 'areas');
     });
 
+    it('skips metadata and events when rename has file failures', async () => {
+        const tagOperations = createTagOperationsInstance();
+        vi.spyOn(tagOperations, 'executeRename').mockResolvedValue({
+            renamed: 2,
+            total: 3,
+            skipped: 0,
+            failed: 1
+        });
+        const metadataSpy = vi.spyOn(tagOperations, 'updateTagMetadataAfterRename').mockResolvedValue(undefined);
+        const shortcutsSpy = vi.spyOn(tagOperations, 'updateTagShortcutsAfterRename').mockResolvedValue(undefined);
+        const listener = vi.fn();
+        const unsubscribe = tagOperations.addTagRenameListener(listener);
+
+        const result = await tagOperations.runTagRename('projects', 'areas', createRenameTargets(3));
+
+        expect(result).toBe(true);
+        expect(metadataSpy).not.toHaveBeenCalled();
+        expect(shortcutsSpy).not.toHaveBeenCalled();
+        expect(listener).not.toHaveBeenCalled();
+
+        unsubscribe();
+    });
+
     it('notifies listeners after successful rename', async () => {
         const tagOperations = createTagOperationsInstance();
         vi.spyOn(tagOperations, 'executeRename').mockResolvedValue({
             renamed: 2,
-            total: 2
+            total: 2,
+            skipped: 0,
+            failed: 0
         });
         vi.spyOn(tagOperations, 'updateTagMetadataAfterRename').mockResolvedValue(undefined);
         vi.spyOn(tagOperations, 'updateTagShortcutsAfterRename').mockResolvedValue(undefined);

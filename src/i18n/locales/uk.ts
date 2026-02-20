@@ -328,7 +328,9 @@ export const STRINGS_UK = {
         },
         property: {
             addKey: 'Додати ключ властивості',
-            removeKey: 'Видалити ключ властивості'
+            removeKey: 'Видалити зі списку властивостей',
+            renameKey: 'Перейменувати властивість',
+            deleteKey: 'Видалити властивість із нотаток'
         },
         navigation: {
             addSeparator: 'Додати роздільник',
@@ -458,9 +460,12 @@ export const STRINGS_UK = {
             confirmRename: 'Перейменувати тег',
             renameUnchanged: '{tag} не змінено',
             renameNoChanges: '{oldTag} → {newTag} ({countLabel})',
+            renameBatchNotFinalized: 'Перейменовано {renamed}/{total}. Не оновлено: {notUpdated}. Метадані та ярлики не були оновлені.',
             invalidTagName: 'Введіть дійсну назву тегу.',
             descendantRenameError: 'Неможливо перемістити тег у себе або в нащадка.',
             confirmDelete: 'Видалити тег',
+            deleteBatchNotFinalized: 'Видалено з {removed}/{total}. Не оновлено: {notUpdated}. Метадані та ярлики не були оновлені.',
+            checkConsoleForDetails: 'Деталі в консолі.',
             file: 'файл',
             files: 'файлів',
             inlineParsingWarning: {
@@ -468,6 +473,24 @@ export const STRINGS_UK = {
                 message: '{tag} містить символи, які Obsidian не може обробити у вбудованих тегах. Теги Frontmatter не зачеплені.',
                 confirm: 'Використати все одно'
             }
+        },
+        propertyOperation: {
+            renameTitle: 'Перейменувати властивість {property}',
+            deleteTitle: 'Видалити властивість {property}',
+            newKeyPrompt: 'Нова назва властивості',
+            newKeyPlaceholder: 'Введіть нову назву властивості',
+            renameWarning: 'Перейменування властивості {property} змінить {count} {files}.',
+            renameConflictWarning:
+                'Властивість {newKey} вже існує в {count} {files}. Перейменування {oldKey} замінить наявні значення {newKey}.',
+            deleteWarning: 'Видалення властивості {property} змінить {count} {files}.',
+            confirmRename: 'Перейменувати властивість',
+            confirmDelete: 'Видалити властивість',
+            renameNoChanges: '{oldKey} → {newKey} (без змін)',
+            renameSettingsUpdateFailed: 'Властивість {oldKey} → {newKey} перейменовано. Не вдалося оновити налаштування.',
+            deleteSingleSuccess: 'Властивість {property} видалено з 1 нотатки',
+            deleteMultipleSuccess: 'Властивість {property} видалено з {count} нотаток',
+            deleteSettingsUpdateFailed: 'Властивість {property} видалено. Не вдалося оновити налаштування.',
+            invalidKeyName: 'Введіть допустиму назву властивості.'
         },
         fileSystem: {
             newFolderTitle: 'Нова папка',
@@ -619,6 +642,7 @@ export const STRINGS_UK = {
             noTagsToRemove: 'Немає тегів для вилучення',
             noFilesSelected: 'Файли не вибрано',
             tagOperationsNotAvailable: 'Операції з тегами недоступні',
+            propertyOperationsNotAvailable: 'Операції з властивостями недоступні',
             tagsRequireMarkdown: 'Теги підтримуються лише для Markdown нотаток',
             propertiesRequireMarkdown: 'Властивості підтримуються лише в нотатках Markdown',
             propertySetOnNote: 'Властивість оновлено в 1 нотатці',

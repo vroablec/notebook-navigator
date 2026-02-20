@@ -16,6 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import type { App } from 'obsidian';
 import type { TagDescriptor } from '../tagRename/TagRenameEngine';
 
 export interface TagRenameEventPayload {
@@ -44,5 +45,5 @@ export interface TagUsageSummary {
 }
 
 export interface TagPreviewCollector {
-    collectPreviewPaths(tag: TagDescriptor): string[] | null;
+    collectPreviewPaths(app: App, tag: TagDescriptor): string[];
 }

@@ -328,7 +328,9 @@ export const STRINGS_TR = {
         },
         property: {
             addKey: 'Özellik anahtarı ekle',
-            removeKey: 'Özellik anahtarını kaldır'
+            removeKey: 'Özellik listesinden kaldır',
+            renameKey: 'Özelliği yeniden adlandır',
+            deleteKey: 'Özelliği notlardan sil'
         },
         navigation: {
             addSeparator: 'Ayırıcı ekle',
@@ -458,9 +460,14 @@ export const STRINGS_TR = {
             confirmRename: 'Etiketi yeniden adlandır',
             renameUnchanged: '{tag} değiştirilmedi',
             renameNoChanges: '{oldTag} → {newTag} ({countLabel})',
+            renameBatchNotFinalized:
+                '{renamed}/{total} yeniden adlandırıldı. Güncellenmeyen: {notUpdated}. Meta veriler ve kısayollar güncellenmedi.',
             invalidTagName: 'Geçerli bir etiket adı girin.',
             descendantRenameError: 'Bir etiket kendisine veya alt öğesine taşınamaz.',
             confirmDelete: 'Etiketi sil',
+            deleteBatchNotFinalized:
+                '{removed}/{total} öğeden kaldırıldı. Güncellenmeyen: {notUpdated}. Meta veriler ve kısayollar güncellenmedi.',
+            checkConsoleForDetails: 'Ayrıntılar için konsolu kontrol edin.',
             file: 'dosya',
             files: 'dosya',
             inlineParsingWarning: {
@@ -469,6 +476,24 @@ export const STRINGS_TR = {
                     "{tag}, Obsidian'ın satır içi etiketlerde ayrıştıramadığı karakterler içeriyor. Frontmatter etiketleri etkilenmez.",
                 confirm: 'Yine de kullan'
             }
+        },
+        propertyOperation: {
+            renameTitle: '{property} özelliğini yeniden adlandır',
+            deleteTitle: '{property} özelliğini sil',
+            newKeyPrompt: 'Yeni özellik adı',
+            newKeyPlaceholder: 'Yeni özellik adını girin',
+            renameWarning: '{property} özelliğinin yeniden adlandırılması {count} {files} değiştirecek.',
+            renameConflictWarning:
+                '{newKey} özelliği zaten {count} {files} içinde mevcut. {oldKey} yeniden adlandırıldığında mevcut {newKey} değerleri değiştirilecek.',
+            deleteWarning: '{property} özelliğinin silinmesi {count} {files} değiştirecek.',
+            confirmRename: 'Özelliği yeniden adlandır',
+            confirmDelete: 'Özelliği sil',
+            renameNoChanges: '{oldKey} → {newKey} (değişiklik yok)',
+            renameSettingsUpdateFailed: '{oldKey} → {newKey} özelliği yeniden adlandırıldı. Ayarlar güncellenemedi.',
+            deleteSingleSuccess: '{property} özelliği 1 nottan silindi',
+            deleteMultipleSuccess: '{property} özelliği {count} nottan silindi',
+            deleteSettingsUpdateFailed: '{property} özelliği silindi. Ayarlar güncellenemedi.',
+            invalidKeyName: 'Geçerli bir özellik adı girin.'
         },
         fileSystem: {
             newFolderTitle: 'Yeni klasör',
@@ -620,6 +645,7 @@ export const STRINGS_TR = {
             noTagsToRemove: 'Kaldırılacak etiket yok',
             noFilesSelected: 'Dosya seçili değil',
             tagOperationsNotAvailable: 'Etiket işlemleri kullanılamıyor',
+            propertyOperationsNotAvailable: 'Özellik işlemleri kullanılamıyor',
             tagsRequireMarkdown: 'Etiketler yalnızca Markdown notlarında desteklenir',
             propertiesRequireMarkdown: 'Özellikler yalnızca Markdown notlarında desteklenir',
             propertySetOnNote: '1 notta özellik güncellendi',

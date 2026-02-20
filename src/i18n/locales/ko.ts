@@ -326,7 +326,9 @@ export const STRINGS_KO = {
         },
         property: {
             addKey: '속성 키 추가',
-            removeKey: '속성 키 제거'
+            removeKey: '속성 목록에서 제거',
+            renameKey: '속성 이름 변경',
+            deleteKey: '노트에서 속성 삭제'
         },
         navigation: {
             addSeparator: '구분선 추가',
@@ -456,9 +458,14 @@ export const STRINGS_KO = {
             confirmRename: '태그 이름 변경',
             renameUnchanged: '{tag} 변경 없음',
             renameNoChanges: '{oldTag} → {newTag} ({countLabel})',
+            renameBatchNotFinalized:
+                '{renamed}/{total} 이름 변경됨. 업데이트되지 않음: {notUpdated}. 메타데이터와 단축키가 업데이트되지 않았습니다.',
             invalidTagName: '유효한 태그 이름을 입력하세요.',
             descendantRenameError: '태그를 자신 또는 하위 태그로 이동할 수 없습니다.',
             confirmDelete: '태그 삭제',
+            deleteBatchNotFinalized:
+                '{removed}/{total}에서 제거됨. 업데이트되지 않음: {notUpdated}. 메타데이터와 단축키가 업데이트되지 않았습니다.',
+            checkConsoleForDetails: '자세한 내용은 콘솔을 확인하세요.',
             file: '파일',
             files: '파일',
             inlineParsingWarning: {
@@ -467,6 +474,24 @@ export const STRINGS_KO = {
                     '{tag}에 Obsidian이 인라인 태그에서 구문 분석할 수 없는 문자가 포함되어 있습니다. Frontmatter 태그는 영향을 받지 않습니다.',
                 confirm: '그래도 사용'
             }
+        },
+        propertyOperation: {
+            renameTitle: '속성 {property} 이름 변경',
+            deleteTitle: '속성 {property} 삭제',
+            newKeyPrompt: '새 속성 이름',
+            newKeyPlaceholder: '새 속성 이름 입력',
+            renameWarning: '속성 {property}의 이름을 변경하면 {count}개의 {files}이(가) 수정됩니다.',
+            renameConflictWarning:
+                '속성 {newKey}이(가) 이미 {count}개의 {files}에 존재합니다. {oldKey}의 이름을 변경하면 기존 {newKey} 값이 대체됩니다.',
+            deleteWarning: '속성 {property}을(를) 삭제하면 {count}개의 {files}이(가) 수정됩니다.',
+            confirmRename: '속성 이름 변경',
+            confirmDelete: '속성 삭제',
+            renameNoChanges: '{oldKey} → {newKey} (변경 없음)',
+            renameSettingsUpdateFailed: '속성 {oldKey} → {newKey} 이름 변경됨. 설정 업데이트에 실패했습니다.',
+            deleteSingleSuccess: '1개의 노트에서 속성 {property} 삭제됨',
+            deleteMultipleSuccess: '{count}개의 노트에서 속성 {property} 삭제됨',
+            deleteSettingsUpdateFailed: '속성 {property} 삭제됨. 설정 업데이트에 실패했습니다.',
+            invalidKeyName: '유효한 속성 이름을 입력하세요.'
         },
         fileSystem: {
             newFolderTitle: '새 폴더',
@@ -619,6 +644,7 @@ export const STRINGS_KO = {
             noTagsToRemove: '제거할 태그 없음',
             noFilesSelected: '선택된 파일 없음',
             tagOperationsNotAvailable: '태그 작업을 사용할 수 없음',
+            propertyOperationsNotAvailable: '속성 작업을 사용할 수 없습니다',
             tagsRequireMarkdown: '태그는 마크다운 노트에서만 지원됩니다',
             propertiesRequireMarkdown: '속성은 Markdown 노트에서만 지원됩니다',
             propertySetOnNote: '1개 노트의 속성을 업데이트했습니다',

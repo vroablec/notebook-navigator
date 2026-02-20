@@ -327,7 +327,9 @@ export const STRINGS_JA = {
         },
         property: {
             addKey: 'プロパティキーを追加',
-            removeKey: 'プロパティキーを削除'
+            removeKey: 'プロパティリストから削除',
+            renameKey: 'プロパティの名前を変更',
+            deleteKey: 'ノートからプロパティを削除'
         },
         navigation: {
             addSeparator: '区切り線を追加',
@@ -457,9 +459,14 @@ export const STRINGS_JA = {
             confirmRename: 'タグを名前変更',
             renameUnchanged: '{tag} は変更されませんでした',
             renameNoChanges: '{oldTag} → {newTag} ({countLabel})',
+            renameBatchNotFinalized:
+                '{renamed}/{total} を名前変更しました。未更新: {notUpdated}。メタデータとショートカットは更新されませんでした。',
             invalidTagName: '有効なタグ名を入力してください。',
             descendantRenameError: 'タグを自身または子孫に移動することはできません。',
             confirmDelete: 'タグを削除',
+            deleteBatchNotFinalized:
+                '{removed}/{total} から削除しました。未更新: {notUpdated}。メタデータとショートカットは更新されませんでした。',
+            checkConsoleForDetails: '詳細はコンソールを確認してください。',
             file: 'ファイル',
             files: 'ファイル',
             inlineParsingWarning: {
@@ -467,6 +474,24 @@ export const STRINGS_JA = {
                 message: '{tag} には Obsidian がインラインタグで解析できない文字が含まれています。Frontmatter タグには影響しません。',
                 confirm: 'そのまま使用'
             }
+        },
+        propertyOperation: {
+            renameTitle: 'プロパティ {property} の名前を変更',
+            deleteTitle: 'プロパティ {property} を削除',
+            newKeyPrompt: '新しいプロパティ名',
+            newKeyPlaceholder: '新しいプロパティ名を入力',
+            renameWarning: 'プロパティ {property} の名前変更は {count} {files}に影響します。',
+            renameConflictWarning:
+                'プロパティ {newKey} は既に {count} {files}に存在します。{oldKey} の名前変更は既存の {newKey} の値を置き換えます。',
+            deleteWarning: 'プロパティ {property} の削除は {count} {files}に影響します。',
+            confirmRename: 'プロパティの名前を変更',
+            confirmDelete: 'プロパティを削除',
+            renameNoChanges: '{oldKey} → {newKey}（変更なし）',
+            renameSettingsUpdateFailed: 'プロパティ {oldKey} → {newKey} の名前を変更しました。設定の更新に失敗しました。',
+            deleteSingleSuccess: 'プロパティ {property} を1件のノートから削除しました',
+            deleteMultipleSuccess: 'プロパティ {property} を {count} 件のノートから削除しました',
+            deleteSettingsUpdateFailed: 'プロパティ {property} を削除しました。設定の更新に失敗しました。',
+            invalidKeyName: '有効なプロパティ名を入力してください。'
         },
         fileSystem: {
             newFolderTitle: '新規フォルダ',
@@ -619,6 +644,7 @@ export const STRINGS_JA = {
             noTagsToRemove: '削除するタグがありません',
             noFilesSelected: 'ファイルが選択されていません',
             tagOperationsNotAvailable: 'タグ操作は利用できません',
+            propertyOperationsNotAvailable: 'プロパティ操作は利用できません',
             tagsRequireMarkdown: 'タグはMarkdownノートでのみサポートされています',
             propertiesRequireMarkdown: 'プロパティはMarkdownノートでのみサポートされています',
             propertySetOnNote: '1件のノートでプロパティを更新しました',

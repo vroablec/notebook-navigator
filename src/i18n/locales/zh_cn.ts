@@ -327,7 +327,9 @@ export const STRINGS_ZH_CN = {
         },
         property: {
             addKey: '添加属性键',
-            removeKey: '删除属性键'
+            removeKey: '从属性列表中移除',
+            renameKey: '重命名属性',
+            deleteKey: '从笔记中删除属性'
         },
         navigation: {
             addSeparator: '添加分隔符',
@@ -457,9 +459,12 @@ export const STRINGS_ZH_CN = {
             confirmRename: '重命名标签',
             renameUnchanged: '{tag} 未更改',
             renameNoChanges: '{oldTag} → {newTag} ({countLabel})',
+            renameBatchNotFinalized: '已重命名 {renamed}/{total}。未更新：{notUpdated}。元数据和快捷方式未更新。',
             invalidTagName: '请输入有效的标签名称。',
             descendantRenameError: '无法将标签移动到自身或其子标签中。',
             confirmDelete: '删除标签',
+            deleteBatchNotFinalized: '已从 {removed}/{total} 中删除。未更新：{notUpdated}。元数据和快捷方式未更新。',
+            checkConsoleForDetails: '查看控制台了解详情。',
             file: '个文件',
             files: '个文件',
             inlineParsingWarning: {
@@ -467,6 +472,23 @@ export const STRINGS_ZH_CN = {
                 message: '{tag} 包含 Obsidian 无法在内联标签中解析的字符。Frontmatter 标签不受影响。',
                 confirm: '仍然使用'
             }
+        },
+        propertyOperation: {
+            renameTitle: '重命名属性 {property}',
+            deleteTitle: '删除属性 {property}',
+            newKeyPrompt: '新属性名称',
+            newKeyPlaceholder: '输入新属性名称',
+            renameWarning: '重命名属性 {property} 将修改 {count} 个{files}。',
+            renameConflictWarning: '属性 {newKey} 已存在于 {count} 个{files}中。重命名 {oldKey} 将替换现有的 {newKey} 值。',
+            deleteWarning: '删除属性 {property} 将修改 {count} 个{files}。',
+            confirmRename: '重命名属性',
+            confirmDelete: '删除属性',
+            renameNoChanges: '{oldKey} → {newKey}（无更改）',
+            renameSettingsUpdateFailed: '已重命名属性 {oldKey} → {newKey}。更新设置失败。',
+            deleteSingleSuccess: '已从 1 篇笔记中删除属性 {property}',
+            deleteMultipleSuccess: '已从 {count} 篇笔记中删除属性 {property}',
+            deleteSettingsUpdateFailed: '已删除属性 {property}。更新设置失败。',
+            invalidKeyName: '请输入有效的属性名称。'
         },
         fileSystem: {
             newFolderTitle: '新建文件夹',
@@ -617,6 +639,7 @@ export const STRINGS_ZH_CN = {
             noTagsToRemove: '没有可移除的标签',
             noFilesSelected: '未选择文件',
             tagOperationsNotAvailable: '标签操作不可用',
+            propertyOperationsNotAvailable: '属性操作不可用',
             tagsRequireMarkdown: '标签仅支持Markdown笔记',
             propertiesRequireMarkdown: '属性仅在 Markdown 笔记中受支持',
             propertySetOnNote: '已在 1 篇笔记中更新属性',

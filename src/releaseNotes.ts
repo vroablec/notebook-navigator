@@ -75,6 +75,12 @@ export interface ReleaseNote {
  */
 const RELEASE_NOTES: ReleaseNote[] = [
     {
+        version: '2.4.2',
+        date: '2026-02-24',
+        showOnUpdate: false,
+        new: ['You can now ==rename and delete property keys== in the property tree.']
+    },
+    {
         version: '2.4.1',
         date: '2026-02-18',
         showOnUpdate: false,

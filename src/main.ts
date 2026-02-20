@@ -45,6 +45,7 @@ import {
 } from './types';
 import { ISettingsProvider } from './interfaces/ISettingsProvider';
 import { MetadataService, type MetadataCleanupSummary } from './services/MetadataService';
+import { PropertyOperations } from './services/PropertyOperations';
 import { TagOperations } from './services/TagOperations';
 import { TagTreeService } from './services/TagTreeService';
 import { PropertyTreeService } from './services/PropertyTreeService';
@@ -191,6 +192,7 @@ export default class NotebookNavigatorPlugin extends Plugin implements ISettings
     ribbonIconEl: HTMLElement | undefined = undefined;
     metadataService: MetadataService | null = null;
     tagOperations: TagOperations | null = null;
+    propertyOperations: PropertyOperations | null = null;
     tagTreeService: TagTreeService | null = null;
     propertyTreeService: PropertyTreeService | null = null;
     commandQueue: CommandQueueService | null = null;
@@ -953,6 +955,12 @@ export default class NotebookNavigatorPlugin extends Plugin implements ISettings
             () => this.settings,
             () => this.tagTreeService,
             () => this.metadataService
+        );
+        this.propertyOperations = new PropertyOperations(
+            this.app,
+            () => this.settings,
+            () => this.saveSettingsAndUpdate(),
+            () => this.propertyTreeService
         );
         this.commandQueue = new CommandQueueService(this.app);
         this.fileSystemOps = new FileSystemOperations(
@@ -1821,6 +1829,10 @@ export default class NotebookNavigatorPlugin extends Plugin implements ISettings
         // Clean up the tag operations service
         if (this.tagOperations) {
             this.tagOperations = null;
+        }
+
+        if (this.propertyOperations) {
+            this.propertyOperations = null;
         }
 
         if (this.propertyTreeService) {

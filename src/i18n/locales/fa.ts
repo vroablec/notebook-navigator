@@ -327,7 +327,9 @@ export const STRINGS_FA = {
         },
         property: {
             addKey: 'افزودن کلید ویژگی',
-            removeKey: 'حذف کلید ویژگی'
+            removeKey: 'حذف از فهرست ویژگی‌ها',
+            renameKey: 'تغییر نام ویژگی',
+            deleteKey: 'حذف ویژگی از یادداشت‌ها'
         },
         navigation: {
             addSeparator: 'افزودن جداکننده',
@@ -457,9 +459,14 @@ export const STRINGS_FA = {
             confirmRename: 'تغییر نام برچسب',
             renameUnchanged: '{tag} بدون تغییر',
             renameNoChanges: '{oldTag} → {newTag} ({countLabel})',
+            renameBatchNotFinalized:
+                '{renamed}/{total} تغییر نام یافت. به‌روزرسانی نشده: {notUpdated}. فراداده‌ها و میانبرها به‌روزرسانی نشدند.',
             invalidTagName: 'نام برچسب معتبری وارد کنید.',
             descendantRenameError: 'نمی‌توان برچسب را به خود یا زیرمجموعه آن منتقل کرد.',
             confirmDelete: 'حذف برچسب',
+            deleteBatchNotFinalized:
+                'از {removed}/{total} حذف شد. به‌روزرسانی نشده: {notUpdated}. فراداده‌ها و میانبرها به‌روزرسانی نشدند.',
+            checkConsoleForDetails: 'برای جزئیات بیشتر کنسول را بررسی کنید.',
             file: 'فایل',
             files: 'فایل‌ها',
             inlineParsingWarning: {
@@ -468,6 +475,24 @@ export const STRINGS_FA = {
                     '{tag} شامل نویسه‌هایی است که Obsidian نمی‌تواند در برچسب‌های درون‌خطی تجزیه کند. برچسب‌های Frontmatter تحت تأثیر قرار نمی‌گیرند.',
                 confirm: 'استفاده در هر صورت'
             }
+        },
+        propertyOperation: {
+            renameTitle: 'تغییر نام ویژگی {property}',
+            deleteTitle: 'حذف ویژگی {property}',
+            newKeyPrompt: 'نام جدید ویژگی',
+            newKeyPlaceholder: 'نام جدید ویژگی را وارد کنید',
+            renameWarning: 'تغییر نام ویژگی {property} باعث تغییر {count} {files} خواهد شد.',
+            renameConflictWarning:
+                'ویژگی {newKey} از قبل در {count} {files} وجود دارد. تغییر نام {oldKey} مقادیر موجود {newKey} را جایگزین خواهد کرد.',
+            deleteWarning: 'حذف ویژگی {property} باعث تغییر {count} {files} خواهد شد.',
+            confirmRename: 'تغییر نام ویژگی',
+            confirmDelete: 'حذف ویژگی',
+            renameNoChanges: '{oldKey} → {newKey} (بدون تغییر)',
+            renameSettingsUpdateFailed: 'ویژگی {oldKey} → {newKey} تغییر نام یافت. به‌روزرسانی تنظیمات ناموفق بود.',
+            deleteSingleSuccess: 'ویژگی {property} از ۱ یادداشت حذف شد',
+            deleteMultipleSuccess: 'ویژگی {property} از {count} یادداشت حذف شد',
+            deleteSettingsUpdateFailed: 'ویژگی {property} حذف شد. به‌روزرسانی تنظیمات ناموفق بود.',
+            invalidKeyName: 'یک نام ویژگی معتبر وارد کنید.'
         },
         fileSystem: {
             newFolderTitle: 'پوشه جدید',
@@ -619,6 +644,7 @@ export const STRINGS_FA = {
             noTagsToRemove: 'برچسبی برای حذف نیست',
             noFilesSelected: 'فایلی انتخاب نشده است',
             tagOperationsNotAvailable: 'عملیات برچسب در دسترس نیست',
+            propertyOperationsNotAvailable: 'عملیات ویژگی‌ها در دسترس نیست',
             tagsRequireMarkdown: 'برچسب‌ها فقط روی یادداشت‌های Markdown پشتیبانی می‌شوند',
             propertiesRequireMarkdown: 'ویژگی‌ها فقط در یادداشت‌های Markdown پشتیبانی می‌شوند',
             propertySetOnNote: 'ویژگی در ۱ یادداشت به‌روزرسانی شد',

@@ -327,7 +327,9 @@ export const STRINGS_EN = {
         },
         property: {
             addKey: 'Add property key',
-            removeKey: 'Remove property key'
+            removeKey: 'Remove from property list',
+            renameKey: 'Rename property',
+            deleteKey: 'Delete property from notes'
         },
         navigation: {
             addSeparator: 'Add separator',
@@ -457,6 +459,7 @@ export const STRINGS_EN = {
             confirmRename: 'Rename tag',
             renameUnchanged: '{tag} unchanged',
             renameNoChanges: '{oldTag} → {newTag} ({countLabel})',
+            renameBatchNotFinalized: 'Renamed {renamed}/{total}. Not updated: {notUpdated}. Metadata and shortcuts were not updated.',
             invalidTagName: 'Enter a valid tag name.',
             inlineParsingWarning: {
                 title: 'Inline tag compatibility',
@@ -465,8 +468,28 @@ export const STRINGS_EN = {
             },
             descendantRenameError: 'Cannot move a tag into itself or a descendant.',
             confirmDelete: 'Delete tag',
+            deleteBatchNotFinalized: 'Removed from {removed}/{total}. Not updated: {notUpdated}. Metadata and shortcuts were not updated.',
+            checkConsoleForDetails: 'Check console for details.',
             file: 'file',
             files: 'files'
+        },
+        propertyOperation: {
+            renameTitle: 'Rename property {property}',
+            deleteTitle: 'Delete property {property}',
+            newKeyPrompt: 'New property name',
+            newKeyPlaceholder: 'Enter new property name',
+            renameWarning: 'Renaming property {property} will modify {count} {files}.',
+            renameConflictWarning:
+                'Property {newKey} already exists in {count} {files}. Renaming {oldKey} will replace existing {newKey} values.',
+            deleteWarning: 'Deleting property {property} will modify {count} {files}.',
+            confirmRename: 'Rename property',
+            confirmDelete: 'Delete property',
+            renameNoChanges: '{oldKey} → {newKey} (no changes)',
+            renameSettingsUpdateFailed: 'Renamed property {oldKey} → {newKey}. Failed to update settings.',
+            deleteSingleSuccess: 'Deleted property {property} from 1 note',
+            deleteMultipleSuccess: 'Deleted property {property} from {count} notes',
+            deleteSettingsUpdateFailed: 'Deleted property {property}. Failed to update settings.',
+            invalidKeyName: 'Enter a valid property name.'
         },
         fileSystem: {
             newFolderTitle: 'New folder',
@@ -618,6 +641,7 @@ export const STRINGS_EN = {
             noTagsToRemove: 'No tags to remove',
             noFilesSelected: 'No files selected',
             tagOperationsNotAvailable: 'Tag operations not available',
+            propertyOperationsNotAvailable: 'Property operations not available',
             tagsRequireMarkdown: 'Tags are only supported on Markdown notes',
             propertiesRequireMarkdown: 'Properties are only supported on Markdown notes',
             propertySetOnNote: 'Updated property on 1 note',

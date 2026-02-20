@@ -328,7 +328,9 @@ export const STRINGS_ID = {
         },
         property: {
             addKey: 'Tambah kunci properti',
-            removeKey: 'Hapus kunci properti'
+            removeKey: 'Hapus dari daftar properti',
+            renameKey: 'Ubah nama properti',
+            deleteKey: 'Hapus properti dari catatan'
         },
         navigation: {
             addSeparator: 'Tambah pemisah',
@@ -458,9 +460,14 @@ export const STRINGS_ID = {
             confirmRename: 'Ubah nama tag',
             renameUnchanged: '{tag} tidak berubah',
             renameNoChanges: '{oldTag} → {newTag} ({countLabel})',
+            renameBatchNotFinalized:
+                'Diganti nama {renamed}/{total}. Tidak diperbarui: {notUpdated}. Metadata dan pintasan tidak diperbarui.',
             invalidTagName: 'Masukkan nama tag yang valid.',
             descendantRenameError: 'Tidak dapat memindahkan tag ke dirinya sendiri atau turunannya.',
             confirmDelete: 'Hapus tag',
+            deleteBatchNotFinalized:
+                'Dihapus dari {removed}/{total}. Tidak diperbarui: {notUpdated}. Metadata dan pintasan tidak diperbarui.',
+            checkConsoleForDetails: 'Periksa konsol untuk detail.',
             file: 'file',
             files: 'file',
             inlineParsingWarning: {
@@ -468,6 +475,24 @@ export const STRINGS_ID = {
                 message: '{tag} mengandung karakter yang tidak dapat diurai Obsidian dalam tag inline. Tag Frontmatter tidak terpengaruh.',
                 confirm: 'Tetap gunakan'
             }
+        },
+        propertyOperation: {
+            renameTitle: 'Ubah nama properti {property}',
+            deleteTitle: 'Hapus properti {property}',
+            newKeyPrompt: 'Nama properti baru',
+            newKeyPlaceholder: 'Masukkan nama properti baru',
+            renameWarning: 'Mengubah nama properti {property} akan memodifikasi {count} {files}.',
+            renameConflictWarning:
+                'Properti {newKey} sudah ada di {count} {files}. Mengubah nama {oldKey} akan menggantikan nilai {newKey} yang ada.',
+            deleteWarning: 'Menghapus properti {property} akan memodifikasi {count} {files}.',
+            confirmRename: 'Ubah nama properti',
+            confirmDelete: 'Hapus properti',
+            renameNoChanges: '{oldKey} → {newKey} (tidak ada perubahan)',
+            renameSettingsUpdateFailed: 'Properti {oldKey} → {newKey} diubah namanya. Gagal memperbarui pengaturan.',
+            deleteSingleSuccess: 'Properti {property} dihapus dari 1 catatan',
+            deleteMultipleSuccess: 'Properti {property} dihapus dari {count} catatan',
+            deleteSettingsUpdateFailed: 'Properti {property} dihapus. Gagal memperbarui pengaturan.',
+            invalidKeyName: 'Masukkan nama properti yang valid.'
         },
         fileSystem: {
             newFolderTitle: 'Folder baru',
@@ -619,6 +644,7 @@ export const STRINGS_ID = {
             noTagsToRemove: 'Tidak ada tag untuk dihapus',
             noFilesSelected: 'Tidak ada file yang dipilih',
             tagOperationsNotAvailable: 'Operasi tag tidak tersedia',
+            propertyOperationsNotAvailable: 'Operasi properti tidak tersedia',
             tagsRequireMarkdown: 'Tag hanya didukung pada catatan Markdown',
             propertiesRequireMarkdown: 'Properti hanya didukung pada catatan Markdown',
             propertySetOnNote: 'Properti diperbarui pada 1 catatan',

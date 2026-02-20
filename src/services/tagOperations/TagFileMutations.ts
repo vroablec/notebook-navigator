@@ -283,8 +283,23 @@ export class TagFileMutations {
         inlineTags: string[],
         failureContext: string
     ): Promise<boolean> {
-        const frontmatterChanged = await this.stripTagsFromFrontmatter(file, shouldRemove, failureContext);
+        let frontmatterChanged = false;
+        let frontmatterError: Error | null = null;
+
+        // Frontmatter mutations can fail if the YAML block is malformed or if Obsidian cannot
+        // safely read/parse/write the file. Inline tag removal can still succeed, so the method
+        // attempts both phases and throws after inline processing when frontmatter fails.
+        try {
+            frontmatterChanged = await this.stripTagsFromFrontmatter(file, shouldRemove, failureContext);
+        } catch (error: unknown) {
+            frontmatterError = error instanceof Error ? error : new Error(String(error));
+        }
+
         const inlineChanged = inlineTags.length > 0 ? await this.stripInlineTags(file, inlineTags) : false;
+
+        if (frontmatterError !== null) {
+            throw frontmatterError;
+        }
         return frontmatterChanged || inlineChanged;
     }
 
@@ -395,8 +410,12 @@ export class TagFileMutations {
                     changed = true;
                 }
             });
-        } catch (error) {
-            console.error(`[Notebook Navigator] Failed to ${failureContext}`, error);
+        } catch (error: unknown) {
+            if (error instanceof Error) {
+                error.message = `[Notebook Navigator] Failed to ${failureContext}: ${error.message}`;
+                throw error;
+            }
+            throw new Error(`[Notebook Navigator] Failed to ${failureContext}`);
         }
         return changed;
     }

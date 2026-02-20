@@ -22,6 +22,7 @@ import type { VisibilityPreferences } from '../../types';
 import { NotebookNavigatorSettings } from '../../settings';
 import { FileSystemOperations } from '../../services/FileSystemService';
 import { MetadataService } from '../../services/MetadataService';
+import { PropertyOperations } from '../../services/PropertyOperations';
 import { TagOperations } from '../../services/TagOperations';
 import { TagTreeService } from '../../services/TagTreeService';
 import type { PropertyTreeService } from '../../services/PropertyTreeService';
@@ -71,6 +72,7 @@ export interface MenuServices {
     fileSystemOps: FileSystemOperations;
     metadataService: MetadataService;
     tagOperations: TagOperations;
+    propertyOperations: PropertyOperations;
     tagTreeService: TagTreeService | null;
     propertyTreeService: PropertyTreeService | null;
     commandQueue: CommandQueueService | null;

@@ -26,13 +26,18 @@ import { localStorage } from '../utils/localStorage';
 import type { NotebookNavigatorAPI } from '../api/NotebookNavigatorAPI';
 import type { IPropertyTreeProvider } from '../interfaces/IPropertyTreeProvider';
 import type { ITagTreeProvider } from '../interfaces/ITagTreeProvider';
+import type { PropertyKeyDeleteEventPayload, PropertyKeyRenameEventPayload } from '../services/PropertyOperations';
 import type { TagDeleteEventPayload, TagRenameEventPayload } from '../services/TagOperations';
 import { useServices } from './ServicesContext';
 import { normalizeTagPath } from '../utils/tagUtils';
 import {
+    buildPropertyKeyNodeId,
+    buildPropertyValueNodeId,
     canRestorePropertySelectionNodeId,
     isPropertyFeatureEnabled,
     isPropertySelectionNodeIdConfigured,
+    normalizePropertyNodeId,
+    parsePropertyNodeId,
     parseStoredPropertySelectionNodeId,
     type PropertySelectionNodeId
 } from '../utils/propertyTree';
@@ -659,7 +664,7 @@ export function SelectionProvider({
     const showHiddenItems = uxPreferences.showHiddenItems;
     const propertyFeatureEnabled = isPropertyFeatureEnabled(settings);
     // Get tag operations service for subscribing to tag rename and delete events
-    const { tagOperations } = useServices();
+    const { plugin, tagOperations, propertyOperations } = useServices();
 
     // Load initial state from localStorage and vault
     const loadInitialState = useCallback((): SelectionState => {
@@ -792,14 +797,7 @@ export function SelectionProvider({
     useEffect(() => {
         stateRef.current = state;
     }, [state]);
-    const settingsRef = useRef(settings);
-    useEffect(() => {
-        settingsRef.current = settings;
-    }, [settings]);
-    const propertyFeatureEnabledRef = useRef(propertyFeatureEnabled);
-    useEffect(() => {
-        propertyFeatureEnabledRef.current = propertyFeatureEnabled;
-    }, [propertyFeatureEnabled]);
+    const pendingPropertyRenameSelectionRef = useRef<PropertySelectionNodeId | null>(null);
 
     const resolveAutoSelectedFile = useCallback(
         (filesInScope: TFile[]): TFile | null => {
@@ -867,24 +865,27 @@ export function SelectionProvider({
         ]
     );
 
-    useEffect(() => {
-        if (!propertyTreeService) {
-            return;
-        }
-
-        const removeListener = propertyTreeService.addTreeUpdateListener(() => {
-            const currentState = stateRef.current;
-            const selectedProperty = currentState.selectedProperty;
-            if (!propertyFeatureEnabledRef.current || currentState.selectionType !== 'property' || !selectedProperty) {
+    const reconcilePropertySelection = useCallback(
+        (selectionType: NavigationItemType, selectedProperty: PropertySelectionNodeId | null): void => {
+            const settingsSnapshot = plugin.settings;
+            const propertyFeatureEnabledSnapshot = isPropertyFeatureEnabled(settingsSnapshot);
+            if (!propertyFeatureEnabledSnapshot || selectionType !== 'property' || !selectedProperty) {
+                pendingPropertyRenameSelectionRef.current = null;
                 return;
             }
 
-            if (!isPropertySelectionNodeIdConfigured(settingsRef.current, selectedProperty)) {
+            if (pendingPropertyRenameSelectionRef.current !== null && pendingPropertyRenameSelectionRef.current !== selectedProperty) {
+                pendingPropertyRenameSelectionRef.current = null;
+            }
+
+            if (!isPropertySelectionNodeIdConfigured(settingsSnapshot, selectedProperty)) {
+                pendingPropertyRenameSelectionRef.current = null;
                 dispatch({ type: 'SET_SELECTED_FOLDER', folder: app.vault.getRoot() });
                 return;
             }
 
-            if (selectedProperty === PROPERTIES_ROOT_VIRTUAL_FOLDER_ID) {
+            if (selectedProperty === PROPERTIES_ROOT_VIRTUAL_FOLDER_ID || !propertyTreeService) {
+                pendingPropertyRenameSelectionRef.current = null;
                 return;
             }
 
@@ -893,13 +894,45 @@ export function SelectionProvider({
             }
 
             const resolvedSelectionNodeId = propertyTreeService.resolveSelectionNodeId(selectedProperty);
+            // `resolveSelectionNodeId` falls back to the properties root when a key is missing.
+            if (resolvedSelectionNodeId === PROPERTIES_ROOT_VIRTUAL_FOLDER_ID) {
+                if (pendingPropertyRenameSelectionRef.current === selectedProperty) {
+                    return;
+                }
+
+                pendingPropertyRenameSelectionRef.current = null;
+
+                if (settingsSnapshot.showProperties) {
+                    dispatch({ type: 'SET_SELECTED_PROPERTY', nodeId: PROPERTIES_ROOT_VIRTUAL_FOLDER_ID });
+                } else {
+                    dispatch({ type: 'SET_SELECTED_FOLDER', folder: app.vault.getRoot() });
+                }
+                return;
+            }
+
+            if (pendingPropertyRenameSelectionRef.current === selectedProperty) {
+                pendingPropertyRenameSelectionRef.current = null;
+            }
+
             if (resolvedSelectionNodeId !== selectedProperty) {
                 dispatch({ type: 'SET_SELECTED_PROPERTY', nodeId: resolvedSelectionNodeId });
             }
+        },
+        [app.vault, dispatch, plugin, propertyTreeService]
+    );
+
+    useEffect(() => {
+        if (!propertyTreeService) {
+            return;
+        }
+
+        const removeListener = propertyTreeService.addTreeUpdateListener(() => {
+            const currentState = stateRef.current;
+            reconcilePropertySelection(currentState.selectionType, currentState.selectedProperty);
         });
 
         return removeListener;
-    }, [app.vault, dispatch, propertyTreeService]);
+    }, [propertyTreeService, reconcilePropertySelection]);
 
     useEffect(() => {
         if (!tagTreeService) {
@@ -995,6 +1028,72 @@ export function SelectionProvider({
         };
     }, [tagOperations, enhancedDispatch]);
 
+    // Subscribe to property operations and update selection when property keys are renamed or deleted
+    useEffect(() => {
+        if (!propertyOperations) {
+            return;
+        }
+
+        const handlePropertyKeyRename = (payload: PropertyKeyRenameEventPayload) => {
+            const current = stateRef.current;
+            const currentNodeId = current.selectedProperty;
+            if (!currentNodeId || current.selectionType !== 'property' || currentNodeId === PROPERTIES_ROOT_VIRTUAL_FOLDER_ID) {
+                return;
+            }
+
+            const normalizedNodeId = normalizePropertyNodeId(currentNodeId);
+            if (!normalizedNodeId) {
+                return;
+            }
+
+            const parsed = parsePropertyNodeId(normalizedNodeId);
+            if (!parsed || parsed.key !== payload.oldKey) {
+                return;
+            }
+
+            const nextNodeId = parsed.valuePath
+                ? buildPropertyValueNodeId(payload.newKey, parsed.valuePath)
+                : buildPropertyKeyNodeId(payload.newKey);
+
+            pendingPropertyRenameSelectionRef.current = nextNodeId;
+            enhancedDispatch({ type: 'SET_SELECTED_PROPERTY', nodeId: nextNodeId });
+        };
+
+        const handlePropertyKeyDelete = (payload: PropertyKeyDeleteEventPayload) => {
+            const current = stateRef.current;
+            const currentNodeId = current.selectedProperty;
+            if (!currentNodeId || current.selectionType !== 'property' || currentNodeId === PROPERTIES_ROOT_VIRTUAL_FOLDER_ID) {
+                return;
+            }
+
+            const normalizedNodeId = normalizePropertyNodeId(currentNodeId);
+            if (!normalizedNodeId) {
+                return;
+            }
+
+            const parsed = parsePropertyNodeId(normalizedNodeId);
+            if (!parsed || parsed.key !== payload.key) {
+                return;
+            }
+
+            pendingPropertyRenameSelectionRef.current = null;
+
+            if (plugin.settings.showProperties) {
+                enhancedDispatch({ type: 'SET_SELECTED_PROPERTY', nodeId: PROPERTIES_ROOT_VIRTUAL_FOLDER_ID });
+            } else {
+                enhancedDispatch({ type: 'SET_SELECTED_FOLDER', folder: app.vault.getRoot() });
+            }
+        };
+
+        const removeRenameListener = propertyOperations.addPropertyKeyRenameListener(handlePropertyKeyRename);
+        const removeDeleteListener = propertyOperations.addPropertyKeyDeleteListener(handlePropertyKeyDelete);
+
+        return () => {
+            removeRenameListener();
+            removeDeleteListener();
+        };
+    }, [app.vault, enhancedDispatch, plugin, propertyOperations]);
+
     // Persist selected folder to localStorage with error handling
     useEffect(() => {
         try {
@@ -1032,34 +1131,8 @@ export function SelectionProvider({
     }, [app.vault, dispatch, propertyFeatureEnabled, settings.showProperties, state.selectedProperty, state.selectionType]);
 
     useEffect(() => {
-        if (!propertyFeatureEnabled) {
-            return;
-        }
-
-        if (state.selectionType !== 'property' || !state.selectedProperty) {
-            return;
-        }
-
-        if (isPropertySelectionNodeIdConfigured(settings, state.selectedProperty)) {
-            if (state.selectedProperty === PROPERTIES_ROOT_VIRTUAL_FOLDER_ID || !propertyTreeService) {
-                return;
-            }
-
-            if (!propertyTreeService.hasNodes()) {
-                return;
-            }
-
-            const resolvedSelectionNodeId = propertyTreeService.resolveSelectionNodeId(state.selectedProperty);
-            if (resolvedSelectionNodeId === state.selectedProperty) {
-                return;
-            }
-
-            dispatch({ type: 'SET_SELECTED_PROPERTY', nodeId: resolvedSelectionNodeId });
-            return;
-        }
-
-        dispatch({ type: 'SET_SELECTED_FOLDER', folder: app.vault.getRoot() });
-    }, [app.vault, dispatch, propertyFeatureEnabled, propertyTreeService, settings, state.selectedProperty, state.selectionType]);
+        reconcilePropertySelection(state.selectionType, state.selectedProperty);
+    }, [reconcilePropertySelection, settings.propertyFields, settings.showProperties, state.selectedProperty, state.selectionType]);
 
     useEffect(() => {
         try {

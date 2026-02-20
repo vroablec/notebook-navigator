@@ -329,7 +329,9 @@ export const STRINGS_NL = {
         },
         property: {
             addKey: 'Eigenschapssleutel toevoegen',
-            removeKey: 'Eigenschapssleutel verwijderen'
+            removeKey: 'Verwijderen uit eigenschappenlijst',
+            renameKey: 'Eigenschap hernoemen',
+            deleteKey: 'Eigenschap uit notities verwijderen'
         },
         navigation: {
             addSeparator: 'Scheidingslijn toevoegen',
@@ -459,9 +461,14 @@ export const STRINGS_NL = {
             confirmRename: 'Tag hernoemen',
             renameUnchanged: '{tag} niet gewijzigd',
             renameNoChanges: '{oldTag} → {newTag} ({countLabel})',
+            renameBatchNotFinalized:
+                'Hernoemd {renamed}/{total}. Niet bijgewerkt: {notUpdated}. Metadata en snelkoppelingen zijn niet bijgewerkt.',
             invalidTagName: 'Voer een geldige tagnaam in.',
             descendantRenameError: 'Een tag kan niet in zichzelf of een afstammeling worden verplaatst.',
             confirmDelete: 'Tag verwijderen',
+            deleteBatchNotFinalized:
+                'Verwijderd uit {removed}/{total}. Niet bijgewerkt: {notUpdated}. Metadata en snelkoppelingen zijn niet bijgewerkt.',
+            checkConsoleForDetails: 'Controleer de console voor details.',
             file: 'bestand',
             files: 'bestanden',
             inlineParsingWarning: {
@@ -469,6 +476,24 @@ export const STRINGS_NL = {
                 message: '{tag} bevat tekens die Obsidian niet kan verwerken in inline-tags. Frontmatter-tags worden niet beïnvloed.',
                 confirm: 'Toch gebruiken'
             }
+        },
+        propertyOperation: {
+            renameTitle: 'Eigenschap {property} hernoemen',
+            deleteTitle: 'Eigenschap {property} verwijderen',
+            newKeyPrompt: 'Nieuwe eigenschapnaam',
+            newKeyPlaceholder: 'Voer de nieuwe eigenschapnaam in',
+            renameWarning: 'Het hernoemen van eigenschap {property} wijzigt {count} {files}.',
+            renameConflictWarning:
+                'Eigenschap {newKey} bestaat al in {count} {files}. Het hernoemen van {oldKey} vervangt bestaande {newKey}-waarden.',
+            deleteWarning: 'Het verwijderen van eigenschap {property} wijzigt {count} {files}.',
+            confirmRename: 'Eigenschap hernoemen',
+            confirmDelete: 'Eigenschap verwijderen',
+            renameNoChanges: '{oldKey} → {newKey} (geen wijzigingen)',
+            renameSettingsUpdateFailed: 'Eigenschap {oldKey} → {newKey} hernoemd. Instellingen konden niet worden bijgewerkt.',
+            deleteSingleSuccess: 'Eigenschap {property} verwijderd uit 1 notitie',
+            deleteMultipleSuccess: 'Eigenschap {property} verwijderd uit {count} notities',
+            deleteSettingsUpdateFailed: 'Eigenschap {property} verwijderd. Instellingen konden niet worden bijgewerkt.',
+            invalidKeyName: 'Voer een geldige eigenschapnaam in.'
         },
         fileSystem: {
             newFolderTitle: 'Nieuwe map',
@@ -621,6 +646,7 @@ export const STRINGS_NL = {
             noTagsToRemove: 'Geen tags om te verwijderen',
             noFilesSelected: 'Geen bestanden geselecteerd',
             tagOperationsNotAvailable: 'Tagbewerkingen niet beschikbaar',
+            propertyOperationsNotAvailable: 'Eigenschapbewerkingen niet beschikbaar',
             tagsRequireMarkdown: 'Tags worden alleen ondersteund op Markdown-notities',
             propertiesRequireMarkdown: 'Eigenschappen worden alleen ondersteund in Markdown-notities',
             propertySetOnNote: 'Eigenschap bijgewerkt op 1 notitie',

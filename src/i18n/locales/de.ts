@@ -328,7 +328,9 @@ export const STRINGS_DE = {
         },
         property: {
             addKey: 'Eigenschaftsschlüssel hinzufügen',
-            removeKey: 'Eigenschaftsschlüssel entfernen'
+            removeKey: 'Aus Eigenschaftsliste entfernen',
+            renameKey: 'Eigenschaft umbenennen',
+            deleteKey: 'Eigenschaft aus Notizen löschen'
         },
         navigation: {
             addSeparator: 'Trennlinie hinzufügen',
@@ -458,9 +460,14 @@ export const STRINGS_DE = {
             confirmRename: 'Tag umbenennen',
             renameUnchanged: '{tag} unverändert',
             renameNoChanges: '{oldTag} → {newTag} ({countLabel})',
+            renameBatchNotFinalized:
+                'Umbenannt {renamed}/{total}. Nicht aktualisiert: {notUpdated}. Metadaten und Verknüpfungen wurden nicht aktualisiert.',
             invalidTagName: 'Geben Sie einen gültigen Tag-Namen ein.',
             descendantRenameError: 'Ein Tag kann nicht in sich selbst oder einen Nachkommen verschoben werden.',
             confirmDelete: 'Tag löschen',
+            deleteBatchNotFinalized:
+                'Entfernt aus {removed}/{total}. Nicht aktualisiert: {notUpdated}. Metadaten und Verknüpfungen wurden nicht aktualisiert.',
+            checkConsoleForDetails: 'Details in der Konsole anzeigen.',
             file: 'Datei',
             files: 'Dateien',
             inlineParsingWarning: {
@@ -469,6 +476,24 @@ export const STRINGS_DE = {
                     '{tag} enthält Zeichen, die Obsidian in Inline-Tags nicht verarbeiten kann. Frontmatter-Tags sind nicht betroffen.',
                 confirm: 'Trotzdem verwenden'
             }
+        },
+        propertyOperation: {
+            renameTitle: 'Eigenschaft {property} umbenennen',
+            deleteTitle: 'Eigenschaft {property} löschen',
+            newKeyPrompt: 'Neuer Eigenschaftsname',
+            newKeyPlaceholder: 'Neuen Eigenschaftsnamen eingeben',
+            renameWarning: 'Das Umbenennen der Eigenschaft {property} ändert {count} {files}.',
+            renameConflictWarning:
+                'Die Eigenschaft {newKey} existiert bereits in {count} {files}. Das Umbenennen von {oldKey} ersetzt vorhandene {newKey}-Werte.',
+            deleteWarning: 'Das Löschen der Eigenschaft {property} ändert {count} {files}.',
+            confirmRename: 'Eigenschaft umbenennen',
+            confirmDelete: 'Eigenschaft löschen',
+            renameNoChanges: '{oldKey} → {newKey} (keine Änderungen)',
+            renameSettingsUpdateFailed: 'Eigenschaft {oldKey} → {newKey} umbenannt. Einstellungen konnten nicht aktualisiert werden.',
+            deleteSingleSuccess: 'Eigenschaft {property} aus 1 Notiz gelöscht',
+            deleteMultipleSuccess: 'Eigenschaft {property} aus {count} Notizen gelöscht',
+            deleteSettingsUpdateFailed: 'Eigenschaft {property} gelöscht. Einstellungen konnten nicht aktualisiert werden.',
+            invalidKeyName: 'Geben Sie einen gültigen Eigenschaftsnamen ein.'
         },
         fileSystem: {
             newFolderTitle: 'Neuer Ordner',
@@ -621,6 +646,7 @@ export const STRINGS_DE = {
             noTagsToRemove: 'Keine Tags zum Entfernen',
             noFilesSelected: 'Keine Dateien ausgewählt',
             tagOperationsNotAvailable: 'Tag-Operationen nicht verfügbar',
+            propertyOperationsNotAvailable: 'Eigenschafts-Operationen nicht verfügbar',
             tagsRequireMarkdown: 'Tags werden nur in Markdown-Notizen unterstützt',
             propertiesRequireMarkdown: 'Eigenschaften werden nur bei Markdown-Notizen unterstützt',
             propertySetOnNote: 'Eigenschaft bei 1 Notiz aktualisiert',

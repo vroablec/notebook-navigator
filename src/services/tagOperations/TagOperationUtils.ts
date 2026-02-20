@@ -17,41 +17,25 @@
  */
 
 import type { App } from 'obsidian';
-import { TFile } from 'obsidian';
 import { strings } from '../../i18n';
 import { ConfirmModal } from '../../modals/ConfirmModal';
 import type { ITagTreeProvider } from '../../interfaces/ITagTreeProvider';
-import type { RenameFile, TagDescriptor } from '../tagRename/TagRenameEngine';
+import { collectRenameFiles, type RenameFile, type TagDescriptor } from '../tagRename/TagRenameEngine';
 import type { TagUsageSummary } from './types';
 import { normalizeTagPathValue } from '../../utils/tagPrefixMatcher';
 import { isInlineTagValueCompatible } from '../../utils/tagUtils';
+import { buildUsageSummaryFromPaths as buildOperationUsageSummaryFromPaths, yieldToEventLoop } from '../operations/OperationBatchUtils';
+
+export { yieldToEventLoop };
 
 /**
- * Yields control back to the event loop to prevent blocking UI during batch operations
- * Uses requestAnimationFrame when available for smoother UI updates
+ * Collects all file paths in the vault that contain the specified tag.
  */
-export async function yieldToEventLoop(): Promise<void> {
-    await new Promise<void>(resolve => {
-        if (typeof requestAnimationFrame === 'function') {
-            requestAnimationFrame(() => resolve());
-            return;
-        }
-        setTimeout(resolve, 0);
-    });
-}
-
-/**
- * Collects all file paths that contain the specified tag
- * Returns null if tag tree service is unavailable
- */
-export function collectPreviewPaths(tag: TagDescriptor, tagTreeService: ITagTreeProvider | null): string[] | null {
+export function collectPreviewPaths(app: App, tag: TagDescriptor, _tagTreeService: ITagTreeProvider | null): string[] {
     if (tag.canonicalName.length === 0) {
         return [];
     }
-    if (!tagTreeService) {
-        return null;
-    }
-    return tagTreeService.collectTagFilePaths(tag.canonicalName);
+    return collectRenameFiles(app, tag).map(target => target.filePath);
 }
 
 /**
@@ -59,23 +43,7 @@ export function collectPreviewPaths(tag: TagDescriptor, tagTreeService: ITagTree
  * Limits sample to 8 files for display in modals
  */
 export function buildUsageSummaryFromPaths(app: App, paths: Iterable<string>): TagUsageSummary {
-    const sample: string[] = [];
-    let total = 0;
-
-    for (const filePath of paths) {
-        total += 1;
-        if (sample.length >= 8) {
-            continue;
-        }
-        const abstractFile = app.vault.getAbstractFileByPath(filePath);
-        if (abstractFile instanceof TFile) {
-            sample.push(abstractFile.basename);
-        } else {
-            sample.push(filePath);
-        }
-    }
-
-    return { total, sample };
+    return buildOperationUsageSummaryFromPaths(app, paths);
 }
 
 /**

@@ -21,70 +21,63 @@ import { strings } from '../i18n';
 import { runAsyncAction } from '../utils/async';
 import { renderAffectedFilesPreview } from '../services/operations/OperationBatchUtils';
 
-interface TagRenameModalOptions {
-    tagPath: string;
+interface PropertyKeyRenameModalOptions {
+    propertyKey: string;
     affectedCount: number;
     sampleFiles: string[];
     initialValue?: string;
-    onSubmit: (newName: string) => Promise<boolean> | boolean;
+    onSubmit: (newKey: string) => Promise<boolean> | boolean;
 }
 
 /**
- * Modal dialog used to collect a new tag name and show affected files.
- * Displays a short preview list to highlight that the rename updates file content.
+ * Modal dialog used to collect a new property key name and show affected files.
  */
-export class TagRenameModal extends Modal {
-    private readonly tagPath: string;
+export class PropertyKeyRenameModal extends Modal {
+    private readonly propertyKey: string;
     private readonly affectedCount: number;
     private readonly sampleFiles: string[];
     private readonly initialValue: string;
-    private readonly onSubmit: (newName: string) => Promise<boolean> | boolean;
+    private readonly onSubmit: (newKey: string) => Promise<boolean> | boolean;
 
     private inputEl!: HTMLInputElement;
     private submitBtn!: HTMLButtonElement;
 
-    constructor(app: App, options: TagRenameModalOptions) {
+    constructor(app: App, options: PropertyKeyRenameModalOptions) {
         super(app);
-        this.tagPath = options.tagPath;
+        this.propertyKey = options.propertyKey;
         this.affectedCount = options.affectedCount;
         this.sampleFiles = options.sampleFiles;
-        this.initialValue = options.initialValue ?? options.tagPath;
+        this.initialValue = options.initialValue ?? options.propertyKey;
         this.onSubmit = options.onSubmit;
     }
 
-    /**
-     * Renders the modal content including input field, affected files preview, and action buttons
-     */
     onOpen(): void {
-        const tagLabel = `#${this.tagPath}`;
         const countLabel = this.affectedCount === 1 ? strings.modals.tagOperation.file : strings.modals.tagOperation.files;
 
-        this.titleEl.setText(strings.modals.tagOperation.renameTitle.replace('{tag}', tagLabel));
+        this.titleEl.setText(strings.modals.propertyOperation.renameTitle.replace('{property}', this.propertyKey));
 
         const description = this.contentEl.createDiv('nn-tag-rename-description');
         description.setText(
-            strings.modals.tagOperation.renameWarning
-                .replace('{oldTag}', tagLabel)
+            strings.modals.propertyOperation.renameWarning
+                .replace('{property}', this.propertyKey)
                 .replace('{count}', this.affectedCount.toString())
                 .replace('{files}', countLabel)
         );
 
         const inputContainer = this.contentEl.createDiv('nn-tag-rename-input-container');
-        const label = inputContainer.createEl('label', { text: strings.modals.tagOperation.newTagPrompt });
-        label.htmlFor = 'nn-tag-rename-input';
+        const label = inputContainer.createEl('label', { text: strings.modals.propertyOperation.newKeyPrompt });
+        label.htmlFor = 'nn-property-rename-input';
 
         this.inputEl = inputContainer.createEl('input', {
             type: 'text',
-            attr: { id: 'nn-tag-rename-input' },
+            attr: { id: 'nn-property-rename-input' },
             value: this.initialValue,
-            placeholder: strings.modals.tagOperation.newTagPlaceholder
+            placeholder: strings.modals.propertyOperation.newKeyPlaceholder
         });
         this.inputEl.addClass('nn-input');
         this.inputEl.addEventListener('input', () => this.updateSubmitState());
 
-        const warning = this.contentEl.createEl('p', {
-            text: strings.modals.tagOperation.modificationWarning
-        });
+        const warning = this.contentEl.createEl('p', { text: strings.modals.tagOperation.modificationWarning });
         warning.addClass('nn-tag-rename-warning');
 
         renderAffectedFilesPreview(this.contentEl, { total: this.affectedCount, sample: this.sampleFiles });
@@ -93,10 +86,7 @@ export class TagRenameModal extends Modal {
         const cancelBtn = buttonContainer.createEl('button', { text: strings.common.cancel });
         cancelBtn.addEventListener('click', () => this.close());
 
-        this.submitBtn = buttonContainer.createEl('button', {
-            text: strings.modals.tagOperation.confirmRename,
-            cls: 'mod-cta'
-        });
+        this.submitBtn = buttonContainer.createEl('button', { text: strings.modals.propertyOperation.confirmRename, cls: 'mod-cta' });
         this.submitBtn.addEventListener('click', () => {
             runAsyncAction(() => this.handleSubmit());
         });
@@ -113,36 +103,28 @@ export class TagRenameModal extends Modal {
         this.inputEl.select();
     }
 
-    /**
-     * Cleans up modal content when closed
-     */
     onClose(): void {
         this.contentEl.empty();
     }
 
-    /**
-     * Enables or disables submit button based on input validity
-     */
     private updateSubmitState(): void {
         if (!this.submitBtn) {
             return;
         }
+
         const newValue = this.inputEl.value.trim();
-        const disabled = newValue.length === 0 || newValue === this.tagPath;
+        const disabled = newValue.length === 0;
         this.submitBtn.toggleClass('mod-disabled', disabled);
         this.submitBtn.disabled = disabled;
     }
 
-    /**
-     * Validates input and invokes the submit callback, closing modal on success
-     */
     private async handleSubmit(): Promise<void> {
-        const newName = this.inputEl.value.trim();
-        if (newName.length === 0 || newName === this.tagPath) {
+        const newKey = this.inputEl.value.trim();
+        if (newKey.length === 0) {
             return;
         }
 
-        const shouldClose = await this.onSubmit(newName);
+        const shouldClose = await this.onSubmit(newKey);
         if (shouldClose) {
             this.close();
         }

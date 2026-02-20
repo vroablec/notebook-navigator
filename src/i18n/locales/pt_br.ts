@@ -329,7 +329,9 @@ export const STRINGS_PT_BR = {
         },
         property: {
             addKey: 'Adicionar chave de propriedade',
-            removeKey: 'Remover chave de propriedade'
+            removeKey: 'Remover da lista de propriedades',
+            renameKey: 'Renomear propriedade',
+            deleteKey: 'Excluir propriedade das notas'
         },
         navigation: {
             addSeparator: 'Adicionar separador',
@@ -459,9 +461,14 @@ export const STRINGS_PT_BR = {
             confirmRename: 'Renomear tag',
             renameUnchanged: '{tag} sem alterações',
             renameNoChanges: '{oldTag} → {newTag} ({countLabel})',
+            renameBatchNotFinalized:
+                'Renomeados {renamed}/{total}. Não atualizados: {notUpdated}. Metadados e atalhos não foram atualizados.',
             invalidTagName: 'Digite um nome de tag válido.',
             descendantRenameError: 'Não é possível mover uma tag para dentro de si mesma ou um descendente.',
             confirmDelete: 'Excluir tag',
+            deleteBatchNotFinalized:
+                'Removidos de {removed}/{total}. Não atualizados: {notUpdated}. Metadados e atalhos não foram atualizados.',
+            checkConsoleForDetails: 'Verifique o console para mais detalhes.',
             file: 'arquivo',
             files: 'arquivos',
             inlineParsingWarning: {
@@ -470,6 +477,24 @@ export const STRINGS_PT_BR = {
                     '{tag} contém caracteres que o Obsidian não consegue analisar em tags inline. As tags de Frontmatter não são afetadas.',
                 confirm: 'Usar mesmo assim'
             }
+        },
+        propertyOperation: {
+            renameTitle: 'Renomear propriedade {property}',
+            deleteTitle: 'Excluir propriedade {property}',
+            newKeyPrompt: 'Novo nome da propriedade',
+            newKeyPlaceholder: 'Digite o novo nome da propriedade',
+            renameWarning: 'Renomear a propriedade {property} modificará {count} {files}.',
+            renameConflictWarning:
+                'A propriedade {newKey} já existe em {count} {files}. Renomear {oldKey} substituirá os valores existentes de {newKey}.',
+            deleteWarning: 'Excluir a propriedade {property} modificará {count} {files}.',
+            confirmRename: 'Renomear propriedade',
+            confirmDelete: 'Excluir propriedade',
+            renameNoChanges: '{oldKey} → {newKey} (sem alterações)',
+            renameSettingsUpdateFailed: 'Propriedade {oldKey} → {newKey} renomeada. Não foi possível atualizar as configurações.',
+            deleteSingleSuccess: 'Propriedade {property} excluída de 1 nota',
+            deleteMultipleSuccess: 'Propriedade {property} excluída de {count} notas',
+            deleteSettingsUpdateFailed: 'Propriedade {property} excluída. Não foi possível atualizar as configurações.',
+            invalidKeyName: 'Digite um nome de propriedade válido.'
         },
         fileSystem: {
             newFolderTitle: 'Nova pasta',
@@ -622,6 +647,7 @@ export const STRINGS_PT_BR = {
             noTagsToRemove: 'Sem tags para remover',
             noFilesSelected: 'Nenhum arquivo selecionado',
             tagOperationsNotAvailable: 'Operações de tag não disponíveis',
+            propertyOperationsNotAvailable: 'Operações de propriedades não disponíveis',
             tagsRequireMarkdown: 'Tags só são suportadas em notas Markdown',
             propertiesRequireMarkdown: 'As propriedades só são suportadas em notas Markdown',
             propertySetOnNote: 'Propriedade atualizada em 1 nota',

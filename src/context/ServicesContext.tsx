@@ -22,6 +22,7 @@ import { App, Platform } from 'obsidian';
 import NotebookNavigatorPlugin from '../main';
 import { FileSystemOperations } from '../services/FileSystemService';
 import { MetadataService } from '../services/MetadataService';
+import { PropertyOperations } from '../services/PropertyOperations';
 import { TagOperations } from '../services/TagOperations';
 import { TagTreeService } from '../services/TagTreeService';
 import { PropertyTreeService } from '../services/PropertyTreeService';
@@ -46,6 +47,8 @@ interface Services {
     metadataService: MetadataService | null;
     /** Tag operations service for renaming and deleting tags */
     tagOperations: TagOperations | null;
+    /** Property operations service for renaming and deleting property keys */
+    propertyOperations: PropertyOperations | null;
     /** Tag tree service for accessing the current tag tree */
     tagTreeService: TagTreeService | null;
     /** Property tree service for accessing the current property tree */
@@ -95,6 +98,7 @@ export function ServicesProvider({ children, plugin }: { children: React.ReactNo
             fileSystemOps,
             metadataService: plugin.metadataService,
             tagOperations: plugin.tagOperations,
+            propertyOperations: plugin.propertyOperations,
             tagTreeService: plugin.tagTreeService,
             propertyTreeService: plugin.propertyTreeService,
             commandQueue: plugin.commandQueue,
@@ -158,6 +162,14 @@ export function useTagOperations() {
         throw new Error('TagOperations not initialized');
     }
     return tagOperations;
+}
+
+export function usePropertyOperations() {
+    const { propertyOperations } = useServices();
+    if (!propertyOperations) {
+        throw new Error('PropertyOperations not initialized');
+    }
+    return propertyOperations;
 }
 
 /**

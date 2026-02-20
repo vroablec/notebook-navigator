@@ -21,7 +21,14 @@ import { useEffect, useCallback, useState } from 'react';
 import { Menu, TFolder } from 'obsidian';
 import { useExpansionState, useExpansionDispatch } from '../context/ExpansionContext';
 import { useSelectionState, useSelectionDispatch } from '../context/SelectionContext';
-import { useServices, useFileSystemOps, useMetadataService, useTagOperations, useCommandQueue } from '../context/ServicesContext';
+import {
+    useServices,
+    useFileSystemOps,
+    useMetadataService,
+    useTagOperations,
+    usePropertyOperations,
+    useCommandQueue
+} from '../context/ServicesContext';
 import { useSettingsState } from '../context/SettingsContext';
 import { useUIDispatch } from '../context/UIStateContext';
 import { useShortcuts } from '../context/ShortcutsContext';
@@ -75,6 +82,7 @@ export function useContextMenu(elementRef: React.RefObject<HTMLElement | null>, 
     const fileSystemOps = useFileSystemOps();
     const metadataService = useMetadataService();
     const tagOperations = useTagOperations();
+    const propertyOperations = usePropertyOperations();
     const commandQueue = useCommandQueue();
     const shortcuts = useShortcuts();
     const uxPreferences = useUXPreferences();
@@ -235,6 +243,7 @@ export function useContextMenu(elementRef: React.RefObject<HTMLElement | null>, 
                 fileSystemOps,
                 metadataService,
                 tagOperations,
+                propertyOperations,
                 tagTreeService,
                 propertyTreeService,
                 commandQueue,
@@ -298,6 +307,7 @@ export function useContextMenu(elementRef: React.RefObject<HTMLElement | null>, 
             fileSystemOps,
             metadataService,
             tagOperations,
+            propertyOperations,
             selectionState,
             expandedFolders,
             expandedTags,

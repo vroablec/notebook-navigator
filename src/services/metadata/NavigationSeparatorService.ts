@@ -289,7 +289,7 @@ export class NavigationSeparatorService extends BaseMetadataService {
             if (from === to) {
                 return;
             }
-            const newKeyExists = Object.prototype.hasOwnProperty.call(store, to) as boolean;
+            const newKeyExists = Object.prototype.hasOwnProperty.call(store, to) === true;
             if (newKeyExists && preserveExisting) {
                 delete store[from];
                 changed = true;

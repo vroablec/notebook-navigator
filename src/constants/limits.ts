@@ -286,5 +286,12 @@ export const LIMITS = {
             maxDelayMs: 30_000,
             maxAttempts: 5
         }
+    },
+    operations: {
+        /**
+         * Number of files processed before yielding to the event loop during
+         * tag/property rename and delete workflows.
+         */
+        metadataMutationYieldBatchSize: 100
     }
 } as const;

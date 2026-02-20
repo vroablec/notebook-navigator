@@ -25,7 +25,6 @@ import { addShortcutRenameMenuItem } from './shortcutRenameMenuItem';
 import { addStyleMenu } from './styleMenuBuilder';
 import { resolveUXIconForMenu } from '../uxIcons';
 import { normalizePropertyNodeId, parsePropertyNodeId } from '../propertyTree';
-import { normalizeCommaSeparatedList } from '../commaSeparatedListUtils';
 import { removePropertyField } from '../propertyUtils';
 
 function resolvePropertyMenuLabel(params: { propertyNodeId: string; propertyNodeName?: string; keyNodeName?: string }): string {
@@ -49,7 +48,7 @@ function resolvePropertyMenuLabel(params: { propertyNodeId: string; propertyNode
  */
 export function buildPropertyMenu(params: PropertyMenuBuilderParams): void {
     const { propertyNodeId, menu, services, settings, options } = params;
-    const { app, metadataService, propertyTreeService, isMobile, plugin } = services;
+    const { app, metadataService, propertyOperations, propertyTreeService, isMobile, plugin } = services;
 
     const normalizedNodeId = normalizePropertyNodeId(propertyNodeId);
     if (!normalizedNodeId) {
@@ -269,14 +268,26 @@ export function buildPropertyMenu(params: PropertyMenuBuilderParams): void {
     if (propertyKey) {
         menu.addSeparator();
         menu.addItem((item: MenuItem) => {
-            setAsyncOnClick(item.setTitle(strings.contextMenu.property.removeKey).setIcon('lucide-trash-2'), async () => {
+            setAsyncOnClick(item.setTitle(strings.contextMenu.property.removeKey).setIcon('lucide-minus'), async () => {
                 const nextPropertyFields = removePropertyField(plugin.settings.propertyFields, propertyKey);
                 if (nextPropertyFields === plugin.settings.propertyFields) {
                     return;
                 }
 
-                plugin.settings.propertyFields = normalizeCommaSeparatedList(nextPropertyFields);
+                plugin.settings.propertyFields = nextPropertyFields;
                 await plugin.saveSettingsAndUpdate();
+            });
+        });
+
+        menu.addItem((item: MenuItem) => {
+            setAsyncOnClick(item.setTitle(strings.contextMenu.property.renameKey).setIcon('lucide-pencil'), async () => {
+                await propertyOperations.promptRenamePropertyKey(propertyKey);
+            });
+        });
+
+        menu.addItem((item: MenuItem) => {
+            setAsyncOnClick(item.setTitle(strings.contextMenu.property.deleteKey).setIcon('lucide-trash'), async () => {
+                await propertyOperations.promptDeletePropertyKey(propertyKey);
             });
         });
     }

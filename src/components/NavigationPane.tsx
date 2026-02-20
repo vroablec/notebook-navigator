@@ -72,7 +72,14 @@ import { SortableContext, arrayMove, useSortable, verticalListSortingStrategy } 
 import { CSS } from '@dnd-kit/utilities';
 import { useExpansionState, useExpansionDispatch } from '../context/ExpansionContext';
 import { useSelectionState, useSelectionDispatch } from '../context/SelectionContext';
-import { useServices, useCommandQueue, useFileSystemOps, useMetadataService, useTagOperations } from '../context/ServicesContext';
+import {
+    useServices,
+    useCommandQueue,
+    useFileSystemOps,
+    useMetadataService,
+    useTagOperations,
+    usePropertyOperations
+} from '../context/ServicesContext';
 import { useSettingsState, useSettingsUpdate, useActiveProfile } from '../context/SettingsContext';
 import { useUXPreferences } from '../context/UXPreferencesContext';
 import { showNotice } from '../utils/noticeUtils';
@@ -263,6 +270,7 @@ export const NavigationPane = React.memo(
         const fileSystemOps = useFileSystemOps();
         const metadataService = useMetadataService();
         const tagOperations = useTagOperations();
+        const propertyOperations = usePropertyOperations();
         const expansionState = useExpansionState();
         const expansionDispatch = useExpansionDispatch();
         const selectionState = useSelectionState();
@@ -572,6 +580,7 @@ export const NavigationPane = React.memo(
                 fileSystemOps,
                 metadataService,
                 tagOperations,
+                propertyOperations,
                 tagTreeService,
                 propertyTreeService,
                 commandQueue,
@@ -585,6 +594,7 @@ export const NavigationPane = React.memo(
                 fileSystemOps,
                 metadataService,
                 tagOperations,
+                propertyOperations,
                 tagTreeService,
                 propertyTreeService,
                 commandQueue,

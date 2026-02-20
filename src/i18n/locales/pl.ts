@@ -327,7 +327,9 @@ export const STRINGS_PL = {
         },
         property: {
             addKey: 'Dodaj atrybut',
-            removeKey: 'Usuń atrybut'
+            removeKey: 'Usuń z listy właściwości',
+            renameKey: 'Zmień nazwę właściwości',
+            deleteKey: 'Usuń właściwość z notatek'
         },
         navigation: {
             addSeparator: 'Dodaj separator',
@@ -459,9 +461,14 @@ export const STRINGS_PL = {
             confirmRename: 'Zmień nazwę tagu',
             renameUnchanged: '{tag} bez zmian',
             renameNoChanges: '{oldTag} → {newTag} ({countLabel})',
+            renameBatchNotFinalized:
+                'Zmieniono nazwę {renamed}/{total}. Nie zaktualizowano: {notUpdated}. Metadane i skróty nie zostały zaktualizowane.',
             invalidTagName: 'Wprowadź prawidłową nazwę tagu.',
             descendantRenameError: 'Nie można przenieść do tego samego lub podrzędnego tagu.',
             confirmDelete: 'Usuń tag',
+            deleteBatchNotFinalized:
+                'Usunięto z {removed}/{total}. Nie zaktualizowano: {notUpdated}. Metadane i skróty nie zostały zaktualizowane.',
+            checkConsoleForDetails: 'Sprawdź konsolę, aby uzyskać szczegóły.',
             file: 'plik',
             files: 'pliki',
             inlineParsingWarning: {
@@ -470,6 +477,24 @@ export const STRINGS_PL = {
                     '{tag} zawiera znaki, których Obsidian nie może przetworzyć w tagach w treści. Nie ma to wpływu na tagi w atrybutach.',
                 confirm: 'Użyj mimo to'
             }
+        },
+        propertyOperation: {
+            renameTitle: 'Zmień nazwę właściwości {property}',
+            deleteTitle: 'Usuń właściwość {property}',
+            newKeyPrompt: 'Nowa nazwa właściwości',
+            newKeyPlaceholder: 'Wprowadź nową nazwę właściwości',
+            renameWarning: 'Zmiana nazwy właściwości {property} zmodyfikuje {count} {files}.',
+            renameConflictWarning:
+                'Właściwość {newKey} już istnieje w {count} {files}. Zmiana nazwy {oldKey} zastąpi istniejące wartości {newKey}.',
+            deleteWarning: 'Usunięcie właściwości {property} zmodyfikuje {count} {files}.',
+            confirmRename: 'Zmień nazwę właściwości',
+            confirmDelete: 'Usuń właściwość',
+            renameNoChanges: '{oldKey} → {newKey} (bez zmian)',
+            renameSettingsUpdateFailed: 'Zmieniono nazwę właściwości {oldKey} → {newKey}. Nie udało się zaktualizować ustawień.',
+            deleteSingleSuccess: 'Usunięto właściwość {property} z 1 notatki',
+            deleteMultipleSuccess: 'Usunięto właściwość {property} z {count} notatek',
+            deleteSettingsUpdateFailed: 'Usunięto właściwość {property}. Nie udało się zaktualizować ustawień.',
+            invalidKeyName: 'Wprowadź prawidłową nazwę właściwości.'
         },
         fileSystem: {
             newFolderTitle: 'Nowy folder',
@@ -622,6 +647,7 @@ export const STRINGS_PL = {
             noTagsToRemove: 'Brak tagów do usunięcia',
             noFilesSelected: 'Nie wybrano plików',
             tagOperationsNotAvailable: 'Operacje na tagach niedostępne',
+            propertyOperationsNotAvailable: 'Operacje na właściwościach niedostępne',
             tagsRequireMarkdown: 'Tagi są obsługiwane tylko w notatkach Markdown',
             propertiesRequireMarkdown: 'Atrybuty są obsługiwane tylko w notatkach Markdown',
             propertySetOnNote: 'Zaktualizowano atrybut w 1 notatce',

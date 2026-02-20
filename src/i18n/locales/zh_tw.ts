@@ -327,7 +327,9 @@ export const STRINGS_ZH_TW = {
         },
         property: {
             addKey: '新增屬性鍵',
-            removeKey: '移除屬性鍵'
+            removeKey: '從屬性清單中移除',
+            renameKey: '重新命名屬性',
+            deleteKey: '從筆記中刪除屬性'
         },
         navigation: {
             addSeparator: '新增分隔線',
@@ -457,9 +459,12 @@ export const STRINGS_ZH_TW = {
             confirmRename: '重新命名標籤',
             renameUnchanged: '{tag} 未變更',
             renameNoChanges: '{oldTag} → {newTag} ({countLabel})',
+            renameBatchNotFinalized: '已重新命名 {renamed}/{total}。未更新：{notUpdated}。中繼資料和捷徑未更新。',
             invalidTagName: '請輸入有效的標籤名稱。',
             descendantRenameError: '無法將標籤移動到自身或其子標籤中。',
             confirmDelete: '刪除標籤',
+            deleteBatchNotFinalized: '已從 {removed}/{total} 中刪除。未更新：{notUpdated}。中繼資料和捷徑未更新。',
+            checkConsoleForDetails: '查看主控台了解詳情。',
             file: '個檔案',
             files: '個檔案',
             inlineParsingWarning: {
@@ -467,6 +472,23 @@ export const STRINGS_ZH_TW = {
                 message: '{tag} 包含 Obsidian 無法在內嵌標籤中解析的字元。Frontmatter 標籤不受影響。',
                 confirm: '仍然使用'
             }
+        },
+        propertyOperation: {
+            renameTitle: '重新命名屬性 {property}',
+            deleteTitle: '刪除屬性 {property}',
+            newKeyPrompt: '新屬性名稱',
+            newKeyPlaceholder: '輸入新屬性名稱',
+            renameWarning: '重新命名屬性 {property} 將修改 {count} 個{files}。',
+            renameConflictWarning: '屬性 {newKey} 已存在於 {count} 個{files}中。重新命名 {oldKey} 將取代現有的 {newKey} 值。',
+            deleteWarning: '刪除屬性 {property} 將修改 {count} 個{files}。',
+            confirmRename: '重新命名屬性',
+            confirmDelete: '刪除屬性',
+            renameNoChanges: '{oldKey} → {newKey}（無變更）',
+            renameSettingsUpdateFailed: '已重新命名屬性 {oldKey} → {newKey}。更新設定失敗。',
+            deleteSingleSuccess: '已從 1 篇筆記中刪除屬性 {property}',
+            deleteMultipleSuccess: '已從 {count} 篇筆記中刪除屬性 {property}',
+            deleteSettingsUpdateFailed: '已刪除屬性 {property}。更新設定失敗。',
+            invalidKeyName: '請輸入有效的屬性名稱。'
         },
         fileSystem: {
             newFolderTitle: '新建資料夾',
@@ -617,6 +639,7 @@ export const STRINGS_ZH_TW = {
             noTagsToRemove: '沒有可移除的標籤',
             noFilesSelected: '未選擇檔案',
             tagOperationsNotAvailable: '標籤操作不可用',
+            propertyOperationsNotAvailable: '屬性操作不可用',
             tagsRequireMarkdown: '標籤僅支援 Markdown 筆記',
             propertiesRequireMarkdown: '屬性僅在 Markdown 筆記中受支援',
             propertySetOnNote: '已在 1 篇筆記中更新屬性',

@@ -328,7 +328,9 @@ export const STRINGS_RU = {
         },
         property: {
             addKey: 'Добавить ключ свойства',
-            removeKey: 'Удалить ключ свойства'
+            removeKey: 'Удалить из списка свойств',
+            renameKey: 'Переименовать свойство',
+            deleteKey: 'Удалить свойство из заметок'
         },
         navigation: {
             addSeparator: 'Добавить разделитель',
@@ -458,9 +460,12 @@ export const STRINGS_RU = {
             confirmRename: 'Переименовать тег',
             renameUnchanged: '{tag} не изменён',
             renameNoChanges: '{oldTag} → {newTag} ({countLabel})',
+            renameBatchNotFinalized: 'Переименовано {renamed}/{total}. Не обновлено: {notUpdated}. Метаданные и ярлыки не были обновлены.',
             invalidTagName: 'Введите корректное название тега.',
             descendantRenameError: 'Нельзя переместить тег в себя или в потомка.',
             confirmDelete: 'Удалить тег',
+            deleteBatchNotFinalized: 'Удалено из {removed}/{total}. Не обновлено: {notUpdated}. Метаданные и ярлыки не были обновлены.',
+            checkConsoleForDetails: 'Подробности в консоли.',
             file: 'файл',
             files: 'файлов',
             inlineParsingWarning: {
@@ -468,6 +473,24 @@ export const STRINGS_RU = {
                 message: '{tag} содержит символы, которые Obsidian не может обработать во встроенных тегах. Теги Frontmatter не затронуты.',
                 confirm: 'Всё равно использовать'
             }
+        },
+        propertyOperation: {
+            renameTitle: 'Переименовать свойство {property}',
+            deleteTitle: 'Удалить свойство {property}',
+            newKeyPrompt: 'Новое имя свойства',
+            newKeyPlaceholder: 'Введите новое имя свойства',
+            renameWarning: 'Переименование свойства {property} изменит {count} {files}.',
+            renameConflictWarning:
+                'Свойство {newKey} уже существует в {count} {files}. Переименование {oldKey} заменит существующие значения {newKey}.',
+            deleteWarning: 'Удаление свойства {property} изменит {count} {files}.',
+            confirmRename: 'Переименовать свойство',
+            confirmDelete: 'Удалить свойство',
+            renameNoChanges: '{oldKey} → {newKey} (без изменений)',
+            renameSettingsUpdateFailed: 'Свойство {oldKey} → {newKey} переименовано. Не удалось обновить настройки.',
+            deleteSingleSuccess: 'Свойство {property} удалено из 1 заметки',
+            deleteMultipleSuccess: 'Свойство {property} удалено из {count} заметок',
+            deleteSettingsUpdateFailed: 'Свойство {property} удалено. Не удалось обновить настройки.',
+            invalidKeyName: 'Введите допустимое имя свойства.'
         },
         fileSystem: {
             newFolderTitle: 'Новая папка',
@@ -619,6 +642,7 @@ export const STRINGS_RU = {
             noTagsToRemove: 'Нет тегов для удаления',
             noFilesSelected: 'Файлы не выбраны',
             tagOperationsNotAvailable: 'Операции с тегами недоступны',
+            propertyOperationsNotAvailable: 'Операции со свойствами недоступны',
             tagsRequireMarkdown: 'Теги поддерживаются только для Markdown-заметок',
             propertiesRequireMarkdown: 'Свойства поддерживаются только в заметках Markdown',
             propertySetOnNote: 'Свойство обновлено в 1 заметке',

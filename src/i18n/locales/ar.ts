@@ -327,7 +327,9 @@ export const STRINGS_AR = {
         },
         property: {
             addKey: 'إضافة مفتاح خاصية',
-            removeKey: 'إزالة مفتاح خاصية'
+            removeKey: 'إزالة من قائمة الخصائص',
+            renameKey: 'إعادة تسمية الخاصية',
+            deleteKey: 'حذف الخاصية من الملاحظات'
         },
         navigation: {
             addSeparator: 'إضافة فاصل',
@@ -457,9 +459,14 @@ export const STRINGS_AR = {
             confirmRename: 'إعادة تسمية الوسم',
             renameUnchanged: '{tag} لم يتغير',
             renameNoChanges: '{oldTag} → {newTag} ({countLabel})',
+            renameBatchNotFinalized:
+                'تمت إعادة تسمية {renamed}/{total}. لم يتم التحديث: {notUpdated}. لم يتم تحديث البيانات الوصفية والاختصارات.',
             invalidTagName: 'أدخل اسم وسم صالح.',
             descendantRenameError: 'لا يمكن نقل الوسم إلى نفسه أو إلى فرع منه.',
             confirmDelete: 'حذف الوسم',
+            deleteBatchNotFinalized:
+                'تمت الإزالة من {removed}/{total}. لم يتم التحديث: {notUpdated}. لم يتم تحديث البيانات الوصفية والاختصارات.',
+            checkConsoleForDetails: 'تحقق من وحدة التحكم للحصول على التفاصيل.',
             file: 'ملف',
             files: 'ملفات',
             inlineParsingWarning: {
@@ -467,6 +474,24 @@ export const STRINGS_AR = {
                 message: 'يحتوي {tag} على أحرف لا يستطيع Obsidian تحليلها في الوسوم المضمّنة. لا تتأثر وسوم Frontmatter.',
                 confirm: 'استخدام على أي حال'
             }
+        },
+        propertyOperation: {
+            renameTitle: 'إعادة تسمية الخاصية {property}',
+            deleteTitle: 'حذف الخاصية {property}',
+            newKeyPrompt: 'اسم الخاصية الجديد',
+            newKeyPlaceholder: 'أدخل اسم الخاصية الجديد',
+            renameWarning: 'إعادة تسمية الخاصية {property} ستعدّل {count} {files}.',
+            renameConflictWarning:
+                'الخاصية {newKey} موجودة بالفعل في {count} {files}. إعادة تسمية {oldKey} ستستبدل القيم الحالية لـ {newKey}.',
+            deleteWarning: 'حذف الخاصية {property} سيعدّل {count} {files}.',
+            confirmRename: 'إعادة تسمية الخاصية',
+            confirmDelete: 'حذف الخاصية',
+            renameNoChanges: '{oldKey} → {newKey} (بدون تغييرات)',
+            renameSettingsUpdateFailed: 'تمت إعادة تسمية الخاصية {oldKey} → {newKey}. فشل تحديث الإعدادات.',
+            deleteSingleSuccess: 'تم حذف الخاصية {property} من ملاحظة واحدة',
+            deleteMultipleSuccess: 'تم حذف الخاصية {property} من {count} ملاحظات',
+            deleteSettingsUpdateFailed: 'تم حذف الخاصية {property}. فشل تحديث الإعدادات.',
+            invalidKeyName: 'أدخل اسم خاصية صالح.'
         },
         fileSystem: {
             newFolderTitle: 'مجلد جديد',
@@ -618,6 +643,7 @@ export const STRINGS_AR = {
             noTagsToRemove: 'لا توجد وسوم لإزالتها',
             noFilesSelected: 'لم يتم تحديد ملفات',
             tagOperationsNotAvailable: 'عمليات الوسوم غير متاحة',
+            propertyOperationsNotAvailable: 'عمليات الخصائص غير متاحة',
             tagsRequireMarkdown: 'الوسوم مدعومة فقط على ملاحظات Markdown',
             propertiesRequireMarkdown: 'الخصائص مدعومة فقط في ملاحظات Markdown',
             propertySetOnNote: 'تم تحديث الخاصية في ملاحظة واحدة',

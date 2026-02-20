@@ -127,6 +127,48 @@ export function removePropertyField(propertyFields: string, propertyKey: string)
     return formatCommaSeparatedList(remainingFields);
 }
 
+export function renamePropertyField(
+    propertyFields: string,
+    oldPropertyKey: string,
+    newPropertyKey: string,
+    preserveExisting: boolean = false
+): string {
+    const existingFields = getCachedCommaSeparatedList(propertyFields);
+    const normalizedOldPropertyKey = casefold(oldPropertyKey.trim());
+    const trimmedNewPropertyKey = newPropertyKey.trim();
+    const normalizedNewPropertyKey = casefold(trimmedNewPropertyKey);
+    if (!normalizedOldPropertyKey || !normalizedNewPropertyKey) {
+        return formatCommaSeparatedList(existingFields);
+    }
+
+    const destinationExists = preserveExisting ? existingFields.some(field => casefold(field.trim()) === normalizedNewPropertyKey) : false;
+
+    const nextFields: string[] = [];
+    const seen = new Set<string>();
+
+    existingFields.forEach(field => {
+        const trimmedField = field.trim();
+        const normalizedField = casefold(trimmedField);
+        if (!normalizedField) {
+            return;
+        }
+
+        if (normalizedField === normalizedOldPropertyKey && destinationExists) {
+            return;
+        }
+
+        const nextField = normalizedField === normalizedOldPropertyKey ? trimmedNewPropertyKey : trimmedField;
+        const normalizedNextField = casefold(nextField);
+        if (!normalizedNextField || seen.has(normalizedNextField)) {
+            return;
+        }
+        seen.add(normalizedNextField);
+        nextFields.push(nextField);
+    });
+
+    return formatCommaSeparatedList(nextFields);
+}
+
 export function normalizePropertyTreeValuePath(rawValue: string): string {
     const wikiLink = parseStrictWikiLink(rawValue);
     if (wikiLink) {

@@ -327,7 +327,9 @@ export const STRINGS_VI = {
         },
         property: {
             addKey: 'Thêm khóa thuộc tính',
-            removeKey: 'Xóa khóa thuộc tính'
+            removeKey: 'Xóa khỏi danh sách thuộc tính',
+            renameKey: 'Đổi tên thuộc tính',
+            deleteKey: 'Xóa thuộc tính khỏi ghi chú'
         },
         navigation: {
             addSeparator: 'Thêm dấu phân cách',
@@ -457,9 +459,14 @@ export const STRINGS_VI = {
             confirmRename: 'Đổi tên thẻ',
             renameUnchanged: '{tag} không đổi',
             renameNoChanges: '{oldTag} → {newTag} ({countLabel})',
+            renameBatchNotFinalized:
+                'Đã đổi tên {renamed}/{total}. Chưa cập nhật: {notUpdated}. Siêu dữ liệu và phím tắt chưa được cập nhật.',
             invalidTagName: 'Nhập tên thẻ hợp lệ.',
             descendantRenameError: 'Không thể di chuyển thẻ vào chính nó hoặc phần tử con.',
             confirmDelete: 'Xóa thẻ',
+            deleteBatchNotFinalized:
+                'Đã xóa khỏi {removed}/{total}. Chưa cập nhật: {notUpdated}. Siêu dữ liệu và phím tắt chưa được cập nhật.',
+            checkConsoleForDetails: 'Kiểm tra bảng điều khiển để biết chi tiết.',
             file: 'tệp',
             files: 'tệp',
             inlineParsingWarning: {
@@ -468,6 +475,24 @@ export const STRINGS_VI = {
                     '{tag} chứa các ký tự mà Obsidian không thể phân tích trong thẻ nội tuyến. Các thẻ Frontmatter không bị ảnh hưởng.',
                 confirm: 'Vẫn sử dụng'
             }
+        },
+        propertyOperation: {
+            renameTitle: 'Đổi tên thuộc tính {property}',
+            deleteTitle: 'Xóa thuộc tính {property}',
+            newKeyPrompt: 'Tên thuộc tính mới',
+            newKeyPlaceholder: 'Nhập tên thuộc tính mới',
+            renameWarning: 'Đổi tên thuộc tính {property} sẽ sửa đổi {count} {files}.',
+            renameConflictWarning:
+                'Thuộc tính {newKey} đã tồn tại trong {count} {files}. Đổi tên {oldKey} sẽ thay thế các giá trị hiện có của {newKey}.',
+            deleteWarning: 'Xóa thuộc tính {property} sẽ sửa đổi {count} {files}.',
+            confirmRename: 'Đổi tên thuộc tính',
+            confirmDelete: 'Xóa thuộc tính',
+            renameNoChanges: '{oldKey} → {newKey} (không thay đổi)',
+            renameSettingsUpdateFailed: 'Đã đổi tên thuộc tính {oldKey} → {newKey}. Không thể cập nhật cài đặt.',
+            deleteSingleSuccess: 'Đã xóa thuộc tính {property} khỏi 1 ghi chú',
+            deleteMultipleSuccess: 'Đã xóa thuộc tính {property} khỏi {count} ghi chú',
+            deleteSettingsUpdateFailed: 'Đã xóa thuộc tính {property}. Không thể cập nhật cài đặt.',
+            invalidKeyName: 'Nhập tên thuộc tính hợp lệ.'
         },
         fileSystem: {
             newFolderTitle: 'Thư mục mới',
@@ -619,6 +644,7 @@ export const STRINGS_VI = {
             noTagsToRemove: 'Không có thẻ để gỡ',
             noFilesSelected: 'Chưa chọn tệp',
             tagOperationsNotAvailable: 'Thao tác thẻ không khả dụng',
+            propertyOperationsNotAvailable: 'Thao tác thuộc tính không khả dụng',
             tagsRequireMarkdown: 'Thẻ chỉ được hỗ trợ trên ghi chú Markdown',
             propertiesRequireMarkdown: 'Thuộc tính chỉ được hỗ trợ trên ghi chú Markdown',
             propertySetOnNote: 'Đã cập nhật thuộc tính trên 1 ghi chú',

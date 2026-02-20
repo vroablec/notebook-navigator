@@ -327,7 +327,9 @@ export const STRINGS_TH = {
         },
         property: {
             addKey: 'เพิ่มคีย์คุณสมบัติ',
-            removeKey: 'ลบคีย์คุณสมบัติ'
+            removeKey: 'ลบออกจากรายการคุณสมบัติ',
+            renameKey: 'เปลี่ยนชื่อคุณสมบัติ',
+            deleteKey: 'ลบคุณสมบัติจากโน้ต'
         },
         navigation: {
             addSeparator: 'เพิ่มตัวคั่น',
@@ -457,9 +459,12 @@ export const STRINGS_TH = {
             confirmRename: 'เปลี่ยนชื่อแท็ก',
             renameUnchanged: '{tag} ไม่เปลี่ยนแปลง',
             renameNoChanges: '{oldTag} → {newTag} ({countLabel})',
+            renameBatchNotFinalized: 'เปลี่ยนชื่อแล้ว {renamed}/{total} ไม่ได้อัปเดต: {notUpdated} ข้อมูลเมตาและทางลัดไม่ได้รับการอัปเดต',
             invalidTagName: 'กรอกชื่อแท็กที่ถูกต้อง',
             descendantRenameError: 'ไม่สามารถย้ายแท็กไปยังตัวเองหรือลูกหลาน',
             confirmDelete: 'ลบแท็ก',
+            deleteBatchNotFinalized: 'ลบออกจาก {removed}/{total} ไม่ได้อัปเดต: {notUpdated} ข้อมูลเมตาและทางลัดไม่ได้รับการอัปเดต',
+            checkConsoleForDetails: 'ตรวจสอบคอนโซลเพื่อดูรายละเอียด',
             file: 'ไฟล์',
             files: 'ไฟล์',
             inlineParsingWarning: {
@@ -467,6 +472,24 @@ export const STRINGS_TH = {
                 message: '{tag} มีอักขระที่ Obsidian ไม่สามารถแยกวิเคราะห์ในแท็กแบบอินไลน์ได้ แท็ก Frontmatter ไม่ได้รับผลกระทบ',
                 confirm: 'ใช้ต่อไป'
             }
+        },
+        propertyOperation: {
+            renameTitle: 'เปลี่ยนชื่อคุณสมบัติ {property}',
+            deleteTitle: 'ลบคุณสมบัติ {property}',
+            newKeyPrompt: 'ชื่อคุณสมบัติใหม่',
+            newKeyPlaceholder: 'ป้อนชื่อคุณสมบัติใหม่',
+            renameWarning: 'การเปลี่ยนชื่อคุณสมบัติ {property} จะแก้ไข {count} {files}',
+            renameConflictWarning:
+                'คุณสมบัติ {newKey} มีอยู่แล้วใน {count} {files} การเปลี่ยนชื่อ {oldKey} จะแทนที่ค่าที่มีอยู่ของ {newKey}',
+            deleteWarning: 'การลบคุณสมบัติ {property} จะแก้ไข {count} {files}',
+            confirmRename: 'เปลี่ยนชื่อคุณสมบัติ',
+            confirmDelete: 'ลบคุณสมบัติ',
+            renameNoChanges: '{oldKey} → {newKey} (ไม่มีการเปลี่ยนแปลง)',
+            renameSettingsUpdateFailed: 'เปลี่ยนชื่อคุณสมบัติ {oldKey} → {newKey} แล้ว ไม่สามารถอัปเดตการตั้งค่าได้',
+            deleteSingleSuccess: 'ลบคุณสมบัติ {property} จาก 1 โน้ตแล้ว',
+            deleteMultipleSuccess: 'ลบคุณสมบัติ {property} จาก {count} โน้ตแล้ว',
+            deleteSettingsUpdateFailed: 'ลบคุณสมบัติ {property} แล้ว ไม่สามารถอัปเดตการตั้งค่าได้',
+            invalidKeyName: 'กรุณาป้อนชื่อคุณสมบัติที่ถูกต้อง'
         },
         fileSystem: {
             newFolderTitle: 'โฟลเดอร์ใหม่',
@@ -618,6 +641,7 @@ export const STRINGS_TH = {
             noTagsToRemove: 'ไม่มีแท็กให้นำออก',
             noFilesSelected: 'ไม่ได้เลือกไฟล์',
             tagOperationsNotAvailable: 'การดำเนินการแท็กไม่พร้อมใช้งาน',
+            propertyOperationsNotAvailable: 'การดำเนินการคุณสมบัติไม่พร้อมใช้งาน',
             tagsRequireMarkdown: 'แท็กรองรับเฉพาะโน้ต Markdown',
             propertiesRequireMarkdown: 'คุณสมบัติรองรับเฉพาะโน้ต Markdown เท่านั้น',
             propertySetOnNote: 'อัปเดตคุณสมบัติใน 1 โน้ต',

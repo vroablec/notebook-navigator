@@ -63,8 +63,12 @@ export class TagBatchOperations {
                 continue;
             }
 
-            if (await this.fileMutations.removeTagFromFile(file, tag)) {
-                removed++;
+            try {
+                if (await this.fileMutations.removeTagFromFile(file, tag)) {
+                    removed++;
+                }
+            } catch (error: unknown) {
+                console.error(`[Notebook Navigator] Failed to remove tag ${tag} from ${file.path}`, error);
             }
         }
 
