@@ -30,7 +30,8 @@ import {
     getActiveHiddenFileNames,
     getActiveHiddenFileTags,
     getActiveHiddenFileProperties,
-    getActiveHiddenFolders
+    getActiveHiddenFolders,
+    getActivePropertyFields
 } from '../../utils/vaultProfiles';
 import { clearCacheRebuildNoticeState, getCacheRebuildNoticeState, setCacheRebuildNoticeState } from './cacheRebuildNoticeStorage';
 import { getCacheRebuildProgressTypes, getMetadataDependentTypes, haveStringArraysChanged } from './storageContentTypes';
@@ -259,8 +260,9 @@ export function useStorageSettingsSync(params: {
         const relevantSettings = registry?.getAllRelevantSettings() ?? [];
         const hasRelevantSettingsChange =
             !registry || relevantSettings.some(settingKey => previousSettings[settingKey] !== settings[settingKey]);
+        const propertyFieldsChanged = getActivePropertyFields(previousSettings) !== getActivePropertyFields(settings);
 
-        if (hasRelevantSettingsChange) {
+        if (hasRelevantSettingsChange || propertyFieldsChanged) {
             scheduleSettingsChanges(previousSettings, settings);
         }
 

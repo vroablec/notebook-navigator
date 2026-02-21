@@ -21,12 +21,13 @@ import type { NotebookNavigatorSettings } from '../types';
 import type { LocalStorageKeys } from '../../types';
 import type { FolderAppearance } from '../../hooks/useListPaneAppearance';
 import { localStorage } from '../../utils/localStorage';
-import { cloneShortcuts, DEFAULT_VAULT_PROFILE_ID } from '../../utils/vaultProfiles';
+import { cloneShortcuts, createPropertyKeysFromPropertyFields, DEFAULT_VAULT_PROFILE_ID } from '../../utils/vaultProfiles';
 import { ShortcutType, type ShortcutEntry } from '../../types/shortcuts';
 import { isNotePropertyType, isRecentNotesHideMode, isTagSortOrder } from '../types';
 import { normalizeCalendarCustomRootFolder } from '../../utils/calendarCustomNotePatterns';
 import { normalizeFolderNoteNamePattern } from '../../utils/folderNoteName';
 import { normalizeOptionalVaultFilePath } from '../../utils/pathUtils';
+import { normalizeCommaSeparatedList } from '../../utils/commaSeparatedListUtils';
 
 // Types/Interfaces
 export interface LegacyVisibilityMigration {
@@ -151,9 +152,20 @@ export function migrateLegacySyncedSettings(params: {
     }
     delete mutableSettings['customPropertyType'];
 
+    const currentPropertyFields = mutableSettings['propertyFields'];
+    if (typeof currentPropertyFields !== 'string') {
+        delete mutableSettings['propertyFields'];
+    } else {
+        mutableSettings['propertyFields'] = normalizeCommaSeparatedList(currentPropertyFields);
+    }
+
     const legacyPropertyFields = mutableSettings['customPropertyFields'];
-    if (typeof storedData?.['propertyFields'] === 'undefined' && typeof legacyPropertyFields === 'string') {
-        settings.propertyFields = legacyPropertyFields;
+    if (
+        typeof mutableSettings['propertyFields'] === 'undefined' &&
+        typeof storedData?.['propertyFields'] === 'undefined' &&
+        typeof legacyPropertyFields === 'string'
+    ) {
+        mutableSettings['propertyFields'] = normalizeCommaSeparatedList(legacyPropertyFields);
     }
     delete mutableSettings['customPropertyFields'];
 
@@ -183,10 +195,6 @@ export function migrateLegacySyncedSettings(params: {
 
     if (!isNotePropertyType(settings.notePropertyType)) {
         settings.notePropertyType = defaultSettings.notePropertyType;
-    }
-
-    if (typeof settings.propertyFields !== 'string') {
-        settings.propertyFields = defaultSettings.propertyFields;
     }
 
     if (typeof settings.showPropertiesOnSeparateRows !== 'boolean') {
@@ -354,6 +362,56 @@ export function applyExistingUserDefaults(params: { settings: NotebookNavigatorS
     if (typeof settings.checkForUpdatesOnStart !== 'boolean') {
         settings.checkForUpdatesOnStart = true;
     }
+}
+
+// Extracts legacy top-level propertyFields for migration into vault profiles.
+export function extractLegacyPropertyFields(params: {
+    settings: NotebookNavigatorSettings;
+    storedData: Record<string, unknown> | null;
+}): string | null {
+    const { settings, storedData } = params;
+    const settingsRecord = settings as unknown as Record<string, unknown>;
+    const settingsValue = typeof settingsRecord['propertyFields'] === 'string' ? settingsRecord['propertyFields'] : null;
+    const storedValue = typeof storedData?.['propertyFields'] === 'string' ? storedData['propertyFields'] : null;
+    if (Object.prototype.hasOwnProperty.call(settingsRecord, 'propertyFields')) {
+        delete settingsRecord['propertyFields'];
+    }
+
+    const resolved = settingsValue ?? storedValue;
+    if (resolved === null) {
+        return null;
+    }
+
+    return normalizeCommaSeparatedList(resolved);
+}
+
+// Migrates legacy property field list to vault profile property key settings.
+export function applyLegacyPropertyFieldsMigration(params: {
+    settings: NotebookNavigatorSettings;
+    legacyPropertyFields: string | null;
+}): void {
+    const { settings, legacyPropertyFields } = params;
+
+    const settingsRecord = settings as unknown as Record<string, unknown>;
+    if (Object.prototype.hasOwnProperty.call(settingsRecord, 'propertyFields')) {
+        delete settingsRecord['propertyFields'];
+    }
+
+    if (!legacyPropertyFields || legacyPropertyFields.length === 0) {
+        return;
+    }
+
+    const propertyKeys = createPropertyKeysFromPropertyFields(legacyPropertyFields);
+    if (propertyKeys.length === 0) {
+        return;
+    }
+
+    settings.vaultProfiles.forEach(profile => {
+        if (Array.isArray(profile.propertyKeys) && profile.propertyKeys.length > 0) {
+            return;
+        }
+        profile.propertyKeys = propertyKeys.map(entry => ({ ...entry }));
+    });
 }
 
 // Extracts legacy shortcuts from old settings format for migration to vault profiles

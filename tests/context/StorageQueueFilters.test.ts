@@ -170,7 +170,7 @@ describe('Storage queue filters', () => {
             })
         );
 
-        settings = { ...settings, showFilePreview: false, showFeatureImage: false, propertyFields: '' };
+        settings = { ...settings, showFilePreview: false, showFeatureImage: false };
 
         const types: ContentProviderType[] = ['markdownPipeline'];
         const result = filterFilesRequiringMetadataSources([file], types, settings);

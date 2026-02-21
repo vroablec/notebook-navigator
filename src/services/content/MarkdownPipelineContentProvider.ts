@@ -25,6 +25,7 @@ import { getDBInstance } from '../../storage/fileOperations';
 import { getCachedCommaSeparatedList } from '../../utils/commaSeparatedListUtils';
 import { areStringArraysEqual } from '../../utils/arrayUtils';
 import { arePropertyItemsEqual, hasPropertyFrontmatterFields } from '../../utils/propertyUtils';
+import { getActivePropertyFields } from '../../utils/vaultProfiles';
 import {
     type FenceMarkerChar,
     isFenceClose,
@@ -361,8 +362,7 @@ export class MarkdownPipelineContentProvider extends FeatureImageContentProvider
             'showFeatureImage',
             'featureImageProperties',
             'featureImageExcludeProperties',
-            'downloadExternalFeatureImages',
-            'propertyFields'
+            'downloadExternalFeatureImages'
         ];
     }
 
@@ -402,7 +402,7 @@ export class MarkdownPipelineContentProvider extends FeatureImageContentProvider
             // Enabling preview requires regenerated text because files may have changed while preview extraction was disabled.
             (!oldSettings.showFilePreview && newSettings.showFilePreview);
 
-        const shouldClearProperties = oldSettings.propertyFields !== newSettings.propertyFields;
+        const shouldClearProperties = getActivePropertyFields(oldSettings) !== getActivePropertyFields(newSettings);
 
         const featureImagePropertiesChanged = !areStringArraysEqual(oldSettings.featureImageProperties, newSettings.featureImageProperties);
         const featureImageExcludePropertiesChanged = !areStringArraysEqual(
@@ -477,7 +477,7 @@ export class MarkdownPipelineContentProvider extends FeatureImageContentProvider
             return { update: null, processed: true };
         }
 
-        const propertyNameFields = getCachedCommaSeparatedList(settings.propertyFields);
+        const propertyNameFields = getCachedCommaSeparatedList(getActivePropertyFields(settings));
         const propertiesEnabled = propertyNameFields.length > 0;
 
         const cachedMetadata = this.app.metadataCache.getFileCache(job.file);

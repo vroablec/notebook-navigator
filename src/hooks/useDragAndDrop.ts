@@ -40,6 +40,7 @@ import { getCachedCommaSeparatedList } from '../utils/commaSeparatedListUtils';
 import { casefold } from '../utils/recordUtils';
 import { buildPropertyKeyNodeId, normalizePropertyTreeValuePath, parsePropertyNodeId } from '../utils/propertyTree';
 import { getFilesForNavigationSelection } from '../utils/selectionUtils';
+import { getActivePropertyFields } from '../utils/vaultProfiles';
 
 /**
  * Enables drag and drop for files and folders using event delegation.
@@ -103,9 +104,10 @@ export function useDragAndDrop(containerRef: React.RefObject<HTMLElement | null>
         }
         return Math.round(Math.min(2, Math.max(0.1, delaySeconds)) * 1000);
     }, [settings.springLoadedFoldersSubsequentDelay]);
+    const activePropertyFields = getActivePropertyFields(settings);
     const configuredPropertyDisplayByNodeId = useMemo(() => {
         const displayByNodeId = new Map<string, string>();
-        getCachedCommaSeparatedList(settings.propertyFields).forEach(fieldName => {
+        getCachedCommaSeparatedList(activePropertyFields).forEach(fieldName => {
             const normalizedKey = casefold(fieldName);
             const displayName = fieldName.trim();
             if (!normalizedKey || !displayName) {
@@ -117,7 +119,7 @@ export function useDragAndDrop(containerRef: React.RefObject<HTMLElement | null>
             }
         });
         return displayByNodeId;
-    }, [settings.propertyFields]);
+    }, [activePropertyFields]);
 
     /**
      * Sets or clears the drag payload in Obsidian's internal drag manager.

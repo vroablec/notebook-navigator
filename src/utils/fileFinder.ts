@@ -45,7 +45,8 @@ import {
     getActiveHiddenFileTags,
     getActiveHiddenFileProperties,
     getActiveHiddenFolders,
-    getActiveHiddenTags
+    getActiveHiddenTags,
+    getActivePropertyFields
 } from './vaultProfiles';
 import { getCachedFileTags } from './tagUtils';
 import { casefold, normalizePinnedNoteContext } from './recordUtils';
@@ -613,7 +614,7 @@ export function getFilesForProperty(
     propertyTreeService: IPropertyTreeProvider | null = null
 ): TFile[] {
     const includesAnyProperty = propertyNodeId === PROPERTIES_ROOT_VIRTUAL_FOLDER_ID;
-    const configuredPropertyKeys = getConfiguredPropertyKeySet(settings.propertyFields);
+    const configuredPropertyKeys = getConfiguredPropertyKeySet(getActivePropertyFields(settings));
 
     if (includesAnyProperty && configuredPropertyKeys.size === 0) {
         return [];

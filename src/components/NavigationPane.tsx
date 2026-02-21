@@ -169,7 +169,6 @@ import { getPathBaseName } from '../utils/pathUtils';
 import type { NavigateToFolderOptions, RevealPropertyOptions, RevealTagOptions } from '../hooks/useNavigatorReveal';
 import { isVirtualTagCollectionId } from '../utils/virtualTagCollections';
 import { compositeWithBase } from '../utils/colorUtils';
-import { normalizeCommaSeparatedList } from '../utils/commaSeparatedListUtils';
 import { useMeasuredElementHeight } from '../hooks/useMeasuredElementHeight';
 import { useSurfaceColorVariables } from '../hooks/useSurfaceColorVariables';
 import { NAVIGATION_PANE_SURFACE_COLOR_MAPPINGS } from '../constants/surfaceColorMappings';
@@ -179,6 +178,7 @@ import { createFrontmatterPropertyExclusionMatcher, createHiddenFileNameMatcherF
 import { createHiddenTagVisibility } from '../utils/tagPrefixMatcher';
 import { getDBInstanceOrNull } from '../storage/fileOperations';
 import { appendPropertyField, collectAvailablePropertyKeySuggestions } from '../utils/propertyUtils';
+import { getActivePropertyFields, setActivePropertyFields } from '../utils/vaultProfiles';
 import {
     getDirectPropertyKeyNoteCount,
     getTotalPropertyNoteCount,
@@ -2138,19 +2138,21 @@ export const NavigationPane = React.memo(
         );
 
         const handleAddPropertyKeyFromSectionMenu = useCallback(() => {
-            const suggestions = collectAvailablePropertyKeySuggestions(app, plugin.settings.propertyFields);
+            const propertyFields = getActivePropertyFields(plugin.settings);
+            const suggestions = collectAvailablePropertyKeySuggestions(app, propertyFields);
             if (suggestions.length === 0) {
                 showNotice(strings.settings.items.propertyFields.emptySelectorNotice, { variant: 'warning' });
                 return;
             }
 
             const modal = new PropertyKeySuggestModal(app, suggestions, async selectedKey => {
-                const nextValue = appendPropertyField(plugin.settings.propertyFields, selectedKey);
-                if (nextValue === plugin.settings.propertyFields) {
+                const currentPropertyFields = getActivePropertyFields(plugin.settings);
+                const nextValue = appendPropertyField(currentPropertyFields, selectedKey);
+                if (nextValue === currentPropertyFields) {
                     return;
                 }
 
-                plugin.settings.propertyFields = normalizeCommaSeparatedList(nextValue);
+                setActivePropertyFields(plugin.settings, nextValue);
                 await plugin.saveSettingsAndUpdate();
             });
             modal.open();

@@ -21,6 +21,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { MarkdownPipelineContentProvider } from '../../src/services/content/MarkdownPipelineContentProvider';
 import { DEFAULT_SETTINGS } from '../../src/settings/defaultSettings';
 import type { NotebookNavigatorSettings } from '../../src/settings/types';
+import { setActivePropertyFields } from '../../src/utils/vaultProfiles';
 
 const batchClearAllFileContentMock = vi.fn();
 const batchClearFeatureImageContentMock = vi.fn();
@@ -34,14 +35,19 @@ vi.mock('../../src/storage/fileOperations', () => ({
 }));
 
 // Builds a stable baseline with markdown preview/feature-image extraction disabled unless overridden by each test.
-function createSettings(overrides: Partial<NotebookNavigatorSettings>): NotebookNavigatorSettings {
-    return {
-        ...DEFAULT_SETTINGS,
-        showFilePreview: false,
-        showFeatureImage: false,
-        notePropertyType: 'none',
-        ...overrides
-    };
+function createSettings(overrides: Partial<NotebookNavigatorSettings> & { propertyFields?: string }): NotebookNavigatorSettings {
+    const { propertyFields: rawPropertyFields, ...restOverrides } = overrides;
+    const settings = structuredClone(DEFAULT_SETTINGS);
+    settings.showFilePreview = false;
+    settings.showFeatureImage = false;
+    settings.notePropertyType = 'none';
+    Object.assign(settings, restOverrides);
+
+    if (typeof rawPropertyFields === 'string') {
+        setActivePropertyFields(settings, rawPropertyFields);
+    }
+
+    return settings;
 }
 
 describe('MarkdownPipelineContentProvider clearContent', () => {

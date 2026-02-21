@@ -34,6 +34,7 @@ import {
 import { casefold } from '../../utils/recordUtils';
 import { getCachedCommaSeparatedList } from '../../utils/commaSeparatedListUtils';
 import type { PropertyTreeNode } from '../../types/storage';
+import { getActivePropertyFields } from '../../utils/vaultProfiles';
 
 type SchedulePropertyTreeRebuildOptions = {
     flush?: boolean;
@@ -45,7 +46,8 @@ function shouldEnablePropertyTree(settings: NotebookNavigatorSettings): boolean 
 
 function buildConfiguredPropertyDisplayByKey(settings: NotebookNavigatorSettings): Map<string, string> {
     const displayByKey = new Map<string, string>();
-    for (const fieldName of getCachedCommaSeparatedList(settings.propertyFields)) {
+    const activePropertyFields = getActivePropertyFields(settings);
+    for (const fieldName of getCachedCommaSeparatedList(activePropertyFields)) {
         const displayName = fieldName.trim();
         const normalizedField = casefold(fieldName);
         if (!displayName || !normalizedField || displayByKey.has(normalizedField)) {
@@ -123,7 +125,8 @@ export function usePropertyTreeSync(params: {
     const propertyTreeRebuildDebouncerRef = useRef<Debouncer<[], void> | null>(null);
     const isPropertyTreeEnabled = useMemo(() => shouldEnablePropertyTree(settings), [settings]);
     const propertyTreeRebuildReadyGateRef = useRef(false);
-    const previousPropertyFieldsRef = useRef(settings.propertyFields);
+    const activePropertyFields = getActivePropertyFields(settings);
+    const previousPropertyFieldsRef = useRef(activePropertyFields);
     const previousShowPropertiesRef = useRef(settings.showProperties);
 
     useEffect(() => {
@@ -238,10 +241,10 @@ export function usePropertyTreeSync(params: {
     useEffect(() => {
         const previousPropertyFields = previousPropertyFieldsRef.current;
         const previousShowProperties = previousShowPropertiesRef.current;
-        const propertyFieldsChanged = previousPropertyFields !== settings.propertyFields;
+        const propertyFieldsChanged = previousPropertyFields !== activePropertyFields;
         const showPropertiesChanged = previousShowProperties !== settings.showProperties;
         const commitCurrentSettingsSnapshot = () => {
-            previousPropertyFieldsRef.current = settings.propertyFields;
+            previousPropertyFieldsRef.current = activePropertyFields;
             previousShowPropertiesRef.current = settings.showProperties;
         };
 
@@ -290,7 +293,7 @@ export function usePropertyTreeSync(params: {
         hiddenFileTags,
         fileVisibility,
         profileId,
-        settings.propertyFields,
+        activePropertyFields,
         settings.showProperties
     ]);
 

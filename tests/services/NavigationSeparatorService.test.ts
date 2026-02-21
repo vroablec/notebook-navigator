@@ -26,6 +26,7 @@ import type { CleanupValidators } from '../../src/services/MetadataService';
 import { createDefaultFileData } from '../../src/storage/indexeddb/fileData';
 import { buildPropertySeparatorKey } from '../../src/utils/navigationSeparators';
 import { buildPropertyValueNodeId } from '../../src/utils/propertyTree';
+import { setActivePropertyFields } from '../../src/utils/vaultProfiles';
 
 class TestSettingsProvider implements ISettingsProvider {
     constructor(public settings: NotebookNavigatorSettings) {}
@@ -55,7 +56,7 @@ class TestSettingsProvider implements ISettingsProvider {
 
 function createSettings(): NotebookNavigatorSettings {
     const settings = structuredClone(DEFAULT_SETTINGS);
-    settings.propertyFields = 'status';
+    setActivePropertyFields(settings, 'status');
     settings.navigationSeparators = {};
     return settings;
 }

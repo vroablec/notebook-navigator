@@ -22,9 +22,11 @@ import { migrateRecentColors, migrateReleaseCheckState } from './settings/migrat
 import { migrateMomentDateFormats } from './settings/migrations/momentFormats';
 import {
     applyExistingUserDefaults,
+    applyLegacyPropertyFieldsMigration,
     applyLegacyPeriodicNotesFolderMigration,
     applyLegacyShortcutsMigration,
     applyLegacyVisibilityMigration,
+    extractLegacyPropertyFields,
     extractLegacyPeriodicNotesFolder,
     extractLegacyShortcuts,
     extractLegacyVisibilitySettings,
@@ -430,6 +432,9 @@ export default class NotebookNavigatorPlugin extends Plugin implements ISettings
         // Load raw data and validate it is a plain object before treating as settings
         const rawData: unknown = await this.loadData();
         const storedData: Record<string, unknown> | null = isRecord(rawData) ? rawData : null;
+        const hadLegacyPropertyFieldsInStoredData = Boolean(
+            storedData && Object.prototype.hasOwnProperty.call(storedData, 'propertyFields')
+        );
         const storedSettings = storedData as Partial<NotebookNavigatorSettings> | null;
         const isFirstLaunch = storedData === null; // No saved data means first launch
         this.shouldPersistDesktopScale = Boolean(storedData && 'desktopScale' in storedData);
@@ -544,6 +549,7 @@ export default class NotebookNavigatorPlugin extends Plugin implements ISettings
 
         // Extract legacy exclusion settings and migrate to vault profile system
         const legacyVisibility = extractLegacyVisibilitySettings({ settings: this.settings, storedData });
+        const legacyPropertyFields = extractLegacyPropertyFields({ settings: this.settings, storedData });
         const legacyShortcuts = extractLegacyShortcuts({ storedData });
         const legacyPeriodicNotesFolder = extractLegacyPeriodicNotesFolder({ settings: this.settings });
 
@@ -551,6 +557,7 @@ export default class NotebookNavigatorPlugin extends Plugin implements ISettings
         ensureVaultProfiles(this.settings);
         applyLegacyPeriodicNotesFolderMigration({ settings: this.settings, legacyPeriodicNotesFolder });
         applyLegacyVisibilityMigration({ settings: this.settings, migration: legacyVisibility });
+        applyLegacyPropertyFieldsMigration({ settings: this.settings, legacyPropertyFields });
         applyLegacyShortcutsMigration({ settings: this.settings, legacyShortcuts });
         const migratedShortcutNegationSyntax = migrateSearchShortcutNegationSyntax({ settings: this.settings });
         this.normalizeIconSettings(this.settings);
@@ -564,6 +571,7 @@ export default class NotebookNavigatorPlugin extends Plugin implements ISettings
             migratedRecentColors ||
             hadLocalValuesInSettings ||
             hadLegacySearchProviderInSettings ||
+            hadLegacyPropertyFieldsInStoredData ||
             uiScaleMigrated ||
             migratedMomentFormats ||
             migratedShortcutNegationSyntax;
@@ -2063,6 +2071,7 @@ export default class NotebookNavigatorPlugin extends Plugin implements ISettings
         delete rest.showCalendar;
         delete rest.calendarCustomPromptForTitle;
         delete rest.saveMetadataToFrontmatter;
+        delete rest.propertyFields;
         const syncModeRegistry = this.getSyncModeRegistry();
         SYNC_MODE_SETTING_IDS.forEach(settingId => {
             if (!this.isLocal(settingId)) {

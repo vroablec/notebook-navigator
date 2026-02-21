@@ -22,6 +22,7 @@ import { PropertyOperations } from '../../src/services/PropertyOperations';
 import type { NotebookNavigatorSettings } from '../../src/settings';
 import { DEFAULT_SETTINGS } from '../../src/settings/defaultSettings';
 import { createTestTFile } from '../utils/createTestTFile';
+import { getActivePropertyFields, setActivePropertyFields } from '../../src/utils/vaultProfiles';
 
 class TestPropertyOperations extends PropertyOperations {
     public renameSettings(oldKeyNormalized: string, newKeyDisplay: string): Promise<void> {
@@ -71,29 +72,29 @@ describe('PropertyOperations settings updates', () => {
     });
 
     it('renames propertyFields and propertySortKey on rename', async () => {
-        settings.propertyFields = 'Status, priority';
+        setActivePropertyFields(settings, 'Status, priority');
         settings.propertySortKey = 'STATUS';
 
         await operations.renameSettings('status', 'State');
 
         expect(saveSettingsAndUpdate).toHaveBeenCalledTimes(1);
-        expect(settings.propertyFields).toBe('State, priority');
+        expect(getActivePropertyFields(settings)).toBe('State, priority');
         expect(settings.propertySortKey).toBe('State');
     });
 
     it('clears propertySortKey and removes propertyFields entries on delete', async () => {
-        settings.propertyFields = 'State, priority';
+        setActivePropertyFields(settings, 'State, priority');
         settings.propertySortKey = 'State';
 
         await operations.deleteSettings('state');
 
         expect(saveSettingsAndUpdate).toHaveBeenCalledTimes(1);
-        expect(settings.propertyFields).toBe('priority');
+        expect(getActivePropertyFields(settings)).toBe('priority');
         expect(settings.propertySortKey).toBe('');
     });
 
     it('does not save when rename makes no changes', async () => {
-        settings.propertyFields = 'State, priority';
+        setActivePropertyFields(settings, 'State, priority');
         settings.propertySortKey = 'State';
 
         await operations.renameSettings('status', 'State');
@@ -102,7 +103,7 @@ describe('PropertyOperations settings updates', () => {
     });
 
     it('does not finalize rename when no markdown files are processed', async () => {
-        settings.propertyFields = 'Status, priority';
+        setActivePropertyFields(settings, 'Status, priority');
         settings.propertySortKey = 'Status';
 
         const listener = vi.fn();
@@ -117,7 +118,7 @@ describe('PropertyOperations settings updates', () => {
 
         expect(result).toBe(true);
         expect(saveSettingsAndUpdate).toHaveBeenCalledTimes(0);
-        expect(settings.propertyFields).toBe('Status, priority');
+        expect(getActivePropertyFields(settings)).toBe('Status, priority');
         expect(settings.propertySortKey).toBe('Status');
         expect(listener).not.toHaveBeenCalled();
 
@@ -125,7 +126,7 @@ describe('PropertyOperations settings updates', () => {
     });
 
     it('does not finalize delete when no markdown files are processed', async () => {
-        settings.propertyFields = 'State, priority';
+        setActivePropertyFields(settings, 'State, priority');
         settings.propertySortKey = 'State';
 
         const listener = vi.fn();
@@ -139,7 +140,7 @@ describe('PropertyOperations settings updates', () => {
 
         expect(result).toBe(true);
         expect(saveSettingsAndUpdate).toHaveBeenCalledTimes(0);
-        expect(settings.propertyFields).toBe('State, priority');
+        expect(getActivePropertyFields(settings)).toBe('State, priority');
         expect(settings.propertySortKey).toBe('State');
         expect(listener).not.toHaveBeenCalled();
 

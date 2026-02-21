@@ -24,7 +24,7 @@ import type { VaultProfile } from '../settings/types';
 import type { FileVisibility } from '../utils/fileTypeUtils';
 import type { ShortcutEntry } from '../types/shortcuts';
 import { isFolderShortcut, isNoteShortcut, isSearchShortcut, isTagShortcut, isPropertyShortcut } from '../types/shortcuts';
-import { cloneShortcuts, getActiveVaultProfile } from '../utils/vaultProfiles';
+import { clonePropertyKeys, cloneShortcuts, getActiveVaultProfile } from '../utils/vaultProfiles';
 import { clonePinnedNotesRecord, isStringRecordValue, sanitizeRecord } from '../utils/recordUtils';
 import { areStringArraysEqual } from '../utils/arrayUtils';
 import type { FolderAppearance } from '../hooks/useListPaneAppearance';
@@ -57,6 +57,28 @@ const normalizeShortcutAlias = (alias: string | undefined): string | undefined =
 
 const areShortcutAliasesEqual = (prevAlias: string | undefined, nextAlias: string | undefined): boolean => {
     return normalizeShortcutAlias(prevAlias) === normalizeShortcutAlias(nextAlias);
+};
+
+const arePropertyKeysEqual = (prev?: VaultProfile['propertyKeys'], next?: VaultProfile['propertyKeys']): boolean => {
+    const prevEntries = Array.isArray(prev) ? prev : [];
+    const nextEntries = Array.isArray(next) ? next : [];
+    if (prevEntries.length !== nextEntries.length) {
+        return false;
+    }
+
+    for (let index = 0; index < prevEntries.length; index += 1) {
+        const previous = prevEntries[index];
+        const current = nextEntries[index];
+        if (
+            previous.key !== current.key ||
+            previous.showInNavigation !== current.showInNavigation ||
+            previous.showInList !== current.showInList
+        ) {
+            return false;
+        }
+    }
+
+    return true;
 };
 
 // Compares shortcut lists to reuse the previous profile object when entries are unchanged.
@@ -220,6 +242,7 @@ export function SettingsProvider({ children, plugin }: SettingsProviderProps) {
                 hiddenFileNames: Array.isArray(profile.hiddenFileNames) ? [...profile.hiddenFileNames] : [],
                 hiddenTags: Array.isArray(profile.hiddenTags) ? [...profile.hiddenTags] : [],
                 hiddenFileTags: Array.isArray(profile.hiddenFileTags) ? [...profile.hiddenFileTags] : [],
+                propertyKeys: clonePropertyKeys(profile.propertyKeys),
                 shortcuts: cloneShortcuts(profile.shortcuts)
             }));
         }
@@ -264,6 +287,7 @@ export function SettingsProvider({ children, plugin }: SettingsProviderProps) {
         const navigationBannerEqual = previous?.navigationBanner === navigationBanner;
         const periodicNotesFolderEqual = previous?.profile.periodicNotesFolder === profile.periodicNotesFolder;
         const nameEqual = previous?.profile.name === profile.name;
+        const propertyKeysEqual = arePropertyKeysEqual(previous?.profile.propertyKeys, profile.propertyKeys);
         const shortcutsEqual = areShortcutsEqual(previous?.profile.shortcuts, profile.shortcuts);
 
         if (
@@ -277,6 +301,7 @@ export function SettingsProvider({ children, plugin }: SettingsProviderProps) {
             navigationBannerEqual &&
             periodicNotesFolderEqual &&
             nameEqual &&
+            propertyKeysEqual &&
             shortcutsEqual &&
             previous
         ) {

@@ -23,6 +23,7 @@ import { formatCommaSeparatedList, getCachedCommaSeparatedList } from './commaSe
 import { casefold } from './recordUtils';
 import { naturalCompare } from './sortUtils';
 import { isRecord } from './typeGuards';
+import { getActivePropertyFields } from './vaultProfiles';
 
 export type WikiLinkTarget = { target: string; displayText: string };
 export interface PropertyKeySuggestion {
@@ -36,7 +37,7 @@ interface PropertyKeyAggregate {
 }
 
 export function hasPropertyFrontmatterFields(settings: NotebookNavigatorSettings): boolean {
-    return getCachedCommaSeparatedList(settings.propertyFields).length > 0;
+    return getCachedCommaSeparatedList(getActivePropertyFields(settings)).length > 0;
 }
 
 export function collectAvailablePropertyKeySuggestions(app: App, propertyFields: string): PropertyKeySuggestion[] {

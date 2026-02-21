@@ -79,6 +79,7 @@ import { createOmnisearchHighlightQueryTokenContext, sanitizeOmnisearchHighlight
 import { casefold } from '../utils/recordUtils';
 import { normalizePropertyTreeValuePath, type PropertySelectionNodeId } from '../utils/propertyTree';
 import { getFilesForNavigationSelection } from '../utils/selectionUtils';
+import { getActivePropertyFields } from '../utils/vaultProfiles';
 
 const EMPTY_SEARCH_META = new Map<string, SearchResultMeta>();
 // Shared empty map used when no files are hidden to avoid allocations
@@ -232,6 +233,7 @@ export function useListPaneData({
         }
         return getEffectiveSortOption(settings, ItemType.FOLDER, selectedFolder, selectedTag);
     }, [selectionType, selectedFolder, selectedTag, settings]);
+    const activePropertyFields = getActivePropertyFields(settings);
 
     /**
      * Calculate the base list of files based on current selection without search filtering.
@@ -280,7 +282,7 @@ export function useListPaneData({
         settings.defaultFolderSort,
         settings.propertySortKey,
         settings.propertySortSecondary,
-        settings.propertyFields,
+        activePropertyFields,
         settings.showProperties,
         settings.folderSortOverrides,
         settings.tagSortOverrides,

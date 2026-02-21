@@ -31,6 +31,7 @@ import { isRecord } from '../utils/typeGuards';
 import { buildUsageSummaryFromPaths, renderAffectedFilesPreview, yieldToEventLoop } from './operations/OperationBatchUtils';
 import { PropertyFileMutations } from './propertyOperations/PropertyFileMutations';
 import type { PropertyKeyDeleteEventPayload, PropertyKeyRenameEventPayload } from './propertyOperations/types';
+import { getActivePropertyFields, setActivePropertyFields } from '../utils/vaultProfiles';
 
 export type { PropertyKeyRenameEventPayload, PropertyKeyDeleteEventPayload } from './propertyOperations/types';
 
@@ -42,7 +43,7 @@ type RenameConflictSnapshot = Map<string, Set<string>>;
  *
  * Contract:
  * - Mutates YAML frontmatter in markdown files via `processFrontMatter`.
- * - Updates `propertyFields` and `propertySortKey` when at least one note changed and no file mutation failed.
+ * - Updates active-profile property keys and `propertySortKey` when at least one note changed and no file mutation failed.
  * - Emits rename/delete events only when settings updates are attempted.
  * - Relies on existing Obsidian modify/metadata listeners for reindexing.
  */
@@ -351,12 +352,10 @@ export class PropertyOperations {
     protected async updateSettingsAfterRename(oldKeyNormalized: string, newKeyDisplay: string): Promise<void> {
         const settings = this.getSettings();
         let changed = false;
+        const activePropertyFields = getActivePropertyFields(settings);
 
-        const nextPropertyFields = renamePropertyField(settings.propertyFields, oldKeyNormalized, newKeyDisplay, false);
-        if (nextPropertyFields !== settings.propertyFields) {
-            settings.propertyFields = nextPropertyFields;
-            changed = true;
-        }
+        const nextPropertyFields = renamePropertyField(activePropertyFields, oldKeyNormalized, newKeyDisplay, false);
+        changed = setActivePropertyFields(settings, nextPropertyFields) || changed;
 
         if (casefold(settings.propertySortKey) === oldKeyNormalized && settings.propertySortKey !== newKeyDisplay) {
             settings.propertySortKey = newKeyDisplay;
@@ -371,12 +370,10 @@ export class PropertyOperations {
     protected async updateSettingsAfterDelete(normalizedKey: string): Promise<void> {
         const settings = this.getSettings();
         let changed = false;
+        const activePropertyFields = getActivePropertyFields(settings);
 
-        const nextPropertyFields = removePropertyField(settings.propertyFields, normalizedKey);
-        if (nextPropertyFields !== settings.propertyFields) {
-            settings.propertyFields = nextPropertyFields;
-            changed = true;
-        }
+        const nextPropertyFields = removePropertyField(activePropertyFields, normalizedKey);
+        changed = setActivePropertyFields(settings, nextPropertyFields) || changed;
 
         if (casefold(settings.propertySortKey) === normalizedKey && settings.propertySortKey.length > 0) {
             settings.propertySortKey = '';

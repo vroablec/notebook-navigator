@@ -29,6 +29,7 @@ import {
     normalizePropertyKeyNodeId,
     normalizePropertyNodeId
 } from '../../utils/propertyTree';
+import { getActivePropertyFields } from '../../utils/vaultProfiles';
 import { BaseMetadataService } from './BaseMetadataService';
 
 export interface PropertyColorData {
@@ -192,7 +193,7 @@ export class PropertyMetadataService extends BaseMetadataService {
     ): (nodeId: string) => boolean {
         return (
             createConfiguredPropertyNodeValidator({
-                propertyFields: targetSettings.propertyFields,
+                propertyFields: getActivePropertyFields(targetSettings),
                 dbFiles: validators.dbFiles
             }) ?? (() => false)
         );

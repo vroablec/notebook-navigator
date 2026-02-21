@@ -41,6 +41,7 @@ import {
     parseStoredPropertySelectionNodeId,
     type PropertySelectionNodeId
 } from '../utils/propertyTree';
+import { getActivePropertyFields } from '../utils/vaultProfiles';
 
 export type SelectionRevealSource = 'auto' | 'manual' | 'shortcut' | 'startup';
 
@@ -1130,9 +1131,10 @@ export function SelectionProvider({
         }
     }, [app.vault, dispatch, propertyFeatureEnabled, settings.showProperties, state.selectedProperty, state.selectionType]);
 
+    const activePropertyFields = getActivePropertyFields(settings);
     useEffect(() => {
         reconcilePropertySelection(state.selectionType, state.selectedProperty);
-    }, [reconcilePropertySelection, settings.propertyFields, settings.showProperties, state.selectedProperty, state.selectionType]);
+    }, [activePropertyFields, reconcilePropertySelection, settings.showProperties, state.selectedProperty, state.selectionType]);
 
     useEffect(() => {
         try {

@@ -27,6 +27,7 @@ import { normalizePropertyTreeValuePath, parseStrictWikiLink } from './propertyU
 import { casefold } from './recordUtils';
 import { naturalCompare } from './sortUtils';
 import { isRecord } from './typeGuards';
+import { getActivePropertyFields } from './vaultProfiles';
 
 export { normalizePropertyTreeValuePath };
 
@@ -197,7 +198,7 @@ export function isPropertyFeatureEnabled(settings: NotebookNavigatorSettings): b
         return false;
     }
 
-    return getConfiguredPropertyKeySet(settings.propertyFields).size > 0;
+    return getConfiguredPropertyKeySet(getActivePropertyFields(settings)).size > 0;
 }
 
 export function determinePropertyToReveal(
@@ -210,7 +211,7 @@ export function determinePropertyToReveal(
         return null;
     }
 
-    const configuredKeys = getConfiguredPropertyKeySet(settings.propertyFields);
+    const configuredKeys = getConfiguredPropertyKeySet(getActivePropertyFields(settings));
     if (configuredKeys.size === 0) {
         return null;
     }
@@ -493,7 +494,7 @@ export function isPropertySelectionNodeIdConfigured(
         return false;
     }
 
-    return getConfiguredPropertyKeySet(settings.propertyFields).has(parsed.key);
+    return getConfiguredPropertyKeySet(getActivePropertyFields(settings)).has(parsed.key);
 }
 
 export function canRestorePropertySelectionNodeId(settings: NotebookNavigatorSettings, selectionNodeId: PropertySelectionNodeId): boolean {

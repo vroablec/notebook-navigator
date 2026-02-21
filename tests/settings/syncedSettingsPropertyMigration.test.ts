@@ -18,7 +18,11 @@
 
 import { describe, expect, it } from 'vitest';
 import { DEFAULT_SETTINGS } from '../../src/settings/defaultSettings';
-import { migrateLegacySyncedSettings } from '../../src/settings/migrations/syncedSettings';
+import {
+    applyLegacyPropertyFieldsMigration,
+    extractLegacyPropertyFields,
+    migrateLegacySyncedSettings
+} from '../../src/settings/migrations/syncedSettings';
 import type { NotebookNavigatorSettings } from '../../src/settings/types';
 import { STORAGE_KEYS } from '../../src/types';
 
@@ -47,12 +51,18 @@ describe('migrateLegacySyncedSettings property key migration', () => {
             keys: STORAGE_KEYS,
             defaultSettings: DEFAULT_SETTINGS
         });
+        const legacyPropertyFields = extractLegacyPropertyFields({ settings, storedData: null });
+        applyLegacyPropertyFieldsMigration({ settings, legacyPropertyFields });
 
         expect(settings.notePropertyType).toBe('wordCount');
-        expect(settings.propertyFields).toBe('status, type');
+        expect(settings.vaultProfiles[0]?.propertyKeys).toEqual([
+            { key: 'status', showInNavigation: true, showInList: true },
+            { key: 'type', showInNavigation: true, showInList: true }
+        ]);
         expect(settings.showFilePropertiesInCompactMode).toBe(true);
         expect(settings.showPropertiesOnSeparateRows).toBe(false);
 
+        expect(Object.prototype.hasOwnProperty.call(settingsRecord, 'propertyFields')).toBe(false);
         expect(Object.prototype.hasOwnProperty.call(settingsRecord, 'customPropertyType')).toBe(false);
         expect(Object.prototype.hasOwnProperty.call(settingsRecord, 'customPropertyFields')).toBe(false);
         expect(Object.prototype.hasOwnProperty.call(settingsRecord, 'showCustomPropertyInCompactMode')).toBe(false);

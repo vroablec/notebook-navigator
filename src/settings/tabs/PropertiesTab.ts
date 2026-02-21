@@ -19,7 +19,6 @@
 import { Setting } from 'obsidian';
 import { strings } from '../../i18n';
 import { PropertyKeySuggestModal } from '../../modals/PropertyKeySuggestModal';
-import { normalizeCommaSeparatedList } from '../../utils/commaSeparatedListUtils';
 import { showNotice } from '../../utils/noticeUtils';
 import { appendPropertyField, collectAvailablePropertyKeySuggestions } from '../../utils/propertyUtils';
 import { isTagSortOrder } from '../types';
@@ -27,6 +26,7 @@ import type { SettingsTabContext } from './SettingsTabContext';
 import { createSettingGroupFactory } from '../settingGroups';
 import { addSettingSyncModeToggle } from '../syncModeToggle';
 import { wireToggleSettingWithSubSettings } from '../subSettings';
+import { getActivePropertyFields, setActivePropertyFields } from '../../utils/vaultProfiles';
 
 function setPropertyFieldsInputValue(setting: Setting, value: string): void {
     const inputEl = setting.controlEl.querySelector('input');
@@ -60,9 +60,9 @@ export function renderPropertiesTab(context: SettingsTabContext): void {
         strings.settings.items.propertyFields.name,
         strings.settings.items.propertyFields.desc,
         strings.settings.items.propertyFields.placeholder,
-        () => plugin.settings.propertyFields,
+        () => getActivePropertyFields(plugin.settings),
         value => {
-            plugin.settings.propertyFields = normalizeCommaSeparatedList(value);
+            setActivePropertyFields(plugin.settings, value);
         }
     );
     propertyFieldsSetting.controlEl.addClass('nn-setting-wide-input');
@@ -71,20 +71,22 @@ export function renderPropertiesTab(context: SettingsTabContext): void {
             .setIcon('lucide-plus')
             .setTooltip(strings.settings.items.propertyFields.addButtonTooltip)
             .onClick(() => {
-                const suggestions = collectAvailablePropertyKeySuggestions(app, plugin.settings.propertyFields);
+                const propertyFields = getActivePropertyFields(plugin.settings);
+                const suggestions = collectAvailablePropertyKeySuggestions(app, propertyFields);
                 if (suggestions.length === 0) {
                     showNotice(strings.settings.items.propertyFields.emptySelectorNotice, { variant: 'warning' });
                     return;
                 }
 
                 const modal = new PropertyKeySuggestModal(app, suggestions, async selectedKey => {
-                    const nextValue = appendPropertyField(plugin.settings.propertyFields, selectedKey);
-                    if (nextValue === plugin.settings.propertyFields) {
+                    const currentPropertyFields = getActivePropertyFields(plugin.settings);
+                    const nextValue = appendPropertyField(currentPropertyFields, selectedKey);
+                    if (nextValue === currentPropertyFields) {
                         return;
                     }
 
-                    plugin.settings.propertyFields = normalizeCommaSeparatedList(nextValue);
-                    setPropertyFieldsInputValue(propertyFieldsSetting, plugin.settings.propertyFields);
+                    setActivePropertyFields(plugin.settings, nextValue);
+                    setPropertyFieldsInputValue(propertyFieldsSetting, getActivePropertyFields(plugin.settings));
                     await plugin.saveSettingsAndUpdate();
                 });
                 modal.open();

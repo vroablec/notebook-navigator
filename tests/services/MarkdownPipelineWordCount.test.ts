@@ -23,6 +23,7 @@ import { DEFAULT_SETTINGS } from '../../src/settings/defaultSettings';
 import type { NotebookNavigatorSettings } from '../../src/settings/types';
 import type { FileData } from '../../src/storage/IndexedDBStorage';
 import { deriveFileMetadata } from '../utils/pathMetadata';
+import { setActivePropertyFields } from '../../src/utils/vaultProfiles';
 
 class TestMarkdownPipelineContentProvider extends MarkdownPipelineContentProvider {
     async runWordCount(file: TFile, settings: NotebookNavigatorSettings): Promise<number | null> {
@@ -35,14 +36,19 @@ class TestMarkdownPipelineContentProvider extends MarkdownPipelineContentProvide
     }
 }
 
-function createSettings(overrides?: Partial<NotebookNavigatorSettings>): NotebookNavigatorSettings {
-    return {
-        ...DEFAULT_SETTINGS,
-        showFilePreview: false,
-        showFeatureImage: false,
-        notePropertyType: 'wordCount',
-        ...overrides
-    };
+function createSettings(overrides?: Partial<NotebookNavigatorSettings> & { propertyFields?: string }): NotebookNavigatorSettings {
+    const { propertyFields, ...settingsOverrides } = overrides ?? {};
+    const settings = structuredClone(DEFAULT_SETTINGS);
+    settings.showFilePreview = false;
+    settings.showFeatureImage = false;
+    settings.notePropertyType = 'wordCount';
+    Object.assign(settings, settingsOverrides);
+
+    if (typeof propertyFields === 'string') {
+        setActivePropertyFields(settings, propertyFields);
+    }
+
+    return settings;
 }
 
 function createApp() {

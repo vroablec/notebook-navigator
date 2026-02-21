@@ -193,6 +193,13 @@ export interface ToolbarVisibilitySettings {
     list: Record<ListToolbarButtonId, boolean>;
 }
 
+/** Per-property visibility configuration stored in a vault profile. */
+export interface VaultProfilePropertyKey {
+    key: string;
+    showInNavigation: boolean;
+    showInList: boolean;
+}
+
 /** Vault profile storing per-profile filtering and layout preferences */
 export interface VaultProfile {
     id: string;
@@ -205,6 +212,7 @@ export interface VaultProfile {
     hiddenFileProperties: string[];
     navigationBanner: string | null;
     periodicNotesFolder: string;
+    propertyKeys: VaultProfilePropertyKey[];
     shortcuts: ShortcutEntry[];
 }
 
@@ -328,7 +336,6 @@ export interface NotebookNavigatorSettings {
     inheritPropertyColors: boolean;
     propertySortOrder: TagSortOrder;
     showAllPropertiesFolder: boolean;
-    propertyFields: string;
 
     // List pane tab
     defaultListMode: ListDisplayMode;

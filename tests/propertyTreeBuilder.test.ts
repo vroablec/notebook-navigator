@@ -35,6 +35,7 @@ import {
     normalizePropertyTreeValuePath,
     parsePropertyNodeId
 } from '../src/utils/propertyTree';
+import { setActivePropertyFields } from '../src/utils/vaultProfiles';
 
 interface MockFile {
     path: string;
@@ -556,9 +557,9 @@ describe('property selection restore', () => {
     it('allows restoring properties root when properties section is shown and no fields are configured', () => {
         const settings = {
             ...DEFAULT_SETTINGS,
-            showProperties: true,
-            propertyFields: ''
+            showProperties: true
         };
+        setActivePropertyFields(settings, '');
 
         expect(canRestorePropertySelectionNodeId(settings, PROPERTIES_ROOT_VIRTUAL_FOLDER_ID)).toBe(true);
     });
@@ -566,9 +567,9 @@ describe('property selection restore', () => {
     it('rejects restoring properties root when properties section is hidden', () => {
         const settings = {
             ...DEFAULT_SETTINGS,
-            showProperties: false,
-            propertyFields: 'status'
+            showProperties: false
         };
+        setActivePropertyFields(settings, 'status');
 
         expect(canRestorePropertySelectionNodeId(settings, PROPERTIES_ROOT_VIRTUAL_FOLDER_ID)).toBe(false);
     });

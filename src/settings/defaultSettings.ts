@@ -56,6 +56,7 @@ export const DEFAULT_SETTINGS: NotebookNavigatorSettings = {
             hiddenFileProperties: [],
             navigationBanner: null,
             periodicNotesFolder: '',
+            propertyKeys: [],
             shortcuts: []
         }
     ],
@@ -191,7 +192,6 @@ export const DEFAULT_SETTINGS: NotebookNavigatorSettings = {
     inheritPropertyColors: true,
     propertySortOrder: 'alpha-asc',
     showAllPropertiesFolder: true,
-    propertyFields: '',
 
     // List pane tab
     defaultListMode: 'standard',

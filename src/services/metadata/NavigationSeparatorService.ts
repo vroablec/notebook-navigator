@@ -36,6 +36,7 @@ import { normalizeTagPath } from '../../utils/tagUtils';
 import { TAGGED_TAG_ID, UNTAGGED_TAG_ID } from '../../types';
 import { ensureRecord, isBooleanRecordValue } from '../../utils/recordUtils';
 import { getDBInstanceOrNull } from '../../storage/fileOperations';
+import { getActivePropertyFields } from '../../utils/vaultProfiles';
 
 const FOLDER_PREFIX = 'folder:';
 const TAG_PREFIX = 'tag:';
@@ -355,13 +356,13 @@ export class NavigationSeparatorService extends BaseMetadataService {
     ): ((nodeId: string) => boolean) | null {
         if (validators) {
             return createConfiguredPropertyNodeValidator({
-                propertyFields: targetSettings.propertyFields,
+                propertyFields: getActivePropertyFields(targetSettings),
                 dbFiles: validators.dbFiles
             });
         }
 
         const providerValidator = createConfiguredPropertyNodeValidator({
-            propertyFields: targetSettings.propertyFields,
+            propertyFields: getActivePropertyFields(targetSettings),
             propertyTreeProvider: this.getPropertyTreeProvider?.() ?? null
         });
         if (providerValidator) {
@@ -379,7 +380,7 @@ export class NavigationSeparatorService extends BaseMetadataService {
         }
 
         return createConfiguredPropertyNodeValidator({
-            propertyFields: targetSettings.propertyFields,
+            propertyFields: getActivePropertyFields(targetSettings),
             dbFiles
         });
     }
