@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { App, Modal, setIcon } from 'obsidian';
+import { App, Modal, Platform, setIcon } from 'obsidian';
 import { strings } from '../i18n';
 import type { VaultProfilePropertyKey } from '../settings/types';
 import { runAsyncAction } from '../utils/async';
@@ -89,6 +89,16 @@ export class PropertyKeyVisibilityModal extends Modal {
                 this.renderRows();
             })
         );
+        this.headerDisposers.push(
+            addAsyncEventListener(filterInput, 'keydown', event => {
+                if (!Platform.isMobile || event.key !== 'Enter') {
+                    return;
+                }
+                event.preventDefault();
+                event.stopPropagation();
+                filterInput.blur();
+            })
+        );
 
         const scrollContainer = this.contentEl.createDiv({ cls: 'nn-property-keys-scroll' });
         this.renderColumnHeader(scrollContainer);
@@ -98,7 +108,9 @@ export class PropertyKeyVisibilityModal extends Modal {
         this.renderFooter();
         this.updateApplyButtonState();
 
-        filterInput.focus();
+        if (!Platform.isMobile) {
+            filterInput.focus();
+        }
     }
 
     onClose(): void {
