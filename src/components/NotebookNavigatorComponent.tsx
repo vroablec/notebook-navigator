@@ -43,6 +43,7 @@ import {
     FILE_PANE_DIMENSIONS,
     ItemType,
     NAVPANE_MEASUREMENTS,
+    PROPERTIES_ROOT_VIRTUAL_FOLDER_ID,
     TAGGED_TAG_ID,
     UNTAGGED_TAG_ID,
     type BackgroundMode,
@@ -57,7 +58,9 @@ import { getNavigationPaneSizing } from '../utils/paneSizing';
 import { getAndroidFontScale } from '../utils/androidFontScale';
 import { getBackgroundClasses } from '../utils/paneLayout';
 import { confirmRemoveAllTagsFromFiles, openAddTagToFilesModal, removeTagFromFilesWithPrompt } from '../utils/tagModalHelpers';
+import { normalizeTagPath } from '../utils/tagUtils';
 import { getTemplaterCreateNewNoteFromTemplate } from '../utils/templaterIntegration';
+import { normalizePropertyNodeId } from '../utils/propertyTree';
 import { useNavigatorScale } from '../hooks/useNavigatorScale';
 import { ListPane } from './ListPane';
 import type { ListPaneHandle } from './ListPane';
@@ -161,7 +164,17 @@ export const NotebookNavigatorComponent = React.memo(
         const selectionDispatch = useSelectionDispatch();
         const uiState = useUIState();
         const uiDispatch = useUIDispatch();
-        const { addFolderShortcut, addNoteShortcut, addTagShortcut } = useShortcuts();
+        const {
+            folderShortcutKeysByPath,
+            noteShortcutKeysByPath,
+            tagShortcutKeysByPath,
+            propertyShortcutKeysByNodeId,
+            addFolderShortcut,
+            addNoteShortcut,
+            addTagShortcut,
+            addPropertyShortcut,
+            removeShortcut
+        } = useShortcuts();
         const { stopAllProcessing, rebuildCache } = useFileCache();
         const { bannerNotice, updateAvailableVersion, markAsDisplayed } = useUpdateNotice();
         // Keep stable references to avoid stale closures in imperative handles
@@ -739,29 +752,60 @@ export const NotebookNavigatorComponent = React.memo(
                     });
                 },
                 addShortcutForCurrentSelection: async () => {
+                    const toggleShortcut = async (
+                        existingShortcutKey: string | undefined,
+                        addShortcut: () => Promise<boolean>
+                    ): Promise<void> => {
+                        if (existingShortcutKey) {
+                            await removeShortcut(existingShortcutKey);
+                            return;
+                        }
+
+                        await addShortcut();
+                    };
+
                     // Try selected files first
                     const selectedFiles = getSelectedFiles();
                     if (selectedFiles.length > 0) {
-                        await addNoteShortcut(selectedFiles[0].path);
+                        const selectedFilePath = selectedFiles[0].path;
+                        await toggleShortcut(noteShortcutKeysByPath.get(selectedFilePath), () => addNoteShortcut(selectedFilePath));
                         return;
                     }
 
                     // Try selected tag
                     if (selectionState.selectedTag) {
-                        await addTagShortcut(selectionState.selectedTag);
+                        const selectedTagPath = selectionState.selectedTag;
+                        const normalizedTagPath = normalizeTagPath(selectedTagPath);
+                        await toggleShortcut(normalizedTagPath ? tagShortcutKeysByPath.get(normalizedTagPath) : undefined, () =>
+                            addTagShortcut(selectedTagPath)
+                        );
+                        return;
+                    }
+
+                    // Try selected property
+                    if (selectionState.selectedProperty) {
+                        const selectedPropertyNodeId = selectionState.selectedProperty;
+                        const normalizedNodeId =
+                            selectedPropertyNodeId === PROPERTIES_ROOT_VIRTUAL_FOLDER_ID
+                                ? PROPERTIES_ROOT_VIRTUAL_FOLDER_ID
+                                : normalizePropertyNodeId(selectedPropertyNodeId);
+                        await toggleShortcut(normalizedNodeId ? propertyShortcutKeysByNodeId.get(normalizedNodeId) : undefined, () =>
+                            addPropertyShortcut(selectedPropertyNodeId)
+                        );
                         return;
                     }
 
                     // Try selected folder
                     if (selectionState.selectedFolder) {
-                        await addFolderShortcut(selectionState.selectedFolder.path);
+                        const selectedFolderPath = selectionState.selectedFolder.path;
+                        await toggleShortcut(folderShortcutKeysByPath.get(selectedFolderPath), () => addFolderShortcut(selectedFolderPath));
                         return;
                     }
 
                     // Fall back to active file
                     const activeFile = app.workspace.getActiveFile();
                     if (activeFile) {
-                        await addNoteShortcut(activeFile.path);
+                        await toggleShortcut(noteShortcutKeysByPath.get(activeFile.path), () => addNoteShortcut(activeFile.path));
                         return;
                     }
 
@@ -907,9 +951,15 @@ export const NotebookNavigatorComponent = React.memo(
             handleExpandCollapseAll,
             ensureSelectedNavigationItemVisible,
             navigationPaneRef,
+            folderShortcutKeysByPath,
+            noteShortcutKeysByPath,
+            tagShortcutKeysByPath,
             addFolderShortcut,
             addNoteShortcut,
             addTagShortcut,
+            propertyShortcutKeysByNodeId,
+            addPropertyShortcut,
+            removeShortcut,
             handleModifySearchWithDateFilter
         ]);
 

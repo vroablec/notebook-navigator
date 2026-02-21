@@ -735,7 +735,7 @@ export const STRINGS_TR = {
         navigateToFolder: 'Klasöre git', // Command palette: Navigate to a folder using fuzzy search (English: Navigate to folder)
         navigateToTag: 'Etikete git', // Command palette: Navigate to a tag using fuzzy search (English: Navigate to tag)
         navigateToProperty: 'Özelliğe git', // Command palette: Navigate to a property key or value using fuzzy search (English: Navigate to property)
-        addShortcut: 'Kısayollara ekle', // Command palette: Adds the current file, folder, or tag to shortcuts (English: Add to shortcuts)
+        addShortcut: 'Kısayollara ekle', // Command palette: Adds or removes the current file, folder, tag, or property from shortcuts (English: Add to shortcuts)
         openShortcut: 'Kısayol {number} aç',
         toggleDescendants: 'Alt öğeleri aç/kapat', // Command palette: Toggles showing notes from descendants (English: Toggle descendants)
         toggleHidden: 'Gizli klasörleri, etiketleri ve notları aç/kapat', // Command palette: Toggles showing hidden items (English: Toggle hidden items)

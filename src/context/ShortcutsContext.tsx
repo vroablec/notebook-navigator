@@ -38,6 +38,7 @@ import { normalizeTagPath } from '../utils/tagUtils';
 import { runAsyncAction } from '../utils/async';
 import { findVaultProfileById } from '../utils/vaultProfiles';
 import { normalizePropertyNodeId } from '../utils/propertyTree';
+import { PROPERTIES_ROOT_VIRTUAL_FOLDER_ID } from '../types';
 
 // Generates a unique fingerprint for a shortcut based on its type and key properties
 const getShortcutFingerprint = (shortcut: ShortcutEntry): string => {
@@ -56,6 +57,14 @@ const buildShortcutsFingerprint = (shortcuts: ShortcutEntry[]): string => {
     }
     return shortcuts.map(getShortcutFingerprint).join('|');
 };
+
+function normalizePropertyShortcutNodeId(nodeId: string): string | null {
+    if (nodeId === PROPERTIES_ROOT_VIRTUAL_FOLDER_ID) {
+        return PROPERTIES_ROOT_VIRTUAL_FOLDER_ID;
+    }
+
+    return normalizePropertyNodeId(nodeId);
+}
 
 /**
  * Represents a shortcut with resolved file/folder references and validation state.
@@ -183,7 +192,7 @@ export function ShortcutsProvider({ children }: ShortcutsProviderProps) {
                 }
 
                 if (isPropertyShortcut(shortcut)) {
-                    const normalized = normalizePropertyNodeId(shortcut.nodeId);
+                    const normalized = normalizePropertyShortcutNodeId(shortcut.nodeId);
                     return normalized !== null && normalized !== shortcut.nodeId;
                 }
 
@@ -218,7 +227,7 @@ export function ShortcutsProvider({ children }: ShortcutsProviderProps) {
                                 return entry;
                             }
 
-                            const normalized = normalizePropertyNodeId(entry.nodeId);
+                            const normalized = normalizePropertyShortcutNodeId(entry.nodeId);
                             if (!normalized || normalized === entry.nodeId) {
                                 return entry;
                             }
@@ -331,7 +340,7 @@ export function ShortcutsProvider({ children }: ShortcutsProviderProps) {
         const map = new Map<string, string>();
         rawShortcuts.forEach(shortcut => {
             if (isPropertyShortcut(shortcut)) {
-                const normalized = normalizePropertyNodeId(shortcut.nodeId);
+                const normalized = normalizePropertyShortcutNodeId(shortcut.nodeId);
                 if (normalized) {
                     map.set(normalized, getShortcutKey(shortcut));
                 }
@@ -474,7 +483,7 @@ export function ShortcutsProvider({ children }: ShortcutsProviderProps) {
             }
 
             if (isPropertyShortcut(shortcut)) {
-                const normalizedNodeId = normalizePropertyNodeId(shortcut.nodeId);
+                const normalizedNodeId = normalizePropertyShortcutNodeId(shortcut.nodeId);
                 return {
                     key,
                     shortcut,
@@ -581,7 +590,7 @@ export function ShortcutsProvider({ children }: ShortcutsProviderProps) {
                 }
 
                 if (entry.type === ShortcutType.PROPERTY) {
-                    const normalizedNodeId = normalizePropertyNodeId(entry.nodeId);
+                    const normalizedNodeId = normalizePropertyShortcutNodeId(entry.nodeId);
                     if (!normalizedNodeId) {
                         invalidProperty = true;
                         return;
@@ -591,6 +600,11 @@ export function ShortcutsProvider({ children }: ShortcutsProviderProps) {
                         return;
                     }
                     propertyNodeIds.add(normalizedNodeId);
+                    if (normalizedNodeId === entry.nodeId) {
+                        normalizedEntries.push(entry);
+                        return;
+                    }
+
                     normalizedEntries.push({
                         ...entry,
                         nodeId: normalizedNodeId
@@ -723,7 +737,7 @@ export function ShortcutsProvider({ children }: ShortcutsProviderProps) {
 
     const addPropertyShortcut = useCallback(
         async (nodeId: string, options?: { index?: number }) => {
-            const normalizedNodeId = normalizePropertyNodeId(nodeId);
+            const normalizedNodeId = normalizePropertyShortcutNodeId(nodeId);
             if (!normalizedNodeId) {
                 showNotice(strings.shortcuts.invalidProperty, { variant: 'warning' });
                 return false;
@@ -875,7 +889,7 @@ export function ShortcutsProvider({ children }: ShortcutsProviderProps) {
 
     const hasPropertyShortcut = useCallback(
         (nodeId: string) => {
-            const normalizedNodeId = normalizePropertyNodeId(nodeId);
+            const normalizedNodeId = normalizePropertyShortcutNodeId(nodeId);
             return normalizedNodeId ? propertyShortcutKeysByNodeId.has(normalizedNodeId) : false;
         },
         [propertyShortcutKeysByNodeId]

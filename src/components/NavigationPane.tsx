@@ -322,6 +322,8 @@ export const NavigationPane = React.memo(
         const {
             shortcuts: shortcutsList,
             shortcutMap,
+            tagShortcutKeysByPath,
+            propertyShortcutKeysByNodeId,
             removeShortcut,
             clearShortcuts,
             hydratedShortcuts,
@@ -2161,6 +2163,11 @@ export const NavigationPane = React.memo(
                 const hasSeparator = allowSeparator ? metadataService.hasNavigationSeparator(target) : false;
                 const menu = new Menu();
                 let hasActions = false;
+                const tagRootShortcutKey = isTagSection ? tagShortcutKeysByPath.get(TAGGED_TAG_ID) : undefined;
+                const propertyRootShortcutKey = isPropertySection
+                    ? propertyShortcutKeysByNodeId.get(PROPERTIES_ROOT_VIRTUAL_FOLDER_ID)
+                    : undefined;
+                const rootShortcutKey = tagRootShortcutKey ?? propertyRootShortcutKey;
 
                 if (isPropertySection) {
                     menu.addItem(item => {
@@ -2172,6 +2179,32 @@ export const NavigationPane = React.memo(
                     });
                     hasActions = true;
                     menu.addSeparator();
+                }
+
+                if (isTagSection || isPropertySection) {
+                    menu.addItem(item => {
+                        if (rootShortcutKey) {
+                            item.setTitle(strings.shortcuts.remove)
+                                .setIcon(resolveUXIconForMenu(settings.interfaceIcons, 'nav-shortcuts', 'lucide-star-off'))
+                                .onClick(() => {
+                                    runAsyncAction(() => removeShortcut(rootShortcutKey));
+                                });
+                            return;
+                        }
+
+                        item.setTitle(strings.shortcuts.add)
+                            .setIcon(resolveUXIconForMenu(settings.interfaceIcons, 'nav-shortcuts', 'lucide-star'))
+                            .onClick(() => {
+                                runAsyncAction(async () => {
+                                    if (isTagSection) {
+                                        await addTagShortcut(TAGGED_TAG_ID);
+                                        return;
+                                    }
+                                    await addPropertyShortcut(PROPERTIES_ROOT_VIRTUAL_FOLDER_ID);
+                                });
+                            });
+                    });
+                    hasActions = true;
                 }
 
                 if (isShortcutsSection) {
@@ -2291,8 +2324,13 @@ export const NavigationPane = React.memo(
                 pinToggleLabel,
                 plugin.manifest.id,
                 settings.interfaceIcons,
+                tagShortcutKeysByPath,
+                propertyShortcutKeysByNodeId,
                 shortcutsList.length,
-                uiState.pinShortcuts
+                uiState.pinShortcuts,
+                removeShortcut,
+                addTagShortcut,
+                addPropertyShortcut
             ]
         );
 
@@ -2401,6 +2439,14 @@ export const NavigationPane = React.memo(
                     return ZERO_NOTE_COUNT;
                 }
 
+                const precomputed = propertyCounts.get(propertyNodeId);
+                if (precomputed) {
+                    return precomputed;
+                }
+                if (propertyNodeId === PROPERTIES_ROOT_VIRTUAL_FOLDER_ID) {
+                    return ZERO_NOTE_COUNT;
+                }
+
                 const resolved = resolvePropertyTreeNode({
                     nodeId: propertyNodeId,
                     propertyTreeService,
@@ -2437,7 +2483,7 @@ export const NavigationPane = React.memo(
                 const descendants = Math.max(total - current, 0);
                 return { current, descendants, total };
             },
-            [settings.showNoteCount, propertyTreeService, propertyTree, includeDescendantNotes]
+            [settings.showNoteCount, propertyCounts, propertyTreeService, propertyTree, includeDescendantNotes]
         );
 
         // Generates display label for missing note shortcuts, stripping .md extension

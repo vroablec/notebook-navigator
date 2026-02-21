@@ -613,6 +613,8 @@ export function getFilesForProperty(
     propertyTreeService: IPropertyTreeProvider | null = null
 ): TFile[] {
     const includesAnyProperty = propertyNodeId === PROPERTIES_ROOT_VIRTUAL_FOLDER_ID;
+    // Root properties selection includes every configured key that is enabled in either
+    // navigation or list visibility modes.
     const configuredPropertyKeys = getActivePropertyKeySet(settings, 'any');
 
     if (includesAnyProperty && configuredPropertyKeys.size === 0) {

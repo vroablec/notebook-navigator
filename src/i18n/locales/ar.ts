@@ -733,7 +733,7 @@ export const STRINGS_AR = {
         navigateToFolder: 'الانتقال إلى مجلد', // Command palette: Navigate to a folder using fuzzy search (English: Navigate to folder)
         navigateToTag: 'الانتقال إلى وسم', // Command palette: Navigate to a tag using fuzzy search (English: Navigate to tag)
         navigateToProperty: 'الانتقال إلى خاصية', // Command palette: Navigate to a property key or value using fuzzy search (English: Navigate to property)
-        addShortcut: 'إضافة إلى الاختصارات', // Command palette: Adds the current file, folder, or tag to shortcuts (English: Add to shortcuts)
+        addShortcut: 'إضافة إلى الاختصارات', // Command palette: Adds or removes the current file, folder, tag, or property from shortcuts (English: Add to shortcuts)
         openShortcut: 'فتح الاختصار {number}',
         toggleDescendants: 'تبديل الفروع', // Command palette: Toggles showing notes from descendants (English: Toggle descendants)
         toggleHidden: 'تبديل المجلدات والوسوم والملاحظات المخفية', // Command palette: Toggles showing hidden items (English: Toggle hidden items)

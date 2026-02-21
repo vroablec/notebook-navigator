@@ -239,12 +239,19 @@ function decorateNavigationItems(
         if (item.type === NavigationPaneItemType.SHORTCUT_PROPERTY) {
             const propertyNodeId = item.propertyNodeId;
             const propertyColorData = metadataService.getPropertyColorData(propertyNodeId);
-            const parsed = parsePropertyNodeId(propertyNodeId);
-            const icon =
-                metadataService.getPropertyIcon(propertyNodeId) ||
-                (parsed?.valuePath
-                    ? resolveUXIcon(settings.interfaceIcons, 'nav-property-value')
-                    : resolveUXIcon(settings.interfaceIcons, 'nav-property'));
+            const icon = (() => {
+                if (propertyNodeId === PROPERTIES_ROOT_VIRTUAL_FOLDER_ID) {
+                    return resolveUXIcon(settings.interfaceIcons, 'nav-properties');
+                }
+
+                const parsed = parsePropertyNodeId(propertyNodeId);
+                return (
+                    metadataService.getPropertyIcon(propertyNodeId) ||
+                    (parsed?.valuePath
+                        ? resolveUXIcon(settings.interfaceIcons, 'nav-property-value')
+                        : resolveUXIcon(settings.interfaceIcons, 'nav-property'))
+                );
+            })();
 
             return {
                 ...item,
@@ -604,6 +611,16 @@ export function useNavigationPaneData({
 
     const visibleTaggedCount = fileData.tagged ?? 0;
 
+    const hasRootPropertyShortcut = useMemo(() => {
+        return hydratedShortcuts.some(({ shortcut, propertyNodeId }) => {
+            if (!isPropertyShortcut(shortcut)) {
+                return false;
+            }
+
+            return propertyNodeId === PROPERTIES_ROOT_VIRTUAL_FOLDER_ID || shortcut.nodeId === PROPERTIES_ROOT_VIRTUAL_FOLDER_ID;
+        });
+    }, [hydratedShortcuts]);
+
     /** Create tag comparator based on current sort order and descendant note settings */
     const tagComparator = useMemo(
         () => createTagComparator(settings.tagSortOrder, includeDescendantNotes),
@@ -714,11 +731,16 @@ export function useNavigationPaneData({
         const hasHiddenPatterns = hiddenMatcherHasRules;
         const shouldIncludeUntagged = settings.showUntagged && untaggedCount > 0;
         const matcherForMarking = !shouldHideTags && hasHiddenPatterns ? hiddenTagMatcher : undefined;
-        const taggedCollectionCount: NoteCountInfo = {
-            current: visibleTaggedCount,
-            descendants: 0,
-            total: visibleTaggedCount
-        };
+        const taggedCollectionCount: NoteCountInfo = (() => {
+            if (!includeDescendantNotes) {
+                return { current: 0, descendants: 0, total: 0 };
+            }
+            return {
+                current: visibleTaggedCount,
+                descendants: 0,
+                total: visibleTaggedCount
+            };
+        })();
 
         // Adds the untagged node to the items list at the specified level
         const pushUntaggedNode = (level: number) => {
@@ -918,6 +940,7 @@ export function useNavigationPaneData({
         settings.showUntagged,
         hiddenTagMatcher,
         hiddenMatcherHasRules,
+        includeDescendantNotes,
         visibleTagTree,
         visibleTaggedCount,
         untaggedCount,
@@ -946,6 +969,8 @@ export function useNavigationPaneData({
             };
         }
 
+        // Root property navigation counts are derived from keys that are visible in navigation.
+        // Property list selection for the root can include additional keys that are list-only.
         const keyNodes = Array.from(propertyTree.values()).filter(node => visiblePropertyNavigationKeySet.has(node.key));
 
         const effectiveComparator: PropertyNodeComparator =
@@ -956,16 +981,20 @@ export function useNavigationPaneData({
         keyNodes.sort(effectiveComparator);
 
         let collectionCount: NoteCountInfo | undefined;
-        if (settings.showNoteCount && keyNodes.length > 0) {
-            const propertyCollectionFiles = new Set<string>();
-            keyNodes.forEach(node => {
-                node.notesWithValue.forEach(path => propertyCollectionFiles.add(path));
-            });
-            collectionCount = {
-                current: propertyCollectionFiles.size,
-                descendants: 0,
-                total: propertyCollectionFiles.size
-            };
+        const shouldShowRootFolder = settings.showAllPropertiesFolder || keyNodes.length === 0;
+        const shouldComputeCollectionCount = settings.showNoteCount && (shouldShowRootFolder || hasRootPropertyShortcut);
+
+        if (shouldComputeCollectionCount) {
+            if (!includeDescendantNotes || keyNodes.length === 0) {
+                collectionCount = { current: 0, descendants: 0, total: 0 };
+            } else {
+                const propertyCollectionFiles = new Set<string>();
+                keyNodes.forEach(node => {
+                    node.notesWithValue.forEach(path => propertyCollectionFiles.add(path));
+                });
+                const total = propertyCollectionFiles.size;
+                collectionCount = { current: total, descendants: 0, total };
+            }
         }
 
         return {
@@ -978,6 +1007,9 @@ export function useNavigationPaneData({
         propertyKeyComparator,
         propertyTree,
         rootPropertyOrderMap,
+        includeDescendantNotes,
+        hasRootPropertyShortcut,
+        settings.showAllPropertiesFolder,
         settings.showNoteCount,
         settings.showProperties,
         visiblePropertyNavigationKeySet
@@ -1340,6 +1372,20 @@ export function useNavigationPaneData({
             if (isPropertyShortcut(shortcut)) {
                 const rawNodeId = propertyNodeId ?? shortcut.nodeId;
                 const resolvedNodeId = resolvePropertyShortcutNodeId(propertyNodeId, shortcut.nodeId);
+                if (resolvedNodeId === PROPERTIES_ROOT_VIRTUAL_FOLDER_ID) {
+                    const isMissing = !propertiesSectionActive;
+                    items.push({
+                        type: NavigationPaneItemType.SHORTCUT_PROPERTY,
+                        key,
+                        level: itemLevel,
+                        shortcut,
+                        propertyNodeId: PROPERTIES_ROOT_VIRTUAL_FOLDER_ID,
+                        displayName: strings.navigationPane.properties,
+                        isMissing,
+                        missingLabel: isMissing ? strings.navigationPane.properties : undefined
+                    });
+                    return;
+                }
                 const parsed = resolvedNodeId ? parsePropertyNodeId(resolvedNodeId) : null;
                 if (!resolvedNodeId || !parsed) {
                     items.push({
@@ -1431,6 +1477,7 @@ export function useNavigationPaneData({
         settings.interfaceIcons,
         settings.showShortcuts,
         fileData.propertyTree,
+        propertiesSectionActive,
         visibleTagTree,
         tagTreeForOrdering
     ]);
@@ -2046,10 +2093,12 @@ export function useNavigationPaneData({
 
         const counts = new Map<string, NoteCountInfo>();
 
+        const taggedCollectionCurrent = includeDescendantNotes ? visibleTaggedCount : 0;
+
         counts.set(TAGGED_TAG_ID, {
-            current: visibleTaggedCount,
+            current: taggedCollectionCurrent,
             descendants: 0,
-            total: visibleTaggedCount
+            total: taggedCollectionCurrent
         });
 
         // Add untagged count
@@ -2106,6 +2155,9 @@ export function useNavigationPaneData({
         }
 
         const counts = new Map<string, NoteCountInfo>();
+        if (propertySectionBase.collectionCount) {
+            counts.set(PROPERTIES_ROOT_VIRTUAL_FOLDER_ID, propertySectionBase.collectionCount);
+        }
         const visiblePropertyNodes = new Map<string, PropertyTreeNode>();
 
         itemsWithMetadata.forEach(item => {
@@ -2152,7 +2204,15 @@ export function useNavigationPaneData({
         });
 
         return counts;
-    }, [isVisible, itemsWithMetadata, propertiesSectionActive, settings.showNoteCount, fileData.propertyTree, includeDescendantNotes]);
+    }, [
+        isVisible,
+        itemsWithMetadata,
+        propertiesSectionActive,
+        settings.showNoteCount,
+        fileData.propertyTree,
+        includeDescendantNotes,
+        propertySectionBase.collectionCount
+    ]);
 
     const propertyCounts = useMemo(() => {
         if (!propertiesSectionActive || !settings.showNoteCount) {

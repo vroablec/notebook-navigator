@@ -19,7 +19,7 @@
 import { MenuItem } from 'obsidian';
 import type { PropertyMenuBuilderParams } from './menuTypes';
 import { strings } from '../../i18n';
-import { ItemType } from '../../types';
+import { ItemType, PROPERTIES_ROOT_VIRTUAL_FOLDER_ID } from '../../types';
 import { setAsyncOnClick, tryCreateSubmenu } from './menuAsyncHelpers';
 import { addShortcutRenameMenuItem } from './shortcutRenameMenuItem';
 import { addStyleMenu } from './styleMenuBuilder';
@@ -42,12 +42,84 @@ function resolvePropertyMenuLabel(params: { propertyNodeId: string; propertyNode
     return `${keyLabel} = ${valueLabel}`;
 }
 
+function addPropertyShortcutMenuItems(params: {
+    app: PropertyMenuBuilderParams['services']['app'];
+    menu: PropertyMenuBuilderParams['menu'];
+    settings: PropertyMenuBuilderParams['settings'];
+    shortcuts: NonNullable<PropertyMenuBuilderParams['services']['shortcuts']>;
+    nodeId: string;
+    label: string;
+}): void {
+    const { app, menu, settings, shortcuts, nodeId, label } = params;
+    const { addPropertyShortcut, propertyShortcutKeysByNodeId, removeShortcut, renameShortcut, shortcutMap } = shortcuts;
+    const existingShortcutKey = propertyShortcutKeysByNodeId.get(nodeId);
+
+    if (existingShortcutKey) {
+        const existingShortcut = shortcutMap.get(existingShortcutKey);
+        addShortcutRenameMenuItem({
+            app,
+            menu,
+            shortcutKey: existingShortcutKey,
+            defaultLabel: label,
+            existingShortcut,
+            title: strings.shortcuts.rename,
+            placeholder: strings.searchInput.shortcutNamePlaceholder,
+            renameShortcut
+        });
+    }
+
+    menu.addItem((item: MenuItem) => {
+        if (existingShortcutKey) {
+            setAsyncOnClick(
+                item
+                    .setTitle(strings.shortcuts.remove)
+                    .setIcon(resolveUXIconForMenu(settings.interfaceIcons, 'nav-shortcuts', 'lucide-star-off')),
+                async () => {
+                    await removeShortcut(existingShortcutKey);
+                }
+            );
+            return;
+        }
+
+        setAsyncOnClick(
+            item.setTitle(strings.shortcuts.add).setIcon(resolveUXIconForMenu(settings.interfaceIcons, 'nav-shortcuts', 'lucide-star')),
+            async () => {
+                await addPropertyShortcut(nodeId);
+            }
+        );
+    });
+}
+
 /**
  * Builds the context menu for a property key/value node.
  */
 export function buildPropertyMenu(params: PropertyMenuBuilderParams): void {
     const { propertyNodeId, menu, services, settings, options } = params;
     const { app, metadataService, propertyOperations, propertyTreeService, isMobile } = services;
+
+    if (propertyNodeId === PROPERTIES_ROOT_VIRTUAL_FOLDER_ID) {
+        const label = strings.navigationPane.properties;
+
+        if (isMobile) {
+            menu.addItem((item: MenuItem) => {
+                item.setTitle(label).setIsLabel(true);
+            });
+            menu.addSeparator();
+        }
+
+        if (services.shortcuts) {
+            addPropertyShortcutMenuItems({
+                app,
+                menu,
+                settings,
+                shortcuts: services.shortcuts,
+                nodeId: PROPERTIES_ROOT_VIRTUAL_FOLDER_ID,
+                label
+            });
+        }
+
+        return;
+    }
 
     const normalizedNodeId = normalizePropertyNodeId(propertyNodeId);
     if (!normalizedNodeId) {
@@ -206,45 +278,13 @@ export function buildPropertyMenu(params: PropertyMenuBuilderParams): void {
     }
 
     if (services.shortcuts) {
-        const { addPropertyShortcut, propertyShortcutKeysByNodeId, removeShortcut, renameShortcut, shortcutMap } = services.shortcuts;
-        const existingShortcutKey = propertyShortcutKeysByNodeId.get(normalizedNodeId);
-
-        if (existingShortcutKey) {
-            const existingShortcut = shortcutMap.get(existingShortcutKey);
-            const defaultLabel = label;
-
-            addShortcutRenameMenuItem({
-                app,
-                menu,
-                shortcutKey: existingShortcutKey,
-                defaultLabel,
-                existingShortcut,
-                title: strings.shortcuts.rename,
-                placeholder: strings.searchInput.shortcutNamePlaceholder,
-                renameShortcut
-            });
-        }
-
-        menu.addItem((item: MenuItem) => {
-            if (existingShortcutKey) {
-                setAsyncOnClick(
-                    item
-                        .setTitle(strings.shortcuts.remove)
-                        .setIcon(resolveUXIconForMenu(settings.interfaceIcons, 'nav-shortcuts', 'lucide-star-off')),
-                    async () => {
-                        await removeShortcut(existingShortcutKey);
-                    }
-                );
-            } else {
-                setAsyncOnClick(
-                    item
-                        .setTitle(strings.shortcuts.add)
-                        .setIcon(resolveUXIconForMenu(settings.interfaceIcons, 'nav-shortcuts', 'lucide-star')),
-                    async () => {
-                        await addPropertyShortcut(normalizedNodeId);
-                    }
-                );
-            }
+        addPropertyShortcutMenuItems({
+            app,
+            menu,
+            settings,
+            shortcuts: services.shortcuts,
+            nodeId: normalizedNodeId,
+            label
         });
     }
 
