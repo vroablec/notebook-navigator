@@ -1391,9 +1391,12 @@ export const STRINGS_AR = {
                 }
             },
             propertyFields: {
-                name: 'مفاتيح الخصائص',
-                desc: 'مفاتيح خصائص الواجهة الأمامية، مع إمكانية التحكم في رؤية كل مفتاح للتنقل وشارات قائمة الملفات.',
-                addButtonTooltip: 'تكوين مفاتيح الخصائص'
+                name: 'مفاتيح الخصائص (ملف القبو)',
+                desc: 'مفاتيح خصائص الواجهة الأمامية، مع إمكانية التحكم في رؤية كل مفتاح للتنقل وقائمة الملفات.',
+                addButtonTooltip: 'تكوين مفاتيح الخصائص',
+                noneConfigured: 'لم يتم تكوين أي خصائص',
+                singleConfigured: 'خاصية واحدة مكوّنة: {properties}',
+                multipleConfigured: '{count} خصائص مكوّنة: {properties}'
             },
             showPropertiesOnSeparateRows: {
                 name: 'إظهار الخصائص في صفوف منفصلة',
@@ -1586,7 +1589,10 @@ export const STRINGS_AR = {
             },
             showProperties: {
                 name: 'إظهار الخصائص',
-                desc: 'عرض قسم الخصائص في المتصفح.'
+                desc: 'عرض قسم الخصائص في المتصفح.',
+                propertyKeysInfoPrefix: 'تكوين الخصائص في ',
+                propertyKeysInfoLinkText: 'عام > مفاتيح الخصائص',
+                propertyKeysInfoSuffix: ''
             },
             showPropertyIcons: {
                 name: 'إظهار أيقونات الخصائص',

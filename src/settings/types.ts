@@ -205,6 +205,7 @@ export interface VaultProfile {
     id: string;
     name: string;
     fileVisibility: FileVisibility;
+    propertyKeys: VaultProfilePropertyKey[];
     hiddenFolders: string[];
     hiddenTags: string[];
     hiddenFileNames: string[];
@@ -212,7 +213,6 @@ export interface VaultProfile {
     hiddenFileProperties: string[];
     navigationBanner: string | null;
     periodicNotesFolder: string;
-    propertyKeys: VaultProfilePropertyKey[];
     shortcuts: ShortcutEntry[];
 }
 

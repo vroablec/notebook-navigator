@@ -49,6 +49,7 @@ export const DEFAULT_SETTINGS: NotebookNavigatorSettings = {
             id: 'default',
             name: '',
             fileVisibility: FILE_VISIBILITY.SUPPORTED,
+            propertyKeys: [],
             hiddenFolders: [],
             hiddenTags: [],
             hiddenFileNames: [],
@@ -56,7 +57,6 @@ export const DEFAULT_SETTINGS: NotebookNavigatorSettings = {
             hiddenFileProperties: [],
             navigationBanner: null,
             periodicNotesFolder: '',
-            propertyKeys: [],
             shortcuts: []
         }
     ],

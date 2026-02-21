@@ -1392,9 +1392,12 @@ export const STRINGS_VI = {
                 }
             },
             propertyFields: {
-                name: 'Khóa thuộc tính',
-                desc: 'Các khóa thuộc tính frontmatter, với khả năng thiết lập hiển thị từng khóa cho điều hướng và huy hiệu danh sách tệp.',
-                addButtonTooltip: 'Cấu hình khóa thuộc tính'
+                name: 'Khóa thuộc tính (hồ sơ kho)',
+                desc: 'Các khóa thuộc tính frontmatter, với khả năng thiết lập hiển thị từng khóa cho điều hướng và danh sách tệp.',
+                addButtonTooltip: 'Cấu hình khóa thuộc tính',
+                noneConfigured: 'Chưa cấu hình thuộc tính nào',
+                singleConfigured: '1 thuộc tính đã cấu hình: {properties}',
+                multipleConfigured: '{count} thuộc tính đã cấu hình: {properties}'
             },
             showPropertiesOnSeparateRows: {
                 name: 'Hiển thị thuộc tính trên các dòng riêng',
@@ -1587,7 +1590,10 @@ export const STRINGS_VI = {
             },
             showProperties: {
                 name: 'Hiển thị thuộc tính',
-                desc: 'Hiển thị phần thuộc tính trong trình điều hướng.'
+                desc: 'Hiển thị phần thuộc tính trong trình điều hướng.',
+                propertyKeysInfoPrefix: 'Cấu hình thuộc tính trong ',
+                propertyKeysInfoLinkText: 'Chung > Khóa thuộc tính',
+                propertyKeysInfoSuffix: ''
             },
             showPropertyIcons: {
                 name: 'Hiển thị biểu tượng thuộc tính',

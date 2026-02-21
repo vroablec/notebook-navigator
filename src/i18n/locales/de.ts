@@ -1396,9 +1396,12 @@ export const STRINGS_DE = {
                 }
             },
             propertyFields: {
-                name: 'Eigenschaftsschlüssel',
-                desc: 'Frontmatter-Eigenschaftsschlüssel mit schlüsselweiser Sichtbarkeit für Navigation und Dateilisten-Badges.',
-                addButtonTooltip: 'Eigenschaftsschlüssel konfigurieren'
+                name: 'Eigenschaftsschlüssel (Tresorprofil)',
+                desc: 'Frontmatter-Eigenschaftsschlüssel mit schlüsselweiser Sichtbarkeit für Navigation und Dateiliste.',
+                addButtonTooltip: 'Eigenschaftsschlüssel konfigurieren',
+                noneConfigured: 'Keine Eigenschaften konfiguriert',
+                singleConfigured: '1 Eigenschaft konfiguriert: {properties}',
+                multipleConfigured: '{count} Eigenschaften konfiguriert: {properties}'
             },
             showPropertiesOnSeparateRows: {
                 name: 'Eigenschaften in separaten Zeilen anzeigen',
@@ -1590,7 +1593,10 @@ export const STRINGS_DE = {
             },
             showProperties: {
                 name: 'Eigenschaften anzeigen',
-                desc: 'Eigenschaftsbereich im Navigator anzeigen.'
+                desc: 'Eigenschaftsbereich im Navigator anzeigen.',
+                propertyKeysInfoPrefix: 'Eigenschaften konfigurieren unter ',
+                propertyKeysInfoLinkText: 'Allgemein > Eigenschaftsschlüssel',
+                propertyKeysInfoSuffix: ''
             },
             showPropertyIcons: {
                 name: 'Eigenschafts-Symbole anzeigen',

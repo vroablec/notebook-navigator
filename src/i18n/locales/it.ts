@@ -1392,9 +1392,12 @@ export const STRINGS_IT = {
                 }
             },
             propertyFields: {
-                name: 'Chiavi proprietà',
-                desc: "Chiavi proprietà dei metadati, con visibilità per chiave per la navigazione e i badge dell'elenco file.",
-                addButtonTooltip: 'Configura chiavi proprietà'
+                name: 'Chiavi proprietà (profilo cassaforte)',
+                desc: "Chiavi proprietà dei metadati, con visibilità per chiave per la navigazione e l'elenco file.",
+                addButtonTooltip: 'Configura chiavi proprietà',
+                noneConfigured: 'Nessuna proprietà configurata',
+                singleConfigured: '1 proprietà configurata: {properties}',
+                multipleConfigured: '{count} proprietà configurate: {properties}'
             },
             showPropertiesOnSeparateRows: {
                 name: 'Mostra proprietà su righe separate',
@@ -1587,7 +1590,10 @@ export const STRINGS_IT = {
             },
             showProperties: {
                 name: 'Mostra proprietà',
-                desc: 'Visualizza la sezione proprietà nel navigatore.'
+                desc: 'Visualizza la sezione proprietà nel navigatore.',
+                propertyKeysInfoPrefix: 'Configura le proprietà in ',
+                propertyKeysInfoLinkText: 'Generale > Chiavi proprietà',
+                propertyKeysInfoSuffix: ''
             },
             showPropertyIcons: {
                 name: 'Mostra icone proprietà',

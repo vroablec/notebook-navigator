@@ -1398,9 +1398,12 @@ export const STRINGS_FR = {
                 }
             },
             propertyFields: {
-                name: 'Clés de propriétés',
-                desc: 'Clés de propriétés de métadonnées, avec visibilité par clé pour la navigation et les badges de la liste de fichiers.',
-                addButtonTooltip: 'Configurer les clés de propriété'
+                name: 'Clés de propriétés (profil de coffre)',
+                desc: 'Clés de propriétés de métadonnées, avec visibilité par clé pour la navigation et la liste de fichiers.',
+                addButtonTooltip: 'Configurer les clés de propriété',
+                noneConfigured: 'Aucune propriété configurée',
+                singleConfigured: '1 propriété configurée : {properties}',
+                multipleConfigured: '{count} propriétés configurées : {properties}'
             },
             showPropertiesOnSeparateRows: {
                 name: 'Afficher les propriétés sur des lignes séparées',
@@ -1593,7 +1596,10 @@ export const STRINGS_FR = {
             },
             showProperties: {
                 name: 'Afficher les propriétés',
-                desc: 'Afficher la section des propriétés dans le navigateur.'
+                desc: 'Afficher la section des propriétés dans le navigateur.',
+                propertyKeysInfoPrefix: 'Configurer les propriétés dans ',
+                propertyKeysInfoLinkText: 'Général > Clés de propriétés',
+                propertyKeysInfoSuffix: ''
             },
             showPropertyIcons: {
                 name: 'Afficher les icônes de propriétés',

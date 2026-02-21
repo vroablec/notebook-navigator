@@ -1392,9 +1392,12 @@ export const STRINGS_FA = {
                 }
             },
             propertyFields: {
-                name: 'کلیدهای ویژگی',
-                desc: 'کلیدهای ویژگی فرانت‌متر، با قابلیت تنظیم نمایش هر کلید برای ناوبری و نشان‌های فهرست فایل.',
-                addButtonTooltip: 'پیکربندی کلیدهای ویژگی'
+                name: 'کلیدهای ویژگی (پروفایل خزانه)',
+                desc: 'کلیدهای ویژگی فرانت‌متر، با قابلیت تنظیم نمایش هر کلید برای ناوبری و فهرست فایل.',
+                addButtonTooltip: 'پیکربندی کلیدهای ویژگی',
+                noneConfigured: 'هیچ ویژگی‌ای پیکربندی نشده',
+                singleConfigured: '۱ ویژگی پیکربندی شده: {properties}',
+                multipleConfigured: '{count} ویژگی پیکربندی شده: {properties}'
             },
             showPropertiesOnSeparateRows: {
                 name: 'نمایش ویژگی‌ها در ردیف‌های جداگانه',
@@ -1587,7 +1590,10 @@ export const STRINGS_FA = {
             },
             showProperties: {
                 name: 'نمایش ویژگی‌ها',
-                desc: 'نمایش بخش ویژگی‌ها در ناوبر.'
+                desc: 'نمایش بخش ویژگی‌ها در ناوبر.',
+                propertyKeysInfoPrefix: 'پیکربندی ویژگی‌ها در ',
+                propertyKeysInfoLinkText: 'عمومی > کلیدهای ویژگی',
+                propertyKeysInfoSuffix: ''
             },
             showPropertyIcons: {
                 name: 'نمایش نمادهای ویژگی',

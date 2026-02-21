@@ -1393,9 +1393,12 @@ export const STRINGS_TR = {
                 }
             },
             propertyFields: {
-                name: 'Özellik anahtarları',
-                desc: 'Gezinme ve dosya listesi rozetleri için anahtar bazında görünürlük ayarlı ön bilgi özellik anahtarları.',
-                addButtonTooltip: 'Özellik anahtarlarını yapılandır'
+                name: 'Özellik anahtarları (kasa profili)',
+                desc: 'Gezinme ve dosya listesi için anahtar bazında görünürlük ayarlı ön bilgi özellik anahtarları.',
+                addButtonTooltip: 'Özellik anahtarlarını yapılandır',
+                noneConfigured: 'Yapılandırılmış özellik yok',
+                singleConfigured: '1 özellik yapılandırıldı: {properties}',
+                multipleConfigured: '{count} özellik yapılandırıldı: {properties}'
             },
             showPropertiesOnSeparateRows: {
                 name: 'Özellikleri ayrı satırlarda göster',
@@ -1588,7 +1591,10 @@ export const STRINGS_TR = {
             },
             showProperties: {
                 name: 'Özellikleri göster',
-                desc: 'Gezginde özellikler bölümünü görüntüle.'
+                desc: 'Gezginde özellikler bölümünü görüntüle.',
+                propertyKeysInfoPrefix: 'Özellikleri şurada yapılandır: ',
+                propertyKeysInfoLinkText: 'Genel > Özellik anahtarları',
+                propertyKeysInfoSuffix: ''
             },
             showPropertyIcons: {
                 name: 'Özellik simgelerini göster',

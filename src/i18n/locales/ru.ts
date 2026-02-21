@@ -1391,9 +1391,12 @@ export const STRINGS_RU = {
                 }
             },
             propertyFields: {
-                name: 'Ключи свойств',
-                desc: 'Ключи свойств метаданных с настройкой видимости для каждого ключа в навигации и значках списка файлов.',
-                addButtonTooltip: 'Настроить ключи свойств'
+                name: 'Ключи свойств (профиль хранилища)',
+                desc: 'Ключи свойств метаданных с настройкой видимости для каждого ключа в навигации и списке файлов.',
+                addButtonTooltip: 'Настроить ключи свойств',
+                noneConfigured: 'Свойства не настроены',
+                singleConfigured: '1 свойство настроено: {properties}',
+                multipleConfigured: '{count} свойств настроено: {properties}'
             },
             showPropertiesOnSeparateRows: {
                 name: 'Показывать свойства в отдельных строках',
@@ -1586,7 +1589,10 @@ export const STRINGS_RU = {
             },
             showProperties: {
                 name: 'Показать свойства',
-                desc: 'Отображать раздел свойств в навигаторе.'
+                desc: 'Отображать раздел свойств в навигаторе.',
+                propertyKeysInfoPrefix: 'Настроить свойства в ',
+                propertyKeysInfoLinkText: 'Общие > Ключи свойств',
+                propertyKeysInfoSuffix: ''
             },
             showPropertyIcons: {
                 name: 'Показать значки свойств',

@@ -1397,9 +1397,12 @@ export const STRINGS_PL = {
                 }
             },
             propertyFields: {
-                name: 'Klucze atrybutów',
-                desc: 'Klucze atrybutów frontmatter z kontrolą widoczności per klucz dla nawigacji i etykiet listy plików.',
-                addButtonTooltip: 'Konfiguruj klucze atrybutów'
+                name: 'Klucze atrybutów (profil sejfu)',
+                desc: 'Klucze atrybutów frontmatter z kontrolą widoczności per klucz dla nawigacji i listy plików.',
+                addButtonTooltip: 'Konfiguruj klucze atrybutów',
+                noneConfigured: 'Brak skonfigurowanych atrybutów',
+                singleConfigured: '1 atrybut skonfigurowany: {properties}',
+                multipleConfigured: '{count} atrybutów skonfigurowanych: {properties}'
             },
             showPropertiesOnSeparateRows: {
                 name: 'Pokaż atrybuty w osobnych wierszach',
@@ -1592,7 +1595,10 @@ export const STRINGS_PL = {
             },
             showProperties: {
                 name: 'Pokaż atrybuty',
-                desc: 'Wyświetl sekcję atrybutów w panelu nawigacji.'
+                desc: 'Wyświetl sekcję atrybutów w panelu nawigacji.',
+                propertyKeysInfoPrefix: 'Konfiguruj atrybuty w ',
+                propertyKeysInfoLinkText: 'Ogólne > Klucze atrybutów',
+                propertyKeysInfoSuffix: ''
             },
             showPropertyIcons: {
                 name: 'Pokaż ikonki atrybutów',

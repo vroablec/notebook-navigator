@@ -1392,9 +1392,12 @@ export const STRINGS_KO = {
                 }
             },
             propertyFields: {
-                name: '속성 키',
-                desc: '프론트매터 속성 키. 키별로 탐색 창 및 파일 목록 배지의 표시 여부를 설정할 수 있습니다.',
-                addButtonTooltip: '속성 키 구성'
+                name: '속성 키 (보관함 프로필)',
+                desc: '프론트매터 속성 키. 키별로 탐색 창 및 파일 목록의 표시 여부를 설정할 수 있습니다.',
+                addButtonTooltip: '속성 키 구성',
+                noneConfigured: '구성된 속성 없음',
+                singleConfigured: '1개 속성 구성됨: {properties}',
+                multipleConfigured: '{count}개 속성 구성됨: {properties}'
             },
             showPropertiesOnSeparateRows: {
                 name: '속성을 별도 행에 표시',
@@ -1587,7 +1590,10 @@ export const STRINGS_KO = {
             },
             showProperties: {
                 name: '속성 표시',
-                desc: '탐색기에 속성 섹션을 표시합니다.'
+                desc: '탐색기에 속성 섹션을 표시합니다.',
+                propertyKeysInfoPrefix: '',
+                propertyKeysInfoLinkText: '일반 > 속성 키',
+                propertyKeysInfoSuffix: '에서 속성 구성'
             },
             showPropertyIcons: {
                 name: '속성 아이콘 표시',

@@ -1388,9 +1388,12 @@ export const STRINGS_EN = {
                 }
             },
             propertyFields: {
-                name: 'Property keys',
-                desc: 'Frontmatter property keys, with per-key visibility for navigation and file list badges.',
-                addButtonTooltip: 'Configure property keys'
+                name: 'Property keys (vault profile)',
+                desc: 'Frontmatter property keys, with per-key visibility for navigation and file list.',
+                addButtonTooltip: 'Configure property keys',
+                noneConfigured: 'No properties configured',
+                singleConfigured: '1 property configured: {properties}',
+                multipleConfigured: '{count} properties configured: {properties}'
             },
             showPropertiesOnSeparateRows: {
                 name: 'Show properties on separate rows',
@@ -1582,7 +1585,10 @@ export const STRINGS_EN = {
             },
             showProperties: {
                 name: 'Show properties',
-                desc: 'Display properties section in the navigator.'
+                desc: 'Display properties section in the navigator.',
+                propertyKeysInfoPrefix: 'Configure properties in ',
+                propertyKeysInfoLinkText: 'General > Property keys',
+                propertyKeysInfoSuffix: ''
             },
             showPropertyIcons: {
                 name: 'Show property icons',

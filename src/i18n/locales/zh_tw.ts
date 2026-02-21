@@ -1387,9 +1387,12 @@ export const STRINGS_ZH_TW = {
                 }
             },
             propertyFields: {
-                name: '屬性鍵',
-                desc: 'Frontmatter 屬性鍵，可按鍵設定導覽和檔案清單徽章的可見性。',
-                addButtonTooltip: '設定屬性鍵'
+                name: '屬性鍵（保險庫設定檔）',
+                desc: 'Frontmatter 屬性鍵，可按鍵設定導覽和檔案清單的可見性。',
+                addButtonTooltip: '設定屬性鍵',
+                noneConfigured: '未設定屬性',
+                singleConfigured: '已設定 1 個屬性：{properties}',
+                multipleConfigured: '已設定 {count} 個屬性：{properties}'
             },
             showPropertiesOnSeparateRows: {
                 name: '在個別行中顯示屬性',
@@ -1582,7 +1585,10 @@ export const STRINGS_ZH_TW = {
             },
             showProperties: {
                 name: '顯示屬性',
-                desc: '在導覽器中顯示屬性區段。'
+                desc: '在導覽器中顯示屬性區段。',
+                propertyKeysInfoPrefix: '在',
+                propertyKeysInfoLinkText: '一般 > 屬性鍵',
+                propertyKeysInfoSuffix: '中設定屬性'
             },
             showPropertyIcons: {
                 name: '顯示屬性圖示',

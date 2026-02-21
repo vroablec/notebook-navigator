@@ -6015,6 +6015,15 @@ body.nn-resizing {
     font-weight: var(--font-semibold);
 }
 
+.nn-setting-property-keys-count-line {
+    margin-top: var(--size-2-1);
+}
+
+.nn-setting-property-keys-summary-text {
+    font-size: inherit;
+    font-weight: var(--font-semibold);
+}
+
 /* Sync mode toggle button (cloud/device) */
 .nn-setting-sync-toggle {
     color: var(--text-muted);
@@ -6064,6 +6073,10 @@ body.nn-resizing {
 .nn-setting-info-container.nn-setting-info-centered .setting-item-info,
 .nn-setting-info-container.nn-setting-info-centered .setting-item-description {
     text-align: center;
+}
+
+.nn-sub-settings > .setting-item.nn-setting-property-keys-info:last-child {
+    padding-bottom: 0;
 }
 
 /* Wider text inputs for settings that benefit from more space */

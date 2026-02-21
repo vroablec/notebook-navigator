@@ -1394,9 +1394,12 @@ export const STRINGS_JA = {
                 }
             },
             propertyFields: {
-                name: 'プロパティキー',
-                desc: 'フロントマターのプロパティキー。キーごとにナビゲーションとファイルリストバッジの表示を設定できます。',
-                addButtonTooltip: 'プロパティキーを設定'
+                name: 'プロパティキー（保管庫プロファイル）',
+                desc: 'フロントマターのプロパティキー。キーごとにナビゲーションとファイルリストの表示を設定できます。',
+                addButtonTooltip: 'プロパティキーを設定',
+                noneConfigured: 'プロパティが設定されていません',
+                singleConfigured: '1件のプロパティが設定済み: {properties}',
+                multipleConfigured: '{count}件のプロパティが設定済み: {properties}'
             },
             showPropertiesOnSeparateRows: {
                 name: 'プロパティを別の行に表示',
@@ -1589,7 +1592,10 @@ export const STRINGS_JA = {
             },
             showProperties: {
                 name: 'プロパティを表示',
-                desc: 'ナビゲーターにプロパティセクションを表示します。'
+                desc: 'ナビゲーターにプロパティセクションを表示します。',
+                propertyKeysInfoPrefix: '',
+                propertyKeysInfoLinkText: '一般 > プロパティキー',
+                propertyKeysInfoSuffix: 'でプロパティを設定'
             },
             showPropertyIcons: {
                 name: 'プロパティアイコンを表示',

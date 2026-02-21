@@ -18,17 +18,16 @@
 
 import { Setting } from 'obsidian';
 import { strings } from '../../i18n';
-import { PropertyKeyVisibilityModal } from '../../modals/PropertyKeyVisibilityModal';
 import { isTagSortOrder } from '../types';
 import type { SettingsTabContext } from './SettingsTabContext';
 import { createSettingGroupFactory } from '../settingGroups';
 import { addSettingSyncModeToggle } from '../syncModeToggle';
 import { wireToggleSettingWithSubSettings } from '../subSettings';
-import { getActiveVaultProfile } from '../../utils/vaultProfiles';
+import { createInlineActionLinkText } from './externalLink';
 
 /** Renders the properties settings tab */
 export function renderPropertiesTab(context: SettingsTabContext): void {
-    const { containerEl, plugin, app } = context;
+    const { containerEl, plugin } = context;
     const createGroup = createSettingGroupFactory(containerEl);
 
     const propertiesGroup = createGroup(undefined);
@@ -45,26 +44,6 @@ export function renderPropertiesTab(context: SettingsTabContext): void {
             await plugin.saveSettingsAndUpdate();
         }
     );
-
-    new Setting(propertiesSubSettingsEl)
-        .setName(strings.settings.items.propertyFields.name)
-        .setDesc(strings.settings.items.propertyFields.desc)
-        .addExtraButton(button =>
-            button
-                .setIcon('lucide-settings-2')
-                .setTooltip(strings.settings.items.propertyFields.addButtonTooltip)
-                .onClick(() => {
-                    const profile = getActiveVaultProfile(plugin.settings);
-                    const modal = new PropertyKeyVisibilityModal(app, {
-                        initialKeys: profile.propertyKeys,
-                        onSave: async nextKeys => {
-                            profile.propertyKeys = nextKeys;
-                            await plugin.saveSettingsAndUpdate();
-                        }
-                    });
-                    modal.open();
-                })
-        );
 
     new Setting(propertiesSubSettingsEl)
         .setName(strings.settings.items.showPropertyIcons.name)
@@ -118,4 +97,20 @@ export function renderPropertiesTab(context: SettingsTabContext): void {
                 await plugin.saveSettingsAndUpdate();
             })
         );
+
+    const propertyKeysInfoSetting = new Setting(propertiesSubSettingsEl).setName('').setDesc('');
+    propertyKeysInfoSetting.settingEl.addClass('nn-setting-info-container');
+    propertyKeysInfoSetting.settingEl.addClass('nn-setting-info-centered');
+    propertyKeysInfoSetting.settingEl.addClass('nn-setting-property-keys-info');
+    propertyKeysInfoSetting.descEl.empty();
+    propertyKeysInfoSetting.descEl.append(
+        createInlineActionLinkText({
+            prefix: strings.settings.items.showProperties.propertyKeysInfoPrefix,
+            linkText: strings.settings.items.showProperties.propertyKeysInfoLinkText,
+            suffix: strings.settings.items.showProperties.propertyKeysInfoSuffix,
+            onClick: () => {
+                context.openSettingsTab('general');
+            }
+        })
+    );
 }

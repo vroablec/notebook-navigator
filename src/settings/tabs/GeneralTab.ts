@@ -29,7 +29,14 @@ import {
     PANE_TRANSITION_DURATION_STEP_MS,
     type BackgroundMode
 } from '../../types';
-import type { FileOpenContext, ListToolbarButtonId, MultiSelectModifier, NavigationToolbarButtonId, VaultTitleOption } from '../types';
+import type {
+    FileOpenContext,
+    ListToolbarButtonId,
+    MultiSelectModifier,
+    NavigationToolbarButtonId,
+    VaultProfilePropertyKey,
+    VaultTitleOption
+} from '../types';
 import type { SettingsTabContext } from './SettingsTabContext';
 import { resetHiddenToggleIfNoSources } from '../../utils/exclusionUtils';
 import { InputModal } from '../../modals/InputModal';
@@ -55,6 +62,7 @@ import { resolveUXIcon, type UXIconId } from '../../utils/uxIcons';
 import { normalizeTagPath } from '../../utils/tagUtils';
 import { formatCommaSeparatedList, parseCommaSeparatedList } from '../../utils/commaSeparatedListUtils';
 import type NotebookNavigatorPlugin from '../../main';
+import { PropertyKeyVisibilityModal } from '../../modals/PropertyKeyVisibilityModal';
 import { DEFAULT_SETTINGS } from '../defaultSettings';
 import { createSettingGroupFactory } from '../settingGroups';
 import { addSettingSyncModeToggle } from '../syncModeToggle';
@@ -179,6 +187,25 @@ export function renderGeneralTab(context: SettingsTabContext): void {
     let hiddenFileTagsInput: HTMLInputElement | null = null;
     let excludedFilesInput: HTMLInputElement | null = null;
     let hiddenFileNamesInput: HTMLInputElement | null = null;
+    let propertyKeysSummaryTextEl: HTMLSpanElement | null = null;
+
+    const formatPropertyKeysSummary = (propertyKeys: VaultProfilePropertyKey[]): string => {
+        const configuredKeys = propertyKeys.map(entry => entry.key.trim()).filter(key => key.length > 0);
+        const configuredCount = configuredKeys.length;
+        if (configuredCount === 0) {
+            return strings.settings.items.propertyFields.noneConfigured;
+        }
+
+        const visibleKeys = configuredKeys.slice(0, 5);
+        const keyList = configuredCount > visibleKeys.length ? `${visibleKeys.join(', ')}, ...` : visibleKeys.join(', ');
+        if (configuredCount === 1) {
+            return strings.settings.items.propertyFields.singleConfigured.replace('{properties}', keyList);
+        }
+
+        return strings.settings.items.propertyFields.multipleConfigured
+            .replace('{count}', configuredCount.toString())
+            .replace('{properties}', keyList);
+    };
 
     // Updates all profile-related UI controls with current settings values
     const refreshProfileControls = () => {
@@ -219,6 +246,10 @@ export function renderGeneralTab(context: SettingsTabContext): void {
         }
         if (hiddenFileNamesInput) {
             hiddenFileNamesInput.value = activeProfile ? formatCommaSeparatedList(activeProfile.hiddenFileNames) : '';
+        }
+        if (propertyKeysSummaryTextEl) {
+            const propertyKeys = Array.isArray(activeProfile?.propertyKeys) ? activeProfile.propertyKeys : [];
+            propertyKeysSummaryTextEl.setText(formatPropertyKeysSummary(propertyKeys));
         }
     };
 
@@ -363,6 +394,33 @@ export function renderGeneralTab(context: SettingsTabContext): void {
                 return dropdown;
             });
     });
+
+    const propertyKeysSetting = filteringGroup.addSetting(setting => {
+        setting.setName(strings.settings.items.propertyFields.name).setDesc(strings.settings.items.propertyFields.desc);
+    });
+
+    const propertyKeysCountLineEl = propertyKeysSetting.descEl.createDiv({
+        cls: 'nn-setting-property-keys-count-line'
+    });
+    propertyKeysSummaryTextEl = propertyKeysCountLineEl.createSpan({ cls: 'nn-setting-property-keys-summary-text' });
+
+    propertyKeysSetting.addButton(button =>
+        button.setButtonText(strings.settings.items.propertyFields.addButtonTooltip).onClick(() => {
+            const activeProfile = getActiveProfile();
+            if (!activeProfile) {
+                return;
+            }
+            const modal = new PropertyKeyVisibilityModal(context.app, {
+                initialKeys: activeProfile.propertyKeys,
+                onSave: async nextKeys => {
+                    activeProfile.propertyKeys = nextKeys;
+                    await plugin.saveSettingsAndUpdate();
+                    refreshProfileControls();
+                }
+            });
+            modal.open();
+        })
+    );
 
     const hiddenFileNamesSetting = filteringGroup.addSetting(setting => {
         configureDebouncedTextSetting(

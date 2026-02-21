@@ -1388,9 +1388,12 @@ export const STRINGS_ZH_CN = {
                 }
             },
             propertyFields: {
-                name: '属性键',
-                desc: 'Frontmatter 属性键，可按键设置导航和文件列表徽章的可见性。',
-                addButtonTooltip: '配置属性键'
+                name: '属性键（保险库配置）',
+                desc: 'Frontmatter 属性键，可按键设置导航和文件列表的可见性。',
+                addButtonTooltip: '配置属性键',
+                noneConfigured: '未配置属性',
+                singleConfigured: '已配置 1 个属性：{properties}',
+                multipleConfigured: '已配置 {count} 个属性：{properties}'
             },
             showPropertiesOnSeparateRows: {
                 name: '在单独的行中显示属性',
@@ -1583,7 +1586,10 @@ export const STRINGS_ZH_CN = {
             },
             showProperties: {
                 name: '显示属性',
-                desc: '在导航器中显示属性部分。'
+                desc: '在导航器中显示属性部分。',
+                propertyKeysInfoPrefix: '在',
+                propertyKeysInfoLinkText: '常规 > 属性键',
+                propertyKeysInfoSuffix: '中配置属性'
             },
             showPropertyIcons: {
                 name: '显示属性图标',

@@ -1391,9 +1391,12 @@ export const STRINGS_UK = {
                 }
             },
             propertyFields: {
-                name: 'Ключі властивостей',
-                desc: 'Ключі властивостей метаданих з налаштуванням видимості для кожного ключа в навігації та значках списку файлів.',
-                addButtonTooltip: 'Налаштувати ключі властивостей'
+                name: 'Ключі властивостей (профіль сховища)',
+                desc: 'Ключі властивостей метаданих з налаштуванням видимості для кожного ключа в навігації та списку файлів.',
+                addButtonTooltip: 'Налаштувати ключі властивостей',
+                noneConfigured: 'Властивості не налаштовані',
+                singleConfigured: '1 властивість налаштована: {properties}',
+                multipleConfigured: '{count} властивостей налаштовано: {properties}'
             },
             showPropertiesOnSeparateRows: {
                 name: 'Показувати властивості в окремих рядках',
@@ -1586,7 +1589,10 @@ export const STRINGS_UK = {
             },
             showProperties: {
                 name: 'Показати властивості',
-                desc: 'Відображати розділ властивостей у навігаторі.'
+                desc: 'Відображати розділ властивостей у навігаторі.',
+                propertyKeysInfoPrefix: 'Налаштувати властивості в ',
+                propertyKeysInfoLinkText: 'Загальні > Ключі властивостей',
+                propertyKeysInfoSuffix: ''
             },
             showPropertyIcons: {
                 name: 'Показати значки властивостей',

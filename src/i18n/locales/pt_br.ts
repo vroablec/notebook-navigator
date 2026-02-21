@@ -1398,9 +1398,12 @@ export const STRINGS_PT_BR = {
                 }
             },
             propertyFields: {
-                name: 'Chaves de propriedades',
-                desc: 'Chaves de propriedades de metadados, com visibilidade por chave para navegação e emblemas da lista de arquivos.',
-                addButtonTooltip: 'Configurar chaves de propriedade'
+                name: 'Chaves de propriedades (perfil do cofre)',
+                desc: 'Chaves de propriedades de metadados, com visibilidade por chave para navegação e lista de arquivos.',
+                addButtonTooltip: 'Configurar chaves de propriedade',
+                noneConfigured: 'Nenhuma propriedade configurada',
+                singleConfigured: '1 propriedade configurada: {properties}',
+                multipleConfigured: '{count} propriedades configuradas: {properties}'
             },
             showPropertiesOnSeparateRows: {
                 name: 'Mostrar propriedades em linhas separadas',
@@ -1593,7 +1596,10 @@ export const STRINGS_PT_BR = {
             },
             showProperties: {
                 name: 'Mostrar propriedades',
-                desc: 'Exibir a seção de propriedades no navegador.'
+                desc: 'Exibir a seção de propriedades no navegador.',
+                propertyKeysInfoPrefix: 'Configurar propriedades em ',
+                propertyKeysInfoLinkText: 'Geral > Chaves de propriedades',
+                propertyKeysInfoSuffix: ''
             },
             showPropertyIcons: {
                 name: 'Mostrar ícones de propriedades',

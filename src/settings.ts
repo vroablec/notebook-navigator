@@ -43,6 +43,7 @@ import { renderAdvancedTab } from './settings/tabs/AdvancedTab';
 import type {
     AddSettingFunction,
     DebouncedTextAreaSettingOptions,
+    SettingsTabId,
     SettingsTabContext,
     SettingDescription
 } from './settings/tabs/SettingsTabContext';
@@ -54,19 +55,7 @@ import { resolveFileTypeIconId } from './utils/fileIconUtils';
 import { resolveUXIcon, type UXIconId } from './utils/uxIcons';
 
 /** Identifiers for different settings tab panes */
-type SettingsPaneId =
-    | 'general'
-    | 'navigation-pane'
-    | 'shortcuts'
-    | 'calendar'
-    | 'folders'
-    | 'tags'
-    | 'properties'
-    | 'list-pane'
-    | 'frontmatter'
-    | 'notes'
-    | 'icon-packs'
-    | 'advanced';
+type SettingsPaneId = SettingsTabId;
 
 /** Top-level group buttons for settings navigation */
 type SettingsGroupId = 'general' | 'navigation-pane' | 'list-pane' | 'calendar';
@@ -885,6 +874,13 @@ export class NotebookNavigatorSettingTab extends PluginSettingTab {
             },
             ensureStatisticsInterval: () => {
                 this.ensureStatisticsInterval();
+            },
+            openSettingsTab: (tabId: SettingsTabId) => {
+                const contentWrapper = this.containerEl.querySelector<HTMLElement>('.nn-settings-tabs-content');
+                if (!contentWrapper) {
+                    return;
+                }
+                this.activateTab(tabId, contentWrapper, { focus: true });
             },
             registerShowTagsListener: listener => {
                 this.showTagsListeners.push(listener);

@@ -1389,9 +1389,12 @@ export const STRINGS_TH = {
                 }
             },
             propertyFields: {
-                name: 'คีย์คุณสมบัติ',
-                desc: 'คีย์คุณสมบัติ frontmatter พร้อมการตั้งค่าการแสดงผลแต่ละคีย์สำหรับการนำทางและป้ายรายการไฟล์',
-                addButtonTooltip: 'กำหนดค่าคีย์คุณสมบัติ'
+                name: 'คีย์คุณสมบัติ (โปรไฟล์ห้องนิรภัย)',
+                desc: 'คีย์คุณสมบัติ frontmatter พร้อมการตั้งค่าการแสดงผลแต่ละคีย์สำหรับการนำทางและรายการไฟล์',
+                addButtonTooltip: 'กำหนดค่าคีย์คุณสมบัติ',
+                noneConfigured: 'ไม่มีคุณสมบัติที่กำหนดค่า',
+                singleConfigured: 'กำหนดค่าคุณสมบัติ 1 รายการ: {properties}',
+                multipleConfigured: 'กำหนดค่าคุณสมบัติ {count} รายการ: {properties}'
             },
             showPropertiesOnSeparateRows: {
                 name: 'แสดงคุณสมบัติแยกเป็นบรรทัด',
@@ -1584,7 +1587,10 @@ export const STRINGS_TH = {
             },
             showProperties: {
                 name: 'แสดงคุณสมบัติ',
-                desc: 'แสดงส่วนคุณสมบัติในตัวนำทาง'
+                desc: 'แสดงส่วนคุณสมบัติในตัวนำทาง',
+                propertyKeysInfoPrefix: 'กำหนดค่าคุณสมบัติใน ',
+                propertyKeysInfoLinkText: 'ทั่วไป > คีย์คุณสมบัติ',
+                propertyKeysInfoSuffix: ''
             },
             showPropertyIcons: {
                 name: 'แสดงไอคอนคุณสมบัติ',

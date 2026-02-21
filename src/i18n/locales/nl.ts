@@ -1396,9 +1396,12 @@ export const STRINGS_NL = {
                 }
             },
             propertyFields: {
-                name: 'Eigenschapssleutels',
-                desc: 'Frontmatter-eigenschapssleutels, met zichtbaarheid per sleutel voor navigatie en bestandslijst-badges.',
-                addButtonTooltip: 'Eigenschapssleutels configureren'
+                name: 'Eigenschapssleutels (kluisprofiel)',
+                desc: 'Frontmatter-eigenschapssleutels, met zichtbaarheid per sleutel voor navigatie en bestandslijst.',
+                addButtonTooltip: 'Eigenschapssleutels configureren',
+                noneConfigured: 'Geen eigenschappen geconfigureerd',
+                singleConfigured: '1 eigenschap geconfigureerd: {properties}',
+                multipleConfigured: '{count} eigenschappen geconfigureerd: {properties}'
             },
             showPropertiesOnSeparateRows: {
                 name: 'Eigenschappen op afzonderlijke regels tonen',
@@ -1591,7 +1594,10 @@ export const STRINGS_NL = {
             },
             showProperties: {
                 name: 'Eigenschappen tonen',
-                desc: 'Eigenschappensectie tonen in de navigator.'
+                desc: 'Eigenschappensectie tonen in de navigator.',
+                propertyKeysInfoPrefix: 'Configureer eigenschappen in ',
+                propertyKeysInfoLinkText: 'Algemeen > Eigenschapssleutels',
+                propertyKeysInfoSuffix: ''
             },
             showPropertyIcons: {
                 name: 'Eigenschapspictogrammen tonen',

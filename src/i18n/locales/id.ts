@@ -1393,9 +1393,12 @@ export const STRINGS_ID = {
                 }
             },
             propertyFields: {
-                name: 'Kunci properti',
-                desc: 'Kunci properti frontmatter, dengan visibilitas per kunci untuk navigasi dan lencana daftar file.',
-                addButtonTooltip: 'Konfigurasi kunci properti'
+                name: 'Kunci properti (profil brankas)',
+                desc: 'Kunci properti frontmatter, dengan visibilitas per kunci untuk navigasi dan daftar file.',
+                addButtonTooltip: 'Konfigurasi kunci properti',
+                noneConfigured: 'Tidak ada properti yang dikonfigurasi',
+                singleConfigured: '1 properti dikonfigurasi: {properties}',
+                multipleConfigured: '{count} properti dikonfigurasi: {properties}'
             },
             showPropertiesOnSeparateRows: {
                 name: 'Tampilkan properti pada baris terpisah',
@@ -1588,7 +1591,10 @@ export const STRINGS_ID = {
             },
             showProperties: {
                 name: 'Tampilkan properti',
-                desc: 'Tampilkan bagian properti di navigator.'
+                desc: 'Tampilkan bagian properti di navigator.',
+                propertyKeysInfoPrefix: 'Konfigurasi properti di ',
+                propertyKeysInfoLinkText: 'Umum > Kunci properti',
+                propertyKeysInfoSuffix: ''
             },
             showPropertyIcons: {
                 name: 'Tampilkan ikon properti',

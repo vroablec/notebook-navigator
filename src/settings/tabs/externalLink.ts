@@ -32,6 +32,13 @@ type InlineExternalLinkTextParams = Readonly<{
     suffix: string;
 }>;
 
+type InlineActionLinkTextParams = Readonly<{
+    prefix: string;
+    linkText: string;
+    suffix: string;
+    onClick: () => void;
+}>;
+
 function createExternalLinkElement({ href, text }: ExternalLinkConfig): HTMLAnchorElement {
     const linkEl = document.createElement('a');
     linkEl.textContent = text;
@@ -51,5 +58,18 @@ export function createSettingDescriptionWithExternalLink(params: ExternalLinkSet
 export function createInlineExternalLinkText(params: InlineExternalLinkTextParams): DocumentFragment {
     const fragment = document.createDocumentFragment();
     fragment.append(params.prefix, createExternalLinkElement(params.link), params.suffix);
+    return fragment;
+}
+
+export function createInlineActionLinkText(params: InlineActionLinkTextParams): DocumentFragment {
+    const fragment = document.createDocumentFragment();
+    const linkEl = document.createElement('a');
+    linkEl.textContent = params.linkText;
+    linkEl.href = '#';
+    linkEl.addEventListener('click', event => {
+        event.preventDefault();
+        params.onClick();
+    });
+    fragment.append(params.prefix, linkEl, params.suffix);
     return fragment;
 }
