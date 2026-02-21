@@ -2231,13 +2231,15 @@ body {
 }
 
 .nn-desktop .nn-shortcut-item--removable:hover .nn-navitem-hover-action-button,
-.nn-desktop .nn-shortcut-header-item:hover .nn-navitem-hover-action-button {
+.nn-desktop .nn-shortcut-header-item:hover .nn-navitem-hover-action-button,
+.nn-desktop .nn-properties-header-item:hover .nn-navitem-hover-action-button {
     visibility: visible;
     pointer-events: auto;
 }
 
 .nn-desktop .nn-shortcut-item--removable:hover .nn-navitem-hover-action-count,
-.nn-desktop .nn-shortcut-header-item:hover .nn-navitem-hover-action-count {
+.nn-desktop .nn-shortcut-header-item:hover .nn-navitem-hover-action-count,
+.nn-desktop .nn-properties-header-item:hover .nn-navitem-hover-action-count {
     opacity: 0;
 }
 

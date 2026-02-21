@@ -61,6 +61,14 @@ import { buildNoteCountDisplay } from '../utils/noteCountFormatting';
 import { buildSearchMatchContentClass } from '../utils/searchHighlight';
 import { resolveUXIcon } from '../utils/uxIcons';
 import { IndentGuideColumns } from './IndentGuideColumns';
+import { NavItemHoverActionSlot } from './NavItemHoverActionSlot';
+
+export interface VirtualFolderTrailingAction {
+    actionLabel: string;
+    icon: string;
+    onClick: () => void;
+    labelMode?: 'note-count';
+}
 
 interface VirtualFolderItemProps {
     virtualFolder: VirtualFolder; // Static data structure from NavigationPane
@@ -74,7 +82,7 @@ interface VirtualFolderItemProps {
     showFileCount?: boolean; // Whether to render note count badge
     countInfo?: NoteCountInfo; // Pre-computed note counts
     searchMatch?: 'include' | 'exclude'; // Search highlight state
-    trailingAccessory?: React.ReactNode; // Optional trailing action, rendered after spacer
+    trailingAction?: VirtualFolderTrailingAction; // Optional trailing action button
     onDragOver?: (event: DragEvent<HTMLDivElement>) => void; // Optional drag over handler for shortcuts
     onDrop?: (event: DragEvent<HTMLDivElement>) => void; // Optional drop handler for shortcuts
     onDragLeave?: (event: DragEvent<HTMLDivElement>) => void; // Optional drag leave handler for shortcuts
@@ -114,7 +122,7 @@ export const VirtualFolderComponent = React.memo(function VirtualFolderComponent
     showFileCount = false,
     countInfo,
     searchMatch,
-    trailingAccessory,
+    trailingAction,
     onToggle,
     onDragOver,
     onDrop,
@@ -156,11 +164,33 @@ export const VirtualFolderComponent = React.memo(function VirtualFolderComponent
         return noteCountDisplay.shouldDisplay;
     }, [includeDescendantNotes, noteCountDisplay, showFileCount, virtualFolder.id]);
 
+    const trailingActionLabelMode = trailingAction?.labelMode;
+
+    const trailingActionLabel = useMemo(() => {
+        if (trailingActionLabelMode !== 'note-count') {
+            return undefined;
+        }
+        if (!shouldDisplayCount || !noteCountDisplay) {
+            return undefined;
+        }
+        return noteCountDisplay.label;
+    }, [noteCountDisplay, shouldDisplayCount, trailingActionLabelMode]);
+
+    const shouldRenderCountBadge = useMemo(() => {
+        if (!shouldDisplayCount || !noteCountDisplay) {
+            return false;
+        }
+        return trailingActionLabelMode !== 'note-count';
+    }, [noteCountDisplay, shouldDisplayCount, trailingActionLabelMode]);
+
     // Build CSS class name with selection state
     const className = useMemo(() => {
         const classes = ['nn-navitem'];
         if (virtualFolder.id === SHORTCUTS_VIRTUAL_FOLDER_ID) {
             classes.push('nn-shortcut-header-item');
+        }
+        if (virtualFolder.id === PROPERTIES_ROOT_VIRTUAL_FOLDER_ID) {
+            classes.push('nn-properties-header-item');
         }
         if (isSelected) {
             classes.push('nn-selected');
@@ -278,8 +308,15 @@ export const VirtualFolderComponent = React.memo(function VirtualFolderComponent
                 {shouldShowIcon && virtualFolder.icon && <span className="nn-navitem-icon" ref={iconRef} />}
                 <span className="nn-navitem-name">{virtualFolder.name}</span>
                 <span className="nn-navitem-spacer" />
-                {shouldDisplayCount && noteCountDisplay && <span className="nn-navitem-count">{noteCountDisplay.label}</span>}
-                {trailingAccessory}
+                {shouldRenderCountBadge && noteCountDisplay && <span className="nn-navitem-count">{noteCountDisplay.label}</span>}
+                {trailingAction && (
+                    <NavItemHoverActionSlot
+                        label={trailingActionLabel}
+                        actionLabel={trailingAction.actionLabel}
+                        icon={trailingAction.icon}
+                        onClick={trailingAction.onClick}
+                    />
+                )}
             </div>
         </div>
     );

@@ -117,7 +117,7 @@ import { Calendar } from './calendar';
 import { TagTreeItem } from './TagTreeItem';
 import { PropertyTreeItem } from './PropertyTreeItem';
 import { VaultTitleArea } from './VaultTitleArea';
-import { VirtualFolderComponent } from './VirtualFolderItem';
+import { VirtualFolderComponent, type VirtualFolderTrailingAction } from './VirtualFolderItem';
 import { buildIndentGuideLevelsMap, getNavigationIndex, normalizeNavigationPath } from '../utils/navigationIndex';
 import {
     STORAGE_KEYS,
@@ -133,7 +133,6 @@ import { resolveFolderNoteClickOpenContext } from '../utils/keyboardOpenContext'
 import { openFileInContext } from '../utils/openFileInContext';
 import { useShortcuts } from '../context/ShortcutsContext';
 import { ShortcutItem } from './ShortcutItem';
-import { NavItemHoverActionSlot } from './NavItemHoverActionSlot';
 import { ConfirmModal } from '../modals/ConfirmModal';
 import { PropertyKeyVisibilityModal } from '../modals/PropertyKeyVisibilityModal';
 import {
@@ -2511,6 +2510,25 @@ export const NavigationPane = React.memo(
             setActiveShortcut
         ]);
 
+        const shortcutHeaderTrailingAction = useMemo<VirtualFolderTrailingAction>(
+            () => ({
+                actionLabel: pinToggleLabel,
+                icon: uiState.pinShortcuts ? 'lucide-pin-off' : 'lucide-pin',
+                onClick: handleShortcutSplitToggle
+            }),
+            [handleShortcutSplitToggle, pinToggleLabel, uiState.pinShortcuts]
+        );
+
+        const propertiesHeaderTrailingAction = useMemo<VirtualFolderTrailingAction>(
+            () => ({
+                actionLabel: strings.contextMenu.property.addKey,
+                icon: 'lucide-settings-2',
+                onClick: handleConfigurePropertyKeysFromSectionMenu,
+                labelMode: 'note-count'
+            }),
+            [handleConfigurePropertyKeysFromSectionMenu]
+        );
+
         // Renders individual navigation items based on their type
         const renderItem = useCallback(
             (item: CombinedNavigationItem): React.ReactNode => {
@@ -2969,13 +2987,12 @@ export const NavigationPane = React.memo(
                                       handleSectionContextMenu(event, sectionId, { allowSeparator: allowSeparatorActions })
                                 : undefined;
 
-                        const trailingAccessory = isShortcutsGroup ? (
-                            <NavItemHoverActionSlot
-                                actionLabel={pinToggleLabel}
-                                icon={uiState.pinShortcuts ? 'lucide-pin-off' : 'lucide-pin'}
-                                onClick={handleShortcutSplitToggle}
-                            />
-                        ) : undefined;
+                        const isPropertiesGroup = virtualFolder.id === PROPERTIES_ROOT_VIRTUAL_FOLDER_ID;
+                        const trailingAction: VirtualFolderTrailingAction | undefined = isShortcutsGroup
+                            ? shortcutHeaderTrailingAction
+                            : isPropertiesGroup
+                              ? propertiesHeaderTrailingAction
+                              : undefined;
 
                         return (
                             <VirtualFolderComponent
@@ -2988,7 +3005,7 @@ export const NavigationPane = React.memo(
                                 showFileCount={showFileCount}
                                 countInfo={collectionCountInfo}
                                 searchMatch={collectionSearchMatch}
-                                trailingAccessory={trailingAccessory}
+                                trailingAction={trailingAction}
                                 onSelect={
                                     isTagCollection && tagCollectionId
                                         ? event => handleTagCollectionClick(tagCollectionId, event)
@@ -3211,9 +3228,8 @@ export const NavigationPane = React.memo(
                 shouldShowShortcutCounts,
                 shortcutsExpanded,
                 shouldPinShortcuts,
-                uiState.pinShortcuts,
-                pinToggleLabel,
-                handleShortcutSplitToggle,
+                shortcutHeaderTrailingAction,
+                propertiesHeaderTrailingAction,
                 showHiddenItems,
                 recentNotesExpanded,
                 getFileDisplayName,
