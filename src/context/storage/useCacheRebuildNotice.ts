@@ -24,6 +24,12 @@ import { getDBInstance } from '../../storage/fileOperations';
 import { showNotice } from '../../utils/noticeUtils';
 import { isMarkdownPath } from '../../utils/fileTypeUtils';
 
+const CACHE_REBUILD_NOTICE_DELAY_MS = 500;
+const CACHE_REBUILD_PROGRESS_POLL_INTERVAL_MS = 2_000;
+const CACHE_REBUILD_INITIAL_WAIT_TIMEOUT_MS = 60_000;
+const CACHE_REBUILD_EMPTY_TICK_THRESHOLD = 2;
+const CACHE_REBUILD_MAX_NOTICE_RECREATE_ATTEMPTS = 2;
+
 /**
  * Shows a persistent notice with a progress bar during a cache rebuild.
  *
@@ -42,10 +48,21 @@ export function useCacheRebuildNotice(params: { app: App; stoppedRef: RefObject<
 
     const cacheRebuildNoticeRef = useRef<ReturnType<typeof showNotice> | null>(null);
     const cacheRebuildIntervalRef = useRef<number | null>(null);
+    // Tracks the delayed start so it can be cancelled when a run is replaced or stopped.
+    const cacheRebuildStartTimeoutRef = useRef<number | null>(null);
+    // Increments each time notice tracking is cleared, invalidating stale callbacks from older runs.
+    const cacheRebuildRunTokenRef = useRef(0);
     const noticeRecreateAttemptsRef = useRef(0);
-    const maxNoticeRecreateAttempts = 2;
 
     const clearCacheRebuildNotice = useCallback(() => {
+        cacheRebuildRunTokenRef.current += 1;
+
+        if (cacheRebuildStartTimeoutRef.current !== null) {
+            if (typeof window !== 'undefined') {
+                window.clearTimeout(cacheRebuildStartTimeoutRef.current);
+            }
+            cacheRebuildStartTimeoutRef.current = null;
+        }
         if (cacheRebuildIntervalRef.current !== null) {
             if (typeof window !== 'undefined') {
                 window.clearInterval(cacheRebuildIntervalRef.current);
@@ -71,6 +88,7 @@ export function useCacheRebuildNotice(params: { app: App; stoppedRef: RefObject<
                 return;
             }
 
+            const runToken = cacheRebuildRunTokenRef.current;
             const title = strings.settings.items.rebuildCache.indexingTitle;
             const description = strings.settings.items.rebuildCache.progress;
             const trackPreview = enabledTypes.includes('preview');
@@ -125,34 +143,24 @@ export function useCacheRebuildNotice(params: { app: App; stoppedRef: RefObject<
                 cacheRebuildNoticeRef.current = notice;
             };
 
-            createCacheRebuildNotice();
-            updateProgress(0);
-
             const db = getDBInstance();
             let hasSeenPending = false;
             let emptyTicks = 0;
             const startedAt = Date.now();
             // If the database never reports pending work (or metadata cache never becomes available), avoid leaving
             // a sticky notice on screen forever.
-            const maxInitialWaitMs = 60_000;
+            const maxInitialWaitMs = CACHE_REBUILD_INITIAL_WAIT_TIMEOUT_MS;
 
             noticeRecreateAttemptsRef.current = 0;
 
-            cacheRebuildIntervalRef.current = window.setInterval(() => {
+            const pollCacheRebuildProgress = (): void => {
                 if (stoppedRef.current) {
                     clearCacheRebuildNotice();
                     return;
                 }
 
-                const notice = cacheRebuildNoticeRef.current;
-                const container = notice?.containerEl;
-                if (!container || !container.isConnected) {
-                    if (noticeRecreateAttemptsRef.current < maxNoticeRecreateAttempts) {
-                        noticeRecreateAttemptsRef.current += 1;
-                        createCacheRebuildNotice();
-                    }
-                } else if (noticeRecreateAttemptsRef.current !== 0) {
-                    noticeRecreateAttemptsRef.current = 0;
+                if (cacheRebuildRunTokenRef.current !== runToken) {
+                    return;
                 }
 
                 const getFileByPath = (path: string): TFile | null => {
@@ -226,27 +234,46 @@ export function useCacheRebuildNotice(params: { app: App; stoppedRef: RefObject<
                     maxTotal = rawRemainingCount;
                 }
 
+                const elapsedMs = Date.now() - startedAt;
+                const shouldShowNotice = elapsedMs >= CACHE_REBUILD_NOTICE_DELAY_MS && rawRemainingCount > 0;
+                if (shouldShowNotice && !cacheRebuildNoticeRef.current) {
+                    createCacheRebuildNotice();
+                }
+
+                const notice = cacheRebuildNoticeRef.current;
+                const container = notice?.containerEl;
+                if (notice && (!container || !container.isConnected)) {
+                    if (noticeRecreateAttemptsRef.current < CACHE_REBUILD_MAX_NOTICE_RECREATE_ATTEMPTS) {
+                        noticeRecreateAttemptsRef.current += 1;
+                        createCacheRebuildNotice();
+                    }
+                } else if (notice && noticeRecreateAttemptsRef.current !== 0) {
+                    noticeRecreateAttemptsRef.current = 0;
+                }
+
                 if (readyRemainingCount > 0) {
                     hasSeenPending = true;
                     emptyTicks = 0;
                 }
 
                 if (!hasSeenPending) {
+                    if (Date.now() - startedAt >= maxInitialWaitMs) {
+                        clearCacheRebuildNotice();
+                        return;
+                    }
+
                     if (rawRemainingCount === 0) {
                         emptyTicks += 1;
                         // Require a couple of consecutive empty ticks before hiding the notice. This avoids flicker
                         // if the rebuild is still seeding the database.
-                        if (emptyTicks >= 2) {
+                        if (emptyTicks >= CACHE_REBUILD_EMPTY_TICK_THRESHOLD) {
                             if (db.getFileCount() > 0) {
                                 // Let callers clear persisted rebuild state only after the database has been seeded.
                                 onRebuildComplete?.();
+                                clearCacheRebuildNotice();
+                                return;
                             }
-                            clearCacheRebuildNotice();
-                            return;
                         }
-                    } else if (Date.now() - startedAt >= maxInitialWaitMs) {
-                        clearCacheRebuildNotice();
-                        return;
                     }
                     updateProgress(0);
                     return;
@@ -260,7 +287,23 @@ export function useCacheRebuildNotice(params: { app: App; stoppedRef: RefObject<
                     onRebuildComplete?.();
                     clearCacheRebuildNotice();
                 }
-            }, 2_000);
+            };
+
+            // Delay the first poll so short rebuilds can finish without showing the persistent notice.
+            cacheRebuildStartTimeoutRef.current = window.setTimeout(() => {
+                if (stoppedRef.current || cacheRebuildRunTokenRef.current !== runToken) {
+                    return;
+                }
+
+                cacheRebuildStartTimeoutRef.current = null;
+                pollCacheRebuildProgress();
+
+                if (stoppedRef.current || cacheRebuildRunTokenRef.current !== runToken) {
+                    return;
+                }
+
+                cacheRebuildIntervalRef.current = window.setInterval(pollCacheRebuildProgress, CACHE_REBUILD_PROGRESS_POLL_INTERVAL_MS);
+            }, CACHE_REBUILD_NOTICE_DELAY_MS);
         },
         [app.metadataCache, app.vault, clearCacheRebuildNotice, onRebuildComplete, stoppedRef]
     );
