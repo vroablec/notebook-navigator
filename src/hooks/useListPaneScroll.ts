@@ -100,6 +100,10 @@ interface UseListPaneScrollParams {
     topSpacerHeight: number;
     /** Whether descendant notes should be shown */
     includeDescendantNotes: boolean;
+    /** Visible frontmatter property keys for file list rows (normalized keys) */
+    visiblePropertyKeys: ReadonlySet<string>;
+    /** Stable key signature for visible frontmatter property keys */
+    visiblePropertyKeySignature: string;
     /** Scroll margin used to offset the visible range and scrollToIndex alignment */
     scrollMargin?: number;
     /**
@@ -148,6 +152,8 @@ export function useListPaneScroll({
     suppressSearchTopScrollRef,
     topSpacerHeight,
     includeDescendantNotes,
+    visiblePropertyKeys,
+    visiblePropertyKeySignature,
     scrollMargin = 0,
     scrollPaddingEnd = 0
 }: UseListPaneScrollParams): UseListPaneScrollResult {
@@ -292,7 +298,8 @@ export function useListPaneScroll({
                 isCompactMode,
                 file,
                 wordCount: fileRecord?.wordCount ?? undefined,
-                properties: fileRecord?.properties ?? undefined
+                properties: fileRecord?.properties ?? undefined,
+                visiblePropertyKeys
             });
 
             const hasVisiblePillRows = hasTagRow || propertyRowCount > 0;
@@ -741,6 +748,7 @@ export function useListPaneScroll({
         settings.showFileProperties,
         settings.showPropertiesOnSeparateRows,
         settings.showFilePropertiesInCompactMode,
+        visiblePropertyKeySignature,
         settings.showParentFolder,
         settings.showTags,
         settings.showFileTags,

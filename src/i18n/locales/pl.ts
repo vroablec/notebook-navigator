@@ -326,10 +326,9 @@ export const STRINGS_PL = {
             hideTag: 'Ukryj tag'
         },
         property: {
-            addKey: 'Dodaj atrybut',
-            removeKey: 'Usuń z listy właściwości',
+            addKey: 'Konfiguruj klucze atrybutów',
             renameKey: 'Zmień nazwę właściwości',
-            deleteKey: 'Usuń właściwość z notatek'
+            deleteKey: 'Usuń właściwość'
         },
         navigation: {
             addSeparator: 'Dodaj separator',
@@ -573,6 +572,14 @@ export const STRINGS_PL = {
                 select: 'aby dodać atrybut',
                 dismiss: 'aby anulować'
             }
+        },
+        propertyKeyVisibility: {
+            title: 'Widoczność kluczy atrybutów',
+            searchPlaceholder: 'Szukaj kluczy atrybutów...',
+            showInNavigation: 'Pokaż w nawigacji',
+            showInList: 'Pokaż na liście',
+            applyButton: 'Zastosuj',
+            emptyState: 'Nie znaleziono kluczy atrybutów.'
         },
         welcome: {
             title: 'Witaj w {pluginName}',
@@ -1390,11 +1397,9 @@ export const STRINGS_PL = {
                 }
             },
             propertyFields: {
-                name: 'Widoczne atrybuty',
-                desc: 'Lista atrybutów rozdzielonych przecinkami do wyświetlenia w panelu nawigacji i jako etykiety w elementach plików. Atrybuty z wieloma wartościami wyświetlają jedną etykietę na wartość.',
-                placeholder: 'status, type, category',
-                addButtonTooltip: 'Dodaj atrybut',
-                emptySelectorNotice: 'Nie znaleziono atrybutów w pamięci podręcznej metadanych.'
+                name: 'Klucze atrybutów',
+                desc: 'Klucze atrybutów frontmatter z kontrolą widoczności per klucz dla nawigacji i etykiet listy plików.',
+                addButtonTooltip: 'Konfiguruj klucze atrybutów'
             },
             showPropertiesOnSeparateRows: {
                 name: 'Pokaż atrybuty w osobnych wierszach',

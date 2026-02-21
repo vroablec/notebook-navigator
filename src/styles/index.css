@@ -98,6 +98,8 @@ Keep this list ordered: later files override earlier ones.
 @import './sections/modal-whats-new.css';
 /* modal-icon-picker.css: icon picker modal layout, search input, results grid, and category headers. */
 @import './sections/modal-icon-picker.css';
+/* modal-property-keys.css: property key visibility modal layout (navigation/list toggles). */
+@import './sections/modal-property-keys.css';
 
 /* Virtualization */
 /* layout-virtual-list.css: TanStack Virtual container wrappers and absolute positioned row elements. */

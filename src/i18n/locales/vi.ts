@@ -326,10 +326,9 @@ export const STRINGS_VI = {
             hideTag: 'Ẩn thẻ'
         },
         property: {
-            addKey: 'Thêm khóa thuộc tính',
-            removeKey: 'Xóa khỏi danh sách thuộc tính',
+            addKey: 'Cấu hình khóa thuộc tính',
             renameKey: 'Đổi tên thuộc tính',
-            deleteKey: 'Xóa thuộc tính khỏi ghi chú'
+            deleteKey: 'Xóa thuộc tính'
         },
         navigation: {
             addSeparator: 'Thêm dấu phân cách',
@@ -571,6 +570,14 @@ export const STRINGS_VI = {
                 select: 'để thêm thuộc tính',
                 dismiss: 'để đóng'
             }
+        },
+        propertyKeyVisibility: {
+            title: 'Hiển thị khóa thuộc tính',
+            searchPlaceholder: 'Tìm khóa thuộc tính...',
+            showInNavigation: 'Hiển thị trong điều hướng',
+            showInList: 'Hiển thị trong danh sách',
+            applyButton: 'Áp dụng',
+            emptyState: 'Không tìm thấy khóa thuộc tính.'
         },
         welcome: {
             title: 'Chào mừng đến với {pluginName}',
@@ -1385,11 +1392,9 @@ export const STRINGS_VI = {
                 }
             },
             propertyFields: {
-                name: 'Các thuộc tính để hiển thị',
-                desc: 'Danh sách thuộc tính frontmatter phân cách bằng dấu phẩy để hiển thị trong bảng điều hướng và dưới dạng huy hiệu trong các mục tệp. Thuộc tính dạng danh sách hiển thị một huy hiệu cho mỗi giá trị.',
-                placeholder: 'status, type, category',
-                addButtonTooltip: 'Thêm khóa thuộc tính',
-                emptySelectorNotice: 'Không tìm thấy khóa thuộc tính trong bộ nhớ đệm siêu dữ liệu.'
+                name: 'Khóa thuộc tính',
+                desc: 'Các khóa thuộc tính frontmatter, với khả năng thiết lập hiển thị từng khóa cho điều hướng và huy hiệu danh sách tệp.',
+                addButtonTooltip: 'Cấu hình khóa thuộc tính'
             },
             showPropertiesOnSeparateRows: {
                 name: 'Hiển thị thuộc tính trên các dòng riêng',

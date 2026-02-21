@@ -327,10 +327,9 @@ export const STRINGS_ID = {
             hideTag: 'Sembunyikan tag'
         },
         property: {
-            addKey: 'Tambah kunci properti',
-            removeKey: 'Hapus dari daftar properti',
+            addKey: 'Konfigurasi kunci properti',
             renameKey: 'Ubah nama properti',
-            deleteKey: 'Hapus properti dari catatan'
+            deleteKey: 'Hapus properti'
         },
         navigation: {
             addSeparator: 'Tambah pemisah',
@@ -571,6 +570,14 @@ export const STRINGS_ID = {
                 select: 'untuk menambah properti',
                 dismiss: 'untuk menutup'
             }
+        },
+        propertyKeyVisibility: {
+            title: 'Visibilitas kunci properti',
+            searchPlaceholder: 'Cari kunci properti...',
+            showInNavigation: 'Tampilkan di navigasi',
+            showInList: 'Tampilkan di daftar',
+            applyButton: 'Terapkan',
+            emptyState: 'Tidak ditemukan kunci properti.'
         },
         welcome: {
             title: 'Selamat datang di {pluginName}',
@@ -1386,11 +1393,9 @@ export const STRINGS_ID = {
                 }
             },
             propertyFields: {
-                name: 'Properti-properti untuk ditampilkan',
-                desc: 'Daftar properti frontmatter dipisahkan koma untuk ditampilkan di panel navigasi dan sebagai lencana di item file. Properti bernilai daftar menampilkan satu lencana per nilai.',
-                placeholder: 'status, type, category',
-                addButtonTooltip: 'Tambah kunci properti',
-                emptySelectorNotice: 'Tidak ditemukan kunci properti dalam cache metadata.'
+                name: 'Kunci properti',
+                desc: 'Kunci properti frontmatter, dengan visibilitas per kunci untuk navigasi dan lencana daftar file.',
+                addButtonTooltip: 'Konfigurasi kunci properti'
             },
             showPropertiesOnSeparateRows: {
                 name: 'Tampilkan properti pada baris terpisah',

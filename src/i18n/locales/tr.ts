@@ -327,10 +327,9 @@ export const STRINGS_TR = {
             hideTag: 'Etiketi gizle'
         },
         property: {
-            addKey: 'Özellik anahtarı ekle',
-            removeKey: 'Özellik listesinden kaldır',
+            addKey: 'Özellik anahtarlarını yapılandır',
             renameKey: 'Özelliği yeniden adlandır',
-            deleteKey: 'Özelliği notlardan sil'
+            deleteKey: 'Özelliği sil'
         },
         navigation: {
             addSeparator: 'Ayırıcı ekle',
@@ -572,6 +571,14 @@ export const STRINGS_TR = {
                 select: 'özellik eklemek için',
                 dismiss: 'kapatmak için'
             }
+        },
+        propertyKeyVisibility: {
+            title: 'Özellik anahtarı görünürlüğü',
+            searchPlaceholder: 'Özellik anahtarlarını ara...',
+            showInNavigation: 'Gezinmede göster',
+            showInList: 'Listede göster',
+            applyButton: 'Uygula',
+            emptyState: 'Özellik anahtarı bulunamadı.'
         },
         welcome: {
             title: '{pluginName} uygulamasına hoş geldiniz',
@@ -1386,11 +1393,9 @@ export const STRINGS_TR = {
                 }
             },
             propertyFields: {
-                name: 'Görüntülenecek özellikler',
-                desc: 'Gezinme panelinde ve dosya öğelerinde rozet olarak görüntülenecek virgülle ayrılmış ön bilgi özellikleri listesi. Liste değerli özellikler değer başına bir rozet gösterir.',
-                placeholder: 'status, type, category',
-                addButtonTooltip: 'Özellik anahtarı ekle',
-                emptySelectorNotice: 'Meta veri önbelleğinde özellik anahtarı bulunamadı.'
+                name: 'Özellik anahtarları',
+                desc: 'Gezinme ve dosya listesi rozetleri için anahtar bazında görünürlük ayarlı ön bilgi özellik anahtarları.',
+                addButtonTooltip: 'Özellik anahtarlarını yapılandır'
             },
             showPropertiesOnSeparateRows: {
                 name: 'Özellikleri ayrı satırlarda göster',

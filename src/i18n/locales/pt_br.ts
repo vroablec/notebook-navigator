@@ -328,10 +328,9 @@ export const STRINGS_PT_BR = {
             hideTag: 'Ocultar tag'
         },
         property: {
-            addKey: 'Adicionar chave de propriedade',
-            removeKey: 'Remover da lista de propriedades',
+            addKey: 'Configurar chaves de propriedade',
             renameKey: 'Renomear propriedade',
-            deleteKey: 'Excluir propriedade das notas'
+            deleteKey: 'Excluir propriedade'
         },
         navigation: {
             addSeparator: 'Adicionar separador',
@@ -573,6 +572,14 @@ export const STRINGS_PT_BR = {
                 select: 'para adicionar propriedade',
                 dismiss: 'para descartar'
             }
+        },
+        propertyKeyVisibility: {
+            title: 'Visibilidade das chaves de propriedade',
+            searchPlaceholder: 'Pesquisar chaves de propriedade...',
+            showInNavigation: 'Mostrar na navegação',
+            showInList: 'Mostrar na lista',
+            applyButton: 'Aplicar',
+            emptyState: 'Nenhuma chave de propriedade encontrada.'
         },
         welcome: {
             title: 'Bem-vindo ao {pluginName}',
@@ -1391,11 +1398,9 @@ export const STRINGS_PT_BR = {
                 }
             },
             propertyFields: {
-                name: 'Propriedades a exibir',
-                desc: 'Lista de propriedades de metadados separada por vírgulas para exibir no painel de navegação e como emblemas nos itens de arquivo. Propriedades com múltiplos valores exibem um emblema por valor.',
-                placeholder: 'status, type, category',
-                addButtonTooltip: 'Adicionar chave de propriedade',
-                emptySelectorNotice: 'Nenhuma chave de propriedade encontrada no cache de metadados.'
+                name: 'Chaves de propriedades',
+                desc: 'Chaves de propriedades de metadados, com visibilidade por chave para navegação e emblemas da lista de arquivos.',
+                addButtonTooltip: 'Configurar chaves de propriedade'
             },
             showPropertiesOnSeparateRows: {
                 name: 'Mostrar propriedades em linhas separadas',

@@ -82,6 +82,7 @@ import type { SearchResultMeta } from '../types/search';
 import { createHiddenTagVisibility } from '../utils/tagPrefixMatcher';
 import { areStringArraysEqual, mergeRanges, NumericRange } from '../utils/arrayUtils';
 import { openAddTagToFilesModal } from '../utils/tagModalHelpers';
+import { casefold } from '../utils/recordUtils';
 import { resolveUXIcon } from '../utils/uxIcons';
 import type { InclusionOperator } from '../utils/filterSearch';
 import {
@@ -210,6 +211,8 @@ interface FileItemProps {
     onModifySearchWithProperty?: (key: string, value: string | null, operator: InclusionOperator) => void;
     /** Icon size for rendering file icons */
     fileIconSize: number;
+    /** Visible frontmatter property keys for file list pills (normalized keys) */
+    visiblePropertyKeys: ReadonlySet<string>;
 }
 
 /**
@@ -390,7 +393,8 @@ export const FileItem = React.memo(function FileItem({
     isHidden = false,
     onModifySearchWithTag,
     onModifySearchWithProperty,
-    fileIconSize
+    fileIconSize,
+    visiblePropertyKeys
 }: FileItemProps) {
     // === Hooks (all hooks together at the top) ===
     const { app, isMobile, plugin, commandQueue, tagOperations } = useServices();
@@ -741,8 +745,19 @@ export const FileItem = React.memo(function FileItem({
         return true;
     }, [categorizedTags, isCompactMode, settings.showFileTags, settings.showFileTagsInCompactMode, settings.showTags]);
 
+    const visibleProperties = useMemo(() => {
+        if (!properties || properties.length === 0) {
+            return properties;
+        }
+        if (visiblePropertyKeys.size === 0) {
+            return [];
+        }
+
+        return properties.filter(entry => visiblePropertyKeys.has(casefold(entry.fieldKey)));
+    }, [properties, visiblePropertyKeys]);
+
     const propertyColorSignature = useMemo(() => {
-        if (!settings.showFileProperties || !settings.colorFileProperties || !properties || properties.length === 0) {
+        if (!settings.showFileProperties || !settings.colorFileProperties || !visibleProperties || visibleProperties.length === 0) {
             return '';
         }
 
@@ -753,7 +768,7 @@ export const FileItem = React.memo(function FileItem({
         const seenValueNodeIds = new Set<string>();
         const seenKeyNodeIds = new Set<string>();
 
-        for (const entry of properties) {
+        for (const entry of visibleProperties) {
             const rawValue = entry.value;
             if (rawValue.trim().length === 0) {
                 continue;
@@ -786,7 +801,7 @@ export const FileItem = React.memo(function FileItem({
         signatures.sort();
         return `${inheritSignature}\u0001${signatures.join('\u0001')}`;
     }, [
-        properties,
+        visibleProperties,
         settings.colorFileProperties,
         settings.inheritPropertyColors,
         settings.propertyBackgroundColors,
@@ -841,13 +856,13 @@ export const FileItem = React.memo(function FileItem({
             return pills;
         }
 
-        if (!properties || properties.length === 0) {
+        if (!visibleProperties || visibleProperties.length === 0) {
             return pills;
         }
 
         // Convert cached property data to renderable pill models.
         const colorLookupCache = new Map<string, { color?: string; background?: string }>();
-        for (const entry of properties) {
+        for (const entry of visibleProperties) {
             const rawValue = entry.value;
             if (rawValue.trim().length === 0) {
                 continue;
@@ -934,7 +949,7 @@ export const FileItem = React.memo(function FileItem({
     }, [
         canShowPropertyPills,
         metadataService,
-        properties,
+        visibleProperties,
         propertyColorSignature,
         settings.colorFileProperties,
         settings.prioritizeColoredFileProperties,

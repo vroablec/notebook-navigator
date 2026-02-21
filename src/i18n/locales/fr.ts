@@ -327,10 +327,9 @@ export const STRINGS_FR = {
             hideTag: 'Masquer l’étiquette'
         },
         property: {
-            addKey: 'Ajouter une clé de propriété',
-            removeKey: 'Retirer de la liste des propriétés',
+            addKey: 'Configurer les clés de propriété',
             renameKey: 'Renommer la propriété',
-            deleteKey: 'Supprimer la propriété des notes'
+            deleteKey: 'Supprimer la propriété'
         },
         navigation: {
             addSeparator: 'Ajouter un séparateur',
@@ -572,6 +571,14 @@ export const STRINGS_FR = {
                 select: 'pour ajouter la propriété',
                 dismiss: 'pour annuler'
             }
+        },
+        propertyKeyVisibility: {
+            title: 'Visibilité des clés de propriété',
+            searchPlaceholder: 'Rechercher des clés de propriété...',
+            showInNavigation: 'Afficher dans la navigation',
+            showInList: 'Afficher dans la liste',
+            applyButton: 'Appliquer',
+            emptyState: 'Aucune clé de propriété trouvée.'
         },
         welcome: {
             title: 'Bienvenue dans {pluginName}',
@@ -1391,11 +1398,9 @@ export const STRINGS_FR = {
                 }
             },
             propertyFields: {
-                name: 'Propriétés à afficher',
-                desc: 'Liste de propriétés de métadonnées séparées par des virgules à afficher dans le panneau de navigation et sous forme de badges dans les éléments de fichier. Les propriétés de liste affichent un badge par valeur.',
-                placeholder: 'status, type, category',
-                addButtonTooltip: 'Ajouter une clé de propriété',
-                emptySelectorNotice: 'Aucune clé de propriété trouvée dans le cache de métadonnées.'
+                name: 'Clés de propriétés',
+                desc: 'Clés de propriétés de métadonnées, avec visibilité par clé pour la navigation et les badges de la liste de fichiers.',
+                addButtonTooltip: 'Configurer les clés de propriété'
             },
             showPropertiesOnSeparateRows: {
                 name: 'Afficher les propriétés sur des lignes séparées',

@@ -135,7 +135,7 @@ import { useShortcuts } from '../context/ShortcutsContext';
 import { ShortcutItem } from './ShortcutItem';
 import { NavItemHoverActionSlot } from './NavItemHoverActionSlot';
 import { ConfirmModal } from '../modals/ConfirmModal';
-import { PropertyKeySuggestModal } from '../modals/PropertyKeySuggestModal';
+import { PropertyKeyVisibilityModal } from '../modals/PropertyKeyVisibilityModal';
 import {
     ShortcutEntry,
     ShortcutType,
@@ -177,8 +177,7 @@ import { SHORTCUT_POINTER_CONSTRAINT, verticalAxisOnly } from '../utils/dndConfi
 import { createFrontmatterPropertyExclusionMatcher, createHiddenFileNameMatcherForVisibility } from '../utils/fileFilters';
 import { createHiddenTagVisibility } from '../utils/tagPrefixMatcher';
 import { getDBInstanceOrNull } from '../storage/fileOperations';
-import { appendPropertyField, collectAvailablePropertyKeySuggestions } from '../utils/propertyUtils';
-import { getActivePropertyFields, setActivePropertyFields } from '../utils/vaultProfiles';
+import { getActiveVaultProfile } from '../utils/vaultProfiles';
 import {
     getDirectPropertyKeyNoteCount,
     getTotalPropertyNoteCount,
@@ -2137,23 +2136,14 @@ export const NavigationPane = React.memo(
             ]
         );
 
-        const handleAddPropertyKeyFromSectionMenu = useCallback(() => {
-            const propertyFields = getActivePropertyFields(plugin.settings);
-            const suggestions = collectAvailablePropertyKeySuggestions(app, propertyFields);
-            if (suggestions.length === 0) {
-                showNotice(strings.settings.items.propertyFields.emptySelectorNotice, { variant: 'warning' });
-                return;
-            }
-
-            const modal = new PropertyKeySuggestModal(app, suggestions, async selectedKey => {
-                const currentPropertyFields = getActivePropertyFields(plugin.settings);
-                const nextValue = appendPropertyField(currentPropertyFields, selectedKey);
-                if (nextValue === currentPropertyFields) {
-                    return;
+        const handleConfigurePropertyKeysFromSectionMenu = useCallback(() => {
+            const profile = getActiveVaultProfile(plugin.settings);
+            const modal = new PropertyKeyVisibilityModal(app, {
+                initialKeys: profile.propertyKeys,
+                onSave: async nextKeys => {
+                    profile.propertyKeys = nextKeys;
+                    await plugin.saveSettingsAndUpdate();
                 }
-
-                setActivePropertyFields(plugin.settings, nextValue);
-                await plugin.saveSettingsAndUpdate();
             });
             modal.open();
         }, [app, plugin]);
@@ -2176,9 +2166,9 @@ export const NavigationPane = React.memo(
                 if (isPropertySection) {
                     menu.addItem(item => {
                         item.setTitle(strings.contextMenu.property.addKey)
-                            .setIcon('lucide-plus')
+                            .setIcon('lucide-settings-2')
                             .onClick(() => {
-                                handleAddPropertyKeyFromSectionMenu();
+                                handleConfigurePropertyKeysFromSectionMenu();
                             });
                     });
                     hasActions = true;
@@ -2297,7 +2287,7 @@ export const NavigationPane = React.memo(
                 app,
                 clearShortcuts,
                 handleShortcutSplitToggle,
-                handleAddPropertyKeyFromSectionMenu,
+                handleConfigurePropertyKeysFromSectionMenu,
                 metadataService,
                 pinToggleLabel,
                 plugin.manifest.id,

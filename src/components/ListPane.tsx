@@ -101,6 +101,7 @@ import { showNotice } from '../utils/noticeUtils';
 import { focusElementPreventScroll, isKeyboardEventContextBlocked } from '../utils/domUtils';
 import { buildPropertyKeyNodeId, buildPropertyValueNodeId } from '../utils/propertyTree';
 import { getFolderNote, openFolderNoteFile } from '../utils/folderNotes';
+import { getActivePropertyKeySet } from '../utils/vaultProfiles';
 import type { NavigateToFolderOptions } from '../hooks/useNavigatorReveal';
 
 /**
@@ -794,6 +795,16 @@ export const ListPane = React.memo(
 
         // Flag to prevent automatic scroll to top when search is triggered from shortcut
         const suppressSearchTopScrollRef = useRef(false);
+        const visibleListPropertyKeys = useMemo(() => getActivePropertyKeySet(settings, 'list'), [settings]);
+        const visibleListPropertyKeySignature = useMemo(() => {
+            if (visibleListPropertyKeys.size === 0) {
+                return '';
+            }
+
+            const sortedKeys = Array.from(visibleListPropertyKeys);
+            sortedKeys.sort();
+            return sortedKeys.join('\u0001');
+        }, [visibleListPropertyKeys]);
 
         // Use the new scroll hook
         const { rowVirtualizer, scrollContainerRef, scrollContainerRefCallback, handleScrollToTop } = useListPaneScroll({
@@ -813,6 +824,8 @@ export const ListPane = React.memo(
             suppressSearchTopScrollRef,
             topSpacerHeight,
             includeDescendantNotes,
+            visiblePropertyKeys: visibleListPropertyKeys,
+            visiblePropertyKeySignature: visibleListPropertyKeySignature,
             scrollMargin: 0,
             scrollPaddingEnd
         });
@@ -1897,6 +1910,7 @@ export const ListPane = React.memo(
                                                             onModifySearchWithTag={modifySearchWithTag}
                                                             onModifySearchWithProperty={modifySearchWithProperty}
                                                             fileIconSize={listMeasurements.fileIconSize}
+                                                            visiblePropertyKeys={visibleListPropertyKeys}
                                                         />
                                                     ) : null}
                                                 </div>

@@ -20,6 +20,7 @@ import type { TFile } from 'obsidian';
 import type { FeatureImageStatus, FileData } from '../storage/IndexedDBStorage';
 import type { NotePropertyType } from '../settings/types';
 import { isImageFile } from './fileTypeUtils';
+import { casefold } from './recordUtils';
 
 /**
  * Layout measurements used by the list pane virtualizer.
@@ -107,6 +108,83 @@ export function shouldShowFeatureImageArea({
     return featureImageStatus === 'has';
 }
 
+type PropertyEntries = Exclude<FileData['properties'], null>;
+
+type PropertyRowSummary = {
+    hasAnyNonEmptyValue: boolean;
+    normalizedKeysWithNonEmptyValues: ReadonlySet<string>;
+    uniqueDisplayFieldKeys: readonly { displayKey: string; normalizedKey: string }[];
+};
+
+const EMPTY_PROPERTY_ROW_SUMMARY: PropertyRowSummary = {
+    hasAnyNonEmptyValue: false,
+    normalizedKeysWithNonEmptyValues: new Set<string>(),
+    uniqueDisplayFieldKeys: []
+};
+
+const propertyRowSummaryCache = new WeakMap<PropertyEntries, PropertyRowSummary>();
+
+function getPropertyRowSummary(properties: FileData['properties'] | undefined): PropertyRowSummary {
+    if (!properties || properties.length === 0) {
+        return EMPTY_PROPERTY_ROW_SUMMARY;
+    }
+
+    const cached = propertyRowSummaryCache.get(properties);
+    if (cached) {
+        return cached;
+    }
+
+    let hasAnyNonEmptyValue = false;
+    const normalizedKeysWithNonEmptyValues = new Set<string>();
+    const uniqueDisplayFieldKeys = new Map<string, string>();
+
+    properties.forEach(entry => {
+        if (entry.value.trim().length === 0) {
+            return;
+        }
+
+        hasAnyNonEmptyValue = true;
+        const normalizedFieldKey = casefold(entry.fieldKey);
+        if (normalizedFieldKey.length > 0) {
+            normalizedKeysWithNonEmptyValues.add(normalizedFieldKey);
+        }
+
+        const trimmedFieldKey = entry.fieldKey.trim();
+        if (trimmedFieldKey.length === 0 || uniqueDisplayFieldKeys.has(trimmedFieldKey)) {
+            return;
+        }
+        uniqueDisplayFieldKeys.set(trimmedFieldKey, normalizedFieldKey);
+    });
+
+    const summary: PropertyRowSummary = {
+        hasAnyNonEmptyValue,
+        normalizedKeysWithNonEmptyValues,
+        uniqueDisplayFieldKeys: Array.from(uniqueDisplayFieldKeys.entries()).map(([displayKey, normalizedKey]) => ({
+            displayKey,
+            normalizedKey
+        }))
+    };
+
+    propertyRowSummaryCache.set(properties, summary);
+    return summary;
+}
+
+function hasVisiblePropertyKeyMatch(normalizedPropertyKeys: ReadonlySet<string>, visiblePropertyKeys: ReadonlySet<string>): boolean {
+    if (normalizedPropertyKeys.size === 0 || visiblePropertyKeys.size === 0) {
+        return false;
+    }
+
+    const iterateKeys = normalizedPropertyKeys.size <= visiblePropertyKeys.size ? normalizedPropertyKeys : visiblePropertyKeys;
+    const lookupKeys = iterateKeys === normalizedPropertyKeys ? visiblePropertyKeys : normalizedPropertyKeys;
+    for (const key of iterateKeys) {
+        if (lookupKeys.has(key)) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
 function shouldShowPropertyRow({
     notePropertyType,
     showFileProperties,
@@ -114,7 +192,8 @@ function shouldShowPropertyRow({
     isCompactMode,
     file,
     wordCount,
-    properties
+    properties,
+    visiblePropertyKeys
 }: {
     notePropertyType: NotePropertyType;
     showFileProperties: boolean;
@@ -123,6 +202,7 @@ function shouldShowPropertyRow({
     file: TFile | null;
     wordCount: FileData['wordCount'] | undefined;
     properties: FileData['properties'] | undefined;
+    visiblePropertyKeys?: ReadonlySet<string>;
 }): boolean {
     if (!file || file.extension !== 'md') {
         return false;
@@ -133,7 +213,16 @@ function shouldShowPropertyRow({
     }
 
     const hasWordCount = notePropertyType === 'wordCount' && typeof wordCount === 'number' && Number.isFinite(wordCount) && wordCount > 0;
-    const hasPropertyValues = showFileProperties && Boolean(properties && properties.some(entry => entry.value.trim().length > 0));
+    const propertySummary = getPropertyRowSummary(properties);
+    const hasPropertyValues = (() => {
+        if (!showFileProperties) {
+            return false;
+        }
+        if (visiblePropertyKeys === undefined) {
+            return propertySummary.hasAnyNonEmptyValue;
+        }
+        return hasVisiblePropertyKeyMatch(propertySummary.normalizedKeysWithNonEmptyValues, visiblePropertyKeys);
+    })();
 
     return hasWordCount || hasPropertyValues;
 }
@@ -146,7 +235,8 @@ export function getPropertyRowCount({
     isCompactMode,
     file,
     wordCount,
-    properties
+    properties,
+    visiblePropertyKeys
 }: {
     notePropertyType: NotePropertyType;
     showFileProperties: boolean;
@@ -156,6 +246,7 @@ export function getPropertyRowCount({
     file: TFile | null;
     wordCount: FileData['wordCount'] | undefined;
     properties: FileData['properties'] | undefined;
+    visiblePropertyKeys?: ReadonlySet<string>;
 }): number {
     // Computes the number of visual rows the property area will occupy.
     // This is used by the list pane virtualizer height estimator and must stay consistent with FileItem rendering.
@@ -166,7 +257,8 @@ export function getPropertyRowCount({
         isCompactMode,
         file,
         wordCount,
-        properties
+        properties,
+        visiblePropertyKeys
     });
 
     if (!shouldShow) {
@@ -178,10 +270,30 @@ export function getPropertyRowCount({
         notePropertyType === 'wordCount' && typeof wordCount === 'number' && Number.isFinite(wordCount) && wordCount > 0;
     const wordCountRowCount = wordCountEnabled ? 1 : 0;
 
-    const frontmatterPropertyRowCount =
-        showFileProperties && properties
-            ? new Set(properties.filter(entry => entry.value.trim().length > 0).map(entry => entry.fieldKey.trim())).size
-            : 0;
+    let frontmatterPropertyRowCount = 0;
+    if (showFileProperties) {
+        const propertySummary = getPropertyRowSummary(properties);
+        const hasVisiblePropertyValues =
+            visiblePropertyKeys === undefined
+                ? propertySummary.hasAnyNonEmptyValue
+                : hasVisiblePropertyKeyMatch(propertySummary.normalizedKeysWithNonEmptyValues, visiblePropertyKeys);
+
+        if (!showPropertiesOnSeparateRows) {
+            frontmatterPropertyRowCount = hasVisiblePropertyValues ? 1 : 0;
+        } else if (hasVisiblePropertyValues) {
+            if (visiblePropertyKeys === undefined) {
+                frontmatterPropertyRowCount = propertySummary.uniqueDisplayFieldKeys.length;
+            } else {
+                frontmatterPropertyRowCount = propertySummary.uniqueDisplayFieldKeys.reduce((count, entry) => {
+                    if (!entry.normalizedKey || !visiblePropertyKeys.has(entry.normalizedKey)) {
+                        return count;
+                    }
+
+                    return count + 1;
+                }, 0);
+            }
+        }
+    }
 
     if (frontmatterPropertyRowCount === 0) {
         return wordCountRowCount;

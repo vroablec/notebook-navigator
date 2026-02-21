@@ -83,6 +83,7 @@ import { calculateFolderNoteCounts } from '../utils/noteCountUtils';
 import { getEffectiveFrontmatterExclusions } from '../utils/exclusionUtils';
 import { sanitizeNavigationSectionOrder } from '../utils/navigationSections';
 import { getVirtualTagCollection, isVirtualTagCollectionId, VIRTUAL_TAG_COLLECTION_IDS } from '../utils/virtualTagCollections';
+import { casefold } from '../utils/recordUtils';
 import {
     getDirectPropertyKeyNoteCount,
     getTotalPropertyNoteCount,
@@ -652,6 +653,27 @@ export function useNavigationPaneData({
         comparator: propertyKeyComparator
     });
 
+    const visiblePropertyNavigationKeySet = useMemo(() => {
+        const keys = new Set<string>();
+        const seen = new Set<string>();
+        const entries = activeProfile.profile.propertyKeys ?? [];
+        entries.forEach(entry => {
+            if (!entry.showInNavigation) {
+                return;
+            }
+
+            const normalizedKey = casefold(entry.key);
+            if (!normalizedKey || seen.has(normalizedKey)) {
+                return;
+            }
+
+            seen.add(normalizedKey);
+            keys.add(normalizedKey);
+        });
+
+        return keys;
+    }, [activeProfile.profile.propertyKeys]);
+
     /**
      * Build folder items from vault structure
      */
@@ -924,7 +946,7 @@ export function useNavigationPaneData({
             };
         }
 
-        const keyNodes = Array.from(propertyTree.values());
+        const keyNodes = Array.from(propertyTree.values()).filter(node => visiblePropertyNavigationKeySet.has(node.key));
 
         const effectiveComparator: PropertyNodeComparator =
             rootPropertyOrderMap.size > 0
@@ -952,7 +974,14 @@ export function useNavigationPaneData({
             collectionCount,
             resolvedRootPropertyKeys: keyNodes.map(node => node.key)
         };
-    }, [propertyKeyComparator, propertyTree, rootPropertyOrderMap, settings.showNoteCount, settings.showProperties]);
+    }, [
+        propertyKeyComparator,
+        propertyTree,
+        rootPropertyOrderMap,
+        settings.showNoteCount,
+        settings.showProperties,
+        visiblePropertyNavigationKeySet
+    ]);
 
     const { propertyItems, propertiesSectionActive } = useMemo((): {
         propertyItems: CombinedNavigationItem[];

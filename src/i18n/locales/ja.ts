@@ -326,10 +326,9 @@ export const STRINGS_JA = {
             hideTag: 'タグを非表示'
         },
         property: {
-            addKey: 'プロパティキーを追加',
-            removeKey: 'プロパティリストから削除',
+            addKey: 'プロパティキーを設定',
             renameKey: 'プロパティの名前を変更',
-            deleteKey: 'ノートからプロパティを削除'
+            deleteKey: 'プロパティを削除'
         },
         navigation: {
             addSeparator: '区切り線を追加',
@@ -570,6 +569,14 @@ export const STRINGS_JA = {
                 select: 'プロパティを追加',
                 dismiss: 'でキャンセル'
             }
+        },
+        propertyKeyVisibility: {
+            title: 'プロパティキーの表示設定',
+            searchPlaceholder: 'プロパティキーを検索...',
+            showInNavigation: 'ナビゲーションに表示',
+            showInList: 'リストに表示',
+            applyButton: '適用',
+            emptyState: 'プロパティキーが見つかりません。'
         },
         welcome: {
             title: '{pluginName}へようこそ',
@@ -1387,11 +1394,9 @@ export const STRINGS_JA = {
                 }
             },
             propertyFields: {
-                name: '表示するプロパティ',
-                desc: 'ナビゲーションペインとファイル項目のバッジとして表示するフロントマタープロパティのカンマ区切りリスト。リスト値のプロパティは値ごとに1つのバッジを表示します。',
-                placeholder: 'status, type, category',
-                addButtonTooltip: 'プロパティキーを追加',
-                emptySelectorNotice: 'メタデータキャッシュにプロパティキーが見つかりません。'
+                name: 'プロパティキー',
+                desc: 'フロントマターのプロパティキー。キーごとにナビゲーションとファイルリストバッジの表示を設定できます。',
+                addButtonTooltip: 'プロパティキーを設定'
             },
             showPropertiesOnSeparateRows: {
                 name: 'プロパティを別の行に表示',

@@ -32,9 +32,8 @@ import {
     registerPropertyKeyDirectPaths
 } from '../../utils/propertyTree';
 import { casefold } from '../../utils/recordUtils';
-import { getCachedCommaSeparatedList } from '../../utils/commaSeparatedListUtils';
 import type { PropertyTreeNode } from '../../types/storage';
-import { getActivePropertyFields } from '../../utils/vaultProfiles';
+import { clonePropertyKeys, getActivePropertyFields, getActiveVaultProfile } from '../../utils/vaultProfiles';
 
 type SchedulePropertyTreeRebuildOptions = {
     flush?: boolean;
@@ -46,15 +45,17 @@ function shouldEnablePropertyTree(settings: NotebookNavigatorSettings): boolean 
 
 function buildConfiguredPropertyDisplayByKey(settings: NotebookNavigatorSettings): Map<string, string> {
     const displayByKey = new Map<string, string>();
-    const activePropertyFields = getActivePropertyFields(settings);
-    for (const fieldName of getCachedCommaSeparatedList(activePropertyFields)) {
-        const displayName = fieldName.trim();
-        const normalizedField = casefold(fieldName);
-        if (!displayName || !normalizedField || displayByKey.has(normalizedField)) {
-            continue;
+    const profile = getActiveVaultProfile(settings);
+    const configuredKeys = clonePropertyKeys(profile.propertyKeys);
+    configuredKeys.forEach(entry => {
+        const displayName = entry.key.trim();
+        const normalizedKey = casefold(displayName);
+        if (!displayName || !normalizedKey || displayByKey.has(normalizedKey)) {
+            return;
         }
-        displayByKey.set(normalizedField, displayName);
-    }
+
+        displayByKey.set(normalizedKey, displayName);
+    });
     return displayByKey;
 }
 

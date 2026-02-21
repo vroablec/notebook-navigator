@@ -327,10 +327,9 @@ export const STRINGS_RU = {
             hideTag: 'Скрыть тег'
         },
         property: {
-            addKey: 'Добавить ключ свойства',
-            removeKey: 'Удалить из списка свойств',
+            addKey: 'Настроить ключи свойств',
             renameKey: 'Переименовать свойство',
-            deleteKey: 'Удалить свойство из заметок'
+            deleteKey: 'Удалить свойство'
         },
         navigation: {
             addSeparator: 'Добавить разделитель',
@@ -569,6 +568,14 @@ export const STRINGS_RU = {
                 select: 'для добавления свойства',
                 dismiss: 'для закрытия'
             }
+        },
+        propertyKeyVisibility: {
+            title: 'Видимость ключей свойств',
+            searchPlaceholder: 'Поиск ключей свойств...',
+            showInNavigation: 'Показать в навигации',
+            showInList: 'Показать в списке',
+            applyButton: 'Применить',
+            emptyState: 'Ключи свойств не найдены.'
         },
         welcome: {
             title: 'Добро пожаловать в {pluginName}',
@@ -1384,11 +1391,9 @@ export const STRINGS_RU = {
                 }
             },
             propertyFields: {
-                name: 'Свойства для отображения',
-                desc: 'Список свойств метаданных через запятую для отображения в панели навигации и в виде значков в элементах файлов. Свойства со списком значений отображают один значок на значение.',
-                placeholder: 'status, type, category',
-                addButtonTooltip: 'Добавить ключ свойства',
-                emptySelectorNotice: 'Ключи свойств не найдены в кеше метаданных.'
+                name: 'Ключи свойств',
+                desc: 'Ключи свойств метаданных с настройкой видимости для каждого ключа в навигации и значках списка файлов.',
+                addButtonTooltip: 'Настроить ключи свойств'
             },
             showPropertiesOnSeparateRows: {
                 name: 'Показывать свойства в отдельных строках',

@@ -64,6 +64,7 @@ import { openFileInContext } from '../../utils/openFileInContext';
 import {
     canRestorePropertySelectionNodeId,
     isPropertySelectionNodeIdConfigured,
+    isPropertySelectionNodeIdVisibleInNavigation,
     isPropertyTreeNodeId,
     parseStoredPropertySelectionNodeId,
     type PropertySelectionNodeId
@@ -338,7 +339,11 @@ function getSelectedPropertyForCommand(plugin: NotebookNavigatorPlugin): Propert
         return null;
     }
 
-    return isPropertySelectionNodeIdConfigured(plugin.settings, selectedProperty) ? selectedProperty : null;
+    if (!isPropertySelectionNodeIdConfigured(plugin.settings, selectedProperty)) {
+        return null;
+    }
+
+    return isPropertySelectionNodeIdVisibleInNavigation(plugin.settings, selectedProperty) ? selectedProperty : null;
 }
 
 function resolveOpenAllFilesContext(plugin: NotebookNavigatorPlugin): CommandNavigationSelectionScope {

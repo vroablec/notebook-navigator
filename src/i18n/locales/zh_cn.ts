@@ -326,10 +326,9 @@ export const STRINGS_ZH_CN = {
             hideTag: '隐藏标签'
         },
         property: {
-            addKey: '添加属性键',
-            removeKey: '从属性列表中移除',
+            addKey: '配置属性键',
             renameKey: '重命名属性',
-            deleteKey: '从笔记中删除属性'
+            deleteKey: '删除属性'
         },
         navigation: {
             addSeparator: '添加分隔符',
@@ -567,6 +566,14 @@ export const STRINGS_ZH_CN = {
                 select: '添加属性',
                 dismiss: '取消'
             }
+        },
+        propertyKeyVisibility: {
+            title: '属性键可见性',
+            searchPlaceholder: '搜索属性键...',
+            showInNavigation: '在导航中显示',
+            showInList: '在列表中显示',
+            applyButton: '应用',
+            emptyState: '未找到属性键。'
         },
         welcome: {
             title: '欢迎使用 {pluginName}',
@@ -1381,11 +1388,9 @@ export const STRINGS_ZH_CN = {
                 }
             },
             propertyFields: {
-                name: '要显示的属性',
-                desc: '以逗号分隔的 frontmatter 属性列表，用于在导航窗格和文件项中作为徽章显示。列表值属性每个值显示一个徽章。',
-                placeholder: 'status, type, category',
-                addButtonTooltip: '添加属性键',
-                emptySelectorNotice: '在元数据缓存中未找到属性键。'
+                name: '属性键',
+                desc: 'Frontmatter 属性键，可按键设置导航和文件列表徽章的可见性。',
+                addButtonTooltip: '配置属性键'
             },
             showPropertiesOnSeparateRows: {
                 name: '在单独的行中显示属性',

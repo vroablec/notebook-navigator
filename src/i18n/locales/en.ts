@@ -326,10 +326,9 @@ export const STRINGS_EN = {
             hideTag: 'Hide tag'
         },
         property: {
-            addKey: 'Add property key',
-            removeKey: 'Remove from property list',
+            addKey: 'Configure property keys',
             renameKey: 'Rename property',
-            deleteKey: 'Delete property from notes'
+            deleteKey: 'Delete property'
         },
         navigation: {
             addSeparator: 'Add separator',
@@ -568,6 +567,14 @@ export const STRINGS_EN = {
                 select: 'to add property',
                 dismiss: 'to dismiss'
             }
+        },
+        propertyKeyVisibility: {
+            title: 'Property key visibility',
+            searchPlaceholder: 'Search property keys...',
+            showInNavigation: 'Show in navigation',
+            showInList: 'Show in list',
+            applyButton: 'Apply',
+            emptyState: 'No property keys found.'
         },
         welcome: {
             title: 'Welcome to {pluginName}',
@@ -1381,11 +1388,9 @@ export const STRINGS_EN = {
                 }
             },
             propertyFields: {
-                name: 'Properties to display',
-                desc: 'Comma-separated list of frontmatter properties to display in the navigation pane and as badges in file items. List-valued properties render one badge per value.',
-                placeholder: 'status, type, category',
-                addButtonTooltip: 'Add property key',
-                emptySelectorNotice: 'No property keys found in metadata cache.'
+                name: 'Property keys',
+                desc: 'Frontmatter property keys, with per-key visibility for navigation and file list badges.',
+                addButtonTooltip: 'Configure property keys'
             },
             showPropertiesOnSeparateRows: {
                 name: 'Show properties on separate rows',

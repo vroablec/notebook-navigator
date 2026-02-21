@@ -326,10 +326,9 @@ export const STRINGS_IT = {
             hideTag: 'Nascondi tag'
         },
         property: {
-            addKey: 'Aggiungi chiave proprietà',
-            removeKey: 'Rimuovi dalla lista proprietà',
+            addKey: 'Configura chiavi proprietà',
             renameKey: 'Rinomina proprietà',
-            deleteKey: 'Elimina proprietà dalle note'
+            deleteKey: 'Elimina proprietà'
         },
         navigation: {
             addSeparator: 'Aggiungi separatore',
@@ -568,6 +567,14 @@ export const STRINGS_IT = {
                 select: 'per aggiungere proprietà',
                 dismiss: 'per chiudere'
             }
+        },
+        propertyKeyVisibility: {
+            title: 'Visibilità chiavi proprietà',
+            searchPlaceholder: 'Cerca chiavi proprietà...',
+            showInNavigation: 'Mostra nella navigazione',
+            showInList: 'Mostra nella lista',
+            applyButton: 'Applica',
+            emptyState: 'Nessuna chiave proprietà trovata.'
         },
         welcome: {
             title: 'Benvenuto in {pluginName}',
@@ -1385,11 +1392,9 @@ export const STRINGS_IT = {
                 }
             },
             propertyFields: {
-                name: 'Proprietà da visualizzare',
-                desc: 'Elenco di proprietà dei metadati separati da virgola da visualizzare nel pannello di navigazione e come badge negli elementi file. Le proprietà con valori multipli mostrano un badge per valore.',
-                placeholder: 'status, type, category',
-                addButtonTooltip: 'Aggiungi chiave proprietà',
-                emptySelectorNotice: 'Nessuna chiave di proprietà trovata nella cache dei metadati.'
+                name: 'Chiavi proprietà',
+                desc: "Chiavi proprietà dei metadati, con visibilità per chiave per la navigazione e i badge dell'elenco file.",
+                addButtonTooltip: 'Configura chiavi proprietà'
             },
             showPropertiesOnSeparateRows: {
                 name: 'Mostra proprietà su righe separate',

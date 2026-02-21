@@ -18,22 +18,13 @@
 
 import { Setting } from 'obsidian';
 import { strings } from '../../i18n';
-import { PropertyKeySuggestModal } from '../../modals/PropertyKeySuggestModal';
-import { showNotice } from '../../utils/noticeUtils';
-import { appendPropertyField, collectAvailablePropertyKeySuggestions } from '../../utils/propertyUtils';
+import { PropertyKeyVisibilityModal } from '../../modals/PropertyKeyVisibilityModal';
 import { isTagSortOrder } from '../types';
 import type { SettingsTabContext } from './SettingsTabContext';
 import { createSettingGroupFactory } from '../settingGroups';
 import { addSettingSyncModeToggle } from '../syncModeToggle';
 import { wireToggleSettingWithSubSettings } from '../subSettings';
-import { getActivePropertyFields, setActivePropertyFields } from '../../utils/vaultProfiles';
-
-function setPropertyFieldsInputValue(setting: Setting, value: string): void {
-    const inputEl = setting.controlEl.querySelector('input');
-    if (inputEl instanceof HTMLInputElement) {
-        inputEl.value = value;
-    }
-}
+import { getActiveVaultProfile } from '../../utils/vaultProfiles';
 
 /** Renders the properties settings tab */
 export function renderPropertiesTab(context: SettingsTabContext): void {
@@ -55,43 +46,25 @@ export function renderPropertiesTab(context: SettingsTabContext): void {
         }
     );
 
-    const propertyFieldsSetting = context.createDebouncedTextSetting(
-        propertiesSubSettingsEl,
-        strings.settings.items.propertyFields.name,
-        strings.settings.items.propertyFields.desc,
-        strings.settings.items.propertyFields.placeholder,
-        () => getActivePropertyFields(plugin.settings),
-        value => {
-            setActivePropertyFields(plugin.settings, value);
-        }
-    );
-    propertyFieldsSetting.controlEl.addClass('nn-setting-wide-input');
-    propertyFieldsSetting.addExtraButton(button =>
-        button
-            .setIcon('lucide-plus')
-            .setTooltip(strings.settings.items.propertyFields.addButtonTooltip)
-            .onClick(() => {
-                const propertyFields = getActivePropertyFields(plugin.settings);
-                const suggestions = collectAvailablePropertyKeySuggestions(app, propertyFields);
-                if (suggestions.length === 0) {
-                    showNotice(strings.settings.items.propertyFields.emptySelectorNotice, { variant: 'warning' });
-                    return;
-                }
-
-                const modal = new PropertyKeySuggestModal(app, suggestions, async selectedKey => {
-                    const currentPropertyFields = getActivePropertyFields(plugin.settings);
-                    const nextValue = appendPropertyField(currentPropertyFields, selectedKey);
-                    if (nextValue === currentPropertyFields) {
-                        return;
-                    }
-
-                    setActivePropertyFields(plugin.settings, nextValue);
-                    setPropertyFieldsInputValue(propertyFieldsSetting, getActivePropertyFields(plugin.settings));
-                    await plugin.saveSettingsAndUpdate();
-                });
-                modal.open();
-            })
-    );
+    new Setting(propertiesSubSettingsEl)
+        .setName(strings.settings.items.propertyFields.name)
+        .setDesc(strings.settings.items.propertyFields.desc)
+        .addExtraButton(button =>
+            button
+                .setIcon('lucide-settings-2')
+                .setTooltip(strings.settings.items.propertyFields.addButtonTooltip)
+                .onClick(() => {
+                    const profile = getActiveVaultProfile(plugin.settings);
+                    const modal = new PropertyKeyVisibilityModal(app, {
+                        initialKeys: profile.propertyKeys,
+                        onSave: async nextKeys => {
+                            profile.propertyKeys = nextKeys;
+                            await plugin.saveSettingsAndUpdate();
+                        }
+                    });
+                    modal.open();
+                })
+        );
 
     new Setting(propertiesSubSettingsEl)
         .setName(strings.settings.items.showPropertyIcons.name)

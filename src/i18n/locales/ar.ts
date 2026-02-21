@@ -326,10 +326,9 @@ export const STRINGS_AR = {
             hideTag: 'إخفاء الوسم'
         },
         property: {
-            addKey: 'إضافة مفتاح خاصية',
-            removeKey: 'إزالة من قائمة الخصائص',
+            addKey: 'تكوين مفاتيح الخصائص',
             renameKey: 'إعادة تسمية الخاصية',
-            deleteKey: 'حذف الخاصية من الملاحظات'
+            deleteKey: 'حذف الخاصية'
         },
         navigation: {
             addSeparator: 'إضافة فاصل',
@@ -570,6 +569,14 @@ export const STRINGS_AR = {
                 select: 'لإضافة خاصية',
                 dismiss: 'للإغلاق'
             }
+        },
+        propertyKeyVisibility: {
+            title: 'رؤية مفاتيح الخصائص',
+            searchPlaceholder: 'بحث في مفاتيح الخصائص...',
+            showInNavigation: 'إظهار في التنقل',
+            showInList: 'إظهار في القائمة',
+            applyButton: 'تطبيق',
+            emptyState: 'لم يتم العثور على مفاتيح خصائص.'
         },
         welcome: {
             title: 'مرحباً بك في {pluginName}',
@@ -1384,11 +1391,9 @@ export const STRINGS_AR = {
                 }
             },
             propertyFields: {
-                name: 'الخصائص للعرض',
-                desc: 'قائمة خصائص الواجهة الأمامية مفصولة بفواصل لعرضها في لوحة التنقل وكشارات في عناصر الملفات. الخصائص ذات القوائم تعرض شارة واحدة لكل قيمة.',
-                placeholder: 'status, type, category',
-                addButtonTooltip: 'إضافة مفتاح خاصية',
-                emptySelectorNotice: 'لم يتم العثور على مفاتيح خصائص في ذاكرة البيانات الوصفية.'
+                name: 'مفاتيح الخصائص',
+                desc: 'مفاتيح خصائص الواجهة الأمامية، مع إمكانية التحكم في رؤية كل مفتاح للتنقل وشارات قائمة الملفات.',
+                addButtonTooltip: 'تكوين مفاتيح الخصائص'
             },
             showPropertiesOnSeparateRows: {
                 name: 'إظهار الخصائص في صفوف منفصلة',

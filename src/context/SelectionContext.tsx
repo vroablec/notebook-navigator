@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React, { createContext, useContext, useReducer, useEffect, ReactNode, useCallback, useRef } from 'react';
+import React, { createContext, useContext, useReducer, useEffect, ReactNode, useCallback, useMemo, useRef } from 'react';
 import { App, TFile, TFolder } from 'obsidian';
 import { NavigationItemType, PROPERTIES_ROOT_VIRTUAL_FOLDER_ID, STORAGE_KEYS, TAGGED_TAG_ID, UNTAGGED_TAG_ID } from '../types';
 import { getFilesForFolder, getFilesForProperty, getFilesForTag } from '../utils/fileFinder';
@@ -35,13 +35,13 @@ import {
     buildPropertyValueNodeId,
     canRestorePropertySelectionNodeId,
     isPropertyFeatureEnabled,
-    isPropertySelectionNodeIdConfigured,
+    isPropertySelectionNodeIdVisibleInNavigation,
     normalizePropertyNodeId,
     parsePropertyNodeId,
     parseStoredPropertySelectionNodeId,
     type PropertySelectionNodeId
 } from '../utils/propertyTree';
-import { getActivePropertyFields } from '../utils/vaultProfiles';
+import { getActivePropertyKeySet } from '../utils/vaultProfiles';
 
 export type SelectionRevealSource = 'auto' | 'manual' | 'shortcut' | 'startup';
 
@@ -879,7 +879,7 @@ export function SelectionProvider({
                 pendingPropertyRenameSelectionRef.current = null;
             }
 
-            if (!isPropertySelectionNodeIdConfigured(settingsSnapshot, selectedProperty)) {
+            if (!isPropertySelectionNodeIdVisibleInNavigation(settingsSnapshot, selectedProperty)) {
                 pendingPropertyRenameSelectionRef.current = null;
                 dispatch({ type: 'SET_SELECTED_FOLDER', folder: app.vault.getRoot() });
                 return;
@@ -1131,10 +1131,25 @@ export function SelectionProvider({
         }
     }, [app.vault, dispatch, propertyFeatureEnabled, settings.showProperties, state.selectedProperty, state.selectionType]);
 
-    const activePropertyFields = getActivePropertyFields(settings);
+    const activeNavigationPropertyKeySignature = useMemo(() => {
+        const keys = Array.from(getActivePropertyKeySet(settings, 'navigation'));
+        if (keys.length === 0) {
+            return '';
+        }
+
+        keys.sort();
+        return keys.join('\u0001');
+    }, [settings]);
+
     useEffect(() => {
         reconcilePropertySelection(state.selectionType, state.selectedProperty);
-    }, [activePropertyFields, reconcilePropertySelection, settings.showProperties, state.selectedProperty, state.selectionType]);
+    }, [
+        activeNavigationPropertyKeySignature,
+        reconcilePropertySelection,
+        settings.showProperties,
+        state.selectedProperty,
+        state.selectionType
+    ]);
 
     useEffect(() => {
         try {

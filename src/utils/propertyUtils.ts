@@ -40,24 +40,13 @@ export function hasPropertyFrontmatterFields(settings: NotebookNavigatorSettings
     return getCachedCommaSeparatedList(getActivePropertyFields(settings)).length > 0;
 }
 
-export function collectAvailablePropertyKeySuggestions(app: App, propertyFields: string): PropertyKeySuggestion[] {
+export function collectVaultPropertyKeys(app: App): PropertyKeySuggestion[] {
     const keyMap = new Map<string, PropertyKeyAggregate>();
-    const configuredKeys = new Set<string>();
-    getCachedCommaSeparatedList(propertyFields).forEach(field => {
-        const normalizedField = casefold(field.trim());
-        if (!normalizedField) {
-            return;
-        }
-        configuredKeys.add(normalizedField);
-    });
 
     const registerPropertyKey = (rawKey: string, incrementNoteCount: boolean): void => {
         const trimmedKey = rawKey.trim();
         const normalizedKey = casefold(trimmedKey);
         if (!normalizedKey) {
-            return;
-        }
-        if (configuredKeys.has(normalizedKey)) {
             return;
         }
 
@@ -95,26 +84,6 @@ export function collectAvailablePropertyKeySuggestions(app: App, propertyFields:
         return left.key.localeCompare(right.key);
     });
     return suggestions;
-}
-
-export function appendPropertyField(propertyFields: string, propertyKey: string): string {
-    const existingFields = getCachedCommaSeparatedList(propertyFields);
-    const normalizedFields = new Set<string>();
-    existingFields.forEach(field => {
-        const normalized = casefold(field);
-        if (!normalized) {
-            return;
-        }
-        normalizedFields.add(normalized);
-    });
-
-    const trimmedPropertyKey = propertyKey.trim();
-    const normalizedPropertyKey = casefold(trimmedPropertyKey);
-    if (!normalizedPropertyKey || normalizedFields.has(normalizedPropertyKey)) {
-        return formatCommaSeparatedList(existingFields);
-    }
-
-    return formatCommaSeparatedList([...existingFields, trimmedPropertyKey]);
 }
 
 export function removePropertyField(propertyFields: string, propertyKey: string): string {

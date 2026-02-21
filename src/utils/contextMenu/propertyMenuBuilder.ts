@@ -25,8 +25,6 @@ import { addShortcutRenameMenuItem } from './shortcutRenameMenuItem';
 import { addStyleMenu } from './styleMenuBuilder';
 import { resolveUXIconForMenu } from '../uxIcons';
 import { normalizePropertyNodeId, parsePropertyNodeId } from '../propertyTree';
-import { removePropertyField } from '../propertyUtils';
-import { getActivePropertyFields, setActivePropertyFields } from '../vaultProfiles';
 
 function resolvePropertyMenuLabel(params: { propertyNodeId: string; propertyNodeName?: string; keyNodeName?: string }): string {
     const { propertyNodeId, propertyNodeName, keyNodeName } = params;
@@ -49,7 +47,7 @@ function resolvePropertyMenuLabel(params: { propertyNodeId: string; propertyNode
  */
 export function buildPropertyMenu(params: PropertyMenuBuilderParams): void {
     const { propertyNodeId, menu, services, settings, options } = params;
-    const { app, metadataService, propertyOperations, propertyTreeService, isMobile, plugin } = services;
+    const { app, metadataService, propertyOperations, propertyTreeService, isMobile } = services;
 
     const normalizedNodeId = normalizePropertyNodeId(propertyNodeId);
     if (!normalizedNodeId) {
@@ -268,18 +266,6 @@ export function buildPropertyMenu(params: PropertyMenuBuilderParams): void {
 
     if (propertyKey) {
         menu.addSeparator();
-        menu.addItem((item: MenuItem) => {
-            setAsyncOnClick(item.setTitle(strings.contextMenu.property.removeKey).setIcon('lucide-minus'), async () => {
-                const currentPropertyFields = getActivePropertyFields(plugin.settings);
-                const nextPropertyFields = removePropertyField(currentPropertyFields, propertyKey);
-                if (nextPropertyFields === currentPropertyFields) {
-                    return;
-                }
-
-                setActivePropertyFields(plugin.settings, nextPropertyFields);
-                await plugin.saveSettingsAndUpdate();
-            });
-        });
 
         menu.addItem((item: MenuItem) => {
             setAsyncOnClick(item.setTitle(strings.contextMenu.property.renameKey).setIcon('lucide-pencil'), async () => {

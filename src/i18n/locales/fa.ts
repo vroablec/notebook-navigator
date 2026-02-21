@@ -326,10 +326,9 @@ export const STRINGS_FA = {
             hideTag: 'مخفی کردن برچسب'
         },
         property: {
-            addKey: 'افزودن کلید ویژگی',
-            removeKey: 'حذف از فهرست ویژگی‌ها',
+            addKey: 'پیکربندی کلیدهای ویژگی',
             renameKey: 'تغییر نام ویژگی',
-            deleteKey: 'حذف ویژگی از یادداشت‌ها'
+            deleteKey: 'حذف ویژگی'
         },
         navigation: {
             addSeparator: 'افزودن جداکننده',
@@ -571,6 +570,14 @@ export const STRINGS_FA = {
                 select: 'برای افزودن ویژگی',
                 dismiss: 'برای بستن'
             }
+        },
+        propertyKeyVisibility: {
+            title: 'نمایش کلیدهای ویژگی',
+            searchPlaceholder: 'جستجوی کلیدهای ویژگی...',
+            showInNavigation: 'نمایش در ناوبری',
+            showInList: 'نمایش در فهرست',
+            applyButton: 'اعمال',
+            emptyState: 'کلید ویژگی‌ای یافت نشد.'
         },
         welcome: {
             title: 'به {pluginName} خوش آمدید',
@@ -1385,11 +1392,9 @@ export const STRINGS_FA = {
                 }
             },
             propertyFields: {
-                name: 'ویژگی‌ها برای نمایش',
-                desc: 'فهرست ویژگی‌های فرانت‌متر جدا شده با کاما برای نمایش در پنل ناوبری و به عنوان نشان در موارد فایل. ویژگی‌های فهرستی یک نشان به ازای هر مقدار نمایش می‌دهند.',
-                placeholder: 'status, type, category',
-                addButtonTooltip: 'افزودن کلید ویژگی',
-                emptySelectorNotice: 'کلید ویژگی‌ای در حافظه نهان فراداده یافت نشد.'
+                name: 'کلیدهای ویژگی',
+                desc: 'کلیدهای ویژگی فرانت‌متر، با قابلیت تنظیم نمایش هر کلید برای ناوبری و نشان‌های فهرست فایل.',
+                addButtonTooltip: 'پیکربندی کلیدهای ویژگی'
             },
             showPropertiesOnSeparateRows: {
                 name: 'نمایش ویژگی‌ها در ردیف‌های جداگانه',

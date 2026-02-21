@@ -325,10 +325,9 @@ export const STRINGS_KO = {
             hideTag: '태그 숨기기'
         },
         property: {
-            addKey: '속성 키 추가',
-            removeKey: '속성 목록에서 제거',
+            addKey: '속성 키 구성',
             renameKey: '속성 이름 변경',
-            deleteKey: '노트에서 속성 삭제'
+            deleteKey: '속성 삭제'
         },
         navigation: {
             addSeparator: '구분선 추가',
@@ -570,6 +569,14 @@ export const STRINGS_KO = {
                 select: '속성 추가',
                 dismiss: '닫기'
             }
+        },
+        propertyKeyVisibility: {
+            title: '속성 키 표시 설정',
+            searchPlaceholder: '속성 키 검색...',
+            showInNavigation: '탐색에 표시',
+            showInList: '목록에 표시',
+            applyButton: '적용',
+            emptyState: '속성 키를 찾을 수 없습니다.'
         },
         welcome: {
             title: '{pluginName}에 오신 것을 환영합니다',
@@ -1385,11 +1392,9 @@ export const STRINGS_KO = {
                 }
             },
             propertyFields: {
-                name: '표시할 속성들',
-                desc: '탐색 창과 파일 항목의 배지로 표시할 프론트매터 속성의 쉼표로 구분된 목록. 목록 값 속성은 값당 하나의 배지를 표시합니다.',
-                placeholder: 'status, type, category',
-                addButtonTooltip: '속성 키 추가',
-                emptySelectorNotice: '메타데이터 캐시에서 속성 키를 찾을 수 없습니다.'
+                name: '속성 키',
+                desc: '프론트매터 속성 키. 키별로 탐색 창 및 파일 목록 배지의 표시 여부를 설정할 수 있습니다.',
+                addButtonTooltip: '속성 키 구성'
             },
             showPropertiesOnSeparateRows: {
                 name: '속성을 별도 행에 표시',

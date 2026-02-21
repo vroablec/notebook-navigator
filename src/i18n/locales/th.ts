@@ -326,10 +326,9 @@ export const STRINGS_TH = {
             hideTag: 'ซ่อนแท็ก'
         },
         property: {
-            addKey: 'เพิ่มคีย์คุณสมบัติ',
-            removeKey: 'ลบออกจากรายการคุณสมบัติ',
+            addKey: 'กำหนดค่าคีย์คุณสมบัติ',
             renameKey: 'เปลี่ยนชื่อคุณสมบัติ',
-            deleteKey: 'ลบคุณสมบัติจากโน้ต'
+            deleteKey: 'ลบคุณสมบัติ'
         },
         navigation: {
             addSeparator: 'เพิ่มตัวคั่น',
@@ -568,6 +567,14 @@ export const STRINGS_TH = {
                 select: 'เพื่อเพิ่มคุณสมบัติ',
                 dismiss: 'เพื่อปิด'
             }
+        },
+        propertyKeyVisibility: {
+            title: 'การแสดงผลคีย์คุณสมบัติ',
+            searchPlaceholder: 'ค้นหาคีย์คุณสมบัติ...',
+            showInNavigation: 'แสดงในการนำทาง',
+            showInList: 'แสดงในรายการ',
+            applyButton: 'นำไปใช้',
+            emptyState: 'ไม่พบคีย์คุณสมบัติ'
         },
         welcome: {
             title: 'ยินดีต้อนรับสู่ {pluginName}',
@@ -1382,11 +1389,9 @@ export const STRINGS_TH = {
                 }
             },
             propertyFields: {
-                name: 'คุณสมบัติที่จะแสดง',
-                desc: 'รายการคุณสมบัติ frontmatter คั่นด้วยเครื่องหมายจุลภาค เพื่อแสดงในแผงนำทางและเป็นป้ายในรายการไฟล์ คุณสมบัติที่เป็นรายการจะแสดงหนึ่งป้ายต่อค่า',
-                placeholder: 'status, type, category',
-                addButtonTooltip: 'เพิ่มคีย์คุณสมบัติ',
-                emptySelectorNotice: 'ไม่พบคีย์คุณสมบัติในแคชเมตาดาต้า'
+                name: 'คีย์คุณสมบัติ',
+                desc: 'คีย์คุณสมบัติ frontmatter พร้อมการตั้งค่าการแสดงผลแต่ละคีย์สำหรับการนำทางและป้ายรายการไฟล์',
+                addButtonTooltip: 'กำหนดค่าคีย์คุณสมบัติ'
             },
             showPropertiesOnSeparateRows: {
                 name: 'แสดงคุณสมบัติแยกเป็นบรรทัด',

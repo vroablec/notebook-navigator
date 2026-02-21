@@ -327,10 +327,9 @@ export const STRINGS_ES = {
             hideTag: 'Ocultar etiqueta'
         },
         property: {
-            addKey: 'Agregar clave de propiedad',
-            removeKey: 'Eliminar de la lista de propiedades',
+            addKey: 'Configurar claves de propiedad',
             renameKey: 'Renombrar propiedad',
-            deleteKey: 'Eliminar propiedad de las notas'
+            deleteKey: 'Eliminar propiedad'
         },
         navigation: {
             addSeparator: 'Agregar separador',
@@ -572,6 +571,14 @@ export const STRINGS_ES = {
                 select: 'para añadir propiedad',
                 dismiss: 'para cancelar'
             }
+        },
+        propertyKeyVisibility: {
+            title: 'Visibilidad de claves de propiedad',
+            searchPlaceholder: 'Buscar claves de propiedad...',
+            showInNavigation: 'Mostrar en navegación',
+            showInList: 'Mostrar en lista',
+            applyButton: 'Aplicar',
+            emptyState: 'No se encontraron claves de propiedad.'
         },
         welcome: {
             title: 'Bienvenido a {pluginName}',
@@ -1389,11 +1396,9 @@ export const STRINGS_ES = {
                 }
             },
             propertyFields: {
-                name: 'Propiedades a mostrar',
-                desc: 'Lista separada por comas de propiedades de metadatos para mostrar en el panel de navegación y como insignias en los elementos de archivo. Las propiedades de lista muestran una insignia por valor.',
-                placeholder: 'status, type, category',
-                addButtonTooltip: 'Añadir clave de propiedad',
-                emptySelectorNotice: 'No se encontraron claves de propiedad en la caché de metadatos.'
+                name: 'Claves de propiedades',
+                desc: 'Claves de propiedades de metadatos, con visibilidad por clave para la navegación e insignias de la lista de archivos.',
+                addButtonTooltip: 'Configurar claves de propiedad'
             },
             showPropertiesOnSeparateRows: {
                 name: 'Mostrar propiedades en filas separadas',

@@ -326,10 +326,9 @@ export const STRINGS_ZH_TW = {
             hideTag: '隱藏標籤'
         },
         property: {
-            addKey: '新增屬性鍵',
-            removeKey: '從屬性清單中移除',
+            addKey: '設定屬性鍵',
             renameKey: '重新命名屬性',
-            deleteKey: '從筆記中刪除屬性'
+            deleteKey: '刪除屬性'
         },
         navigation: {
             addSeparator: '新增分隔線',
@@ -567,6 +566,14 @@ export const STRINGS_ZH_TW = {
                 select: '新增屬性',
                 dismiss: '取消'
             }
+        },
+        propertyKeyVisibility: {
+            title: '屬性鍵可見性',
+            searchPlaceholder: '搜尋屬性鍵...',
+            showInNavigation: '在導覽中顯示',
+            showInList: '在清單中顯示',
+            applyButton: '套用',
+            emptyState: '未找到屬性鍵。'
         },
         welcome: {
             title: '歡迎使用 {pluginName}',
@@ -1380,11 +1387,9 @@ export const STRINGS_ZH_TW = {
                 }
             },
             propertyFields: {
-                name: '要顯示的屬性',
-                desc: '以逗號分隔的 frontmatter 屬性清單，用於在導覽面板和檔案項目中作為徽章顯示。清單值屬性每個值顯示一個徽章。',
-                placeholder: 'status, type, category',
-                addButtonTooltip: '新增屬性鍵',
-                emptySelectorNotice: '在中繼資料快取中未找到屬性鍵。'
+                name: '屬性鍵',
+                desc: 'Frontmatter 屬性鍵，可按鍵設定導覽和檔案清單徽章的可見性。',
+                addButtonTooltip: '設定屬性鍵'
             },
             showPropertiesOnSeparateRows: {
                 name: '在個別行中顯示屬性',

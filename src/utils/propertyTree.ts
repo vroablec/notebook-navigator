@@ -27,7 +27,7 @@ import { normalizePropertyTreeValuePath, parseStrictWikiLink } from './propertyU
 import { casefold } from './recordUtils';
 import { naturalCompare } from './sortUtils';
 import { isRecord } from './typeGuards';
-import { getActivePropertyFields } from './vaultProfiles';
+import { getActivePropertyFields, getActivePropertyKeySet } from './vaultProfiles';
 
 export { normalizePropertyTreeValuePath };
 
@@ -198,7 +198,7 @@ export function isPropertyFeatureEnabled(settings: NotebookNavigatorSettings): b
         return false;
     }
 
-    return getConfiguredPropertyKeySet(getActivePropertyFields(settings)).size > 0;
+    return getActivePropertyKeySet(settings, 'any').size > 0;
 }
 
 export function determinePropertyToReveal(
@@ -211,7 +211,7 @@ export function determinePropertyToReveal(
         return null;
     }
 
-    const configuredKeys = getConfiguredPropertyKeySet(getActivePropertyFields(settings));
+    const configuredKeys = getActivePropertyKeySet(settings, 'navigation');
     if (configuredKeys.size === 0) {
         return null;
     }
@@ -376,7 +376,7 @@ function sortPropertyTreeNodes(tree: Map<string, PropertyTreeNode>): Map<string,
     return sortedTree;
 }
 
-export function getConfiguredPropertyKeySet(propertyFields: string): ReadonlySet<string> {
+function getConfiguredPropertyKeySet(propertyFields: string): ReadonlySet<string> {
     const cached = configuredPropertyKeyCache.get(propertyFields);
     if (cached) {
         return cached;
@@ -497,6 +497,22 @@ export function isPropertySelectionNodeIdConfigured(
     return getConfiguredPropertyKeySet(getActivePropertyFields(settings)).has(parsed.key);
 }
 
+export function isPropertySelectionNodeIdVisibleInNavigation(
+    settings: NotebookNavigatorSettings,
+    selectionNodeId: PropertySelectionNodeId
+): boolean {
+    if (selectionNodeId === PROPERTIES_ROOT_VIRTUAL_FOLDER_ID) {
+        return true;
+    }
+
+    const parsed = parsePropertyNodeId(selectionNodeId);
+    if (!parsed) {
+        return false;
+    }
+
+    return getActivePropertyKeySet(settings, 'navigation').has(parsed.key);
+}
+
 export function canRestorePropertySelectionNodeId(settings: NotebookNavigatorSettings, selectionNodeId: PropertySelectionNodeId): boolean {
     if (!settings.showProperties) {
         return false;
@@ -506,7 +522,7 @@ export function canRestorePropertySelectionNodeId(settings: NotebookNavigatorSet
         return true;
     }
 
-    return isPropertySelectionNodeIdConfigured(settings, selectionNodeId);
+    return isPropertySelectionNodeIdVisibleInNavigation(settings, selectionNodeId);
 }
 
 /**

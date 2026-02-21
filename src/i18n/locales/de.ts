@@ -327,10 +327,9 @@ export const STRINGS_DE = {
             hideTag: 'Tag ausblenden'
         },
         property: {
-            addKey: 'Eigenschaftsschlüssel hinzufügen',
-            removeKey: 'Aus Eigenschaftsliste entfernen',
+            addKey: 'Eigenschaftsschlüssel konfigurieren',
             renameKey: 'Eigenschaft umbenennen',
-            deleteKey: 'Eigenschaft aus Notizen löschen'
+            deleteKey: 'Eigenschaft löschen'
         },
         navigation: {
             addSeparator: 'Trennlinie hinzufügen',
@@ -572,6 +571,14 @@ export const STRINGS_DE = {
                 select: 'zum Hinzufügen der Eigenschaft',
                 dismiss: 'zum Abbrechen'
             }
+        },
+        propertyKeyVisibility: {
+            title: 'Sichtbarkeit der Eigenschaftsschlüssel',
+            searchPlaceholder: 'Eigenschaftsschlüssel suchen...',
+            showInNavigation: 'In Navigation anzeigen',
+            showInList: 'In Liste anzeigen',
+            applyButton: 'Anwenden',
+            emptyState: 'Keine Eigenschaftsschlüssel gefunden.'
         },
         welcome: {
             title: 'Willkommen bei {pluginName}',
@@ -1389,11 +1396,9 @@ export const STRINGS_DE = {
                 }
             },
             propertyFields: {
-                name: 'Anzuzeigende Eigenschaften',
-                desc: 'Kommagetrennte Liste von Frontmatter-Eigenschaften zur Anzeige im Navigationsbereich und als Badges in Datei-Elementen. Listen-Eigenschaften zeigen ein Badge pro Wert.',
-                placeholder: 'status, type, category',
-                addButtonTooltip: 'Eigenschaftsschlüssel hinzufügen',
-                emptySelectorNotice: 'Keine Eigenschaftsschlüssel im Metadaten-Cache gefunden.'
+                name: 'Eigenschaftsschlüssel',
+                desc: 'Frontmatter-Eigenschaftsschlüssel mit schlüsselweiser Sichtbarkeit für Navigation und Dateilisten-Badges.',
+                addButtonTooltip: 'Eigenschaftsschlüssel konfigurieren'
             },
             showPropertiesOnSeparateRows: {
                 name: 'Eigenschaften in separaten Zeilen anzeigen',

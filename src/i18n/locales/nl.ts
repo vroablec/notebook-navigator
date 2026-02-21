@@ -328,10 +328,9 @@ export const STRINGS_NL = {
             hideTag: 'Tag verbergen'
         },
         property: {
-            addKey: 'Eigenschapssleutel toevoegen',
-            removeKey: 'Verwijderen uit eigenschappenlijst',
+            addKey: 'Eigenschapssleutels configureren',
             renameKey: 'Eigenschap hernoemen',
-            deleteKey: 'Eigenschap uit notities verwijderen'
+            deleteKey: 'Eigenschap verwijderen'
         },
         navigation: {
             addSeparator: 'Scheidingslijn toevoegen',
@@ -572,6 +571,14 @@ export const STRINGS_NL = {
                 select: 'om eigenschap toe te voegen',
                 dismiss: 'om te sluiten'
             }
+        },
+        propertyKeyVisibility: {
+            title: 'Zichtbaarheid van eigenschapssleutels',
+            searchPlaceholder: 'Eigenschapssleutels zoeken...',
+            showInNavigation: 'Tonen in navigatie',
+            showInList: 'Tonen in lijst',
+            applyButton: 'Toepassen',
+            emptyState: 'Geen eigenschapssleutels gevonden.'
         },
         welcome: {
             title: 'Welkom bij {pluginName}',
@@ -1389,11 +1396,9 @@ export const STRINGS_NL = {
                 }
             },
             propertyFields: {
-                name: 'Weer te geven eigenschappen',
-                desc: "Door komma's gescheiden lijst van frontmatter-eigenschappen om weer te geven in het navigatiepaneel en als badges in bestandsitems. Lijst-eigenschappen tonen één badge per waarde.",
-                placeholder: 'status, type, category',
-                addButtonTooltip: 'Eigenschap toevoegen',
-                emptySelectorNotice: 'Geen eigenschappen gevonden in de metadatacache.'
+                name: 'Eigenschapssleutels',
+                desc: 'Frontmatter-eigenschapssleutels, met zichtbaarheid per sleutel voor navigatie en bestandslijst-badges.',
+                addButtonTooltip: 'Eigenschapssleutels configureren'
             },
             showPropertiesOnSeparateRows: {
                 name: 'Eigenschappen op afzonderlijke regels tonen',

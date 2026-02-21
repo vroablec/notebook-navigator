@@ -280,6 +280,9 @@ export const clonePropertyKeys = (propertyKeys: VaultProfilePropertyKey[] | unde
         if (!sanitized) {
             return;
         }
+        if (!sanitized.showInNavigation && !sanitized.showInList) {
+            return;
+        }
 
         const normalizedKey = casefold(sanitized.key);
         if (!normalizedKey || seenKeys.has(normalizedKey)) {
@@ -292,6 +295,47 @@ export const clonePropertyKeys = (propertyKeys: VaultProfilePropertyKey[] | unde
 
     return cloned;
 };
+
+export function getActivePropertyKeySet(
+    settings: NotebookNavigatorSettings,
+    mode: 'any' | 'navigation' | 'list' = 'any'
+): ReadonlySet<string> {
+    const profile = getActiveVaultProfile(settings);
+    const entries = Array.isArray(profile.propertyKeys) ? profile.propertyKeys : [];
+    if (entries.length === 0) {
+        return new Set();
+    }
+
+    const keys = new Set<string>();
+    const seen = new Set<string>();
+    entries.forEach(entry => {
+        if (!entry) {
+            return;
+        }
+
+        if (mode === 'navigation' && !entry.showInNavigation) {
+            return;
+        }
+        if (mode === 'list' && !entry.showInList) {
+            return;
+        }
+
+        if (mode === 'any' && !entry.showInNavigation && !entry.showInList) {
+            return;
+        }
+
+        const displayKey = typeof entry.key === 'string' ? entry.key.trim() : '';
+        const normalized = casefold(displayKey);
+        if (!normalized || seen.has(normalized)) {
+            return;
+        }
+
+        seen.add(normalized);
+        keys.add(normalized);
+    });
+
+    return keys;
+}
 
 export function createPropertyKeysFromPropertyFields(
     propertyFields: string,
