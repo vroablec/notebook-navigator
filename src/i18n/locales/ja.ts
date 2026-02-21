@@ -573,6 +573,7 @@ export const STRINGS_JA = {
         propertyKeyVisibility: {
             title: 'プロパティキーの表示設定',
             searchPlaceholder: 'プロパティキーを検索...',
+            propertyColumnLabel: 'プロパティ',
             showInNavigation: 'ナビゲーションに表示',
             showInList: 'リストに表示',
             applyButton: '適用',

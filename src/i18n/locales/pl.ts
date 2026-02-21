@@ -576,6 +576,7 @@ export const STRINGS_PL = {
         propertyKeyVisibility: {
             title: 'Widoczność kluczy atrybutów',
             searchPlaceholder: 'Szukaj kluczy atrybutów...',
+            propertyColumnLabel: 'Atrybut',
             showInNavigation: 'Pokaż w nawigacji',
             showInList: 'Pokaż na liście',
             applyButton: 'Zastosuj',

@@ -574,6 +574,7 @@ export const STRINGS_VI = {
         propertyKeyVisibility: {
             title: 'Hiển thị khóa thuộc tính',
             searchPlaceholder: 'Tìm khóa thuộc tính...',
+            propertyColumnLabel: 'Thuộc tính',
             showInNavigation: 'Hiển thị trong điều hướng',
             showInList: 'Hiển thị trong danh sách',
             applyButton: 'Áp dụng',

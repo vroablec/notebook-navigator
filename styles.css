@@ -171,7 +171,7 @@ body {
     --nn-theme-foreground: var(--text-normal);
     --nn-theme-foreground-muted: color-mix(in srgb, var(--nn-theme-foreground) 70%, transparent);
     --nn-theme-foreground-faded: color-mix(in srgb, var(--nn-theme-foreground) 50%, transparent);
-    --nn-theme-foreground-faint: color-mix(in srgb, var(--nn-theme-foreground) 20%, transparent);
+    --nn-theme-foreground-faint: color-mix(in srgb, var(--nn-theme-foreground) 10%, transparent);
 
     /* -- Navigation Pane -- */
     --nn-theme-nav-bg: var(--background-secondary);
@@ -5735,6 +5735,11 @@ body.nn-resizing {
     overflow: hidden;
 }
 
+.is-mobile .modal.nn-property-keys-modal .modal-content {
+    gap: var(--size-2-3);
+    padding: var(--size-4-6);
+}
+
 .modal.nn-property-keys-modal .nn-property-keys-search {
     margin: 0;
 }
@@ -5743,7 +5748,13 @@ body.nn-resizing {
     flex: 1;
     min-height: 0;
     overflow-y: auto;
+    margin-top: var(--size-2-2);
     padding-right: 4px;
+    padding-bottom: var(--size-1-5);
+}
+
+.is-mobile .modal.nn-property-keys-modal .nn-property-keys-scroll {
+    padding-bottom: var(--size-2-2);
 }
 
 .nn-property-keys-list {
@@ -5753,10 +5764,20 @@ body.nn-resizing {
     width: 100%;
 }
 
+.is-mobile .modal.nn-property-keys-modal .nn-property-keys-list {
+    gap: var(--size-2-2);
+}
+
 .nn-property-keys-row {
     display: flex;
     align-items: center;
     gap: var(--size-2-2);
+    padding-left: var(--size-2-2);
+    padding-right: var(--size-2-2);
+}
+
+.is-mobile .modal.nn-property-keys-modal .nn-property-keys-row {
+    gap: var(--size-2-3);
 }
 
 .nn-property-keys-label {
@@ -5778,6 +5799,12 @@ body.nn-resizing {
 
 .nn-property-keys-row.is-enabled .nn-property-keys-count {
     color: var(--nn-theme-foreground);
+}
+
+.nn-property-keys-header-row {
+    margin-bottom: var(--size-1-2);
+    background: var(--nn-theme-foreground-faint);
+    border-radius: var(--radius-s);
 }
 
 .nn-property-keys-count {
@@ -5816,6 +5843,21 @@ body.nn-resizing {
     background: transparent;
 }
 
+.nn-property-keys-header-icon {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    pointer-events: none;
+}
+
+.nn-property-keys-header-icon svg {
+    width: 16px;
+    height: 16px;
+}
+
 .nn-property-keys-empty {
     padding: var(--size-2-3);
     text-align: center;
@@ -5824,8 +5866,13 @@ body.nn-resizing {
 
 .nn-property-keys-footer {
     flex-shrink: 0;
+    margin-top: var(--size-2-2);
     padding-top: var(--size-2-2);
     border-top: 1px solid var(--background-modifier-border);
+}
+
+.is-mobile .modal.nn-property-keys-modal .nn-property-keys-footer {
+    padding-top: var(--size-2-3);
 }
 /* Source: src/styles/sections/layout-virtual-list.css */
 

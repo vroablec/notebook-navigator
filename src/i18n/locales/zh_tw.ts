@@ -570,6 +570,7 @@ export const STRINGS_ZH_TW = {
         propertyKeyVisibility: {
             title: '屬性鍵可見性',
             searchPlaceholder: '搜尋屬性鍵...',
+            propertyColumnLabel: '屬性',
             showInNavigation: '在導覽中顯示',
             showInList: '在清單中顯示',
             applyButton: '套用',

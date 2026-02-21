@@ -574,6 +574,7 @@ export const STRINGS_FA = {
         propertyKeyVisibility: {
             title: 'نمایش کلیدهای ویژگی',
             searchPlaceholder: 'جستجوی کلیدهای ویژگی...',
+            propertyColumnLabel: 'ویژگی',
             showInNavigation: 'نمایش در ناوبری',
             showInList: 'نمایش در فهرست',
             applyButton: 'اعمال',

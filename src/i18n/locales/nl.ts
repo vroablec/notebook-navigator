@@ -575,6 +575,7 @@ export const STRINGS_NL = {
         propertyKeyVisibility: {
             title: 'Zichtbaarheid van eigenschapssleutels',
             searchPlaceholder: 'Eigenschapssleutels zoeken...',
+            propertyColumnLabel: 'Eigenschap',
             showInNavigation: 'Tonen in navigatie',
             showInList: 'Tonen in lijst',
             applyButton: 'Toepassen',

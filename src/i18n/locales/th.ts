@@ -571,6 +571,7 @@ export const STRINGS_TH = {
         propertyKeyVisibility: {
             title: 'การแสดงผลคีย์คุณสมบัติ',
             searchPlaceholder: 'ค้นหาคีย์คุณสมบัติ...',
+            propertyColumnLabel: 'คุณสมบัติ',
             showInNavigation: 'แสดงในการนำทาง',
             showInList: 'แสดงในรายการ',
             applyButton: 'นำไปใช้',

@@ -572,6 +572,7 @@ export const STRINGS_UK = {
         propertyKeyVisibility: {
             title: 'Видимість ключів властивостей',
             searchPlaceholder: 'Пошук ключів властивостей...',
+            propertyColumnLabel: 'Властивість',
             showInNavigation: 'Показати в навігації',
             showInList: 'Показати у списку',
             applyButton: 'Застосувати',

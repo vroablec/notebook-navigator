@@ -572,6 +572,7 @@ export const STRINGS_RU = {
         propertyKeyVisibility: {
             title: 'Видимость ключей свойств',
             searchPlaceholder: 'Поиск ключей свойств...',
+            propertyColumnLabel: 'Свойство',
             showInNavigation: 'Показать в навигации',
             showInList: 'Показать в списке',
             applyButton: 'Применить',

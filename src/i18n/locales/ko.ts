@@ -573,6 +573,7 @@ export const STRINGS_KO = {
         propertyKeyVisibility: {
             title: '속성 키 표시 설정',
             searchPlaceholder: '속성 키 검색...',
+            propertyColumnLabel: '속성',
             showInNavigation: '탐색에 표시',
             showInList: '목록에 표시',
             applyButton: '적용',

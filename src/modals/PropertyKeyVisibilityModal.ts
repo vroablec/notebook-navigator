@@ -47,6 +47,8 @@ type RowControls = {
 
 const CHECKBOX_OFF_ICON = 'lucide-square';
 const CHECKBOX_ON_ICON = 'lucide-square-check-big';
+const NAVIGATION_PANE_TAB_ICON = 'panel-left';
+const LIST_PANE_TAB_ICON = 'list';
 
 export class PropertyKeyVisibilityModal extends Modal {
     private options: PropertyKeyVisibilityModalOptions;
@@ -89,6 +91,7 @@ export class PropertyKeyVisibilityModal extends Modal {
         );
 
         const scrollContainer = this.contentEl.createDiv({ cls: 'nn-property-keys-scroll' });
+        this.renderColumnHeader(scrollContainer);
         this.listEl = scrollContainer.createDiv({ cls: 'nn-property-keys-list' });
         this.renderRows();
 
@@ -260,7 +263,7 @@ export class PropertyKeyVisibilityModal extends Modal {
             return this.rows;
         }
 
-        return this.rows.filter(row => casefold(row.displayKey).includes(normalizedQuery));
+        return this.rows.filter(row => row.normalizedKey.includes(normalizedQuery));
     }
 
     private renderRows(): void {
@@ -329,6 +332,24 @@ export class PropertyKeyVisibilityModal extends Modal {
                 })
             );
         });
+    }
+
+    private renderColumnHeader(containerEl: HTMLElement): void {
+        const rowEl = containerEl.createDiv({ cls: ['nn-property-keys-row', 'nn-property-keys-header-row', 'is-enabled'] });
+        rowEl.createDiv({
+            cls: 'nn-property-keys-label',
+            text: strings.modals.propertyKeyVisibility.propertyColumnLabel
+        });
+
+        const actionsEl = rowEl.createDiv({ cls: 'nn-property-keys-actions' });
+
+        const navigationIconEl = actionsEl.createDiv({ cls: ['nn-property-keys-toggle', 'nn-property-keys-header-icon', 'is-enabled'] });
+        navigationIconEl.setAttribute('aria-hidden', 'true');
+        setIcon(navigationIconEl, NAVIGATION_PANE_TAB_ICON);
+
+        const listIconEl = actionsEl.createDiv({ cls: ['nn-property-keys-toggle', 'nn-property-keys-header-icon', 'is-enabled'] });
+        listIconEl.setAttribute('aria-hidden', 'true');
+        setIcon(listIconEl, LIST_PANE_TAB_ICON);
     }
 
     private toggleRow(normalizedKey: string, toggle: 'navigation' | 'list'): void {

@@ -575,6 +575,7 @@ export const STRINGS_TR = {
         propertyKeyVisibility: {
             title: 'Özellik anahtarı görünürlüğü',
             searchPlaceholder: 'Özellik anahtarlarını ara...',
+            propertyColumnLabel: 'Özellik',
             showInNavigation: 'Gezinmede göster',
             showInList: 'Listede göster',
             applyButton: 'Uygula',

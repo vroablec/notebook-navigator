@@ -574,6 +574,7 @@ export const STRINGS_ID = {
         propertyKeyVisibility: {
             title: 'Visibilitas kunci properti',
             searchPlaceholder: 'Cari kunci properti...',
+            propertyColumnLabel: 'Properti',
             showInNavigation: 'Tampilkan di navigasi',
             showInList: 'Tampilkan di daftar',
             applyButton: 'Terapkan',

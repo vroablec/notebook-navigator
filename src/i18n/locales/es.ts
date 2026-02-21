@@ -575,6 +575,7 @@ export const STRINGS_ES = {
         propertyKeyVisibility: {
             title: 'Visibilidad de claves de propiedad',
             searchPlaceholder: 'Buscar claves de propiedad...',
+            propertyColumnLabel: 'Propiedad',
             showInNavigation: 'Mostrar en navegación',
             showInList: 'Mostrar en lista',
             applyButton: 'Aplicar',

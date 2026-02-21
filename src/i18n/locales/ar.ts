@@ -573,6 +573,7 @@ export const STRINGS_AR = {
         propertyKeyVisibility: {
             title: 'رؤية مفاتيح الخصائص',
             searchPlaceholder: 'بحث في مفاتيح الخصائص...',
+            propertyColumnLabel: 'خاصية',
             showInNavigation: 'إظهار في التنقل',
             showInList: 'إظهار في القائمة',
             applyButton: 'تطبيق',

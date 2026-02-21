@@ -570,6 +570,7 @@ export const STRINGS_ZH_CN = {
         propertyKeyVisibility: {
             title: '属性键可见性',
             searchPlaceholder: '搜索属性键...',
+            propertyColumnLabel: '属性',
             showInNavigation: '在导航中显示',
             showInList: '在列表中显示',
             applyButton: '应用',
