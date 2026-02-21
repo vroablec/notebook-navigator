@@ -881,7 +881,11 @@ export function SelectionProvider({
 
             if (!isPropertySelectionNodeIdVisibleInNavigation(settingsSnapshot, selectedProperty)) {
                 pendingPropertyRenameSelectionRef.current = null;
-                dispatch({ type: 'SET_SELECTED_FOLDER', folder: app.vault.getRoot() });
+                if (settingsSnapshot.showProperties) {
+                    dispatch({ type: 'SET_SELECTED_PROPERTY', nodeId: PROPERTIES_ROOT_VIRTUAL_FOLDER_ID });
+                } else {
+                    dispatch({ type: 'SET_SELECTED_FOLDER', folder: app.vault.getRoot() });
+                }
                 return;
             }
 
@@ -1127,7 +1131,11 @@ export function SelectionProvider({
             settings.showProperties && state.selectionType === 'property' && state.selectedProperty === PROPERTIES_ROOT_VIRTUAL_FOLDER_ID;
 
         if (!propertyFeatureEnabled && state.selectionType === 'property' && !keepPropertiesRootSelection) {
-            dispatch({ type: 'SET_SELECTED_FOLDER', folder: app.vault.getRoot() });
+            if (settings.showProperties) {
+                dispatch({ type: 'SET_SELECTED_PROPERTY', nodeId: PROPERTIES_ROOT_VIRTUAL_FOLDER_ID });
+            } else {
+                dispatch({ type: 'SET_SELECTED_FOLDER', folder: app.vault.getRoot() });
+            }
         }
     }, [app.vault, dispatch, propertyFeatureEnabled, settings.showProperties, state.selectedProperty, state.selectionType]);
 
