@@ -33,6 +33,7 @@ import { TFile, TFolder, debounce, normalizePath } from 'obsidian';
 import { useServices } from '../context/ServicesContext';
 import { OperationType } from '../services/CommandQueueService';
 import { useFileCache } from '../context/StorageContext';
+import { useLocalDayKey } from './useLocalDayKey';
 import { ListPaneItemType, ItemType, PINNED_SECTION_HEADER_KEY } from '../types';
 import type { VisibilityPreferences } from '../types';
 import type { ListPaneItem } from '../types/virtualization';
@@ -131,6 +132,8 @@ interface UseListPaneDataResult {
     files: TFile[];
     /** Search metadata keyed by file path (populated when using Omnisearch) */
     searchMeta: Map<string, SearchResultMeta>;
+    /** Local day key in YYYY-MM-DD format */
+    localDayKey: string;
 }
 
 /**
@@ -155,6 +158,7 @@ export function useListPaneData({
     const { app, tagTreeService, propertyTreeService, commandQueue, omnisearchService } = useServices();
     const { getFileTimestamps, getDB, getFileDisplayName } = useFileCache();
     const { includeDescendantNotes, showHiddenItems } = visibility;
+    const dayKey = useLocalDayKey();
 
     // State to force updates when vault changes (incremented on create/delete/rename)
     const [updateKey, setUpdateKey] = useState(0);
@@ -807,13 +811,15 @@ export function useListPaneData({
             });
         } else if (shouldGroupByDate) {
             // Group by date
+            const now = DateUtils.parseLocalDayKey(dayKey) ?? new Date();
+            const dateField = getDateField(sortOption);
+
             let currentGroup: string | null = null;
             unpinnedFiles.forEach(file => {
-                const dateField = getDateField(sortOption);
                 // Get timestamp based on sort field (created or modified)
                 const timestamps = getFileTimestamps(file);
                 const timestamp = dateField === 'ctime' ? timestamps.created : timestamps.modified;
-                const groupTitle = DateUtils.getDateGroup(timestamp);
+                const groupTitle = DateUtils.getDateGroup(timestamp, now);
 
                 if (groupTitle !== currentGroup) {
                     currentGroup = groupTitle;
@@ -982,7 +988,8 @@ export function useListPaneData({
         showHiddenItems,
         fileVisibility,
         hiddenTags,
-        app
+        app,
+        dayKey
     ]);
 
     /**
@@ -1337,6 +1344,7 @@ export function useListPaneData({
         filePathToIndex,
         fileIndexMap,
         files,
-        searchMeta: searchMetaMap
+        searchMeta: searchMetaMap,
+        localDayKey: dayKey
     };
 }

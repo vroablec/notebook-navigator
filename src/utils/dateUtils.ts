@@ -126,12 +126,29 @@ export class DateUtils {
     }
 
     /**
+     * Parse a local day key (YYYY-MM-DD) into a local date anchored at midday.
+     */
+    static parseLocalDayKey(dayKey: string): Date | null {
+        const [yearText, monthText, dayText] = dayKey.split('-');
+        const year = Number(yearText);
+        const month = Number(monthText);
+        const day = Number(dayText);
+        if (!Number.isFinite(year) || !Number.isFinite(month) || !Number.isFinite(day)) {
+            return null;
+        }
+
+        const reference = new Date(year, month - 1, day, 12, 0, 0, 0);
+        return Number.isFinite(reference.getTime()) ? reference : null;
+    }
+
+    /**
      * Get a date group label for grouping files by date
      * @param timestamp - Unix timestamp in milliseconds
+     * @param nowOverride - Optional reference time for grouping comparisons
      * @returns Date group label (e.g. "Today", "Yesterday", "Previous 7 Days", etc.)
      */
-    static getDateGroup(timestamp: number): string {
-        const now = new Date();
+    static getDateGroup(timestamp: number, nowOverride?: Date): string {
+        const now = nowOverride && Number.isFinite(nowOverride.getTime()) ? nowOverride : new Date();
         const date = new Date(timestamp);
 
         // Reset times to start of day for comparison

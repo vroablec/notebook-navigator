@@ -209,6 +209,8 @@ interface FileItemProps {
     onModifySearchWithTag?: (tag: string, operator: InclusionOperator) => void;
     /** Modifies the active search query with a property token when modifier clicking */
     onModifySearchWithProperty?: (key: string, value: string | null, operator: InclusionOperator) => void;
+    /** Local day reference date used for relative date group calculations */
+    localDayReference: Date | null;
     /** Icon size for rendering file icons */
     fileIconSize: number;
     /** Visible frontmatter property keys for file list pills (normalized keys) */
@@ -393,6 +395,7 @@ export const FileItem = React.memo(function FileItem({
     isHidden = false,
     onModifySearchWithTag,
     onModifySearchWithProperty,
+    localDayReference,
     fileIconSize,
     visiblePropertyKeys
 }: FileItemProps) {
@@ -1276,7 +1279,7 @@ export const FileItem = React.memo(function FileItem({
         // Pinned items are all grouped under "📌 Pinned" section regardless of their actual dates
         // We need to calculate the actual date group to show smart formatting
         if (isPinned) {
-            const actualDateGroup = DateUtils.getDateGroup(timestamp);
+            const actualDateGroup = DateUtils.getDateGroup(timestamp, localDayReference ?? undefined);
             return DateUtils.formatDateForGroup(timestamp, actualDateGroup, settings.dateFormat, settings.timeFormat);
         }
 
@@ -1302,7 +1305,8 @@ export const FileItem = React.memo(function FileItem({
         settings.timeFormat,
         settings.alphabeticalDateMode,
         getFileTimestamps,
-        metadataVersion
+        metadataVersion,
+        localDayReference
     ]);
 
     // Height optimization settings

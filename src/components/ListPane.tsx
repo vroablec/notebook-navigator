@@ -102,6 +102,7 @@ import { focusElementPreventScroll, isKeyboardEventContextBlocked } from '../uti
 import { buildPropertyKeyNodeId, buildPropertyValueNodeId } from '../utils/propertyTree';
 import { getFolderNote, openFolderNoteFile } from '../utils/folderNotes';
 import { getActivePropertyKeySet } from '../utils/vaultProfiles';
+import { DateUtils } from '../utils/dateUtils';
 import type { NavigateToFolderOptions } from '../hooks/useNavigatorReveal';
 
 /**
@@ -771,7 +772,7 @@ export const ListPane = React.memo(
         const isVisible = !uiState.singlePane || uiState.currentSinglePaneView === 'files';
 
         // Use the new data hook
-        const { listItems, orderedFiles, orderedFileIndexMap, filePathToIndex, fileIndexMap, files } = useListPaneData({
+        const { listItems, orderedFiles, orderedFileIndexMap, filePathToIndex, fileIndexMap, files, localDayKey } = useListPaneData({
             selectionType,
             selectedFolder,
             selectedTag,
@@ -784,6 +785,7 @@ export const ListPane = React.memo(
             searchTokens: isSearchActive ? debouncedSearchTokens : undefined,
             visibility: { includeDescendantNotes, showHiddenItems }
         });
+        const localDayReference = useMemo(() => DateUtils.parseLocalDayKey(localDayKey), [localDayKey]);
 
         // Determine the target folder path for drag-and-drop of external files
         const activeFolderDropPath = useMemo(() => {
@@ -1909,6 +1911,7 @@ export const ListPane = React.memo(
                                                             isHidden={Boolean(item.isHidden)}
                                                             onModifySearchWithTag={modifySearchWithTag}
                                                             onModifySearchWithProperty={modifySearchWithProperty}
+                                                            localDayReference={localDayReference}
                                                             fileIconSize={listMeasurements.fileIconSize}
                                                             visiblePropertyKeys={visibleListPropertyKeys}
                                                         />

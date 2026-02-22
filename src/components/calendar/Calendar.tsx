@@ -29,6 +29,7 @@ import { getCalendarCustomWeekAnchorUnit } from '../../utils/calendarCustomNoteP
 import { getDailyNoteFile, getDailyNoteSettings as getCoreDailyNoteSettings } from '../../utils/dailyNotes';
 import { getMomentApi, resolveMomentLocale, type MomentInstance } from '../../utils/moment';
 import { useFileOpener } from '../../hooks/useFileOpener';
+import { useLocalDayKey } from '../../hooks/useLocalDayKey';
 import { extractFrontmatterName } from '../../utils/metadataExtractor';
 import { type CalendarNoteKind } from '../../utils/calendarNotes';
 import { getActiveVaultProfile } from '../../utils/vaultProfiles';
@@ -81,8 +82,7 @@ export function Calendar({
 
     const momentApi = getMomentApi();
     const [cursorDate, setCursorDate] = useState<MomentInstance | null>(() => (momentApi ? momentApi().startOf('day') : null));
-    const todayDate = useMemo(() => (momentApi ? momentApi().startOf('day') : null), [momentApi]);
-    const todayIso = todayDate ? formatIsoDate(todayDate) : null;
+    const todayIso = useLocalDayKey();
 
     const [vaultVersion, setVaultVersion] = useState(0);
     const [featureImageVersion, setFeatureImageVersion] = useState(0);
