@@ -17,7 +17,7 @@
  */
 
 import { TFile, TFolder } from 'obsidian';
-import type { AlphabeticalDateMode, SortOption, NotebookNavigatorSettings, PropertySortSecondaryOption } from '../settings';
+import type { AlphabeticalDateMode, AlphaSortOrder, SortOption, NotebookNavigatorSettings, PropertySortSecondaryOption } from '../settings';
 import { NavigationItemType, ItemType } from '../types';
 
 export { SORT_OPTIONS } from '../settings/types';
@@ -113,6 +113,34 @@ export function naturalCompare(a: string, b: string): number {
         collatorCache.set(cacheKey, collator);
     }
     return collator.compare(a, b);
+}
+
+/**
+ * Natural string comparison that applies alphabetical direction.
+ */
+export function compareByAlphaSortOrder(a: string, b: string, sortOrder: AlphaSortOrder): number {
+    const cmp = naturalCompare(a, b);
+    if (cmp === 0) {
+        return 0;
+    }
+    return sortOrder === 'alpha-desc' ? -cmp : cmp;
+}
+
+interface FolderChildSortOrderSettings {
+    folderSortOrder: AlphaSortOrder;
+    folderTreeSortOverrides?: Readonly<Record<string, AlphaSortOrder>> | null;
+}
+
+/**
+ * Resolves the effective child-folder alphabetical order for the given folder path.
+ */
+export function resolveFolderChildSortOrder(settings: FolderChildSortOrderSettings, folderPath: string): AlphaSortOrder {
+    const overrides = settings.folderTreeSortOverrides;
+    if (overrides && Object.prototype.hasOwnProperty.call(overrides, folderPath)) {
+        return overrides[folderPath] ?? settings.folderSortOrder;
+    }
+
+    return settings.folderSortOrder;
 }
 
 function compareTextValues(valueA: string, valueB: string, descending: boolean): number {

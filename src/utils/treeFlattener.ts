@@ -17,7 +17,7 @@
  */
 
 import { TFolder } from 'obsidian';
-import { naturalCompare } from './sortUtils';
+import { compareByAlphaSortOrder, naturalCompare, resolveFolderChildSortOrder } from './sortUtils';
 import { NavigationPaneItemType } from '../types';
 import { PropertyTreeNode, TagTreeNode } from '../types/storage';
 import type { FolderTreeItem, TagTreeItem } from '../types/virtualization';
@@ -43,11 +43,6 @@ interface FlattenTagTreeOptions {
     comparator?: (a: TagTreeNode, b: TagTreeNode) => number;
     /** Per-tag child sort order overrides */
     childSortOrderOverrides?: Record<string, AlphaSortOrder>;
-}
-
-function compareAlpha(a: string, b: string, order: AlphaSortOrder): number {
-    const cmp = naturalCompare(a, b);
-    return order === 'alpha-desc' ? -cmp : cmp;
 }
 
 /**
@@ -160,16 +155,17 @@ export function flattenFolderTree(
     const items: FolderTreeItem[] = [];
     const { rootOrderMap, childSortOrderOverrides } = options;
     const defaultSortOrder = options.defaultSortOrder ?? 'alpha-asc';
+    const childSortOrderSettings = {
+        folderSortOrder: defaultSortOrder,
+        folderTreeSortOverrides: childSortOrderOverrides
+    };
 
     const getEffectiveChildSortOrder = (folderPath: string): AlphaSortOrder => {
-        if (childSortOrderOverrides && Object.prototype.hasOwnProperty.call(childSortOrderOverrides, folderPath)) {
-            return childSortOrderOverrides[folderPath] ?? defaultSortOrder;
-        }
-        return defaultSortOrder;
+        return resolveFolderChildSortOrder(childSortOrderSettings, folderPath);
     };
 
     const compareFolderNames = (order: AlphaSortOrder) => (a: TFolder, b: TFolder) => {
-        const cmp = compareAlpha(a.name, b.name, order);
+        const cmp = compareByAlphaSortOrder(a.name, b.name, order);
         if (cmp !== 0) {
             return cmp;
         }
@@ -256,7 +252,7 @@ export function flattenTagTree(
     const sortedNodes = tagNodes.slice().sort(sortFn);
 
     const compareAlphaNodes = (order: AlphaSortOrder) => (a: TagTreeNode, b: TagTreeNode) => {
-        const cmp = compareAlpha(a.name, b.name, order);
+        const cmp = compareByAlphaSortOrder(a.name, b.name, order);
         if (cmp !== 0) {
             return cmp;
         }

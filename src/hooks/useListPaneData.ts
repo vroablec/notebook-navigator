@@ -47,10 +47,11 @@ import {
     shouldExcludeFileWithMatcher
 } from '../utils/fileFilters';
 import {
+    compareByAlphaSortOrder,
     getDateField,
     getEffectiveSortOption,
     isDateSortOption,
-    naturalCompare,
+    resolveFolderChildSortOrder,
     shouldRefreshOnFileModifyForSort,
     shouldRefreshOnMetadataChangeForSort,
     resolveDefaultDateField
@@ -217,11 +218,15 @@ export function useListPaneData({
             showFileTags: settings.showFileTags,
             noteGrouping: settings.noteGrouping,
             folderAppearances: settings.folderAppearances,
-            tagAppearances: settings.tagAppearances
+            tagAppearances: settings.tagAppearances,
+            folderSortOrder: settings.folderSortOrder,
+            folderTreeSortOverrides: settings.folderTreeSortOverrides
         }),
         [
             settings.filterPinnedByFolder,
             settings.folderAppearances,
+            settings.folderSortOrder,
+            settings.folderTreeSortOverrides,
             settings.noteGrouping,
             settings.pinnedNotes,
             settings.showFileTags,
@@ -838,13 +843,18 @@ export function useListPaneData({
             const baseFolderName = selectedFolder?.name ?? null;
             const basePrefix = baseFolderPath ? `${baseFolderPath}/` : null;
             const vaultRootLabel = strings.navigationPane.vaultRootLabel;
-            const vaultRootSortKey = `0-${vaultRootLabel.toLowerCase()}`;
+            const folderGroupSortOrder = resolveFolderChildSortOrder(
+                {
+                    folderSortOrder: listConfig.folderSortOrder,
+                    folderTreeSortOverrides: listConfig.folderTreeSortOverrides
+                },
+                baseFolderPath ?? '/'
+            );
             // Map of folder key to group metadata and files
             const folderGroups = new Map<
                 string,
                 {
                     label: string;
-                    sortKey: string;
                     files: TFile[];
                     isCurrentFolder: boolean;
                     folderPath: string | null;
@@ -854,11 +864,11 @@ export function useListPaneData({
             // Determines which folder group a file belongs to based on its parent path
             const resolveFolderGroup = (
                 file: TFile
-            ): { key: string; label: string; sortKey: string; isCurrentFolder: boolean; folderPath: string | null } => {
+            ): { key: string; label: string; isCurrentFolder: boolean; folderPath: string | null } => {
                 const parent = file.parent;
                 // Files at vault root
                 if (!(parent instanceof TFolder)) {
-                    return { key: 'folder:/', label: vaultRootLabel, sortKey: vaultRootSortKey, isCurrentFolder: false, folderPath: null };
+                    return { key: 'folder:/', label: vaultRootLabel, isCurrentFolder: false, folderPath: null };
                 }
 
                 // When viewing a folder, group by immediate parent folder
@@ -870,7 +880,6 @@ export function useListPaneData({
                         return {
                             key: `folder:${baseFolderPath}`,
                             label,
-                            sortKey: `0-${label.toLowerCase()}`,
                             isCurrentFolder: true,
                             folderPath
                         };
@@ -887,7 +896,6 @@ export function useListPaneData({
                             return {
                                 key: `folder:${baseFolderPath}/${label}`,
                                 label,
-                                sortKey: `1-${label.toLowerCase()}`,
                                 isCurrentFolder: false,
                                 folderPath
                             };
@@ -903,37 +911,35 @@ export function useListPaneData({
                     return {
                         key: `folder:/${label}`,
                         label,
-                        sortKey: `1-${label.toLowerCase()}`,
                         isCurrentFolder: false,
                         folderPath: topLevel
                     };
                 }
 
                 // Fallback to vault root
-                return { key: 'folder:/', label: vaultRootLabel, sortKey: vaultRootSortKey, isCurrentFolder: false, folderPath: null };
+                return { key: 'folder:/', label: vaultRootLabel, isCurrentFolder: false, folderPath: null };
             };
 
             // Collect files into folder groups
             unpinnedFiles.forEach(file => {
-                const { key, label, sortKey, isCurrentFolder, folderPath } = resolveFolderGroup(file);
+                const { key, label, isCurrentFolder, folderPath } = resolveFolderGroup(file);
                 let group = folderGroups.get(key);
                 if (!group) {
-                    group = { label, sortKey, files: [], isCurrentFolder, folderPath };
+                    group = { label, files: [], isCurrentFolder, folderPath };
                     folderGroups.set(key, group);
                 }
                 group.files.push(file);
             });
 
-            // Sort groups by sort key, then alphabetically by label
+            // Sort groups using the selected folder's child-folder order.
             const orderedGroups = Array.from(folderGroups.entries())
                 .map(([key, group]) => ({ key, ...group }))
                 .sort((a, b) => {
-                    const sortKeyCompare = naturalCompare(a.sortKey, b.sortKey);
-                    if (sortKeyCompare !== 0) {
-                        return sortKeyCompare;
+                    if (a.isCurrentFolder !== b.isCurrentFolder) {
+                        return a.isCurrentFolder ? -1 : 1;
                     }
 
-                    const labelCompare = naturalCompare(a.label, b.label);
+                    const labelCompare = compareByAlphaSortOrder(a.label, b.label, folderGroupSortOrder);
                     if (labelCompare !== 0) {
                         return labelCompare;
                     }

@@ -1,6 +1,20 @@
 import { describe, expect, it } from 'vitest';
-import { sortFiles, shouldRefreshOnFileModifyForSort, shouldRefreshOnMetadataChangeForSort } from '../../src/utils/sortUtils';
+import {
+    compareByAlphaSortOrder,
+    resolveFolderChildSortOrder,
+    sortFiles,
+    shouldRefreshOnFileModifyForSort,
+    shouldRefreshOnMetadataChangeForSort
+} from '../../src/utils/sortUtils';
+import type { AlphaSortOrder } from '../../src/settings';
 import { createTestTFile } from './createTestTFile';
+
+function createFolderSortSettings(folderSortOrder: AlphaSortOrder, overrides: Record<string, AlphaSortOrder> = {}) {
+    return {
+        folderSortOrder,
+        folderTreeSortOverrides: overrides
+    };
+}
 
 describe('sortFiles', () => {
     it('sorts by file name (A on top / Z on top)', () => {
@@ -368,5 +382,31 @@ describe('sort refresh triggers', () => {
                 frontmatterModifiedField: ''
             })
         ).toBe(false);
+    });
+});
+
+describe('folder child sort order', () => {
+    it('compares names using natural order and configured direction', () => {
+        expect(compareByAlphaSortOrder('folder2', 'folder10', 'alpha-asc')).toBeLessThan(0);
+        expect(compareByAlphaSortOrder('folder2', 'folder10', 'alpha-desc')).toBeGreaterThan(0);
+    });
+
+    it('resolves child order from global folder sort setting', () => {
+        const settings = createFolderSortSettings('alpha-desc');
+        expect(resolveFolderChildSortOrder(settings, 'projects')).toBe('alpha-desc');
+    });
+
+    it('resolves child order from folder override when present', () => {
+        const settings = createFolderSortSettings('alpha-asc', {
+            projects: 'alpha-desc'
+        });
+        expect(resolveFolderChildSortOrder(settings, 'projects')).toBe('alpha-desc');
+    });
+
+    it('resolves root child order from root override when present', () => {
+        const settings = createFolderSortSettings('alpha-asc', {
+            '/': 'alpha-desc'
+        });
+        expect(resolveFolderChildSortOrder(settings, '/')).toBe('alpha-desc');
     });
 });
