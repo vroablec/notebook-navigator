@@ -89,7 +89,8 @@ const RELEASE_NOTES: ReleaseNote[] = [
         improved: [
             'Custom folder sort order is now applied when grouping by folder in list pane.',
             'Saving a search shortcut now shows the option: "Always start in: {path}". This means the shortcut will always start in the folder, tag or property where you saved it.',
-            'Visible property keys are now saved per vault profile.'
+            'Visible property keys are now saved per vault profile.',
+            'Date no longer shows for pinned items when "Variable note height" is enabled.'
         ],
         changed: ['Property key configuration was moved from Navigation Pane to the General settings tab.'],
         fixed: ["Fixed an issue where today's date and file list did not update when a new day started."]
