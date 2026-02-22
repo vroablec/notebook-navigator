@@ -1338,7 +1338,8 @@ export const FileItem = React.memo(function FileItem({
     const shouldAlwaysReservePreviewSpace = heightOptimizationDisabled || hasPreviewContent || showFeatureImageArea; // Show full layout when not optimizing OR has content
     const hasVisiblePillRows = shouldShowFileTags || shouldShowProperty || shouldShowWordCountProperty;
     const shouldSuppressEmptyPreviewLines = !hasPreviewContent && hasVisiblePillRows;
-    const shouldShowSingleLineSecondLine = settings.showFileDate || (settings.showFilePreview && !shouldSuppressEmptyPreviewLines);
+    const shouldShowDateForItem = settings.showFileDate && !pinnedItemShouldUseCompactLayout;
+    const shouldShowSingleLineSecondLine = shouldShowDateForItem || (settings.showFilePreview && !shouldSuppressEmptyPreviewLines);
 
     // Determine parent folder display metadata
     const parentFolderSource = file.parent;
@@ -2003,7 +2004,7 @@ export const FileItem = React.memo(function FileItem({
                                         {/* Date + Preview on same line */}
                                         {shouldShowSingleLineSecondLine ? (
                                             <div className="nn-file-second-line">
-                                                {settings.showFileDate && <div className="nn-file-date">{displayDate}</div>}
+                                                {shouldShowDateForItem && <div className="nn-file-date">{displayDate}</div>}
                                                 {settings.showFilePreview && !shouldSuppressEmptyPreviewLines && (
                                                     <div className="nn-file-preview" style={{ '--preview-rows': 1 } as React.CSSProperties}>
                                                         {highlightedPreview}
@@ -2034,7 +2035,7 @@ export const FileItem = React.memo(function FileItem({
                                                 {renderPillRows()}
                                                 {/* Date + Parent folder share the second line (compact layout) */}
                                                 <div className="nn-file-second-line">
-                                                    {settings.showFileDate && <div className="nn-file-date">{displayDate}</div>}
+                                                    {shouldShowDateForItem && <div className="nn-file-date">{displayDate}</div>}
                                                     {renderParentFolder()}
                                                 </div>
                                             </>
@@ -2060,7 +2061,7 @@ export const FileItem = React.memo(function FileItem({
 
                                                 {/* Date + Parent folder share the metadata line */}
                                                 <div className="nn-file-second-line">
-                                                    {settings.showFileDate && <div className="nn-file-date">{displayDate}</div>}
+                                                    {shouldShowDateForItem && <div className="nn-file-date">{displayDate}</div>}
                                                     {renderParentFolder()}
                                                 </div>
                                             </>

@@ -309,6 +309,7 @@ export function useListPaneScroll({
 
             // Layout decision variables (matching FileItem.tsx logic)
             const pinnedItemShouldUseCompactLayout = item.isPinned && heightOptimizationEnabled; // Pinned items get compact treatment only when optimizing
+            const shouldShowDateForItem = folderSettings.showDate && !pinnedItemShouldUseCompactLayout;
             const shouldUseSingleLineForDateAndPreview = pinnedItemShouldUseCompactLayout || folderSettings.previewRows < 2;
             const shouldUseMultiLinePreviewLayout = !pinnedItemShouldUseCompactLayout && folderSettings.previewRows >= 2;
             const shouldCollapseEmptyPreviewSpace = heightOptimizationEnabled && !hasPreviewContent && !showFeatureImageArea; // Optimization: compact layout for empty preview
@@ -328,7 +329,7 @@ export function useListPaneScroll({
                 // Pinned items are treated as single row mode when optimization is enabled (unless using full height)
                 if (shouldUseSingleLineForDateAndPreview) {
                     // Date and preview share one line
-                    if (folderSettings.showDate || (folderSettings.showPreview && !shouldSuppressEmptyPreviewLines)) {
+                    if (shouldShowDateForItem || (folderSettings.showPreview && !shouldSuppressEmptyPreviewLines)) {
                         textContentHeight += heights.singleTextLineHeight;
                     }
 
