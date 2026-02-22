@@ -1019,6 +1019,10 @@ export const STRINGS_PT = {
                 navigationLabel: 'Barra de ferramentas de navegação',
                 listLabel: 'Barra de ferramentas da lista'
             },
+            createNewNotesInNewTab: {
+                name: 'Abrir novas notas num novo separador',
+                desc: 'Quando ativado, o comando Criar nova nota abre as notas num novo separador. Quando desativado, as notas substituem o separador atual.'
+            },
             autoRevealActiveNote: {
                 name: 'Revelar nota ativa automaticamente',
                 desc: 'Revelar notas automaticamente quando abertas pelo Alternador Rápido, links ou pesquisa.'

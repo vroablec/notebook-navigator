@@ -1020,6 +1020,10 @@ export const STRINGS_DE = {
                 navigationLabel: 'Navigationssymbolleiste',
                 listLabel: 'Listensymbolleiste'
             },
+            createNewNotesInNewTab: {
+                name: 'Neue Notizen in neuem Tab öffnen',
+                desc: 'Wenn aktiviert, öffnet der Befehl „Neue Notiz erstellen" Notizen in einem neuen Tab. Wenn deaktiviert, ersetzen Notizen den aktuellen Tab.'
+            },
             autoRevealActiveNote: {
                 name: 'Aktive Notiz automatisch anzeigen',
                 desc: 'Notizen automatisch anzeigen, wenn sie über Schnellauswahl, Links oder Suche geöffnet werden.'

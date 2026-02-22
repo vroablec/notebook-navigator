@@ -1015,6 +1015,10 @@ export const STRINGS_EN = {
                 navigationLabel: 'Navigation toolbar',
                 listLabel: 'List toolbar'
             },
+            createNewNotesInNewTab: {
+                name: 'Open new notes in new tab',
+                desc: 'When enabled, the Create new note command opens notes in a new tab. When disabled, notes replace the current tab.'
+            },
             autoRevealActiveNote: {
                 name: 'Auto-reveal active note',
                 desc: 'Automatically reveal notes when opened from Quick Switcher, links, or search.'

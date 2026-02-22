@@ -1021,6 +1021,10 @@ export const STRINGS_PL = {
                 navigationLabel: 'Panel nawigacji',
                 listLabel: 'Panel listy'
             },
+            createNewNotesInNewTab: {
+                name: 'Otwieraj nowe notatki w nowej karcie',
+                desc: 'Gdy włączone, polecenie Utwórz nową notatkę otwiera notatki w nowej karcie. Gdy wyłączone, notatki zastępują bieżącą kartę.'
+            },
             autoRevealActiveNote: {
                 name: 'Pokaż aktywną notatkę',
                 desc: 'Automatycznie wyświetla notatki po otwarciu za pomocą okna szybkiego wyboru, linków lub wyszukiwania.'

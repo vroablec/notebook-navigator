@@ -1020,6 +1020,10 @@ export const STRINGS_FR = {
                 navigationLabel: 'Barre de navigation',
                 listLabel: 'Barre de liste'
             },
+            createNewNotesInNewTab: {
+                name: 'Ouvrir les nouvelles notes dans un nouvel onglet',
+                desc: "Lorsque activé, la commande Créer une nouvelle note ouvre les notes dans un nouvel onglet. Lorsque désactivé, les notes remplacent l'onglet actuel."
+            },
             autoRevealActiveNote: {
                 name: 'Révéler automatiquement la note active',
                 desc: "Révéler automatiquement les notes lorsqu'elles sont ouvertes depuis le Commutateur rapide, les liens ou la recherche."

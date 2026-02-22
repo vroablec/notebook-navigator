@@ -1021,6 +1021,10 @@ export const STRINGS_PT_BR = {
                 navigationLabel: 'Barra de navegação',
                 listLabel: 'Barra de lista'
             },
+            createNewNotesInNewTab: {
+                name: 'Abrir novas notas em nova aba',
+                desc: 'Quando ativado, o comando Criar nova nota abre as notas em uma nova aba. Quando desativado, as notas substituem a aba atual.'
+            },
             autoRevealActiveNote: {
                 name: 'Revelar automaticamente a nota ativa',
                 desc: 'Revelar automaticamente notas quando abertas pelo Alternador Rápido, links ou pesquisa.'

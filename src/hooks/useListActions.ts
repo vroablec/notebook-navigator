@@ -64,13 +64,13 @@ export function useListActions() {
     const handleNewFile = useCallback(async () => {
         try {
             if (selectionState.selectedFolder) {
-                await fileSystemOps.createNewFile(selectionState.selectedFolder);
+                await fileSystemOps.createNewFile(selectionState.selectedFolder, settings.createNewNotesInNewTab);
                 return;
             }
 
             if (hasCreatableTagSelection && selectionState.selectedTag) {
                 const sourcePath = selectionState.selectedFile?.path ?? app.workspace.getActiveFile()?.path ?? '';
-                await fileSystemOps.createNewFileForTag(selectionState.selectedTag, sourcePath);
+                await fileSystemOps.createNewFileForTag(selectionState.selectedTag, sourcePath, settings.createNewNotesInNewTab);
             }
         } catch {
             // Error is handled by FileSystemOperations with user notification
@@ -80,6 +80,7 @@ export function useListActions() {
         selectionState.selectedTag,
         selectionState.selectedFile,
         hasCreatableTagSelection,
+        settings.createNewNotesInNewTab,
         fileSystemOps,
         app
     ]);

@@ -532,12 +532,14 @@ export class FileSystemOperations {
      * Automatically increments name if "Untitled" already exists
      * Opens the file and triggers rename mode for immediate naming
      * @param parent - The parent folder to create the file in
+     * @param openInNewTab - Whether the file should open in a new tab
      * @returns The created file or null if creation failed
      */
-    async createNewFile(parent: TFolder): Promise<TFile | null> {
+    async createNewFile(parent: TFolder, openInNewTab = false): Promise<TFile | null> {
         return createFileWithOptions(parent, this.app, {
             extension: 'md',
             content: '',
+            openInNewTab,
             errorKey: 'createFile'
         });
     }
@@ -547,9 +549,10 @@ export class FileSystemOperations {
      * Uses Obsidian's markdown file creation API so plugin hooks run on creation.
      * @param tagPath - Canonical tag path without # prefix
      * @param sourcePath - Current file path used for "same folder as current file" preference
+     * @param openInNewTab - Whether the file should open in a new tab
      * @returns The created file or null when creation fails
      */
-    async createNewFileForTag(tagPath: string, sourcePath?: string): Promise<TFile | null> {
+    async createNewFileForTag(tagPath: string, sourcePath?: string, openInNewTab = false): Promise<TFile | null> {
         const normalizedTag = normalizeTagPath(tagPath);
         if (!normalizedTag || normalizedTag === TAGGED_TAG_ID || normalizedTag === UNTAGGED_TAG_ID) {
             return null;
@@ -577,7 +580,7 @@ export class FileSystemOperations {
                 showNotice(strings.dragDrop.errors.failedToAddTag.replace('{tag}', `#${resolvedTagPath}`), { variant: 'warning' });
             }
 
-            const leaf = this.app.workspace.getLeaf(false);
+            const leaf = this.app.workspace.getLeaf(openInNewTab);
             await leaf.openFile(file, { state: { mode: 'source' }, active: true });
 
             window.setTimeout(() => {

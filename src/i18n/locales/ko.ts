@@ -1018,6 +1018,10 @@ export const STRINGS_KO = {
                 navigationLabel: '탐색 도구 모음',
                 listLabel: '목록 도구 모음'
             },
+            createNewNotesInNewTab: {
+                name: '새 노트를 새 탭에서 열기',
+                desc: '활성화하면 새 노트 만들기 명령이 새 탭에서 노트를 엽니다. 비활성화하면 노트가 현재 탭을 대체합니다.'
+            },
             autoRevealActiveNote: {
                 name: '활성 노트 자동 표시',
                 desc: '빠른 전환기, 링크 또는 검색에서 열 때 노트를 자동으로 표시합니다.'

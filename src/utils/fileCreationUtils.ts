@@ -33,6 +33,8 @@ export interface CreateFileOptions {
     content?: string;
     /** Whether to open the file after creation */
     openFile?: boolean;
+    /** Whether to open the file in a new tab when opening */
+    openInNewTab?: boolean;
     /** Whether to trigger rename mode after opening */
     triggerRename?: boolean;
     /** Custom error message key */
@@ -89,7 +91,7 @@ export function generateUniqueFilename(folderPath: string, baseName: string, ext
  * @returns The created file or null if creation failed
  */
 export async function createFileWithOptions(parent: TFolder, app: App, options: CreateFileOptions): Promise<TFile | null> {
-    const { extension, content = '', openFile = true, triggerRename = true, errorKey = 'createFile' } = options;
+    const { extension, content = '', openFile = true, openInNewTab = false, triggerRename = true, errorKey = 'createFile' } = options;
 
     try {
         // Generate unique file path
@@ -108,7 +110,7 @@ export async function createFileWithOptions(parent: TFolder, app: App, options: 
 
         // Open the file if requested
         if (openFile) {
-            const leaf = app.workspace.getLeaf(false);
+            const leaf = app.workspace.getLeaf(openInNewTab);
             const openState = extension === 'md' ? { state: { mode: 'source' }, active: true } : undefined;
             await leaf.openFile(file, openState);
 

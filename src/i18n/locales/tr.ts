@@ -1019,6 +1019,10 @@ export const STRINGS_TR = {
                 navigationLabel: 'Gezinme araç çubuğu',
                 listLabel: 'Liste araç çubuğu'
             },
+            createNewNotesInNewTab: {
+                name: 'Yeni notları yeni sekmede aç',
+                desc: 'Etkinleştirildiğinde, Yeni not oluştur komutu notları yeni bir sekmede açar. Devre dışı bırakıldığında, notlar mevcut sekmenin yerini alır.'
+            },
             autoRevealActiveNote: {
                 name: 'Aktif notu otomatik göster',
                 desc: 'Hızlı Geçiş, bağlantılar veya aramadan açıldığında notları otomatik olarak göster.'

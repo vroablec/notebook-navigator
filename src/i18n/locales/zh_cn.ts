@@ -1013,6 +1013,10 @@ export const STRINGS_ZH_CN = {
                 navigationLabel: '导航工具栏',
                 listLabel: '列表工具栏'
             },
+            createNewNotesInNewTab: {
+                name: '在新标签页中打开新笔记',
+                desc: '启用后，"创建新笔记"命令会在新标签页中打开笔记。禁用后，笔记将替换当前标签页。'
+            },
             autoRevealActiveNote: {
                 name: '自动定位活动笔记',
                 desc: '从快速切换器、链接或搜索打开笔记时自动显示。'

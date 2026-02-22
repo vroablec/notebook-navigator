@@ -1015,6 +1015,10 @@ export const STRINGS_IT = {
                 navigationLabel: 'Barra strumenti navigazione',
                 listLabel: 'Barra strumenti lista'
             },
+            createNewNotesInNewTab: {
+                name: 'Apri nuove note in una nuova scheda',
+                desc: 'Quando attivo, il comando Crea nuova nota apre le note in una nuova scheda. Quando disattivo, le note sostituiscono la scheda corrente.'
+            },
             autoRevealActiveNote: {
                 name: 'Auto-mostra nota attiva',
                 desc: 'Mostra automaticamente le note quando aperte da Switcher rapido, link o ricerca.'

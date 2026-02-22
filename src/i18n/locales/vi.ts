@@ -1018,6 +1018,10 @@ export const STRINGS_VI = {
                 navigationLabel: 'Thanh công cụ điều hướng',
                 listLabel: 'Thanh công cụ danh sách'
             },
+            createNewNotesInNewTab: {
+                name: 'Mở ghi chú mới trong tab mới',
+                desc: 'Khi bật, lệnh Tạo ghi chú mới sẽ mở ghi chú trong tab mới. Khi tắt, ghi chú sẽ thay thế tab hiện tại.'
+            },
             autoRevealActiveNote: {
                 name: 'Tự động hiện ghi chú đang hoạt động',
                 desc: 'Tự động hiện ghi chú khi mở từ Quick Switcher, liên kết hoặc tìm kiếm.'

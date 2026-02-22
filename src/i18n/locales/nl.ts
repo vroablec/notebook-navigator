@@ -1020,6 +1020,10 @@ export const STRINGS_NL = {
                 navigationLabel: 'Navigatiewerkbalk',
                 listLabel: 'Lijstwerkbalk'
             },
+            createNewNotesInNewTab: {
+                name: 'Nieuwe notities in nieuw tabblad openen',
+                desc: 'Wanneer ingeschakeld opent de opdracht Nieuwe notitie maken notities in een nieuw tabblad. Wanneer uitgeschakeld vervangen notities het huidige tabblad.'
+            },
             autoRevealActiveNote: {
                 name: 'Actieve notitie automatisch tonen',
                 desc: 'Notities automatisch tonen wanneer geopend vanuit Snelle Wisselaar, links of zoeken.'

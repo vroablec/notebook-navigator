@@ -889,7 +889,7 @@ export default function registerNavigatorCommands(plugin: NotebookNavigatorPlugi
             runAsyncAction(async () => {
                 const view = await ensureNavigatorOpen(plugin);
                 if (view) {
-                    await view.createNoteInSelectedFolder();
+                    await view.createNoteInSelectedFolder(plugin.settings.createNewNotesInNewTab);
                 }
             });
         }

@@ -227,6 +227,7 @@ export interface NotebookNavigatorSettings {
     syncModes: Record<SyncModeSettingId, SettingSyncMode>;
 
     // General tab - Behavior
+    createNewNotesInNewTab: boolean;
     autoRevealActiveFile: boolean;
     autoRevealShortestPath: boolean;
     autoRevealIgnoreRightSidebar: boolean;

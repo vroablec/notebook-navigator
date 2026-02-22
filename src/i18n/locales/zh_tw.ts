@@ -1013,6 +1013,10 @@ export const STRINGS_ZH_TW = {
                 navigationLabel: '導覽工具列',
                 listLabel: '列表工具列'
             },
+            createNewNotesInNewTab: {
+                name: '在新分頁中開啟新筆記',
+                desc: '啟用後，「建立新筆記」命令會在新分頁中開啟筆記。停用後，筆記將取代目前的分頁。'
+            },
             autoRevealActiveNote: {
                 name: '自動定位使用中的筆記',
                 desc: '從快速切換器、連結或搜尋開啟筆記時自動顯示。'

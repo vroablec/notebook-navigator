@@ -1018,6 +1018,10 @@ export const STRINGS_JA = {
                 navigationLabel: 'ナビゲーションツールバー',
                 listLabel: 'リストツールバー'
             },
+            createNewNotesInNewTab: {
+                name: '新しいノートを新しいタブで開く',
+                desc: '有効にすると、「新しいノートを作成」コマンドでノートが新しいタブに開きます。無効にすると、ノートは現在のタブに置き換わります。'
+            },
             autoRevealActiveNote: {
                 name: 'アクティブなノートを自動表示',
                 desc: 'クイックスイッチャー、リンク、検索から開いたときに自動的にノートを表示します。'

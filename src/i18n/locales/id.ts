@@ -1018,6 +1018,10 @@ export const STRINGS_ID = {
                 navigationLabel: 'Toolbar navigasi',
                 listLabel: 'Toolbar daftar'
             },
+            createNewNotesInNewTab: {
+                name: 'Buka catatan baru di tab baru',
+                desc: 'Jika diaktifkan, perintah Buat catatan baru membuka catatan di tab baru. Jika dinonaktifkan, catatan menggantikan tab saat ini.'
+            },
             autoRevealActiveNote: {
                 name: 'Auto-tampilkan catatan aktif',
                 desc: 'Secara otomatis menampilkan catatan saat dibuka dari Quick Switcher, tautan, atau pencarian.'

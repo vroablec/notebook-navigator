@@ -65,6 +65,7 @@ export const DEFAULT_SETTINGS: NotebookNavigatorSettings = {
     syncModes: defaultSettingsSync,
 
     // General tab - Behavior
+    createNewNotesInNewTab: false,
     autoRevealActiveFile: true,
     autoRevealShortestPath: true,
     autoRevealIgnoreRightSidebar: true,

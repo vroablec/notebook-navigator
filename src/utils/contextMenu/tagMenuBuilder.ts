@@ -74,7 +74,7 @@ export function buildTagMenu(params: TagMenuBuilderParams): void {
             setAsyncOnClick(item.setTitle(strings.contextMenu.folder.newNote).setIcon('lucide-pen-box'), async () => {
                 ensureTagSelected();
                 const sourcePath = selectionState.selectedFile?.path ?? app.workspace.getActiveFile()?.path ?? '';
-                const createdFile = await fileSystemOps.createNewFileForTag(tagPath, sourcePath);
+                const createdFile = await fileSystemOps.createNewFileForTag(tagPath, sourcePath, settings.createNewNotesInNewTab);
                 handleFileCreation(createdFile);
             });
         });

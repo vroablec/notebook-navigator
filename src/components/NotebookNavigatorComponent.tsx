@@ -99,7 +99,7 @@ export interface NotebookNavigatorHandle {
     focusVisiblePane: () => void;
     focusNavigationPane: () => void;
     deleteActiveFile: () => void;
-    createNoteInSelectedFolder: () => Promise<void>;
+    createNoteInSelectedFolder: (openInNewTab?: boolean) => Promise<void>;
     createNoteFromTemplateInSelectedFolder: () => Promise<void>;
     moveSelectedFiles: () => Promise<void>;
     addShortcutForCurrentSelection: () => Promise<void>;
@@ -690,9 +690,9 @@ export const NotebookNavigatorComponent = React.memo(
                         }
                     });
                 },
-                createNoteInSelectedFolder: async () => {
+                createNoteInSelectedFolder: async (openInNewTab = false) => {
                     if (selectionState.selectedFolder) {
-                        await fileSystemOps.createNewFile(selectionState.selectedFolder);
+                        await fileSystemOps.createNewFile(selectionState.selectedFolder, openInNewTab);
                         return;
                     }
 
@@ -703,7 +703,7 @@ export const NotebookNavigatorComponent = React.memo(
                         selectionState.selectedTag !== UNTAGGED_TAG_ID
                     ) {
                         const sourcePath = selectionState.selectedFile?.path ?? app.workspace.getActiveFile()?.path ?? '';
-                        await fileSystemOps.createNewFileForTag(selectionState.selectedTag, sourcePath);
+                        await fileSystemOps.createNewFileForTag(selectionState.selectedTag, sourcePath, openInNewTab);
                         return;
                     }
 

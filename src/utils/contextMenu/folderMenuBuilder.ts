@@ -82,7 +82,7 @@ export function buildFolderCreationMenu(params: FolderMenuBuilderParams, folderD
     menu.addItem((item: MenuItem) => {
         setAsyncOnClick(item.setTitle(strings.contextMenu.folder.newNote).setIcon('lucide-pen-box'), async () => {
             ensureFolderSelected();
-            const createdFile = await fileSystemOps.createNewFile(folder);
+            const createdFile = await fileSystemOps.createNewFile(folder, params.settings.createNewNotesInNewTab);
             handleFileCreation(createdFile);
         });
     });

@@ -577,6 +577,16 @@ export function renderGeneralTab(context: SettingsTabContext): void {
 
     const behaviorGroup = createGroup(strings.settings.groups.general.behavior);
 
+    addToggleSetting(
+        behaviorGroup.addSetting,
+        strings.settings.items.createNewNotesInNewTab.name,
+        strings.settings.items.createNewNotesInNewTab.desc,
+        () => plugin.settings.createNewNotesInNewTab,
+        value => {
+            plugin.settings.createNewNotesInNewTab = value;
+        }
+    );
+
     const autoRevealSetting = behaviorGroup.addSetting(setting => {
         setting.setName(strings.settings.items.autoRevealActiveNote.name).setDesc(strings.settings.items.autoRevealActiveNote.desc);
     });
