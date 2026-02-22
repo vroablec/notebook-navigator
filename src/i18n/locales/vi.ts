@@ -499,6 +499,7 @@ export const STRINGS_VI = {
             renameFileTitle: 'Đổi tên tệp',
             deleteFolderTitle: "Xóa '{name}'?",
             deleteFileTitle: "Xóa '{name}'?",
+            deleteFileAttachmentsTitle: 'Xóa tệp đính kèm?',
             folderNamePrompt: 'Nhập tên thư mục:',
             hideInOtherVaultProfiles: 'Ẩn trong các hồ sơ vault khác',
             renamePrompt: 'Nhập tên mới:',
@@ -506,6 +507,12 @@ export const STRINGS_VI = {
             renameVaultPrompt: 'Nhập tên hiển thị tùy chỉnh (để trống để dùng mặc định):',
             deleteFolderConfirm: 'Bạn có chắc muốn xóa thư mục này và tất cả nội dung?',
             deleteFileConfirm: 'Bạn có chắc muốn xóa tệp này?',
+            deleteFileAttachmentsDescriptionSingle:
+                'Tệp đính kèm này không còn được sử dụng trong bất kỳ ghi chú nào. Bạn có muốn xóa không?',
+            deleteFileAttachmentsDescriptionMultiple:
+                'Các tệp đính kèm này không còn được sử dụng trong bất kỳ ghi chú nào. Bạn có muốn xóa không?',
+            deleteFileAttachmentsViewFileTreeAriaLabel: 'Cây tệp',
+            deleteFileAttachmentsViewGalleryAriaLabel: 'Thư viện ảnh',
             removeAllTagsTitle: 'Gỡ tất cả thẻ',
             removeAllTagsFromNote: 'Bạn có chắc muốn gỡ tất cả thẻ khỏi ghi chú này?',
             removeAllTagsFromNotes: 'Bạn có chắc muốn gỡ tất cả thẻ khỏi {count} ghi chú?'
@@ -604,6 +611,7 @@ export const STRINGS_VI = {
             renameFile: 'Không thể đổi tên tệp: {error}',
             deleteFolder: 'Không thể xóa thư mục: {error}',
             deleteFile: 'Không thể xóa tệp: {error}',
+            deleteAttachments: 'Không thể xóa tệp đính kèm: {error}',
             duplicateNote: 'Không thể nhân bản ghi chú: {error}',
             duplicateFolder: 'Không thể nhân bản thư mục: {error}',
             openVersionHistory: 'Không thể mở lịch sử phiên bản: {error}',
@@ -1677,6 +1685,15 @@ export const STRINGS_VI = {
             confirmBeforeDelete: {
                 name: 'Xác nhận trước khi xóa',
                 desc: 'Hiện hộp thoại xác nhận khi xóa ghi chú hoặc thư mục'
+            },
+            deleteAttachments: {
+                name: 'Xóa tệp đính kèm khi xóa tệp',
+                desc: 'Tự động xóa tệp đính kèm liên kết với tệp đã xóa nếu chúng không được sử dụng ở nơi khác',
+                options: {
+                    ask: 'Hỏi mỗi lần',
+                    always: 'Luôn luôn',
+                    never: 'Không bao giờ'
+                }
             },
             metadataCleanup: {
                 name: 'Dọn dẹp metadata',

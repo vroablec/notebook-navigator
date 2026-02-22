@@ -501,6 +501,7 @@ export const STRINGS_PT_BR = {
             renameFileTitle: 'Renomear arquivo',
             deleteFolderTitle: "Excluir '{name}'?",
             deleteFileTitle: "Excluir '{name}'?",
+            deleteFileAttachmentsTitle: 'Excluir anexos do arquivo?',
             folderNamePrompt: 'Digite o nome da pasta:',
             hideInOtherVaultProfiles: 'Ocultar em outros perfis do cofre',
             renamePrompt: 'Digite o novo nome:',
@@ -508,6 +509,10 @@ export const STRINGS_PT_BR = {
             renameVaultPrompt: 'Digite um nome de exibição personalizado (deixe em branco para usar o padrão):',
             deleteFolderConfirm: 'Tem certeza de que deseja excluir esta pasta e todo o seu conteúdo?',
             deleteFileConfirm: 'Tem certeza de que deseja excluir este arquivo?',
+            deleteFileAttachmentsDescriptionSingle: 'Este anexo não é mais usado em nenhuma nota. Deseja excluí-lo?',
+            deleteFileAttachmentsDescriptionMultiple: 'Estes anexos não são mais usados em nenhuma nota. Deseja excluí-los?',
+            deleteFileAttachmentsViewFileTreeAriaLabel: 'Árvore de arquivos',
+            deleteFileAttachmentsViewGalleryAriaLabel: 'Galeria',
             removeAllTagsTitle: 'Remover todas as tags',
             removeAllTagsFromNote: 'Tem certeza de que deseja remover todas as tags desta nota?',
             removeAllTagsFromNotes: 'Tem certeza de que deseja remover todas as tags de {count} notas?'
@@ -607,6 +612,7 @@ export const STRINGS_PT_BR = {
             renameFile: 'Falha ao renomear arquivo: {error}',
             deleteFolder: 'Falha ao excluir pasta: {error}',
             deleteFile: 'Falha ao excluir arquivo: {error}',
+            deleteAttachments: 'Falha ao excluir os anexos: {error}',
             duplicateNote: 'Falha ao duplicar nota: {error}',
             duplicateFolder: 'Falha ao duplicar pasta: {error}',
             openVersionHistory: 'Falha ao abrir histórico de versões: {error}',
@@ -1683,6 +1689,15 @@ export const STRINGS_PT_BR = {
             confirmBeforeDelete: {
                 name: 'Confirmar antes de excluir',
                 desc: 'Mostrar diálogo de confirmação ao excluir notas ou pastas'
+            },
+            deleteAttachments: {
+                name: 'Excluir anexos ao excluir arquivos',
+                desc: 'Remover automaticamente os anexos vinculados ao arquivo excluído se não forem usados em outro lugar',
+                options: {
+                    ask: 'Perguntar sempre',
+                    always: 'Sempre',
+                    never: 'Nunca'
+                }
             },
             metadataCleanup: {
                 name: 'Limpar metadados',

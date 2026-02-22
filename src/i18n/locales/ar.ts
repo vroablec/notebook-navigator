@@ -498,6 +498,7 @@ export const STRINGS_AR = {
             renameFileTitle: 'إعادة تسمية الملف',
             deleteFolderTitle: "حذف '{name}'؟",
             deleteFileTitle: "حذف '{name}'؟",
+            deleteFileAttachmentsTitle: 'حذف مرفقات الملف؟',
             folderNamePrompt: 'أدخل اسم المجلد:',
             hideInOtherVaultProfiles: 'إخفاء في ملفات الخزنة الأخرى',
             renamePrompt: 'أدخل الاسم الجديد:',
@@ -505,6 +506,10 @@ export const STRINGS_AR = {
             renameVaultPrompt: 'أدخل اسم العرض المخصص (اتركه فارغًا لاستخدام الافتراضي):',
             deleteFolderConfirm: 'هل أنت متأكد من حذف هذا المجلد وكل محتوياته؟',
             deleteFileConfirm: 'هل أنت متأكد من حذف هذا الملف؟',
+            deleteFileAttachmentsDescriptionSingle: 'هذا المرفق لم يعد مستخدمًا في أي ملاحظات. هل تريد حذفه؟',
+            deleteFileAttachmentsDescriptionMultiple: 'هذه المرفقات لم تعد مستخدمة في أي ملاحظات. هل تريد حذفها؟',
+            deleteFileAttachmentsViewFileTreeAriaLabel: 'شجرة الملفات',
+            deleteFileAttachmentsViewGalleryAriaLabel: 'المعرض',
             removeAllTagsTitle: 'إزالة جميع الوسوم',
             removeAllTagsFromNote: 'هل أنت متأكد من إزالة جميع الوسوم من هذه الملاحظة؟',
             removeAllTagsFromNotes: 'هل أنت متأكد من إزالة جميع الوسوم من {count} ملاحظة؟'
@@ -603,6 +608,7 @@ export const STRINGS_AR = {
             renameFile: 'فشل إعادة تسمية الملف: {error}',
             deleteFolder: 'فشل حذف المجلد: {error}',
             deleteFile: 'فشل حذف الملف: {error}',
+            deleteAttachments: 'فشل في حذف المرفقات: {error}',
             duplicateNote: 'فشل تكرار الملاحظة: {error}',
             duplicateFolder: 'فشل تكرار المجلد: {error}',
             openVersionHistory: 'فشل فتح سجل الإصدارات: {error}',
@@ -1676,6 +1682,15 @@ export const STRINGS_AR = {
             confirmBeforeDelete: {
                 name: 'التأكيد قبل الحذف',
                 desc: 'إظهار مربع حوار تأكيد عند حذف الملاحظات أو المجلدات'
+            },
+            deleteAttachments: {
+                name: 'حذف المرفقات عند حذف الملفات',
+                desc: 'إزالة المرفقات المرتبطة بالملف المحذوف تلقائيًا إذا لم تكن مستخدمة في مكان آخر',
+                options: {
+                    ask: 'السؤال في كل مرة',
+                    always: 'دائمًا',
+                    never: 'أبدًا'
+                }
             },
             metadataCleanup: {
                 name: 'تنظيف البيانات الوصفية',

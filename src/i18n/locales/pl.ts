@@ -501,6 +501,7 @@ export const STRINGS_PL = {
             renameFileTitle: 'Zmień nazwę pliku',
             deleteFolderTitle: "Usunąć '{name}'?",
             deleteFileTitle: "Usunąć '{name}'?",
+            deleteFileAttachmentsTitle: 'Usunąć załączniki pliku?',
             folderNamePrompt: 'Wprowadź nazwę folderu:',
             hideInOtherVaultProfiles: 'Ukryj w innych profilach sejfu',
             renamePrompt: 'Wprowadź nową nazwę:',
@@ -508,6 +509,10 @@ export const STRINGS_PL = {
             renameVaultPrompt: 'Wprowadź niestandardową nazwę (pozostaw puste, aby użyć nazwy domyślnej):',
             deleteFolderConfirm: 'Czy na pewno chcesz usunąć ten folder i całą jego zawartość?',
             deleteFileConfirm: 'Czy na pewno chcesz usunąć ten plik?',
+            deleteFileAttachmentsDescriptionSingle: 'Ten załącznik nie jest już używany w żadnej notatce. Czy chcesz go usunąć?',
+            deleteFileAttachmentsDescriptionMultiple: 'Te załączniki nie są już używane w żadnej notatce. Czy chcesz je usunąć?',
+            deleteFileAttachmentsViewFileTreeAriaLabel: 'Drzewo plików',
+            deleteFileAttachmentsViewGalleryAriaLabel: 'Galeria',
             removeAllTagsTitle: 'Usuń wszystkie tagi',
             removeAllTagsFromNote: 'Czy na pewno chcesz usunąć wszystkie tagi z tej notatki?',
             removeAllTagsFromNotes: 'Czy na pewno chcesz usunąć wszystkie tagi ({count}) z notatek?'
@@ -607,6 +612,7 @@ export const STRINGS_PL = {
             renameFile: 'Nie udało się zmienić nazwy pliku: {error}',
             deleteFolder: 'Nie udało się usunąć folderu: {error}',
             deleteFile: 'Nie udało się usunąć pliku: {error}',
+            deleteAttachments: 'Nie udało się usunąć załączników: {error}',
             duplicateNote: 'Nie udało się zduplikować notatki: {error}',
             duplicateFolder: 'Nie udało się zduplikować folderu: {error}',
             openVersionHistory: 'Nie udało się otworzyć historii wersji: {error}',
@@ -1682,6 +1688,15 @@ export const STRINGS_PL = {
             confirmBeforeDelete: {
                 name: 'Potwierdź przed usunięciem',
                 desc: 'Wyświetla możliwość potwierdzenia podczas usuwania notatek lub folderów'
+            },
+            deleteAttachments: {
+                name: 'Usuń załączniki przy usuwaniu plików',
+                desc: 'Automatycznie usuwaj załączniki powiązane z usuniętym plikiem, jeśli nie są używane gdzie indziej',
+                options: {
+                    ask: 'Pytaj za każdym razem',
+                    always: 'Zawsze',
+                    never: 'Nigdy'
+                }
             },
             metadataCleanup: {
                 name: 'Wyczyść metadane',

@@ -497,6 +497,7 @@ export const STRINGS_RU = {
             renameFileTitle: 'Переименовать файл',
             deleteFolderTitle: "Удалить '{name}'?",
             deleteFileTitle: "Удалить '{name}'?",
+            deleteFileAttachmentsTitle: 'Удалить вложения файла?',
             folderNamePrompt: 'Введите название папки:',
             hideInOtherVaultProfiles: 'Скрыть в других профилях хранилища',
             renamePrompt: 'Введите новое название:',
@@ -504,6 +505,10 @@ export const STRINGS_RU = {
             renameVaultPrompt: 'Введите пользовательское имя (оставьте пустым для использования по умолчанию):',
             deleteFolderConfirm: 'Вы уверены, что хотите удалить эту папку и всё её содержимое?',
             deleteFileConfirm: 'Вы уверены, что хотите удалить этот файл?',
+            deleteFileAttachmentsDescriptionSingle: 'Это вложение больше не используется ни в одной заметке. Хотите его удалить?',
+            deleteFileAttachmentsDescriptionMultiple: 'Эти вложения больше не используются ни в одной заметке. Хотите их удалить?',
+            deleteFileAttachmentsViewFileTreeAriaLabel: 'Дерево файлов',
+            deleteFileAttachmentsViewGalleryAriaLabel: 'Галерея',
             removeAllTagsTitle: 'Удалить все теги',
             removeAllTagsFromNote: 'Вы уверены, что хотите удалить все теги из этой заметки?',
             removeAllTagsFromNotes: 'Вы уверены, что хотите удалить все теги из {count} заметок?'
@@ -602,6 +607,7 @@ export const STRINGS_RU = {
             renameFile: 'Не удалось переименовать файл: {error}',
             deleteFolder: 'Не удалось удалить папку: {error}',
             deleteFile: 'Не удалось удалить файл: {error}',
+            deleteAttachments: 'Не удалось удалить вложения: {error}',
             duplicateNote: 'Не удалось дублировать заметку: {error}',
             duplicateFolder: 'Не удалось дублировать папку: {error}',
             openVersionHistory: 'Не удалось открыть историю версий: {error}',
@@ -1676,6 +1682,15 @@ export const STRINGS_RU = {
             confirmBeforeDelete: {
                 name: 'Подтверждать перед удалением',
                 desc: 'Показывать диалог подтверждения при удалении заметок или папок'
+            },
+            deleteAttachments: {
+                name: 'Удалять вложения при удалении файлов',
+                desc: 'Автоматически удалять вложения, связанные с удалённым файлом, если они не используются в другом месте',
+                options: {
+                    ask: 'Спрашивать каждый раз',
+                    always: 'Всегда',
+                    never: 'Никогда'
+                }
             },
             metadataCleanup: {
                 name: 'Очистка метаданных',

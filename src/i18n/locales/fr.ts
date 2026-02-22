@@ -500,6 +500,7 @@ export const STRINGS_FR = {
             renameFileTitle: 'Renommer le fichier',
             deleteFolderTitle: "Supprimer '{name}' ?",
             deleteFileTitle: "Supprimer '{name}' ?",
+            deleteFileAttachmentsTitle: 'Supprimer les pièces jointes ?',
             folderNamePrompt: 'Entrez le nom du dossier :',
             hideInOtherVaultProfiles: 'Masquer dans les autres profils du coffre',
             renamePrompt: 'Entrez le nouveau nom :',
@@ -507,6 +508,11 @@ export const STRINGS_FR = {
             renameVaultPrompt: "Entrez un nom d'affichage personnalisé (laissez vide pour utiliser le nom par défaut) :",
             deleteFolderConfirm: 'Êtes-vous sûr de vouloir supprimer ce dossier et tout son contenu ?',
             deleteFileConfirm: 'Êtes-vous sûr de vouloir supprimer ce fichier ?',
+            deleteFileAttachmentsDescriptionSingle: "Cette pièce jointe n'est plus utilisée dans aucune note. Voulez-vous la supprimer ?",
+            deleteFileAttachmentsDescriptionMultiple:
+                'Ces pièces jointes ne sont plus utilisées dans aucune note. Voulez-vous les supprimer ?',
+            deleteFileAttachmentsViewFileTreeAriaLabel: 'Arborescence',
+            deleteFileAttachmentsViewGalleryAriaLabel: 'Galerie',
             removeAllTagsTitle: 'Supprimer toutes les étiquettes',
             removeAllTagsFromNote: 'Êtes-vous sûr de vouloir supprimer toutes les étiquettes de cette note ?',
             removeAllTagsFromNotes: 'Êtes-vous sûr de vouloir supprimer toutes les étiquettes de {count} notes ?'
@@ -606,6 +612,7 @@ export const STRINGS_FR = {
             renameFile: 'Échec du renommage du fichier : {error}',
             deleteFolder: 'Échec de la suppression du dossier : {error}',
             deleteFile: 'Échec de la suppression du fichier : {error}',
+            deleteAttachments: 'Échec de la suppression des pièces jointes : {error}',
             duplicateNote: 'Échec de la duplication de la note : {error}',
             duplicateFolder: 'Échec de la duplication du dossier : {error}',
             openVersionHistory: "Échec de l'ouverture de l'historique des versions : {error}",
@@ -1683,6 +1690,15 @@ export const STRINGS_FR = {
             confirmBeforeDelete: {
                 name: 'Confirmer avant de supprimer',
                 desc: 'Afficher une boîte de dialogue de confirmation lors de la suppression de notes ou de dossiers'
+            },
+            deleteAttachments: {
+                name: 'Supprimer les pièces jointes lors de la suppression de fichiers',
+                desc: 'Supprimer automatiquement les pièces jointes liées au fichier supprimé si elles ne sont pas utilisées ailleurs',
+                options: {
+                    ask: 'Demander à chaque fois',
+                    always: 'Toujours',
+                    never: 'Jamais'
+                }
             },
             metadataCleanup: {
                 name: 'Nettoyer les métadonnées',

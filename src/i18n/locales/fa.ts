@@ -499,6 +499,7 @@ export const STRINGS_FA = {
             renameFileTitle: 'تغییر نام فایل',
             deleteFolderTitle: "حذف '{name}'؟",
             deleteFileTitle: "حذف '{name}'؟",
+            deleteFileAttachmentsTitle: 'حذف پیوست‌های فایل؟',
             folderNamePrompt: 'نام پوشه را وارد کنید:',
             hideInOtherVaultProfiles: 'مخفی کردن در پروفایل‌های خزانه دیگر',
             renamePrompt: 'نام جدید را وارد کنید:',
@@ -506,6 +507,11 @@ export const STRINGS_FA = {
             renameVaultPrompt: 'نام نمایشی سفارشی را وارد کنید (خالی برای پیش‌فرض):',
             deleteFolderConfirm: 'آیا مطمئن هستید می‌خواهید این پوشه و تمام محتوای آن را حذف کنید؟',
             deleteFileConfirm: 'آیا مطمئن هستید می‌خواهید این فایل را حذف کنید؟',
+            deleteFileAttachmentsDescriptionSingle: 'این پیوست دیگر در هیچ یادداشتی استفاده نمی‌شود. آیا می‌خواهید آن را حذف کنید؟',
+            deleteFileAttachmentsDescriptionMultiple:
+                'این پیوست‌ها دیگر در هیچ یادداشتی استفاده نمی‌شوند. آیا می‌خواهید آن‌ها را حذف کنید؟',
+            deleteFileAttachmentsViewFileTreeAriaLabel: 'درخت فایل',
+            deleteFileAttachmentsViewGalleryAriaLabel: 'گالری',
             removeAllTagsTitle: 'حذف همه برچسب‌ها',
             removeAllTagsFromNote: 'آیا مطمئن هستید می‌خواهید همه برچسب‌ها را از این یادداشت حذف کنید؟',
             removeAllTagsFromNotes: 'آیا مطمئن هستید می‌خواهید همه برچسب‌ها را از {count} یادداشت حذف کنید؟'
@@ -604,6 +610,7 @@ export const STRINGS_FA = {
             renameFile: 'تغییر نام فایل ناموفق بود: {error}',
             deleteFolder: 'حذف پوشه ناموفق بود: {error}',
             deleteFile: 'حذف فایل ناموفق بود: {error}',
+            deleteAttachments: 'حذف پیوست‌ها ناموفق بود: {error}',
             duplicateNote: 'کپی یادداشت ناموفق بود: {error}',
             duplicateFolder: 'کپی پوشه ناموفق بود: {error}',
             openVersionHistory: 'باز کردن تاریخچه نسخه ناموفق بود: {error}',
@@ -1677,6 +1684,15 @@ export const STRINGS_FA = {
             confirmBeforeDelete: {
                 name: 'تأیید قبل از حذف',
                 desc: 'هنگام حذف یادداشت‌ها یا پوشه‌ها گفتگوی تأیید نمایش دهید'
+            },
+            deleteAttachments: {
+                name: 'حذف پیوست‌ها هنگام حذف فایل‌ها',
+                desc: 'حذف خودکار پیوست‌های مرتبط با فایل حذف‌شده در صورتی که در جای دیگری استفاده نمی‌شوند',
+                options: {
+                    ask: 'هر بار بپرس',
+                    always: 'همیشه',
+                    never: 'هرگز'
+                }
             },
             metadataCleanup: {
                 name: 'پاکسازی متادیتا',

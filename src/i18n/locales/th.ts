@@ -496,6 +496,7 @@ export const STRINGS_TH = {
             renameFileTitle: 'เปลี่ยนชื่อไฟล์',
             deleteFolderTitle: "ลบ '{name}'?",
             deleteFileTitle: "ลบ '{name}'?",
+            deleteFileAttachmentsTitle: 'ลบไฟล์แนบ?',
             folderNamePrompt: 'กรอกชื่อโฟลเดอร์:',
             hideInOtherVaultProfiles: 'ซ่อนในโปรไฟล์ห้องนิรภัยอื่น',
             renamePrompt: 'กรอกชื่อใหม่:',
@@ -503,6 +504,10 @@ export const STRINGS_TH = {
             renameVaultPrompt: 'กรอกชื่อแสดงที่กำหนดเอง (เว้นว่างเพื่อใช้ค่าเริ่มต้น):',
             deleteFolderConfirm: 'คุณแน่ใจหรือไม่ว่าต้องการลบโฟลเดอร์นี้และเนื้อหาทั้งหมด?',
             deleteFileConfirm: 'คุณแน่ใจหรือไม่ว่าต้องการลบไฟล์นี้?',
+            deleteFileAttachmentsDescriptionSingle: 'ไฟล์แนบนี้ไม่ได้ถูกใช้ในโน้ตใดแล้ว คุณต้องการลบหรือไม่?',
+            deleteFileAttachmentsDescriptionMultiple: 'ไฟล์แนบเหล่านี้ไม่ได้ถูกใช้ในโน้ตใดแล้ว คุณต้องการลบหรือไม่?',
+            deleteFileAttachmentsViewFileTreeAriaLabel: 'โครงสร้างไฟล์',
+            deleteFileAttachmentsViewGalleryAriaLabel: 'แกลเลอรี',
             removeAllTagsTitle: 'นำแท็กทั้งหมดออก',
             removeAllTagsFromNote: 'คุณแน่ใจหรือไม่ว่าต้องการนำแท็กทั้งหมดออกจากโน้ตนี้?',
             removeAllTagsFromNotes: 'คุณแน่ใจหรือไม่ว่าต้องการนำแท็กทั้งหมดออกจาก {count} โน้ต?'
@@ -601,6 +606,7 @@ export const STRINGS_TH = {
             renameFile: 'เปลี่ยนชื่อไฟล์ล้มเหลว: {error}',
             deleteFolder: 'ลบโฟลเดอร์ล้มเหลว: {error}',
             deleteFile: 'ลบไฟล์ล้มเหลว: {error}',
+            deleteAttachments: 'ไม่สามารถลบไฟล์แนบได้: {error}',
             duplicateNote: 'ทำซ้ำโน้ตล้มเหลว: {error}',
             duplicateFolder: 'ทำซ้ำโฟลเดอร์ล้มเหลว: {error}',
             openVersionHistory: 'เปิดประวัติเวอร์ชันล้มเหลว: {error}',
@@ -1674,6 +1680,15 @@ export const STRINGS_TH = {
             confirmBeforeDelete: {
                 name: 'ยืนยันก่อนลบ',
                 desc: 'แสดงกล่องยืนยันเมื่อลบโน้ตหรือโฟลเดอร์'
+            },
+            deleteAttachments: {
+                name: 'ลบไฟล์แนบเมื่อลบไฟล์',
+                desc: 'ลบไฟล์แนบที่เชื่อมโยงกับไฟล์ที่ถูกลบโดยอัตโนมัติหากไม่ได้ใช้ในที่อื่น',
+                options: {
+                    ask: 'ถามทุกครั้ง',
+                    always: 'เสมอ',
+                    never: 'ไม่เลย'
+                }
             },
             metadataCleanup: {
                 name: 'ล้างเมตาดาต้า',

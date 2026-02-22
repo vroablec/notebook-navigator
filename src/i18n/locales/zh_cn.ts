@@ -495,6 +495,7 @@ export const STRINGS_ZH_CN = {
             renameFileTitle: '重命名文件',
             deleteFolderTitle: "删除 '{name}'？",
             deleteFileTitle: "删除 '{name}'？",
+            deleteFileAttachmentsTitle: '删除文件附件？',
             folderNamePrompt: '输入文件夹名称：',
             hideInOtherVaultProfiles: '在其他仓库配置中隐藏',
             renamePrompt: '输入新名称：',
@@ -502,6 +503,10 @@ export const STRINGS_ZH_CN = {
             renameVaultPrompt: '输入自定义显示名称（留空使用默认值）：',
             deleteFolderConfirm: '您确定要删除此文件夹及其所有内容吗？',
             deleteFileConfirm: '您确定要删除此文件吗？',
+            deleteFileAttachmentsDescriptionSingle: '此附件不再被任何笔记使用。是否要删除？',
+            deleteFileAttachmentsDescriptionMultiple: '这些附件不再被任何笔记使用。是否要删除？',
+            deleteFileAttachmentsViewFileTreeAriaLabel: '文件树',
+            deleteFileAttachmentsViewGalleryAriaLabel: '图库',
             removeAllTagsTitle: '移除所有标签',
             removeAllTagsFromNote: '您确定要从这个笔记中移除所有标签吗？',
             removeAllTagsFromNotes: '您确定要从 {count} 个笔记中移除所有标签吗？'
@@ -599,6 +604,7 @@ export const STRINGS_ZH_CN = {
             renameFile: '重命名文件失败：{error}',
             deleteFolder: '删除文件夹失败：{error}',
             deleteFile: '删除文件失败：{error}',
+            deleteAttachments: '删除附件失败: {error}',
             duplicateNote: '复制笔记失败：{error}',
             duplicateFolder: '复制文件夹失败：{error}',
             openVersionHistory: '打开版本历史失败：{error}',
@@ -1673,6 +1679,15 @@ export const STRINGS_ZH_CN = {
             confirmBeforeDelete: {
                 name: '删除前确认',
                 desc: '删除笔记或文件夹时显示确认对话框'
+            },
+            deleteAttachments: {
+                name: '删除文件时删除附件',
+                desc: '如果附件未在其他地方使用，则在删除文件时自动删除关联的附件',
+                options: {
+                    ask: '每次询问',
+                    always: '始终',
+                    never: '从不'
+                }
             },
             metadataCleanup: {
                 name: '清理元数据',

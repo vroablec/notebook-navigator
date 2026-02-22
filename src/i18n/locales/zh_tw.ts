@@ -495,6 +495,7 @@ export const STRINGS_ZH_TW = {
             renameFileTitle: '重新命名檔案',
             deleteFolderTitle: "刪除 '{name}'？",
             deleteFileTitle: "刪除 '{name}'？",
+            deleteFileAttachmentsTitle: '刪除檔案附件？',
             folderNamePrompt: '輸入資料夾名稱：',
             hideInOtherVaultProfiles: '在其他保險庫設定檔中隱藏',
             renamePrompt: '輸入新名稱：',
@@ -502,6 +503,10 @@ export const STRINGS_ZH_TW = {
             renameVaultPrompt: '輸入自訂顯示名稱（留空使用預設值）：',
             deleteFolderConfirm: '您確定要刪除此資料夾及其所有內容嗎？',
             deleteFileConfirm: '您確定要刪除此檔案嗎？',
+            deleteFileAttachmentsDescriptionSingle: '此附件不再被任何筆記使用。是否要刪除？',
+            deleteFileAttachmentsDescriptionMultiple: '這些附件不再被任何筆記使用。是否要刪除？',
+            deleteFileAttachmentsViewFileTreeAriaLabel: '檔案樹',
+            deleteFileAttachmentsViewGalleryAriaLabel: '圖庫',
             removeAllTagsTitle: '移除所有標籤',
             removeAllTagsFromNote: '您確定要從這個筆記中移除所有標籤嗎？',
             removeAllTagsFromNotes: '您確定要從 {count} 個筆記中移除所有標籤嗎？'
@@ -599,6 +604,7 @@ export const STRINGS_ZH_TW = {
             renameFile: '重新命名檔案失敗：{error}',
             deleteFolder: '刪除資料夾失敗：{error}',
             deleteFile: '刪除檔案失敗：{error}',
+            deleteAttachments: '刪除附件失敗: {error}',
             duplicateNote: '複製筆記失敗：{error}',
             duplicateFolder: '複製資料夾失敗：{error}',
             openVersionHistory: '開啟版本歷史失敗：{error}',
@@ -1672,6 +1678,15 @@ export const STRINGS_ZH_TW = {
             confirmBeforeDelete: {
                 name: '刪除前確認',
                 desc: '刪除筆記或資料夾時顯示確認對話方塊'
+            },
+            deleteAttachments: {
+                name: '刪除檔案時刪除附件',
+                desc: '如果附件未在其他地方使用，則在刪除檔案時自動刪除關聯的附件',
+                options: {
+                    ask: '每次詢問',
+                    always: '始終',
+                    never: '從不'
+                }
             },
             metadataCleanup: {
                 name: '清理中繼資料',

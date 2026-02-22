@@ -500,6 +500,7 @@ export const STRINGS_DE = {
             renameFileTitle: 'Datei umbenennen',
             deleteFolderTitle: "'{name}' löschen?",
             deleteFileTitle: "'{name}' löschen?",
+            deleteFileAttachmentsTitle: 'Dateianhänge löschen?',
             folderNamePrompt: 'Ordnernamen eingeben:',
             hideInOtherVaultProfiles: 'In anderen Tresorprofilen ausblenden',
             renamePrompt: 'Neuen Namen eingeben:',
@@ -507,6 +508,10 @@ export const STRINGS_DE = {
             renameVaultPrompt: 'Benutzerdefinierten Anzeigenamen eingeben (leer lassen für Standard):',
             deleteFolderConfirm: 'Sind Sie sicher, dass Sie diesen Ordner und seinen gesamten Inhalt löschen möchten?',
             deleteFileConfirm: 'Sind Sie sicher, dass Sie diese Datei löschen möchten?',
+            deleteFileAttachmentsDescriptionSingle: 'Dieser Anhang wird in keiner Notiz mehr verwendet. Möchten Sie ihn löschen?',
+            deleteFileAttachmentsDescriptionMultiple: 'Diese Anhänge werden in keiner Notiz mehr verwendet. Möchten Sie sie löschen?',
+            deleteFileAttachmentsViewFileTreeAriaLabel: 'Dateibaum',
+            deleteFileAttachmentsViewGalleryAriaLabel: 'Galerie',
             removeAllTagsTitle: 'Alle Tags entfernen',
             removeAllTagsFromNote: 'Sind Sie sicher, dass Sie alle Tags von dieser Notiz entfernen möchten?',
             removeAllTagsFromNotes: 'Sind Sie sicher, dass Sie alle Tags von {count} Notizen entfernen möchten?'
@@ -606,6 +611,7 @@ export const STRINGS_DE = {
             renameFile: 'Datei konnte nicht umbenannt werden: {error}',
             deleteFolder: 'Ordner konnte nicht gelöscht werden: {error}',
             deleteFile: 'Datei konnte nicht gelöscht werden: {error}',
+            deleteAttachments: 'Anhänge konnten nicht gelöscht werden: {error}',
             duplicateNote: 'Notiz konnte nicht dupliziert werden: {error}',
             duplicateFolder: 'Ordner konnte nicht dupliziert werden: {error}',
             openVersionHistory: 'Versionsverlauf konnte nicht geöffnet werden: {error}',
@@ -1680,6 +1686,15 @@ export const STRINGS_DE = {
             confirmBeforeDelete: {
                 name: 'Vor dem Löschen bestätigen',
                 desc: 'Bestätigungsdialog beim Löschen von Notizen oder Ordnern anzeigen'
+            },
+            deleteAttachments: {
+                name: 'Anhänge beim Löschen von Dateien löschen',
+                desc: 'Verknüpfte Anhänge der gelöschten Datei automatisch entfernen, wenn sie nicht anderweitig verwendet werden',
+                options: {
+                    ask: 'Jedes Mal fragen',
+                    always: 'Immer',
+                    never: 'Nie'
+                }
             },
             metadataCleanup: {
                 name: 'Metadaten bereinigen',

@@ -498,6 +498,7 @@ export const STRINGS_KO = {
             renameFileTitle: '파일 이름 변경',
             deleteFolderTitle: "'{name}'을(를) 삭제하시겠습니까?",
             deleteFileTitle: "'{name}'을(를) 삭제하시겠습니까?",
+            deleteFileAttachmentsTitle: '파일 첨부 파일을 삭제하시겠습니까?',
             folderNamePrompt: '폴더 이름 입력:',
             hideInOtherVaultProfiles: '다른 보관소 프로필에서 숨기기',
             renamePrompt: '새 이름 입력:',
@@ -505,6 +506,10 @@ export const STRINGS_KO = {
             renameVaultPrompt: '사용자 정의 표시 이름 입력 (기본값을 사용하려면 비워두세요):',
             deleteFolderConfirm: '이 폴더와 모든 내용을 삭제하시겠습니까?',
             deleteFileConfirm: '이 파일을 삭제하시겠습니까?',
+            deleteFileAttachmentsDescriptionSingle: '이 첨부 파일은 더 이상 어떤 노트에서도 사용되지 않습니다. 삭제하시겠습니까?',
+            deleteFileAttachmentsDescriptionMultiple: '이 첨부 파일들은 더 이상 어떤 노트에서도 사용되지 않습니다. 삭제하시겠습니까?',
+            deleteFileAttachmentsViewFileTreeAriaLabel: '파일 트리',
+            deleteFileAttachmentsViewGalleryAriaLabel: '갤러리',
             removeAllTagsTitle: '모든 태그 제거',
             removeAllTagsFromNote: '이 노트에서 모든 태그를 제거하시겠습니까?',
             removeAllTagsFromNotes: '{count}개의 노트에서 모든 태그를 제거하시겠습니까?'
@@ -604,6 +609,7 @@ export const STRINGS_KO = {
             renameFile: '파일 이름 변경 실패: {error}',
             deleteFolder: '폴더 삭제 실패: {error}',
             deleteFile: '파일 삭제 실패: {error}',
+            deleteAttachments: '첨부 파일 삭제 실패: {error}',
             duplicateNote: '노트 복제 실패: {error}',
             duplicateFolder: '폴더 복제 실패: {error}',
             openVersionHistory: '버전 기록 열기 실패: {error}',
@@ -1677,6 +1683,15 @@ export const STRINGS_KO = {
             confirmBeforeDelete: {
                 name: '삭제 전 확인',
                 desc: '노트나 폴더를 삭제할 때 확인 대화 상자 표시'
+            },
+            deleteAttachments: {
+                name: '파일 삭제 시 첨부 파일 삭제',
+                desc: '삭제된 파일에 연결된 첨부 파일이 다른 곳에서 사용되지 않는 경우 자동으로 제거',
+                options: {
+                    ask: '매번 확인',
+                    always: '항상',
+                    never: '안 함'
+                }
             },
             metadataCleanup: {
                 name: '메타데이터 정리',

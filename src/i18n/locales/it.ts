@@ -496,6 +496,7 @@ export const STRINGS_IT = {
             renameFileTitle: 'Rinomina file',
             deleteFolderTitle: "Eliminare '{name}'?",
             deleteFileTitle: "Eliminare '{name}'?",
+            deleteFileAttachmentsTitle: 'Eliminare gli allegati del file?',
             folderNamePrompt: 'Inserisci nome cartella:',
             hideInOtherVaultProfiles: 'Nascondi in altri profili vault',
             renamePrompt: 'Inserisci nuovo nome:',
@@ -503,6 +504,10 @@ export const STRINGS_IT = {
             renameVaultPrompt: 'Inserisci nome visualizzato personalizzato (lascia vuoto per usare predefinito):',
             deleteFolderConfirm: 'Sei sicuro di voler eliminare questa cartella e tutto il suo contenuto?',
             deleteFileConfirm: 'Sei sicuro di voler eliminare questo file?',
+            deleteFileAttachmentsDescriptionSingle: 'Questo allegato non è più utilizzato in nessuna nota. Vuoi eliminarlo?',
+            deleteFileAttachmentsDescriptionMultiple: 'Questi allegati non sono più utilizzati in nessuna nota. Vuoi eliminarli?',
+            deleteFileAttachmentsViewFileTreeAriaLabel: 'Albero dei file',
+            deleteFileAttachmentsViewGalleryAriaLabel: 'Galleria',
             removeAllTagsTitle: 'Rimuovi tutti i tag',
             removeAllTagsFromNote: 'Sei sicuro di voler rimuovere tutti i tag da questa nota?',
             removeAllTagsFromNotes: 'Sei sicuro di voler rimuovere tutti i tag da {count} note?'
@@ -601,6 +606,7 @@ export const STRINGS_IT = {
             renameFile: 'Impossibile rinominare file: {error}',
             deleteFolder: 'Impossibile eliminare cartella: {error}',
             deleteFile: 'Impossibile eliminare file: {error}',
+            deleteAttachments: 'Impossibile eliminare gli allegati: {error}',
             duplicateNote: 'Impossibile duplicare nota: {error}',
             duplicateFolder: 'Impossibile duplicare cartella: {error}',
             openVersionHistory: 'Impossibile aprire cronologia versioni: {error}',
@@ -1677,6 +1683,15 @@ export const STRINGS_IT = {
             confirmBeforeDelete: {
                 name: 'Conferma prima di eliminare',
                 desc: 'Mostra dialogo conferma quando elimini note o cartelle'
+            },
+            deleteAttachments: {
+                name: 'Elimina allegati quando si eliminano i file',
+                desc: 'Rimuovi automaticamente gli allegati collegati al file eliminato se non sono utilizzati altrove',
+                options: {
+                    ask: 'Chiedi ogni volta',
+                    always: 'Sempre',
+                    never: 'Mai'
+                }
             },
             metadataCleanup: {
                 name: 'Pulisci metadati',

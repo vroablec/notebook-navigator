@@ -500,6 +500,7 @@ export const STRINGS_NL = {
             renameFileTitle: 'Bestand hernoemen',
             deleteFolderTitle: "'{name}' verwijderen?",
             deleteFileTitle: "'{name}' verwijderen?",
+            deleteFileAttachmentsTitle: 'Bestandsbijlagen verwijderen?',
             folderNamePrompt: 'Voer mapnaam in:',
             hideInOtherVaultProfiles: 'Verbergen in andere kluisprofielen',
             renamePrompt: 'Voer nieuwe naam in:',
@@ -507,6 +508,10 @@ export const STRINGS_NL = {
             renameVaultPrompt: 'Voer aangepaste weergavenaam in (laat leeg voor standaard):',
             deleteFolderConfirm: 'Weet u zeker dat u deze map en alle inhoud wilt verwijderen?',
             deleteFileConfirm: 'Weet u zeker dat u dit bestand wilt verwijderen?',
+            deleteFileAttachmentsDescriptionSingle: 'Deze bijlage wordt niet meer gebruikt in notities. Wilt u deze verwijderen?',
+            deleteFileAttachmentsDescriptionMultiple: 'Deze bijlagen worden niet meer gebruikt in notities. Wilt u ze verwijderen?',
+            deleteFileAttachmentsViewFileTreeAriaLabel: 'Bestandsboom',
+            deleteFileAttachmentsViewGalleryAriaLabel: 'Galerij',
             removeAllTagsTitle: 'Alle tags verwijderen',
             removeAllTagsFromNote: 'Weet u zeker dat u alle tags van deze notitie wilt verwijderen?',
             removeAllTagsFromNotes: 'Weet u zeker dat u alle tags van {count} notities wilt verwijderen?'
@@ -606,6 +611,7 @@ export const STRINGS_NL = {
             renameFile: 'Kan bestand niet hernoemen: {error}',
             deleteFolder: 'Kan map niet verwijderen: {error}',
             deleteFile: 'Kan bestand niet verwijderen: {error}',
+            deleteAttachments: 'Kan bijlagen niet verwijderen: {error}',
             duplicateNote: 'Kan notitie niet dupliceren: {error}',
             duplicateFolder: 'Kan map niet dupliceren: {error}',
             openVersionHistory: 'Kan versiegeschiedenis niet openen: {error}',
@@ -1681,6 +1687,15 @@ export const STRINGS_NL = {
             confirmBeforeDelete: {
                 name: 'Bevestigen voor verwijderen',
                 desc: 'Bevestigingsdialoog tonen bij het verwijderen van notities of mappen'
+            },
+            deleteAttachments: {
+                name: 'Bijlagen verwijderen bij het verwijderen van bestanden',
+                desc: 'Automatisch bijlagen verwijderen die gekoppeld zijn aan het verwijderde bestand als ze niet elders worden gebruikt',
+                options: {
+                    ask: 'Elke keer vragen',
+                    always: 'Altijd',
+                    never: 'Nooit'
+                }
             },
             metadataCleanup: {
                 name: 'Metadata opschonen',

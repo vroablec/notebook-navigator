@@ -500,6 +500,7 @@ export const STRINGS_ES = {
             renameFileTitle: 'Renombrar archivo',
             deleteFolderTitle: "¿Eliminar '{name}'?",
             deleteFileTitle: "¿Eliminar '{name}'?",
+            deleteFileAttachmentsTitle: '¿Eliminar archivos adjuntos?',
             folderNamePrompt: 'Introduce el nombre de la carpeta:',
             hideInOtherVaultProfiles: 'Ocultar en otros perfiles de bóveda',
             renamePrompt: 'Introduce el nuevo nombre:',
@@ -507,6 +508,10 @@ export const STRINGS_ES = {
             renameVaultPrompt: 'Introduce un nombre de visualización personalizado (deja vacío para usar el predeterminado):',
             deleteFolderConfirm: '¿Estás seguro de que quieres eliminar esta carpeta y todo su contenido?',
             deleteFileConfirm: '¿Estás seguro de que quieres eliminar este archivo?',
+            deleteFileAttachmentsDescriptionSingle: 'Este adjunto ya no se usa en ninguna nota. ¿Desea eliminarlo?',
+            deleteFileAttachmentsDescriptionMultiple: 'Estos adjuntos ya no se usan en ninguna nota. ¿Desea eliminarlos?',
+            deleteFileAttachmentsViewFileTreeAriaLabel: 'Árbol de archivos',
+            deleteFileAttachmentsViewGalleryAriaLabel: 'Galería',
             removeAllTagsTitle: 'Eliminar todas las etiquetas',
             removeAllTagsFromNote: '¿Estás seguro de que quieres eliminar todas las etiquetas de esta nota?',
             removeAllTagsFromNotes: '¿Estás seguro de que quieres eliminar todas las etiquetas de {count} notas?'
@@ -606,6 +611,7 @@ export const STRINGS_ES = {
             renameFile: 'Error al renombrar el archivo: {error}',
             deleteFolder: 'Error al eliminar la carpeta: {error}',
             deleteFile: 'Error al eliminar el archivo: {error}',
+            deleteAttachments: 'Error al eliminar los adjuntos: {error}',
             duplicateNote: 'Error al duplicar la nota: {error}',
             duplicateFolder: 'Error al duplicar la carpeta: {error}',
             openVersionHistory: 'Error al abrir el historial de versiones: {error}',
@@ -1681,6 +1687,15 @@ export const STRINGS_ES = {
             confirmBeforeDelete: {
                 name: 'Confirmar antes de eliminar',
                 desc: 'Muestra un diálogo de confirmación al eliminar notas o carpetas'
+            },
+            deleteAttachments: {
+                name: 'Eliminar adjuntos al eliminar archivos',
+                desc: 'Eliminar automáticamente los adjuntos vinculados al archivo eliminado si no se usan en otro lugar',
+                options: {
+                    ask: 'Preguntar cada vez',
+                    always: 'Siempre',
+                    never: 'Nunca'
+                }
             },
             metadataCleanup: {
                 name: 'Limpiar metadatos',

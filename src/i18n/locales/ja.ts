@@ -498,6 +498,7 @@ export const STRINGS_JA = {
             renameFileTitle: 'ファイルの名前を変更',
             deleteFolderTitle: "'{name}'を削除しますか？",
             deleteFileTitle: "'{name}'を削除しますか？",
+            deleteFileAttachmentsTitle: 'ファイルの添付ファイルを削除しますか？',
             folderNamePrompt: 'フォルダ名を入力：',
             hideInOtherVaultProfiles: '他の保管庫プロファイルで非表示にする',
             renamePrompt: '新しい名前を入力：',
@@ -505,6 +506,10 @@ export const STRINGS_JA = {
             renameVaultPrompt: 'カスタム表示名を入力（空にするとデフォルトを使用）：',
             deleteFolderConfirm: 'このフォルダとそのすべての内容を削除してもよろしいですか？',
             deleteFileConfirm: 'このファイルを削除してもよろしいですか？',
+            deleteFileAttachmentsDescriptionSingle: 'この添付ファイルはどのノートでも使用されていません。削除しますか？',
+            deleteFileAttachmentsDescriptionMultiple: 'これらの添付ファイルはどのノートでも使用されていません。削除しますか？',
+            deleteFileAttachmentsViewFileTreeAriaLabel: 'ファイルツリー',
+            deleteFileAttachmentsViewGalleryAriaLabel: 'ギャラリー',
             removeAllTagsTitle: 'すべてのタグを削除',
             removeAllTagsFromNote: 'このノートからすべてのタグを削除してもよろしいですか？',
             removeAllTagsFromNotes: '{count}個のノートからすべてのタグを削除してもよろしいですか？'
@@ -604,6 +609,7 @@ export const STRINGS_JA = {
             renameFile: 'ファイルの名前変更に失敗しました：{error}',
             deleteFolder: 'フォルダの削除に失敗しました：{error}',
             deleteFile: 'ファイルの削除に失敗しました：{error}',
+            deleteAttachments: '添付ファイルの削除に失敗しました: {error}',
             duplicateNote: 'ノートの複製に失敗しました：{error}',
             duplicateFolder: 'フォルダの複製に失敗しました：{error}',
             openVersionHistory: 'バージョン履歴を開くのに失敗しました：{error}',
@@ -1679,6 +1685,15 @@ export const STRINGS_JA = {
             confirmBeforeDelete: {
                 name: '削除前に確認',
                 desc: 'ノートやフォルダを削除する際に確認ダイアログを表示'
+            },
+            deleteAttachments: {
+                name: 'ファイル削除時に添付ファイルを削除',
+                desc: '削除されたファイルにリンクされた添付ファイルが他で使用されていない場合、自動的に削除する',
+                options: {
+                    ask: '毎回確認',
+                    always: '常に',
+                    never: 'しない'
+                }
             },
             metadataCleanup: {
                 name: 'メタデータをクリーンアップ',

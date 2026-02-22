@@ -497,6 +497,7 @@ export const STRINGS_UK = {
             renameFileTitle: 'Перейменувати файл',
             deleteFolderTitle: "Видалити '{name}'?",
             deleteFileTitle: "Видалити '{name}'?",
+            deleteFileAttachmentsTitle: 'Видалити вкладення файлу?',
             folderNamePrompt: 'Введіть назву папки:',
             hideInOtherVaultProfiles: 'Сховати в інших профілях сховища',
             renamePrompt: 'Введіть нову назву:',
@@ -504,6 +505,10 @@ export const STRINGS_UK = {
             renameVaultPrompt: 'Введіть власну відображувану назву (залиште порожнім для використання за замовчуванням):',
             deleteFolderConfirm: 'Ви впевнені, що хочете видалити цю папку та весь її вміст?',
             deleteFileConfirm: 'Ви впевнені, що хочете видалити цей файл?',
+            deleteFileAttachmentsDescriptionSingle: 'Це вкладення більше не використовується в жодній нотатці. Бажаєте його видалити?',
+            deleteFileAttachmentsDescriptionMultiple: 'Ці вкладення більше не використовуються в жодній нотатці. Бажаєте їх видалити?',
+            deleteFileAttachmentsViewFileTreeAriaLabel: 'Дерево файлів',
+            deleteFileAttachmentsViewGalleryAriaLabel: 'Галерея',
             removeAllTagsTitle: 'Вилучити всі теги',
             removeAllTagsFromNote: 'Ви впевнені, що хочете вилучити всі теги з цієї нотатки?',
             removeAllTagsFromNotes: 'Ви впевнені, що хочете вилучити всі теги з {count} нотаток?'
@@ -602,6 +607,7 @@ export const STRINGS_UK = {
             renameFile: 'Не вдалося перейменувати файл: {error}',
             deleteFolder: 'Не вдалося видалити папку: {error}',
             deleteFile: 'Не вдалося видалити файл: {error}',
+            deleteAttachments: 'Не вдалося видалити вкладення: {error}',
             duplicateNote: 'Не вдалося дублювати нотатку: {error}',
             duplicateFolder: 'Не вдалося дублювати папку: {error}',
             openVersionHistory: 'Не вдалося відкрити історію версій: {error}',
@@ -1676,6 +1682,15 @@ export const STRINGS_UK = {
             confirmBeforeDelete: {
                 name: 'Підтверджувати перед видаленням',
                 desc: 'Показувати діалог підтвердження при видаленні нотаток або папок'
+            },
+            deleteAttachments: {
+                name: 'Видаляти вкладення при видаленні файлів',
+                desc: "Автоматично видаляти вкладення, пов'язані з видаленим файлом, якщо вони не використовуються в іншому місці",
+                options: {
+                    ask: 'Запитувати щоразу',
+                    always: 'Завжди',
+                    never: 'Ніколи'
+                }
             },
             metadataCleanup: {
                 name: 'Очистити метадані',

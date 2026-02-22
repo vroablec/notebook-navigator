@@ -499,6 +499,7 @@ export const STRINGS_ID = {
             renameFileTitle: 'Ubah nama file',
             deleteFolderTitle: "Hapus '{name}'?",
             deleteFileTitle: "Hapus '{name}'?",
+            deleteFileAttachmentsTitle: 'Hapus lampiran file?',
             folderNamePrompt: 'Masukkan nama folder:',
             hideInOtherVaultProfiles: 'Sembunyikan di profil vault lain',
             renamePrompt: 'Masukkan nama baru:',
@@ -506,6 +507,11 @@ export const STRINGS_ID = {
             renameVaultPrompt: 'Masukkan nama tampilan kustom (kosongkan untuk menggunakan default):',
             deleteFolderConfirm: 'Anda yakin ingin menghapus folder ini dan semua isinya?',
             deleteFileConfirm: 'Anda yakin ingin menghapus file ini?',
+            deleteFileAttachmentsDescriptionSingle: 'Lampiran ini tidak lagi digunakan di catatan manapun. Apakah Anda ingin menghapusnya?',
+            deleteFileAttachmentsDescriptionMultiple:
+                'Lampiran-lampiran ini tidak lagi digunakan di catatan manapun. Apakah Anda ingin menghapusnya?',
+            deleteFileAttachmentsViewFileTreeAriaLabel: 'Pohon file',
+            deleteFileAttachmentsViewGalleryAriaLabel: 'Galeri',
             removeAllTagsTitle: 'Hapus semua tag',
             removeAllTagsFromNote: 'Anda yakin ingin menghapus semua tag dari catatan ini?',
             removeAllTagsFromNotes: 'Anda yakin ingin menghapus semua tag dari {count} catatan?'
@@ -604,6 +610,7 @@ export const STRINGS_ID = {
             renameFile: 'Gagal mengubah nama file: {error}',
             deleteFolder: 'Gagal menghapus folder: {error}',
             deleteFile: 'Gagal menghapus file: {error}',
+            deleteAttachments: 'Gagal menghapus lampiran: {error}',
             duplicateNote: 'Gagal menduplikat catatan: {error}',
             duplicateFolder: 'Gagal menduplikat folder: {error}',
             openVersionHistory: 'Gagal membuka riwayat versi: {error}',
@@ -1678,6 +1685,15 @@ export const STRINGS_ID = {
             confirmBeforeDelete: {
                 name: 'Konfirmasi sebelum menghapus',
                 desc: 'Tampilkan dialog konfirmasi saat menghapus catatan atau folder'
+            },
+            deleteAttachments: {
+                name: 'Hapus lampiran saat menghapus file',
+                desc: 'Otomatis menghapus lampiran yang terkait dengan file yang dihapus jika tidak digunakan di tempat lain',
+                options: {
+                    ask: 'Tanya setiap kali',
+                    always: 'Selalu',
+                    never: 'Tidak pernah'
+                }
             },
             metadataCleanup: {
                 name: 'Bersihkan metadata',

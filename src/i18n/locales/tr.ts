@@ -500,6 +500,7 @@ export const STRINGS_TR = {
             renameFileTitle: 'Dosyayı yeniden adlandır',
             deleteFolderTitle: "'{name}' silinsin mi?",
             deleteFileTitle: "'{name}' silinsin mi?",
+            deleteFileAttachmentsTitle: 'Dosya ekleri silinsin mi?',
             folderNamePrompt: 'Klasör adını girin:',
             hideInOtherVaultProfiles: 'Diğer kasa profillerinde gizle',
             renamePrompt: 'Yeni adı girin:',
@@ -507,6 +508,10 @@ export const STRINGS_TR = {
             renameVaultPrompt: 'Özel görünen ad girin (varsayılanı kullanmak için boş bırakın):',
             deleteFolderConfirm: 'Bu klasörü ve tüm içeriğini silmek istediğinizden emin misiniz?',
             deleteFileConfirm: 'Bu dosyayı silmek istediğinizden emin misiniz?',
+            deleteFileAttachmentsDescriptionSingle: 'Bu ek artık hiçbir notta kullanılmıyor. Silmek ister misiniz?',
+            deleteFileAttachmentsDescriptionMultiple: 'Bu ekler artık hiçbir notta kullanılmıyor. Silmek ister misiniz?',
+            deleteFileAttachmentsViewFileTreeAriaLabel: 'Dosya ağacı',
+            deleteFileAttachmentsViewGalleryAriaLabel: 'Galeri',
             removeAllTagsTitle: 'Tüm etiketleri kaldır',
             removeAllTagsFromNote: 'Bu nottan tüm etiketleri kaldırmak istediğinizden emin misiniz?',
             removeAllTagsFromNotes: '{count} nottan tüm etiketleri kaldırmak istediğinizden emin misiniz?'
@@ -605,6 +610,7 @@ export const STRINGS_TR = {
             renameFile: 'Dosya yeniden adlandırılamadı: {error}',
             deleteFolder: 'Klasör silinemedi: {error}',
             deleteFile: 'Dosya silinemedi: {error}',
+            deleteAttachments: 'Ekler silinemedi: {error}',
             duplicateNote: 'Not çoğaltılamadı: {error}',
             duplicateFolder: 'Klasör çoğaltılamadı: {error}',
             openVersionHistory: 'Sürüm geçmişi açılamadı: {error}',
@@ -1678,6 +1684,15 @@ export const STRINGS_TR = {
             confirmBeforeDelete: {
                 name: 'Silmeden önce onayla',
                 desc: 'Not veya klasör silerken onay iletişim kutusunu göster'
+            },
+            deleteAttachments: {
+                name: 'Dosyaları silerken ekleri sil',
+                desc: 'Silinen dosyaya bağlı ekleri başka bir yerde kullanılmıyorsa otomatik olarak kaldır',
+                options: {
+                    ask: 'Her seferinde sor',
+                    always: 'Her zaman',
+                    never: 'Asla'
+                }
             },
             metadataCleanup: {
                 name: 'Meta verileri temizle',
