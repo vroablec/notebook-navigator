@@ -155,6 +155,7 @@ export const STRINGS_ZH_CN = {
         removeSearchShortcut: '从快捷方式移除搜索',
         shortcutModalTitle: '保存搜索快捷方式',
         shortcutNamePlaceholder: '输入快捷方式名称',
+        shortcutStartIn: '始终从此处开始: {path}',
         searchHelp: '搜索语法',
         searchHelpTitle: '搜索语法',
         searchHelpModal: {

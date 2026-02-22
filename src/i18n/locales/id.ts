@@ -156,6 +156,7 @@ export const STRINGS_ID = {
         removeSearchShortcut: 'Hapus pintasan pencarian',
         shortcutModalTitle: 'Simpan pintasan pencarian',
         shortcutNamePlaceholder: 'Masukkan nama pintasan',
+        shortcutStartIn: 'Selalu mulai di: {path}',
         searchHelp: 'Sintaks pencarian',
         searchHelpTitle: 'Sintaks pencarian',
         searchHelpModal: {

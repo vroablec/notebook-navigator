@@ -156,6 +156,7 @@ export const STRINGS_TR = {
         removeSearchShortcut: 'Arama kısayolunu kaldır',
         shortcutModalTitle: 'Arama kısayolunu kaydet',
         shortcutNamePlaceholder: 'Kısayol adını girin',
+        shortcutStartIn: 'Her zaman şurada başla: {path}',
         searchHelp: 'Arama sözdizimi',
         searchHelpTitle: 'Arama sözdizimi',
         searchHelpModal: {

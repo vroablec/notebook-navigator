@@ -65,6 +65,8 @@ import {
     IOS_OBSIDIAN_1_11_PLUS_GLASS_TOOLBAR_HEIGHT_PX,
     ListPaneItemType,
     PINNED_SECTION_HEADER_KEY,
+    PROPERTIES_ROOT_VIRTUAL_FOLDER_ID,
+    TAGGED_TAG_ID,
     UNTAGGED_TAG_ID,
     type CSSPropertiesWithVars
 } from '../types';
@@ -77,7 +79,14 @@ import { SearchInput } from './SearchInput';
 import { ListPaneTitleArea } from './ListPaneTitleArea';
 import { InputModal } from '../modals/InputModal';
 import { useShortcuts } from '../context/ShortcutsContext';
-import type { SearchShortcut } from '../types/shortcuts';
+import {
+    ShortcutStartType,
+    isShortcutStartFolder,
+    isShortcutStartProperty,
+    isShortcutStartTag,
+    type SearchShortcut,
+    type ShortcutStartTarget
+} from '../types/shortcuts';
 import { EMPTY_SEARCH_NAV_FILTER_STATE, type SearchNavFilterState, type SearchProvider } from '../types/search';
 import { EMPTY_LIST_MENU_TYPE } from '../utils/contextMenu';
 import { useUXPreferenceActions, useUXPreferences } from '../context/UXPreferencesContext';
@@ -103,7 +112,8 @@ import { buildPropertyKeyNodeId, buildPropertyValueNodeId } from '../utils/prope
 import { getFolderNote, openFolderNoteFile } from '../utils/folderNotes';
 import { getActivePropertyKeySet } from '../utils/vaultProfiles';
 import { DateUtils } from '../utils/dateUtils';
-import type { NavigateToFolderOptions } from '../hooks/useNavigatorReveal';
+import { normalizeOptionalVaultFolderPath } from '../utils/pathUtils';
+import type { NavigateToFolderOptions, RevealPropertyOptions, RevealTagOptions } from '../hooks/useNavigatorReveal';
 
 /**
  * Renders the list pane displaying files from the selected folder.
@@ -175,6 +185,8 @@ interface ListPaneProps {
      */
     onSearchTokensChange?: (state: SearchNavFilterState) => void;
     onNavigateToFolder: (folderPath: string, options?: NavigateToFolderOptions) => void;
+    onRevealTag: (tagPath: string, options?: RevealTagOptions) => void;
+    onRevealProperty: (propertyNodeId: string, options?: RevealPropertyOptions) => boolean;
 }
 
 interface ListPaneTitleChromeProps {
@@ -188,6 +200,49 @@ interface ListPaneTitleChromeProps {
 interface FolderGroupHeaderTarget {
     folder: TFolder;
     folderNote: TFile | null;
+}
+
+function formatSearchShortcutFolderLabel(folderPath: string): string {
+    if (folderPath === '/' || folderPath.startsWith('/')) {
+        return folderPath;
+    }
+
+    return `/${folderPath}`;
+}
+
+function formatSearchShortcutTagLabel(tagPath: string): string {
+    if (tagPath === TAGGED_TAG_ID) {
+        return strings.tagList.tags;
+    }
+
+    if (tagPath === UNTAGGED_TAG_ID) {
+        return strings.common.untagged;
+    }
+
+    if (tagPath.startsWith('#')) {
+        return tagPath;
+    }
+
+    return `#${tagPath}`;
+}
+
+function formatSearchShortcutPropertyLabel(nodeId: string): string {
+    if (nodeId === PROPERTIES_ROOT_VIRTUAL_FOLDER_ID) {
+        return strings.navigationPane.properties;
+    }
+
+    return nodeId;
+}
+
+function formatSearchShortcutStartTargetPath(startTarget: ShortcutStartTarget): string {
+    switch (startTarget.type) {
+        case ShortcutStartType.FOLDER:
+            return formatSearchShortcutFolderLabel(startTarget.path);
+        case ShortcutStartType.TAG:
+            return formatSearchShortcutTagLabel(startTarget.tagPath);
+        case ShortcutStartType.PROPERTY:
+            return formatSearchShortcutPropertyLabel(startTarget.nodeId);
+    }
 }
 
 function ListPaneTitleChrome({
@@ -218,7 +273,7 @@ function ListPaneTitleChrome({
 export const ListPane = React.memo(
     forwardRef<ListPaneHandle, ListPaneProps>(function ListPane(props, ref) {
         const { app, commandQueue, isMobile, plugin } = useServices();
-        const { onNavigateToFolder } = props;
+        const { onNavigateToFolder, onRevealTag, onRevealProperty } = props;
         const openFileInWorkspace = useFileOpener();
         const selectionState = useSelectionState();
         const selectionDispatch = useSelectionDispatch();
@@ -795,6 +850,42 @@ export const ListPane = React.memo(
             return selectedFolder.path;
         }, [selectionType, selectedFolder]);
 
+        const activeSearchShortcutStartTarget = useMemo<ShortcutStartTarget | undefined>(() => {
+            if (selectionType === 'folder' && selectedFolder) {
+                return {
+                    type: ShortcutStartType.FOLDER,
+                    path: selectedFolder.path
+                };
+            }
+
+            if (selectionType === 'tag' && selectedTag) {
+                return {
+                    type: ShortcutStartType.TAG,
+                    tagPath: selectedTag
+                };
+            }
+
+            if (selectionType === 'property' && selectedProperty) {
+                return {
+                    type: ShortcutStartType.PROPERTY,
+                    nodeId: selectedProperty
+                };
+            }
+
+            return undefined;
+        }, [selectionType, selectedFolder, selectedTag, selectedProperty]);
+
+        const activeSearchShortcutStartTargetLabel = useMemo(() => {
+            if (!activeSearchShortcutStartTarget) {
+                return null;
+            }
+
+            return strings.searchInput.shortcutStartIn.replace(
+                '{path}',
+                formatSearchShortcutStartTargetPath(activeSearchShortcutStartTarget)
+            );
+        }, [activeSearchShortcutStartTarget]);
+
         // Flag to prevent automatic scroll to top when search is triggered from shortcut
         const suppressSearchTopScrollRef = useRef(false);
         const visibleListPropertyKeys = useMemo(() => getActivePropertyKeySet(settings, 'list'), [settings]);
@@ -965,13 +1056,15 @@ export const ListPane = React.memo(
                 return;
             }
 
+            const startTarget = activeSearchShortcutStartTarget;
+            const startTargetLabel = activeSearchShortcutStartTargetLabel;
             let modal: InputModal | null = null;
 
             modal = new InputModal(
                 app,
                 strings.searchInput.shortcutModalTitle,
                 strings.searchInput.shortcutNamePlaceholder,
-                async rawName => {
+                async (rawName, context) => {
                     const trimmedName = rawName.trim();
                     if (trimmedName.length === 0) {
                         showNotice(strings.shortcuts.emptySearchName, { variant: 'warning' });
@@ -980,7 +1073,13 @@ export const ListPane = React.memo(
 
                     setIsSavingSearchShortcut(true);
                     try {
-                        const success = await addSearchShortcut({ name: trimmedName, query: normalizedQuery, provider: searchProvider });
+                        const saveStartTarget = context?.checkboxValue ? startTarget : undefined;
+                        const success = await addSearchShortcut({
+                            name: trimmedName,
+                            query: normalizedQuery,
+                            provider: searchProvider,
+                            startTarget: saveStartTarget
+                        });
                         if (success) {
                             modal?.close();
                         }
@@ -989,10 +1088,26 @@ export const ListPane = React.memo(
                     }
                 },
                 normalizedQuery,
-                { closeOnSubmit: false }
+                {
+                    closeOnSubmit: false,
+                    checkbox: startTargetLabel
+                        ? {
+                              label: startTargetLabel,
+                              defaultChecked: false
+                          }
+                        : undefined
+                }
             );
             modal.open();
-        }, [app, addSearchShortcut, isSavingSearchShortcut, searchProvider, searchQuery]);
+        }, [
+            activeSearchShortcutStartTarget,
+            activeSearchShortcutStartTargetLabel,
+            app,
+            addSearchShortcut,
+            isSavingSearchShortcut,
+            searchProvider,
+            searchQuery
+        ]);
 
         /**
          * Handles removing the currently active search shortcut.
@@ -1153,8 +1268,25 @@ export const ListPane = React.memo(
             async ({ searchShortcut }: ExecuteSearchShortcutParams) => {
                 const normalizedQuery = searchShortcut.query.trim();
                 const targetProvider = searchShortcut.provider ?? 'internal';
+                const startTarget = searchShortcut.startTarget;
 
                 plugin.setSearchProvider(targetProvider);
+                if (startTarget) {
+                    if (isShortcutStartFolder(startTarget)) {
+                        const normalizedStartFolder = normalizeOptionalVaultFolderPath(startTarget.path);
+                        if (normalizedStartFolder) {
+                            onNavigateToFolder(normalizedStartFolder, {
+                                source: 'shortcut',
+                                suppressAutoSelect: true,
+                                skipScroll: settings.skipAutoScroll
+                            });
+                        }
+                    } else if (isShortcutStartTag(startTarget)) {
+                        onRevealTag(startTarget.tagPath, { source: 'shortcut', skipScroll: settings.skipAutoScroll });
+                    } else if (isShortcutStartProperty(startTarget)) {
+                        onRevealProperty(startTarget.nodeId, { source: 'shortcut', skipScroll: settings.skipAutoScroll });
+                    }
+                }
 
                 const needsSearchActivation = !isSearchActive;
                 if (uiState.singlePane) {
@@ -1189,6 +1321,10 @@ export const ListPane = React.memo(
             },
             [
                 plugin,
+                onNavigateToFolder,
+                onRevealTag,
+                onRevealProperty,
+                settings.skipAutoScroll,
                 isSearchActive,
                 setIsSearchActive,
                 uiState.singlePane,

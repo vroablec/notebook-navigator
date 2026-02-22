@@ -23,7 +23,14 @@ import type { DualPaneOrientation } from '../types';
 import type { VaultProfile } from '../settings/types';
 import type { FileVisibility } from '../utils/fileTypeUtils';
 import type { ShortcutEntry } from '../types/shortcuts';
-import { isFolderShortcut, isNoteShortcut, isSearchShortcut, isTagShortcut, isPropertyShortcut } from '../types/shortcuts';
+import {
+    getShortcutStartTargetFingerprint,
+    isFolderShortcut,
+    isNoteShortcut,
+    isSearchShortcut,
+    isTagShortcut,
+    isPropertyShortcut
+} from '../types/shortcuts';
 import { clonePropertyKeys, cloneShortcuts, getActiveVaultProfile } from '../utils/vaultProfiles';
 import { clonePinnedNotesRecord, isStringRecordValue, sanitizeRecord } from '../utils/recordUtils';
 import { areStringArraysEqual } from '../utils/arrayUtils';
@@ -57,6 +64,10 @@ const normalizeShortcutAlias = (alias: string | undefined): string | undefined =
 
 const areShortcutAliasesEqual = (prevAlias: string | undefined, nextAlias: string | undefined): boolean => {
     return normalizeShortcutAlias(prevAlias) === normalizeShortcutAlias(nextAlias);
+};
+
+const areShortcutStartTargetsEqual = (prevStartTarget: unknown, nextStartTarget: unknown): boolean => {
+    return getShortcutStartTargetFingerprint(prevStartTarget) === getShortcutStartTargetFingerprint(nextStartTarget);
 };
 
 const arePropertyKeysEqual = (prev?: VaultProfile['propertyKeys'], next?: VaultProfile['propertyKeys']): boolean => {
@@ -150,7 +161,8 @@ const areShortcutsEqual = (prev?: ShortcutEntry[] | null, next?: ShortcutEntry[]
         if (
             prevShortcut.name !== nextShortcut.name ||
             prevShortcut.query !== nextShortcut.query ||
-            prevShortcut.provider !== nextShortcut.provider
+            prevShortcut.provider !== nextShortcut.provider ||
+            !areShortcutStartTargetsEqual(prevShortcut.startTarget, nextShortcut.startTarget)
         ) {
             return false;
         }

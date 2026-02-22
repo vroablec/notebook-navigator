@@ -155,6 +155,7 @@ export const STRINGS_JA = {
         removeSearchShortcut: 'ショートカットから検索を削除',
         shortcutModalTitle: '検索ショートカットを保存',
         shortcutNamePlaceholder: 'ショートカット名を入力',
+        shortcutStartIn: '常にここから開始: {path}',
         searchHelp: '検索構文',
         searchHelpTitle: '検索構文',
         searchHelpModal: {

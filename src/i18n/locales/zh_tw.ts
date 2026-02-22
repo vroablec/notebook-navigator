@@ -155,6 +155,7 @@ export const STRINGS_ZH_TW = {
         removeSearchShortcut: '從捷徑移除搜尋',
         shortcutModalTitle: '儲存搜尋捷徑',
         shortcutNamePlaceholder: '輸入捷徑名稱',
+        shortcutStartIn: '始終從此處開始: {path}',
         searchHelp: '搜尋語法',
         searchHelpTitle: '搜尋語法',
         searchHelpModal: {

@@ -24,12 +24,16 @@ import {
     ShortcutEntry,
     ShortcutType,
     SearchShortcut,
+    type ShortcutStartTarget,
+    getShortcutStartTargetFingerprint,
     getShortcutKey,
     isFolderShortcut,
     isNoteShortcut,
     isSearchShortcut,
     isTagShortcut,
-    isPropertyShortcut
+    isPropertyShortcut,
+    normalizePropertyShortcutNodeId,
+    normalizeShortcutStartTarget
 } from '../types/shortcuts';
 import type { SearchProvider } from '../types/search';
 import { strings } from '../i18n';
@@ -37,8 +41,6 @@ import { showNotice } from '../utils/noticeUtils';
 import { normalizeTagPath } from '../utils/tagUtils';
 import { runAsyncAction } from '../utils/async';
 import { findVaultProfileById } from '../utils/vaultProfiles';
-import { normalizePropertyNodeId } from '../utils/propertyTree';
-import { PROPERTIES_ROOT_VIRTUAL_FOLDER_ID } from '../types';
 
 // Generates a unique fingerprint for a shortcut based on its type and key properties
 const getShortcutFingerprint = (shortcut: ShortcutEntry): string => {
@@ -47,7 +49,8 @@ const getShortcutFingerprint = (shortcut: ShortcutEntry): string => {
         return `${shortcut.type}:${path}`;
     }
 
-    return `${shortcut.type}:${shortcut.name}:${shortcut.query}:${shortcut.provider}`;
+    const startTarget = getShortcutStartTargetFingerprint(shortcut.startTarget);
+    return `${shortcut.type}:${shortcut.name}:${shortcut.query}:${shortcut.provider}:${startTarget}`;
 };
 
 // Creates a fingerprint for an array of shortcuts to detect changes
@@ -57,14 +60,6 @@ const buildShortcutsFingerprint = (shortcuts: ShortcutEntry[]): string => {
     }
     return shortcuts.map(getShortcutFingerprint).join('|');
 };
-
-function normalizePropertyShortcutNodeId(nodeId: string): string | null {
-    if (nodeId === PROPERTIES_ROOT_VIRTUAL_FOLDER_ID) {
-        return PROPERTIES_ROOT_VIRTUAL_FOLDER_ID;
-    }
-
-    return normalizePropertyNodeId(nodeId);
-}
 
 /**
  * Represents a shortcut with resolved file/folder references and validation state.
@@ -97,7 +92,10 @@ export interface ShortcutsContextValue {
     addNoteShortcut: (path: string, options?: { index?: number }) => Promise<boolean>;
     addTagShortcut: (tagPath: string, options?: { index?: number }) => Promise<boolean>;
     addPropertyShortcut: (nodeId: string, options?: { index?: number }) => Promise<boolean>;
-    addSearchShortcut: (input: { name: string; query: string; provider: SearchProvider }, options?: { index?: number }) => Promise<boolean>;
+    addSearchShortcut: (
+        input: { name: string; query: string; provider: SearchProvider; startTarget?: ShortcutStartTarget },
+        options?: { index?: number }
+    ) => Promise<boolean>;
     addShortcutsBatch: (entries: ShortcutEntry[], options?: { index?: number }) => Promise<number>;
     removeShortcut: (key: string) => Promise<boolean>;
     renameShortcut: (key: string, alias: string, defaultLabel?: string) => Promise<boolean>;
@@ -615,6 +613,7 @@ export function ShortcutsProvider({ children }: ShortcutsProviderProps) {
                 if (entry.type === ShortcutType.SEARCH) {
                     const normalizedName = entry.name.trim();
                     const normalizedQuery = entry.query.trim();
+                    const normalizedStartTarget = normalizeShortcutStartTarget(entry.startTarget);
                     if (!normalizedName) {
                         emptySearchName = true;
                         return;
@@ -632,7 +631,8 @@ export function ShortcutsProvider({ children }: ShortcutsProviderProps) {
                     normalizedEntries.push({
                         ...entry,
                         name: normalizedName,
-                        query: normalizedQuery
+                        query: normalizedQuery,
+                        startTarget: normalizedStartTarget
                     });
                 }
             });
@@ -753,7 +753,15 @@ export function ShortcutsProvider({ children }: ShortcutsProviderProps) {
 
     // Adds a search shortcut with validation for name and query uniqueness
     const addSearchShortcut = useCallback(
-        async ({ name, query, provider }: { name: string; query: string; provider: SearchProvider }, options?: { index?: number }) => {
+        async (
+            {
+                name,
+                query,
+                provider,
+                startTarget
+            }: { name: string; query: string; provider: SearchProvider; startTarget?: ShortcutStartTarget },
+            options?: { index?: number }
+        ) => {
             const normalizedQuery = query.trim();
             if (!normalizedQuery) {
                 showNotice(strings.shortcuts.emptySearchQuery, { variant: 'warning' });
@@ -772,12 +780,14 @@ export function ShortcutsProvider({ children }: ShortcutsProviderProps) {
                 return false;
             }
 
+            const normalizedStartTarget = normalizeShortcutStartTarget(startTarget);
             return insertShortcut(
                 {
                     type: ShortcutType.SEARCH,
                     name: normalizedName,
                     query: normalizedQuery,
-                    provider
+                    provider,
+                    startTarget: normalizedStartTarget
                 },
                 options?.index
             );

@@ -155,6 +155,7 @@ export const STRINGS_KO = {
         removeSearchShortcut: '바로가기에서 검색 제거',
         shortcutModalTitle: '검색 바로가기 저장',
         shortcutNamePlaceholder: '바로가기 이름을 입력하세요',
+        shortcutStartIn: '항상 다음에서 시작: {path}',
         searchHelp: '검색 구문',
         searchHelpTitle: '검색 구문',
         searchHelpModal: {

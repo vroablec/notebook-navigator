@@ -155,6 +155,7 @@ export const STRINGS_ES = {
         removeSearchShortcut: 'Eliminar búsqueda de accesos directos',
         shortcutModalTitle: 'Guardar búsqueda',
         shortcutNamePlaceholder: 'Introduce el nombre',
+        shortcutStartIn: 'Iniciar siempre en: {path}',
         searchHelp: 'Sintaxis de búsqueda',
         searchHelpTitle: 'Sintaxis de búsqueda',
         searchHelpModal: {

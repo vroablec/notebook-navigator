@@ -157,6 +157,7 @@ export const STRINGS_NL = {
         removeSearchShortcut: 'Zoeksnelkoppeling verwijderen',
         shortcutModalTitle: 'Zoeksnelkoppeling opslaan',
         shortcutNamePlaceholder: 'Voer naam snelkoppeling in',
+        shortcutStartIn: 'Altijd starten in: {path}',
         searchHelp: 'Zoeksyntax',
         searchHelpTitle: 'Zoeksyntax',
         searchHelpModal: {

@@ -16,6 +16,10 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import { PROPERTIES_ROOT_VIRTUAL_FOLDER_ID } from '../types';
+import { normalizeOptionalVaultFolderPath } from '../utils/pathUtils';
+import { normalizePropertyNodeId } from '../utils/propertyTree';
+import { normalizeTagPath } from '../utils/tagUtils';
 import type { SearchProvider } from './search';
 
 /**
@@ -60,6 +64,31 @@ export interface NoteShortcut extends ShortcutAlias {
     path: string;
 }
 
+export const ShortcutStartType = {
+    FOLDER: 'folder',
+    TAG: 'tag',
+    PROPERTY: 'property'
+} as const;
+
+export type ShortcutStartType = (typeof ShortcutStartType)[keyof typeof ShortcutStartType];
+
+export interface ShortcutStartFolder {
+    type: typeof ShortcutStartType.FOLDER;
+    path: string;
+}
+
+export interface ShortcutStartTag {
+    type: typeof ShortcutStartType.TAG;
+    tagPath: string;
+}
+
+export interface ShortcutStartProperty {
+    type: typeof ShortcutStartType.PROPERTY;
+    nodeId: string;
+}
+
+export type ShortcutStartTarget = ShortcutStartFolder | ShortcutStartTag | ShortcutStartProperty;
+
 /**
  * Shortcut for a saved search query
  */
@@ -68,6 +97,7 @@ export interface SearchShortcut {
     name: string;
     query: string;
     provider: SearchProvider;
+    startTarget?: ShortcutStartTarget;
 }
 
 /**
@@ -110,6 +140,96 @@ export function isNoteShortcut(shortcut: ShortcutEntry): shortcut is NoteShortcu
  */
 export function isSearchShortcut(shortcut: ShortcutEntry): shortcut is SearchShortcut {
     return shortcut.type === ShortcutType.SEARCH;
+}
+
+interface ShortcutStartRecord {
+    type?: unknown;
+    path?: unknown;
+    tagPath?: unknown;
+    nodeId?: unknown;
+}
+
+function isShortcutStartRecord(value: unknown): value is ShortcutStartRecord {
+    return typeof value === 'object' && value !== null;
+}
+
+export function isShortcutStartFolder(target: unknown): target is ShortcutStartFolder {
+    return isShortcutStartRecord(target) && target.type === ShortcutStartType.FOLDER && typeof target.path === 'string';
+}
+
+export function isShortcutStartTag(target: unknown): target is ShortcutStartTag {
+    return isShortcutStartRecord(target) && target.type === ShortcutStartType.TAG && typeof target.tagPath === 'string';
+}
+
+export function isShortcutStartProperty(target: unknown): target is ShortcutStartProperty {
+    return isShortcutStartRecord(target) && target.type === ShortcutStartType.PROPERTY && typeof target.nodeId === 'string';
+}
+
+export function normalizePropertyShortcutNodeId(nodeId: unknown): string | null {
+    if (nodeId === PROPERTIES_ROOT_VIRTUAL_FOLDER_ID) {
+        return PROPERTIES_ROOT_VIRTUAL_FOLDER_ID;
+    }
+
+    if (typeof nodeId !== 'string') {
+        return null;
+    }
+
+    return normalizePropertyNodeId(nodeId);
+}
+
+export function normalizeShortcutStartTarget(startTarget: unknown): ShortcutStartTarget | undefined {
+    if (isShortcutStartFolder(startTarget)) {
+        const normalizedPath = normalizeOptionalVaultFolderPath(startTarget.path);
+        if (!normalizedPath) {
+            return undefined;
+        }
+        return {
+            type: ShortcutStartType.FOLDER,
+            path: normalizedPath
+        };
+    }
+
+    if (isShortcutStartTag(startTarget)) {
+        const normalizedTagPath = normalizeTagPath(startTarget.tagPath);
+        if (!normalizedTagPath) {
+            return undefined;
+        }
+        return {
+            type: ShortcutStartType.TAG,
+            tagPath: normalizedTagPath
+        };
+    }
+
+    if (!isShortcutStartProperty(startTarget)) {
+        return undefined;
+    }
+
+    const normalizedNodeId = normalizePropertyShortcutNodeId(startTarget.nodeId);
+    if (!normalizedNodeId) {
+        return undefined;
+    }
+
+    return {
+        type: ShortcutStartType.PROPERTY,
+        nodeId: normalizedNodeId
+    };
+}
+
+export function getShortcutStartTargetFingerprint(startTarget: unknown): string {
+    const normalized = normalizeShortcutStartTarget(startTarget);
+    if (!normalized) {
+        return '';
+    }
+
+    if (normalized.type === ShortcutStartType.FOLDER) {
+        return `${ShortcutStartType.FOLDER}:${normalized.path}`;
+    }
+
+    if (normalized.type === ShortcutStartType.TAG) {
+        return `${ShortcutStartType.TAG}:${normalized.tagPath}`;
+    }
+
+    return `${ShortcutStartType.PROPERTY}:${normalized.nodeId}`;
 }
 
 /**

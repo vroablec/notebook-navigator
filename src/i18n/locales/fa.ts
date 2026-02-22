@@ -156,6 +156,7 @@ export const STRINGS_FA = {
         removeSearchShortcut: 'حذف میانبر جستجو',
         shortcutModalTitle: 'ذخیره میانبر جستجو',
         shortcutNamePlaceholder: 'نام میانبر را وارد کنید',
+        shortcutStartIn: 'همیشه شروع در: {path}',
         searchHelp: 'نحو جستجو',
         searchHelpTitle: 'نحو جستجو',
         searchHelpModal: {

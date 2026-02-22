@@ -156,6 +156,7 @@ export const STRINGS_AR = {
         removeSearchShortcut: 'إزالة اختصار البحث',
         shortcutModalTitle: 'حفظ اختصار البحث',
         shortcutNamePlaceholder: 'أدخل اسم الاختصار',
+        shortcutStartIn: 'البدء دائمًا في: {path}',
         searchHelp: 'صيغة البحث',
         searchHelpTitle: 'صيغة البحث',
         searchHelpModal: {

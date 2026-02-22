@@ -156,6 +156,7 @@ export const STRINGS_IT = {
         removeSearchShortcut: 'Rimuovi scorciatoia ricerca',
         shortcutModalTitle: 'Salva scorciatoia ricerca',
         shortcutNamePlaceholder: 'Inserisci nome scorciatoia',
+        shortcutStartIn: 'Inizia sempre in: {path}',
         searchHelp: 'Sintassi di ricerca',
         searchHelpTitle: 'Sintassi di ricerca',
         searchHelpModal: {

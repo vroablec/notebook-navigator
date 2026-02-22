@@ -156,6 +156,7 @@ export const STRINGS_PT = {
         removeSearchShortcut: 'Remover atalho de pesquisa',
         shortcutModalTitle: 'Guardar atalho de pesquisa',
         shortcutNamePlaceholder: 'Introduza o nome do atalho',
+        shortcutStartIn: 'Iniciar sempre em: {path}',
         searchHelp: 'Sintaxe de pesquisa',
         searchHelpTitle: 'Sintaxe de pesquisa',
         searchHelpModal: {

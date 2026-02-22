@@ -156,6 +156,7 @@ export const STRINGS_RU = {
         removeSearchShortcut: 'Удалить ярлык поиска',
         shortcutModalTitle: 'Сохранить ярлык поиска',
         shortcutNamePlaceholder: 'Введите название ярлыка',
+        shortcutStartIn: 'Всегда начинать в: {path}',
         searchHelp: 'Синтаксис поиска',
         searchHelpTitle: 'Синтаксис поиска',
         searchHelpModal: {

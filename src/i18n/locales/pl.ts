@@ -155,6 +155,7 @@ export const STRINGS_PL = {
         removeSearchShortcut: 'Usuń wyszukiwanie ze skrótów',
         shortcutModalTitle: 'Zapisz wyszukiwanie',
         shortcutNamePlaceholder: 'Wprowadź nazwę skrótu',
+        shortcutStartIn: 'Zawsze rozpocznij w: {path}',
         searchHelp: 'Składnia wyszukiwania',
         searchHelpTitle: 'Składnia wyszukiwania',
         searchHelpModal: {

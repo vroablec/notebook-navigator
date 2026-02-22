@@ -155,6 +155,7 @@ export const STRINGS_FR = {
         removeSearchShortcut: 'Retirer la recherche des raccourcis',
         shortcutModalTitle: 'Enregistrer la recherche',
         shortcutNamePlaceholder: 'Saisir le nom du raccourci',
+        shortcutStartIn: 'Toujours démarrer dans : {path}',
         searchHelp: 'Syntaxe de recherche',
         searchHelpTitle: 'Syntaxe de recherche',
         searchHelpModal: {

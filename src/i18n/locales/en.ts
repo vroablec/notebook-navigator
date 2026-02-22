@@ -156,6 +156,7 @@ export const STRINGS_EN = {
         removeSearchShortcut: 'Remove search shortcut',
         shortcutModalTitle: 'Save search shortcut',
         shortcutNamePlaceholder: 'Enter shortcut name',
+        shortcutStartIn: 'Always start in: {path}',
         searchHelp: 'Search syntax',
         searchHelpTitle: 'Search syntax',
         searchHelpModal: {

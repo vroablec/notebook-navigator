@@ -156,6 +156,7 @@ export const STRINGS_TH = {
         removeSearchShortcut: 'นำทางลัดการค้นหาออก',
         shortcutModalTitle: 'บันทึกทางลัดการค้นหา',
         shortcutNamePlaceholder: 'กรอกชื่อทางลัด',
+        shortcutStartIn: 'เริ่มต้นใน: {path} เสมอ',
         searchHelp: 'ไวยากรณ์การค้นหา',
         searchHelpTitle: 'ไวยากรณ์การค้นหา',
         searchHelpModal: {

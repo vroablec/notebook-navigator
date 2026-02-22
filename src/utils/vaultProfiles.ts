@@ -18,7 +18,7 @@
 
 import type { NotebookNavigatorSettings } from '../settings';
 import type { VaultProfile, VaultProfilePropertyKey } from '../settings/types';
-import type { ShortcutEntry } from '../types/shortcuts';
+import { isSearchShortcut, type ShortcutEntry } from '../types/shortcuts';
 import { strings } from '../i18n';
 import { normalizeCalendarCustomRootFolder } from './calendarCustomNotePatterns';
 import { FILE_VISIBILITY, type FileVisibility } from './fileTypeUtils';
@@ -414,7 +414,16 @@ export const cloneShortcuts = (shortcuts: ShortcutEntry[] | undefined): Shortcut
     if (!Array.isArray(shortcuts)) {
         return [];
     }
-    return shortcuts.map(shortcut => ({ ...shortcut }));
+    return shortcuts.map(shortcut => {
+        if (!isSearchShortcut(shortcut) || !shortcut.startTarget) {
+            return { ...shortcut };
+        }
+
+        return {
+            ...shortcut,
+            startTarget: { ...shortcut.startTarget }
+        };
+    });
 };
 
 // Applies a transformation function to shortcuts for every profile that has entries

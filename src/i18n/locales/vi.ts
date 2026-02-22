@@ -156,6 +156,7 @@ export const STRINGS_VI = {
         removeSearchShortcut: 'Gỡ lối tắt tìm kiếm',
         shortcutModalTitle: 'Lưu lối tắt tìm kiếm',
         shortcutNamePlaceholder: 'Nhập tên lối tắt',
+        shortcutStartIn: 'Luôn bắt đầu trong: {path}',
         searchHelp: 'Cú pháp tìm kiếm',
         searchHelpTitle: 'Cú pháp tìm kiếm',
         searchHelpModal: {

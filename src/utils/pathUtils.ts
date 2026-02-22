@@ -84,3 +84,39 @@ export function normalizeOptionalVaultFilePath(value: string | null | undefined)
 
     return withoutLeadingSlash;
 }
+
+/**
+ * Normalizes an optional vault folder path and keeps root path as "/" when provided.
+ */
+export function normalizeOptionalVaultFolderPath(value: string | null | undefined): string | null {
+    if (typeof value !== 'string') {
+        return null;
+    }
+
+    const trimmed = value.trim();
+    if (!trimmed) {
+        return null;
+    }
+
+    if (trimmed === '/') {
+        return '/';
+    }
+
+    if (/^\/+$/u.test(trimmed)) {
+        return null;
+    }
+
+    const normalized = normalizePath(trimmed);
+    const collapsed = normalized.replace(/\/{2,}/gu, '/');
+    if (!collapsed || collapsed === '.' || collapsed === '/') {
+        return null;
+    }
+
+    const withoutLeadingSlash = collapsed.replace(/^\/+/u, '');
+    if (!withoutLeadingSlash || withoutLeadingSlash === '.') {
+        return null;
+    }
+
+    const withoutTrailingSlash = withoutLeadingSlash.replace(/\/+$/u, '');
+    return withoutTrailingSlash.length > 0 ? withoutTrailingSlash : null;
+}

@@ -155,6 +155,7 @@ export const STRINGS_DE = {
         removeSearchShortcut: 'Such-Lesezeichen entfernen',
         shortcutModalTitle: 'Such-Lesezeichen speichern',
         shortcutNamePlaceholder: 'Lesezeichen-Namen eingeben',
+        shortcutStartIn: 'Immer starten in: {path}',
         searchHelp: 'Suchsyntax',
         searchHelpTitle: 'Suchsyntax',
         searchHelpModal: {
