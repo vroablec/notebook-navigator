@@ -76,9 +76,25 @@ export interface ReleaseNote {
 const RELEASE_NOTES: ReleaseNote[] = [
     {
         version: '2.4.2',
-        date: '2026-02-24',
-        showOnUpdate: false,
-        new: ['You can now ==rename and delete property keys== in the property tree.']
+        date: '2026-02-23',
+        showOnUpdate: true,
+        new: [
+            'Greatly improved the way you work with Properties! Firstup, a new ==Property key selection modal== was added with property search, select all/deselect all properties, and the option to choose if each property should be shown in the navigation pane, in the list pane, or both.',
+            'Secondly, you can now ==rename and delete property keys== in the property tree.',
+            'You can also ==create a new note directly in property view==. You can create new notes in properties using context menu, the toolbar button or using "Create new note".',
+            'New setting: ==List > Delete attachments==. Optionally delete linked attachments when deleting files, works just like Obsidian 1.12.2 and later. Default value <ask>.',
+            'New setting: ==List > Open new notes in new tab==. New notes open in a new tab instead of replacing the current tab. Default disabled.',
+            'The command "Add to shortcuts" now removes the selected item from shortcuts if it is already pinned.'
+        ],
+        improved: [
+            'Custom folder sort order is now applied when grouping by folder in list pane.',
+            'Saving a search shortcut now shows the option: "Always start in: {path}". This means the shortcut will always start in the folder, tag or property where you saved it.',
+            'Visible property keys are now saved per vault profile.'
+        ],
+        changed: [
+            'Property key configuration was moved from Navigation Pane to the General settings tab.'
+        ],
+        fixed: ["Fixed an issue where today's date and file list did not update when a new day started."]
     },
     {
         version: '2.4.1',
