@@ -579,6 +579,8 @@ export const STRINGS_PL = {
             propertyColumnLabel: 'Atrybut',
             showInNavigation: 'Pokaż w nawigacji',
             showInList: 'Pokaż na liście',
+            toggleAllInNavigation: 'Przełącz wszystkie w nawigacji',
+            toggleAllInList: 'Przełącz wszystkie na liście',
             applyButton: 'Zastosuj',
             emptyState: 'Nie znaleziono kluczy atrybutów.'
         },

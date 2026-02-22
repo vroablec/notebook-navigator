@@ -574,6 +574,8 @@ export const STRINGS_EN = {
             propertyColumnLabel: 'Property',
             showInNavigation: 'Show in navigation',
             showInList: 'Show in list',
+            toggleAllInNavigation: 'Toggle all in navigation',
+            toggleAllInList: 'Toggle all in list',
             applyButton: 'Apply',
             emptyState: 'No property keys found.'
         },

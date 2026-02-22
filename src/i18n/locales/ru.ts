@@ -575,6 +575,8 @@ export const STRINGS_RU = {
             propertyColumnLabel: 'Свойство',
             showInNavigation: 'Показать в навигации',
             showInList: 'Показать в списке',
+            toggleAllInNavigation: 'Переключить все в навигации',
+            toggleAllInList: 'Переключить все в списке',
             applyButton: 'Применить',
             emptyState: 'Ключи свойств не найдены.'
         },

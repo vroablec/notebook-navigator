@@ -576,6 +576,8 @@ export const STRINGS_JA = {
             propertyColumnLabel: 'プロパティ',
             showInNavigation: 'ナビゲーションに表示',
             showInList: 'リストに表示',
+            toggleAllInNavigation: 'ナビゲーションの全てを切り替え',
+            toggleAllInList: 'リストの全てを切り替え',
             applyButton: '適用',
             emptyState: 'プロパティキーが見つかりません。'
         },

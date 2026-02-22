@@ -45,8 +45,19 @@ type RowControls = {
     listButton: HTMLButtonElement;
 };
 
+type ToggleTarget = 'navigation' | 'list';
+type ColumnToggleState = 'none' | 'some' | 'all';
+
+type SelectAllControls = {
+    rowEl: HTMLDivElement;
+    navigationButton: HTMLButtonElement;
+    listButton: HTMLButtonElement;
+};
+
 const CHECKBOX_OFF_ICON = 'lucide-square';
+const CHECKBOX_SOME_ICON = 'lucide-square-minus';
 const CHECKBOX_ON_ICON = 'lucide-square-check-big';
+const SEARCH_CLEAR_ICON = 'lucide-circle-x';
 const NAVIGATION_PANE_TAB_ICON = 'panel-left';
 const LIST_PANE_TAB_ICON = 'list';
 
@@ -55,11 +66,14 @@ export class PropertyKeyVisibilityModal extends Modal {
     private rows: RowState[] = [];
     private rowsByKey = new Map<string, RowState>();
     private rowControls = new Map<string, RowControls>();
+    private selectAllControls: SelectAllControls | null = null;
     private headerDisposers: (() => void)[] = [];
     private rowDisposers: (() => void)[] = [];
     private footerDisposers: (() => void)[] = [];
     private applyButton: HTMLButtonElement | null = null;
     private listEl: HTMLDivElement | null = null;
+    private filterInputEl: HTMLInputElement | null = null;
+    private filterClearButtonEl: HTMLButtonElement | null = null;
     private filterQuery = '';
     private initialSnapshot = '';
     private isSaving = false;
@@ -76,16 +90,32 @@ export class PropertyKeyVisibilityModal extends Modal {
         this.titleEl.setText(strings.modals.propertyKeyVisibility.title);
         this.contentEl.empty();
 
-        const filterInput = this.contentEl.createEl('input', {
+        const searchContainer = this.contentEl.createDiv({ cls: 'nn-property-keys-search-container' });
+        const filterInput = searchContainer.createEl('input', {
             cls: ['nn-input', 'nn-property-keys-search'],
             attr: {
                 type: 'text',
                 placeholder: strings.modals.propertyKeyVisibility.searchPlaceholder
             }
         });
+
+        const clearButton = searchContainer.createEl('button', {
+            cls: 'nn-property-keys-search-clear',
+            attr: {
+                type: 'button',
+                'aria-label': strings.searchInput.clearSearch
+            }
+        });
+        setIcon(clearButton, SEARCH_CLEAR_ICON);
+
+        this.filterInputEl = filterInput;
+        this.filterClearButtonEl = clearButton;
+        this.updateSearchControls();
+
         this.headerDisposers.push(
             addAsyncEventListener(filterInput, 'input', () => {
                 this.filterQuery = filterInput.value;
+                this.updateSearchControls();
                 this.renderRows();
             })
         );
@@ -97,6 +127,15 @@ export class PropertyKeyVisibilityModal extends Modal {
                 event.preventDefault();
                 event.stopPropagation();
                 filterInput.blur();
+            })
+        );
+        this.headerDisposers.push(
+            addAsyncEventListener(clearButton, 'click', () => {
+                this.filterQuery = '';
+                filterInput.value = '';
+                this.updateSearchControls();
+                this.renderRows();
+                filterInput.focus();
             })
         );
 
@@ -118,10 +157,13 @@ export class PropertyKeyVisibilityModal extends Modal {
         this.disposeRowDisposers();
         this.disposeFooterDisposers();
         this.rowControls.clear();
+        this.selectAllControls = null;
         this.rows = [];
         this.rowsByKey.clear();
         this.listEl = null;
         this.applyButton = null;
+        this.filterInputEl = null;
+        this.filterClearButtonEl = null;
         this.modalEl.removeClass('nn-property-keys-modal');
         this.contentEl.empty();
     }
@@ -285,6 +327,7 @@ export class PropertyKeyVisibilityModal extends Modal {
 
         this.disposeRowDisposers();
         this.rowControls.clear();
+        this.selectAllControls = null;
         this.listEl.empty();
 
         const rows = this.getFilteredRows();
@@ -298,8 +341,6 @@ export class PropertyKeyVisibilityModal extends Modal {
             if (!rowEl) {
                 return;
             }
-
-            rowEl.toggleClass('is-enabled', row.showInNavigation || row.showInList);
 
             const labelEl = rowEl.createDiv({ cls: 'nn-property-keys-label' });
             labelEl.createSpan({ text: row.displayKey });
@@ -319,8 +360,6 @@ export class PropertyKeyVisibilityModal extends Modal {
                     'aria-label': strings.modals.propertyKeyVisibility.showInNavigation
                 }
             });
-            navigationButton.toggleClass('is-enabled', row.showInNavigation);
-            setIcon(navigationButton, row.showInNavigation ? CHECKBOX_ON_ICON : CHECKBOX_OFF_ICON);
 
             const listButton = actionsEl.createEl('button', {
                 cls: ['nn-action-btn', 'nn-property-keys-toggle'],
@@ -329,10 +368,10 @@ export class PropertyKeyVisibilityModal extends Modal {
                     'aria-label': strings.modals.propertyKeyVisibility.showInList
                 }
             });
-            listButton.toggleClass('is-enabled', row.showInList);
-            setIcon(listButton, row.showInList ? CHECKBOX_ON_ICON : CHECKBOX_OFF_ICON);
 
-            this.rowControls.set(row.normalizedKey, { rowEl, navigationButton, listButton });
+            const controls = { rowEl, navigationButton, listButton };
+            this.rowControls.set(row.normalizedKey, controls);
+            this.updateRowControls(row, controls);
             this.rowDisposers.push(
                 addAsyncEventListener(navigationButton, 'click', () => {
                     this.toggleRow(row.normalizedKey, 'navigation');
@@ -344,6 +383,20 @@ export class PropertyKeyVisibilityModal extends Modal {
                 })
             );
         });
+
+        this.renderSelectAllRow();
+    }
+
+    private updateSearchControls(): void {
+        const filterInput = this.filterInputEl;
+        const clearButton = this.filterClearButtonEl;
+        if (!filterInput || !clearButton) {
+            return;
+        }
+
+        const hasQuery = this.filterQuery.trim().length > 0;
+        filterInput.toggleClass('is-active', hasQuery);
+        clearButton.toggleClass('is-visible', hasQuery);
     }
 
     private renderColumnHeader(containerEl: HTMLElement): void {
@@ -378,16 +431,149 @@ export class PropertyKeyVisibilityModal extends Modal {
 
         const controls = this.rowControls.get(normalizedKey);
         if (controls) {
-            const enabled = row.showInNavigation || row.showInList;
-            controls.rowEl.toggleClass('is-enabled', enabled);
-
-            controls.navigationButton.toggleClass('is-enabled', row.showInNavigation);
-            setIcon(controls.navigationButton, row.showInNavigation ? CHECKBOX_ON_ICON : CHECKBOX_OFF_ICON);
-
-            controls.listButton.toggleClass('is-enabled', row.showInList);
-            setIcon(controls.listButton, row.showInList ? CHECKBOX_ON_ICON : CHECKBOX_OFF_ICON);
+            this.updateRowControls(row, controls);
         }
 
+        this.updateSelectAllControls();
+        this.updateApplyButtonState();
+    }
+
+    private updateRowControls(row: RowState, controls: RowControls): void {
+        const enabled = row.showInNavigation || row.showInList;
+        controls.rowEl.toggleClass('is-enabled', enabled);
+
+        controls.navigationButton.toggleClass('is-enabled', row.showInNavigation);
+        setIcon(controls.navigationButton, row.showInNavigation ? CHECKBOX_ON_ICON : CHECKBOX_OFF_ICON);
+
+        controls.listButton.toggleClass('is-enabled', row.showInList);
+        setIcon(controls.listButton, row.showInList ? CHECKBOX_ON_ICON : CHECKBOX_OFF_ICON);
+    }
+
+    private renderSelectAllRow(): void {
+        if (!this.listEl) {
+            return;
+        }
+
+        const rowEl = this.listEl.createDiv({ cls: ['nn-property-keys-row', 'nn-property-keys-select-all-row'] });
+        rowEl.createDiv({ cls: 'nn-property-keys-label' });
+
+        const actionsEl = rowEl.createDiv({ cls: 'nn-property-keys-actions' });
+
+        const navigationButton = actionsEl.createEl('button', {
+            cls: ['nn-action-btn', 'nn-property-keys-toggle'],
+            attr: {
+                type: 'button',
+                'aria-label': strings.modals.propertyKeyVisibility.toggleAllInNavigation
+            }
+        });
+
+        const listButton = actionsEl.createEl('button', {
+            cls: ['nn-action-btn', 'nn-property-keys-toggle'],
+            attr: {
+                type: 'button',
+                'aria-label': strings.modals.propertyKeyVisibility.toggleAllInList
+            }
+        });
+
+        this.selectAllControls = { rowEl, navigationButton, listButton };
+        this.updateSelectAllControls();
+
+        this.rowDisposers.push(
+            addAsyncEventListener(navigationButton, 'click', () => {
+                this.toggleAllRows('navigation');
+            })
+        );
+        this.rowDisposers.push(
+            addAsyncEventListener(listButton, 'click', () => {
+                this.toggleAllRows('list');
+            })
+        );
+    }
+
+    private getColumnToggleState(toggle: ToggleTarget, rows: readonly RowState[]): ColumnToggleState {
+        const total = rows.length;
+        if (total === 0) {
+            return 'none';
+        }
+
+        let selected = 0;
+        rows.forEach(row => {
+            if (toggle === 'navigation') {
+                if (row.showInNavigation) {
+                    selected += 1;
+                }
+                return;
+            }
+
+            if (row.showInList) {
+                selected += 1;
+            }
+        });
+
+        if (selected === 0) {
+            return 'none';
+        }
+
+        if (selected === total) {
+            return 'all';
+        }
+
+        return 'some';
+    }
+
+    private getIconForColumnState(state: ColumnToggleState): string {
+        if (state === 'all') {
+            return CHECKBOX_ON_ICON;
+        }
+
+        if (state === 'some') {
+            return CHECKBOX_SOME_ICON;
+        }
+
+        return CHECKBOX_OFF_ICON;
+    }
+
+    private updateSelectAllControls(): void {
+        const controls = this.selectAllControls;
+        if (!controls) {
+            return;
+        }
+
+        const filteredRows = this.getFilteredRows();
+        const navigationState = this.getColumnToggleState('navigation', filteredRows);
+        const listState = this.getColumnToggleState('list', filteredRows);
+
+        controls.navigationButton.toggleClass('is-enabled', navigationState !== 'none');
+        setIcon(controls.navigationButton, this.getIconForColumnState(navigationState));
+
+        controls.listButton.toggleClass('is-enabled', listState !== 'none');
+        setIcon(controls.listButton, this.getIconForColumnState(listState));
+
+        controls.rowEl.toggleClass('is-enabled', navigationState !== 'none' || listState !== 'none');
+    }
+
+    private toggleAllRows(toggle: ToggleTarget): void {
+        const filteredRows = this.getFilteredRows();
+        const currentState = this.getColumnToggleState(toggle, filteredRows);
+        const nextChecked = currentState !== 'all';
+
+        filteredRows.forEach(row => {
+            if (toggle === 'navigation') {
+                row.showInNavigation = nextChecked;
+            } else {
+                row.showInList = nextChecked;
+            }
+        });
+
+        this.rowControls.forEach((controls, normalizedKey) => {
+            const row = this.rowsByKey.get(normalizedKey);
+            if (!row) {
+                return;
+            }
+            this.updateRowControls(row, controls);
+        });
+
+        this.updateSelectAllControls();
         this.updateApplyButtonState();
     }
 

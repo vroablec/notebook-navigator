@@ -577,6 +577,8 @@ export const STRINGS_FA = {
             propertyColumnLabel: 'ویژگی',
             showInNavigation: 'نمایش در ناوبری',
             showInList: 'نمایش در فهرست',
+            toggleAllInNavigation: 'تغییر وضعیت همه در ناوبری',
+            toggleAllInList: 'تغییر وضعیت همه در فهرست',
             applyButton: 'اعمال',
             emptyState: 'کلید ویژگی‌ای یافت نشد.'
         },

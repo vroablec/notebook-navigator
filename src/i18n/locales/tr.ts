@@ -578,6 +578,8 @@ export const STRINGS_TR = {
             propertyColumnLabel: 'Özellik',
             showInNavigation: 'Gezinmede göster',
             showInList: 'Listede göster',
+            toggleAllInNavigation: 'Gezinmede tümünü değiştir',
+            toggleAllInList: 'Listede tümünü değiştir',
             applyButton: 'Uygula',
             emptyState: 'Özellik anahtarı bulunamadı.'
         },

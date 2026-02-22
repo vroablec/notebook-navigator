@@ -577,6 +577,8 @@ export const STRINGS_VI = {
             propertyColumnLabel: 'Thuộc tính',
             showInNavigation: 'Hiển thị trong điều hướng',
             showInList: 'Hiển thị trong danh sách',
+            toggleAllInNavigation: 'Chuyển đổi tất cả trong điều hướng',
+            toggleAllInList: 'Chuyển đổi tất cả trong danh sách',
             applyButton: 'Áp dụng',
             emptyState: 'Không tìm thấy khóa thuộc tính.'
         },

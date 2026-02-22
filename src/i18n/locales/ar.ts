@@ -576,6 +576,8 @@ export const STRINGS_AR = {
             propertyColumnLabel: 'خاصية',
             showInNavigation: 'إظهار في التنقل',
             showInList: 'إظهار في القائمة',
+            toggleAllInNavigation: 'تبديل الكل في التنقل',
+            toggleAllInList: 'تبديل الكل في القائمة',
             applyButton: 'تطبيق',
             emptyState: 'لم يتم العثور على مفاتيح خصائص.'
         },

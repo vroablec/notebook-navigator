@@ -573,6 +573,8 @@ export const STRINGS_ZH_CN = {
             propertyColumnLabel: '属性',
             showInNavigation: '在导航中显示',
             showInList: '在列表中显示',
+            toggleAllInNavigation: '切换导航中的全部',
+            toggleAllInList: '切换列表中的全部',
             applyButton: '应用',
             emptyState: '未找到属性键。'
         },

@@ -575,6 +575,8 @@ export const STRINGS_UK = {
             propertyColumnLabel: 'Властивість',
             showInNavigation: 'Показати в навігації',
             showInList: 'Показати у списку',
+            toggleAllInNavigation: 'Перемкнути все в навігації',
+            toggleAllInList: 'Перемкнути все у списку',
             applyButton: 'Застосувати',
             emptyState: 'Ключі властивостей не знайдено.'
         },

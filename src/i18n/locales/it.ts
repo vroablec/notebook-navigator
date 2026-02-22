@@ -574,6 +574,8 @@ export const STRINGS_IT = {
             propertyColumnLabel: 'Proprietà',
             showInNavigation: 'Mostra nella navigazione',
             showInList: 'Mostra nella lista',
+            toggleAllInNavigation: 'Attiva/disattiva tutti nella navigazione',
+            toggleAllInList: 'Attiva/disattiva tutti nella lista',
             applyButton: 'Applica',
             emptyState: 'Nessuna chiave proprietà trovata.'
         },

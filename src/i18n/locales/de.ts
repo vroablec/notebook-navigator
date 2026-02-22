@@ -578,6 +578,8 @@ export const STRINGS_DE = {
             propertyColumnLabel: 'Eigenschaft',
             showInNavigation: 'In Navigation anzeigen',
             showInList: 'In Liste anzeigen',
+            toggleAllInNavigation: 'Alle in Navigation umschalten',
+            toggleAllInList: 'Alle in Liste umschalten',
             applyButton: 'Anwenden',
             emptyState: 'Keine Eigenschaftsschlüssel gefunden.'
         },

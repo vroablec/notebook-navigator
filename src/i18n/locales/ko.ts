@@ -576,6 +576,8 @@ export const STRINGS_KO = {
             propertyColumnLabel: '속성',
             showInNavigation: '탐색에 표시',
             showInList: '목록에 표시',
+            toggleAllInNavigation: '탐색에서 모두 전환',
+            toggleAllInList: '목록에서 모두 전환',
             applyButton: '적용',
             emptyState: '속성 키를 찾을 수 없습니다.'
         },

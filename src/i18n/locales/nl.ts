@@ -578,6 +578,8 @@ export const STRINGS_NL = {
             propertyColumnLabel: 'Eigenschap',
             showInNavigation: 'Tonen in navigatie',
             showInList: 'Tonen in lijst',
+            toggleAllInNavigation: 'Alles in navigatie omschakelen',
+            toggleAllInList: 'Alles in lijst omschakelen',
             applyButton: 'Toepassen',
             emptyState: 'Geen eigenschapssleutels gevonden.'
         },

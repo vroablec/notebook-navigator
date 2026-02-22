@@ -574,6 +574,8 @@ export const STRINGS_TH = {
             propertyColumnLabel: 'คุณสมบัติ',
             showInNavigation: 'แสดงในการนำทาง',
             showInList: 'แสดงในรายการ',
+            toggleAllInNavigation: 'สลับทั้งหมดในการนำทาง',
+            toggleAllInList: 'สลับทั้งหมดในรายการ',
             applyButton: 'นำไปใช้',
             emptyState: 'ไม่พบคีย์คุณสมบัติ'
         },

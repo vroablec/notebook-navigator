@@ -577,6 +577,8 @@ export const STRINGS_ID = {
             propertyColumnLabel: 'Properti',
             showInNavigation: 'Tampilkan di navigasi',
             showInList: 'Tampilkan di daftar',
+            toggleAllInNavigation: 'Alihkan semua di navigasi',
+            toggleAllInList: 'Alihkan semua di daftar',
             applyButton: 'Terapkan',
             emptyState: 'Tidak ditemukan kunci properti.'
         },

@@ -573,6 +573,8 @@ export const STRINGS_ZH_TW = {
             propertyColumnLabel: '屬性',
             showInNavigation: '在導覽中顯示',
             showInList: '在清單中顯示',
+            toggleAllInNavigation: '切換導覽中的全部',
+            toggleAllInList: '切換清單中的全部',
             applyButton: '套用',
             emptyState: '未找到屬性鍵。'
         },
