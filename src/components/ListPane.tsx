@@ -108,7 +108,7 @@ import { ServiceIcon } from './ServiceIcon';
 import { resolveUXIcon } from '../utils/uxIcons';
 import { showNotice } from '../utils/noticeUtils';
 import { focusElementPreventScroll, isKeyboardEventContextBlocked } from '../utils/domUtils';
-import { buildPropertyKeyNodeId, buildPropertyValueNodeId } from '../utils/propertyTree';
+import { buildPropertyKeyNodeId, buildPropertyValueNodeId, parsePropertyNodeId } from '../utils/propertyTree';
 import { getFolderNote, openFolderNoteFile } from '../utils/folderNotes';
 import { getActivePropertyKeySet } from '../utils/vaultProfiles';
 import { DateUtils } from '../utils/dateUtils';
@@ -231,7 +231,16 @@ function formatSearchShortcutPropertyLabel(nodeId: string): string {
         return strings.navigationPane.properties;
     }
 
-    return nodeId;
+    const parsed = parsePropertyNodeId(nodeId);
+    if (!parsed) {
+        return nodeId;
+    }
+
+    if (parsed.valuePath) {
+        return parsed.valuePath;
+    }
+
+    return parsed.key;
 }
 
 function formatSearchShortcutStartTargetPath(startTarget: ShortcutStartTarget): string {
