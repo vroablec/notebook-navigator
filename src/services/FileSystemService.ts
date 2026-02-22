@@ -64,6 +64,8 @@ import { EXCALIDRAW_PLUGIN_ID, TLDRAW_PLUGIN_ID } from '../constants/pluginIds';
 import { createDrawingWithPlugin, DrawingType, getDrawingFilePath, getDrawingTemplate } from '../utils/drawingFileUtils';
 import { resolveFolderDisplayName } from '../utils/folderDisplayName';
 import { normalizeTagPath } from '../utils/tagUtils';
+import { isPrimaryDocumentFile } from '../utils/fileTypeUtils';
+import { type DeleteAttachmentsSetting, resolveDeleteAttachmentsSetting } from '../settings/types';
 
 /**
  * Selection context for file operations
@@ -205,6 +207,227 @@ export class FileSystemOperations {
     private notifyError(template: string, error: unknown, fallback?: string): void {
         const message = template.replace('{error}', getErrorMessage(error, fallback ?? strings.common.unknownError));
         showNotice(message, { variant: 'warning' });
+    }
+
+    private isAttachmentFile(file: TFile): boolean {
+        return !isPrimaryDocumentFile(file);
+    }
+
+    private normalizeAttachmentLinkTarget(rawLink: string): string | null {
+        const trimmed = rawLink.trim();
+        if (!trimmed) {
+            return null;
+        }
+
+        const withoutAlias = trimmed.split('|')[0]?.trim() ?? '';
+        if (!withoutAlias) {
+            return null;
+        }
+
+        const withoutSubpath = withoutAlias.split(/[#^]/, 1)[0]?.trim() ?? '';
+        if (!withoutSubpath) {
+            return null;
+        }
+
+        const lower = withoutSubpath.toLowerCase();
+        if (lower.includes('://') || lower.startsWith('mailto:')) {
+            return null;
+        }
+
+        return withoutSubpath;
+    }
+
+    private getLinkedAttachmentCandidates(sourceFile: TFile): TFile[] {
+        const cache = this.app.metadataCache.getFileCache(sourceFile);
+        if (!cache) {
+            return [];
+        }
+
+        const resolved = new Map<string, TFile>();
+        const references = [...(cache.links ?? []), ...(cache.embeds ?? []), ...(cache.frontmatterLinks ?? [])];
+
+        for (const reference of references) {
+            const target = this.normalizeAttachmentLinkTarget(reference.link);
+            if (!target) {
+                continue;
+            }
+
+            const destination = this.app.metadataCache.getFirstLinkpathDest(target, sourceFile.path);
+            if (!(destination instanceof TFile)) {
+                continue;
+            }
+
+            if (!this.isAttachmentFile(destination)) {
+                continue;
+            }
+
+            resolved.set(destination.path, destination);
+        }
+
+        return Array.from(resolved.values()).sort((a, b) => a.path.localeCompare(b.path));
+    }
+
+    private getOrphanLinkedAttachments(attachmentCandidates: readonly TFile[], deletedSourcePaths: Set<string>): TFile[] {
+        if (attachmentCandidates.length === 0) {
+            return [];
+        }
+
+        const candidatesByPath = new Map<string, TFile>();
+        attachmentCandidates.forEach(file => {
+            candidatesByPath.set(file.path, file);
+        });
+
+        const candidatePaths = new Set<string>(candidatesByPath.keys());
+        const usedElsewhere = new Set<string>();
+
+        const { resolvedLinks } = this.app.metadataCache;
+        for (const sourcePath of Object.keys(resolvedLinks)) {
+            if (deletedSourcePaths.has(sourcePath)) {
+                continue;
+            }
+
+            const destinations = resolvedLinks[sourcePath];
+            for (const destinationPath of Object.keys(destinations)) {
+                if (!candidatePaths.has(destinationPath)) {
+                    continue;
+                }
+                usedElsewhere.add(destinationPath);
+                if (usedElsewhere.size === candidatePaths.size) {
+                    break;
+                }
+            }
+
+            if (usedElsewhere.size === candidatePaths.size) {
+                break;
+            }
+        }
+
+        const orphaned = Array.from(candidatesByPath.values()).filter(file => !usedElsewhere.has(file.path));
+        return orphaned.sort((a, b) => a.path.localeCompare(b.path));
+    }
+
+    private resolveAttachmentDeletionSetting(): DeleteAttachmentsSetting {
+        return resolveDeleteAttachmentsSetting(this.settingsProvider.settings.deleteAttachments, 'ask');
+    }
+
+    private collectAttachmentCandidatesBySourcePath(
+        sourceFiles: readonly TFile[],
+        setting: DeleteAttachmentsSetting
+    ): Map<string, TFile[]> {
+        const candidatesBySourcePath = new Map<string, TFile[]>();
+        if (setting === 'never') {
+            return candidatesBySourcePath;
+        }
+
+        sourceFiles.forEach(file => {
+            candidatesBySourcePath.set(file.path, this.getLinkedAttachmentCandidates(file));
+        });
+        return candidatesBySourcePath;
+    }
+
+    private prepareAttachmentDeletionState(sourceFiles: readonly TFile[]): {
+        setting: DeleteAttachmentsSetting;
+        candidatesBySourcePath: Map<string, TFile[]>;
+    } {
+        const setting = this.resolveAttachmentDeletionSetting();
+        return {
+            setting,
+            candidatesBySourcePath: this.collectAttachmentCandidatesBySourcePath(sourceFiles, setting)
+        };
+    }
+
+    private getAttachmentCandidatesForDeletedSources(
+        candidatesBySourcePath: ReadonlyMap<string, readonly TFile[]>,
+        deletedSourcePaths: Set<string>
+    ): TFile[] {
+        if (candidatesBySourcePath.size === 0 || deletedSourcePaths.size === 0) {
+            return [];
+        }
+
+        const dedupedCandidatesByPath = new Map<string, TFile>();
+        deletedSourcePaths.forEach(path => {
+            const candidates = candidatesBySourcePath.get(path);
+            if (!candidates || candidates.length === 0) {
+                return;
+            }
+
+            candidates.forEach(candidate => {
+                if (!deletedSourcePaths.has(candidate.path)) {
+                    dedupedCandidatesByPath.set(candidate.path, candidate);
+                }
+            });
+        });
+
+        return Array.from(dedupedCandidatesByPath.values());
+    }
+
+    private async maybeDeleteAttachmentsAfterFileDelete(
+        candidatesBySourcePath: ReadonlyMap<string, readonly TFile[]>,
+        deletedSourcePaths: Set<string>,
+        setting: DeleteAttachmentsSetting
+    ): Promise<void> {
+        if (setting === 'never' || deletedSourcePaths.size === 0) {
+            return;
+        }
+
+        const attachmentCandidates = this.getAttachmentCandidatesForDeletedSources(candidatesBySourcePath, deletedSourcePaths);
+        if (attachmentCandidates.length === 0) {
+            return;
+        }
+
+        try {
+            await this.maybeDeleteOrphanedLinkedAttachments(attachmentCandidates, deletedSourcePaths, setting);
+        } catch (error) {
+            this.notifyError(strings.fileSystem.errors.deleteAttachments, error);
+        }
+    }
+
+    private async maybeDeleteOrphanedLinkedAttachments(
+        attachmentCandidates: readonly TFile[],
+        deletedSourcePaths: Set<string>,
+        setting: DeleteAttachmentsSetting
+    ): Promise<void> {
+        if (setting === 'never') {
+            return;
+        }
+
+        const orphaned = this.getOrphanLinkedAttachments(attachmentCandidates, deletedSourcePaths);
+        if (orphaned.length === 0) {
+            return;
+        }
+
+        let attachmentsToDelete: readonly TFile[] | null = orphaned;
+
+        if (setting === 'ask') {
+            const { promptDeleteFileAttachments } = await import('../modals/DeleteFileAttachmentsModal');
+            attachmentsToDelete = await promptDeleteFileAttachments(this.app, orphaned);
+        }
+
+        if (!attachmentsToDelete || attachmentsToDelete.length === 0) {
+            return;
+        }
+
+        const results = await Promise.allSettled(attachmentsToDelete.map(file => this.app.fileManager.trashFile(file)));
+
+        const failures: { file: TFile; error: unknown }[] = [];
+        results.forEach((result, index) => {
+            if (result.status === 'rejected') {
+                failures.push({ file: attachmentsToDelete[index], error: result.reason });
+                console.error('Error deleting attachment:', attachmentsToDelete[index].path, result.reason);
+            }
+        });
+
+        if (failures.length === 0) {
+            return;
+        }
+
+        const errorMsg =
+            failures.length === 1
+                ? strings.fileSystem.errors.failedToDeleteFile
+                      .replace('{name}', failures[0].file.name)
+                      .replace('{error}', getErrorMessage(failures[0].error))
+                : strings.fileSystem.errors.failedToDeleteMultipleFiles.replace('{count}', failures.length.toString());
+        showNotice(errorMsg, { variant: 'warning' });
     }
 
     private resolveConfiguredPropertyDisplayKey(normalizedKey: string): string | null {
@@ -905,6 +1128,7 @@ export class FileSystemOperations {
     ): Promise<void> {
         const deleteTitle = this.getDeleteFileTitle(file);
         const performDeleteCore = async () => {
+            const attachmentDeletion = this.prepareAttachmentDeletionState([file]);
             try {
                 // Run pre-delete action if provided
                 if (preDeleteAction) {
@@ -918,7 +1142,14 @@ export class FileSystemOperations {
                 }
             } catch (error) {
                 this.notifyError(strings.fileSystem.errors.deleteFile, error);
+                return;
             }
+
+            await this.maybeDeleteAttachmentsAfterFileDelete(
+                attachmentDeletion.candidatesBySourcePath,
+                new Set([file.path]),
+                attachmentDeletion.setting
+            );
         };
 
         if (confirmBeforeDelete) {
@@ -1635,6 +1866,8 @@ export class FileSystemOperations {
         if (files.length === 0) return;
 
         const performDeleteCore = async () => {
+            const attachmentDeletion = this.prepareAttachmentDeletionState(files);
+
             // Run optional pre-delete action (e.g., to update selection)
             if (preDeleteAction) {
                 try {
@@ -1650,16 +1883,24 @@ export class FileSystemOperations {
             let deletedCount = 0;
 
             const results = await Promise.allSettled(files.map(file => this.app.fileManager.trashFile(file)));
+            const deletedSourcePaths = new Set<string>();
 
             results.forEach((result, index) => {
                 if (result.status === 'fulfilled') {
                     deletedCount++;
+                    deletedSourcePaths.add(files[index].path);
                 } else {
                     const file = files[index];
                     errors.push({ file, error: result.reason });
                     console.error('Error deleting file:', file.path, result.reason);
                 }
             });
+
+            await this.maybeDeleteAttachmentsAfterFileDelete(
+                attachmentDeletion.candidatesBySourcePath,
+                deletedSourcePaths,
+                attachmentDeletion.setting
+            );
 
             // Show appropriate notifications
             if (deletedCount > 0) {

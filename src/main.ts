@@ -107,6 +107,7 @@ import {
     isAlphaSortOrder,
     isRecentNotesHideMode,
     isPropertySortSecondaryOption,
+    resolveDeleteAttachmentsSetting,
     isSettingSyncMode,
     isSortOption,
     isTagSortOrder,
@@ -503,6 +504,11 @@ export default class NotebookNavigatorPlugin extends Plugin implements ISettings
         if (!isAlphaSortOrder(this.settings.folderSortOrder)) {
             this.settings.folderSortOrder = DEFAULT_SETTINGS.folderSortOrder;
         }
+
+        this.settings.deleteAttachments = resolveDeleteAttachmentsSetting(
+            this.settings.deleteAttachments,
+            DEFAULT_SETTINGS.deleteAttachments
+        );
 
         let uiScaleMigrated = false;
         SYNC_MODE_SETTING_IDS.forEach(settingId => {

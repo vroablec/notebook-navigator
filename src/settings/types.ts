@@ -30,6 +30,16 @@ export function isSettingSyncMode(value: unknown): value is SettingSyncMode {
     return value === 'local' || value === 'synced';
 }
 
+export type DeleteAttachmentsSetting = 'ask' | 'always' | 'never';
+
+export function isDeleteAttachmentsSetting(value: unknown): value is DeleteAttachmentsSetting {
+    return value === 'ask' || value === 'always' || value === 'never';
+}
+
+export function resolveDeleteAttachmentsSetting(value: unknown, fallback: DeleteAttachmentsSetting): DeleteAttachmentsSetting {
+    return isDeleteAttachmentsSetting(value) ? value : fallback;
+}
+
 /** Identifiers for settings that can be switched between synced and local storage. */
 export const SYNC_MODE_SETTING_IDS = [
     'vaultProfile',
@@ -278,6 +288,7 @@ export interface NotebookNavigatorSettings {
     // Advanced tab
     checkForUpdatesOnStart: boolean;
     confirmBeforeDelete: boolean;
+    deleteAttachments: DeleteAttachmentsSetting;
 
     // Navigation pane tab - Appearance
     pinNavigationBanner: boolean;

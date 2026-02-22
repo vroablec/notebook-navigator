@@ -1110,6 +1110,7 @@ export type {
     AlphaSortOrder,
     ItemScope,
     MultiSelectModifier,
+    DeleteAttachmentsSetting,
     ListPaneTitleOption,
     PropertySortSecondaryOption,
     AlphabeticalDateMode,

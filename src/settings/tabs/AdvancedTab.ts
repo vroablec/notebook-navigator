@@ -26,6 +26,7 @@ import { localStorage } from '../../utils/localStorage';
 import { runAsyncAction } from '../../utils/async';
 import { showNotice } from '../../utils/noticeUtils';
 import { createSettingGroupFactory } from '../settingGroups';
+import { isDeleteAttachmentsSetting } from '../types';
 
 /** Renders the advanced settings tab */
 export function renderAdvancedTab(context: SettingsTabContext): void {
@@ -62,6 +63,26 @@ export function renderAdvancedTab(context: SettingsTabContext): void {
                     await plugin.saveSettingsAndUpdate();
                 })
             );
+    });
+
+    advancedGroup.addSetting(setting => {
+        setting
+            .setName(strings.settings.items.deleteAttachments.name)
+            .setDesc(strings.settings.items.deleteAttachments.desc)
+            .addDropdown(dropdown => {
+                dropdown
+                    .addOption('ask', strings.settings.items.deleteAttachments.options.ask)
+                    .addOption('always', strings.settings.items.deleteAttachments.options.always)
+                    .addOption('never', strings.settings.items.deleteAttachments.options.never)
+                    .setValue(plugin.settings.deleteAttachments)
+                    .onChange(async value => {
+                        if (!isDeleteAttachmentsSetting(value)) {
+                            return;
+                        }
+                        plugin.settings.deleteAttachments = value;
+                        await plugin.saveSettingsAndUpdate();
+                    });
+            });
     });
 
     if (!Platform.isMobile) {

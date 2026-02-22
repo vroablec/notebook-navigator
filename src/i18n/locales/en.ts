@@ -496,6 +496,7 @@ export const STRINGS_EN = {
             renameFileTitle: 'Rename file',
             deleteFolderTitle: "Delete '{name}'?",
             deleteFileTitle: "Delete '{name}'?",
+            deleteFileAttachmentsTitle: 'Delete file attachments?',
             folderNamePrompt: 'Enter folder name:',
             hideInOtherVaultProfiles: 'Hide in other vault profiles',
             renamePrompt: 'Enter new name:',
@@ -503,6 +504,10 @@ export const STRINGS_EN = {
             renameVaultPrompt: 'Enter custom display name (leave empty to use default):',
             deleteFolderConfirm: 'Are you sure you want to delete this folder and all its contents?',
             deleteFileConfirm: 'Are you sure you want to delete this file?',
+            deleteFileAttachmentsDescriptionSingle: 'This attachment is no longer used in any notes. Would you like to delete it?',
+            deleteFileAttachmentsDescriptionMultiple: 'These attachments are no longer used in any notes. Would you like to delete them?',
+            deleteFileAttachmentsViewFileTreeAriaLabel: 'File tree',
+            deleteFileAttachmentsViewGalleryAriaLabel: 'Gallery',
             removeAllTagsTitle: 'Remove all tags',
             removeAllTagsFromNote: 'Are you sure you want to remove all tags from this note?',
             removeAllTagsFromNotes: 'Are you sure you want to remove all tags from {count} notes?'
@@ -601,6 +606,7 @@ export const STRINGS_EN = {
             renameFile: 'Failed to rename file: {error}',
             deleteFolder: 'Failed to delete folder: {error}',
             deleteFile: 'Failed to delete file: {error}',
+            deleteAttachments: 'Failed to delete attachments: {error}',
             duplicateNote: 'Failed to duplicate note: {error}',
             duplicateFolder: 'Failed to duplicate folder: {error}',
             openVersionHistory: 'Failed to open version history: {error}',
@@ -1672,6 +1678,15 @@ export const STRINGS_EN = {
             confirmBeforeDelete: {
                 name: 'Confirm before deleting',
                 desc: 'Show confirmation dialog when deleting notes or folders'
+            },
+            deleteAttachments: {
+                name: 'Delete attachments when deleting files',
+                desc: "Automatically remove attachments linked to the deleted file if they're not used elsewhere",
+                options: {
+                    ask: 'Ask each time',
+                    always: 'Always',
+                    never: 'Never'
+                }
             },
             metadataCleanup: {
                 name: 'Clean up metadata',

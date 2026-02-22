@@ -18,7 +18,7 @@
 
 import { TFile, TFolder, App } from 'obsidian';
 import type { NotebookNavigatorSettings } from '../settings';
-import { isPdfFile, shouldDisplayFile } from './fileTypeUtils';
+import { isPdfFile, isPrimaryDocumentFile, shouldDisplayFile } from './fileTypeUtils';
 import {
     getActiveFileVisibility,
     getActiveHiddenFileNames,
@@ -770,7 +770,7 @@ export function getFilteredDocumentFiles(app: App, settings: NotebookNavigatorSe
     const filterState = createExclusionFilterState(settings, options);
     return app.vault.getFiles().filter(file => {
         // Only include document files (md, canvas, base)
-        const isDocument = file.extension === 'md' || file.extension === 'canvas' || file.extension === 'base';
+        const isDocument = isPrimaryDocumentFile(file);
         if (!isDocument) return false;
 
         return passesExclusionFilters(file, filterState, app);

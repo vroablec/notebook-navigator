@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 import { describe, it, expect } from 'vitest';
-import { getExtensionSuffix, shouldShowExtensionSuffix } from '../../src/utils/fileTypeUtils';
+import { getExtensionSuffix, isPrimaryDocumentFile, shouldShowExtensionSuffix } from '../../src/utils/fileTypeUtils';
 import { createTestTFile } from './createTestTFile';
 
 describe('fileTypeUtils', () => {
@@ -43,6 +43,13 @@ describe('fileTypeUtils', () => {
             expect(getExtensionSuffix(createTestTFile('Note.md'))).toBe('');
             expect(getExtensionSuffix(createTestTFile('Board.canvas'))).toBe('');
             expect(getExtensionSuffix(createTestTFile('Data.base'))).toBe('');
+        });
+
+        it('identifies primary document files by extension', () => {
+            expect(isPrimaryDocumentFile(createTestTFile('Note.md'))).toBe(true);
+            expect(isPrimaryDocumentFile(createTestTFile('Board.canvas'))).toBe(true);
+            expect(isPrimaryDocumentFile(createTestTFile('Data.base'))).toBe(true);
+            expect(isPrimaryDocumentFile(createTestTFile('Asset.png'))).toBe(false);
         });
     });
 });

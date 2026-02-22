@@ -134,6 +134,7 @@ export const DEFAULT_SETTINGS: NotebookNavigatorSettings = {
     // Advanced tab
     checkForUpdatesOnStart: true,
     confirmBeforeDelete: true,
+    deleteAttachments: 'ask',
 
     // Navigation pane tab - Appearance
     pinNavigationBanner: true,
