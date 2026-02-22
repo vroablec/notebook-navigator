@@ -276,6 +276,7 @@ function resolvePropertyItemsFromFrontmatter(frontmatter: FrontMatterCache | nul
 export class MarkdownPipelineContentProvider extends FeatureImageContentProvider {
     protected readonly PARALLEL_LIMIT: number = LIMITS.contentProvider.parallelLimit;
     private readonly readFailureAttemptsByPath = new Map<string, number>();
+    private readonly emptyFrontmatterRetryCounts = new Map<string, number>();
 
     private readonly processors: MarkdownPipelineProcessor[] = [
         {
@@ -444,6 +445,8 @@ export class MarkdownPipelineContentProvider extends FeatureImageContentProvider
         if (shouldClearFeatureImage) {
             await db.batchClearFeatureImageContent('markdown');
         }
+
+        this.emptyFrontmatterRetryCounts.clear();
     }
 
     protected needsProcessing(fileData: FileData | null, file: TFile, settings: NotebookNavigatorSettings): boolean {
@@ -482,10 +485,20 @@ export class MarkdownPipelineContentProvider extends FeatureImageContentProvider
 
         const cachedMetadata = this.app.metadataCache.getFileCache(job.file);
         if (!cachedMetadata) {
+            this.emptyFrontmatterRetryCounts.delete(job.path);
             return { update: null, processed: false };
         }
 
         const frontmatter = cachedMetadata.frontmatter ?? null;
+        if (frontmatter === null && propertiesEnabled && (fileData === null || fileData.properties === null)) {
+            const attempts = this.emptyFrontmatterRetryCounts.get(job.path) ?? 0;
+            const isRecent = Date.now() - job.file.stat.mtime <= LIMITS.contentProvider.metadataCache.recentFileWindowMs;
+            if (isRecent && attempts < LIMITS.contentProvider.metadataCache.emptyValueRetryLimit) {
+                this.emptyFrontmatterRetryCounts.set(job.path, attempts + 1);
+                return { update: null, processed: false };
+            }
+        }
+        this.emptyFrontmatterRetryCounts.delete(job.path);
         const isExcalidraw = PreviewTextUtils.isExcalidrawFile(job.file.name, frontmatter ?? undefined);
 
         const fileModified = fileData !== null && fileData.markdownPipelineMtime !== job.file.stat.mtime;

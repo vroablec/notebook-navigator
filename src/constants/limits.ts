@@ -285,6 +285,14 @@ export const LIMITS = {
             initialDelayMs: 1000,
             maxDelayMs: 30_000,
             maxAttempts: 5
+        },
+        metadataCache: {
+            /**
+             * Controls for metadata-cache reads that can temporarily return empty results for recently created files.
+             * Providers can defer persisting empty values and allow BaseContentProvider retries.
+             */
+            emptyValueRetryLimit: 2,
+            recentFileWindowMs: 15_000
         }
     },
     operations: {

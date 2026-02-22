@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { MenuItem } from 'obsidian';
+import { MenuItem, TFile } from 'obsidian';
 import type { PropertyMenuBuilderParams } from './menuTypes';
 import { strings } from '../../i18n';
 import { ItemType, PROPERTIES_ROOT_VIRTUAL_FOLDER_ID } from '../../types';
@@ -94,8 +94,10 @@ function addPropertyShortcutMenuItems(params: {
  * Builds the context menu for a property key/value node.
  */
 export function buildPropertyMenu(params: PropertyMenuBuilderParams): void {
-    const { propertyNodeId, menu, services, settings, options } = params;
-    const { app, metadataService, propertyOperations, propertyTreeService, isMobile } = services;
+    const { propertyNodeId, menu, services, settings, state, dispatchers, options } = params;
+    const { app, metadataService, propertyOperations, propertyTreeService, fileSystemOps, isMobile } = services;
+    const { selectionState } = state;
+    const { selectionDispatch, uiDispatch } = dispatchers;
 
     if (propertyNodeId === PROPERTIES_ROOT_VIRTUAL_FOLDER_ID) {
         const label = strings.navigationPane.properties;
@@ -141,6 +143,33 @@ export function buildPropertyMenu(params: PropertyMenuBuilderParams): void {
         });
         menu.addSeparator();
     }
+
+    const ensurePropertySelected = () => {
+        if (selectionState.selectionType === ItemType.PROPERTY && selectionState.selectedProperty === normalizedNodeId) {
+            return;
+        }
+
+        selectionDispatch({ type: 'SET_SELECTED_PROPERTY', nodeId: normalizedNodeId });
+    };
+
+    const handleFileCreation = (file: TFile | null | undefined) => {
+        if (!file) {
+            return;
+        }
+
+        selectionDispatch({ type: 'SET_SELECTED_FILE', file });
+        uiDispatch({ type: 'SET_FOCUSED_PANE', pane: 'files' });
+    };
+
+    menu.addItem((item: MenuItem) => {
+        setAsyncOnClick(item.setTitle(strings.contextMenu.folder.newNote).setIcon('lucide-pen-box'), async () => {
+            ensurePropertySelected();
+            const sourcePath = selectionState.selectedFile?.path ?? app.workspace.getActiveFile()?.path ?? '';
+            const createdFile = await fileSystemOps.createNewFileForProperty(normalizedNodeId, sourcePath, settings.createNewNotesInNewTab);
+            handleFileCreation(createdFile);
+        });
+    });
+    menu.addSeparator();
 
     if (settings.showPropertyIcons) {
         menu.addItem((item: MenuItem) => {

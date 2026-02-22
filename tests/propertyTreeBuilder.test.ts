@@ -22,6 +22,7 @@ import { PROPERTIES_ROOT_VIRTUAL_FOLDER_ID } from '../src/types';
 import { DEFAULT_SETTINGS } from '../src/settings/defaultSettings';
 import {
     canRestorePropertySelectionNodeId,
+    determinePropertyToReveal,
     type PropertyTreeDatabaseLike,
     buildPropertyKeyNodeId,
     buildPropertyTreeFromDatabase,
@@ -572,5 +573,31 @@ describe('property selection restore', () => {
         setActivePropertyFields(settings, 'status');
 
         expect(canRestorePropertySelectionNodeId(settings, PROPERTIES_ROOT_VIRTUAL_FOLDER_ID)).toBe(false);
+    });
+});
+
+describe('property reveal selection', () => {
+    it('keeps current property selection while file properties are not indexed yet', () => {
+        const settings = {
+            ...DEFAULT_SETTINGS,
+            showProperties: true
+        };
+        setActivePropertyFields(settings, 'hideFeature');
+
+        const selection = buildPropertyKeyNodeId('hidefeature');
+        const resolved = determinePropertyToReveal(null, selection, settings, false);
+        expect(resolved).toBe(selection);
+    });
+
+    it('falls back when file has no properties', () => {
+        const settings = {
+            ...DEFAULT_SETTINGS,
+            showProperties: true
+        };
+        setActivePropertyFields(settings, 'hideFeature');
+
+        const selection = buildPropertyKeyNodeId('hidefeature');
+        const resolved = determinePropertyToReveal([], selection, settings, false);
+        expect(resolved).toBeNull();
     });
 });

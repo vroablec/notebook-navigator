@@ -23,7 +23,7 @@ import { ConfirmModal } from '../modals/ConfirmModal';
 import { FolderSuggestModal } from '../modals/FolderSuggestModal';
 import { InputModal } from '../modals/InputModal';
 import { NotebookNavigatorSettings } from '../settings';
-import { NavigationItemType, TAGGED_TAG_ID, UNTAGGED_TAG_ID } from '../types';
+import { NavigationItemType, PROPERTIES_ROOT_VIRTUAL_FOLDER_ID, TAGGED_TAG_ID, UNTAGGED_TAG_ID } from '../types';
 import type { VisibilityPreferences } from '../types';
 import { ExtendedApp, TIMEOUTS, OBSIDIAN_COMMANDS } from '../types/obsidian-extended';
 import { createFileWithOptions, createDatabaseContent, generateUniqueFilename } from '../utils/fileCreationUtils';
@@ -49,12 +49,13 @@ import type { PropertyTreeService } from './PropertyTreeService';
 import { CommandQueueService } from './CommandQueueService';
 import type { MaybePromise } from '../utils/async';
 import { showNotice } from '../utils/noticeUtils';
-import type { PropertySelectionNodeId } from '../utils/propertyTree';
+import { normalizePropertyNodeId, parsePropertyNodeId, type PropertySelectionNodeId } from '../utils/propertyTree';
 import type { ISettingsProvider } from '../interfaces/ISettingsProvider';
-import { ensureRecord, isStringRecordValue } from '../utils/recordUtils';
+import { casefold, ensureRecord, isStringRecordValue } from '../utils/recordUtils';
 import type { MetadataService } from './MetadataService';
 import {
     ensureVaultProfiles,
+    getActiveVaultProfile,
     normalizeHiddenFolderPath,
     removeHiddenFolderExactMatches,
     updateHiddenFolderExactMatches
@@ -204,6 +205,29 @@ export class FileSystemOperations {
     private notifyError(template: string, error: unknown, fallback?: string): void {
         const message = template.replace('{error}', getErrorMessage(error, fallback ?? strings.common.unknownError));
         showNotice(message, { variant: 'warning' });
+    }
+
+    private resolveConfiguredPropertyDisplayKey(normalizedKey: string): string | null {
+        const activeProfile = getActiveVaultProfile(this.settingsProvider.settings);
+        const propertyKeys = Array.isArray(activeProfile.propertyKeys) ? activeProfile.propertyKeys : [];
+
+        for (let index = 0; index < propertyKeys.length; index += 1) {
+            const rawKey = propertyKeys[index]?.key;
+            if (typeof rawKey !== 'string') {
+                continue;
+            }
+
+            const displayKey = rawKey.trim();
+            if (!displayKey) {
+                continue;
+            }
+
+            if (casefold(displayKey) === normalizedKey) {
+                return displayKey;
+            }
+        }
+
+        return null;
     }
 
     private async syncHiddenFolderPathChange(previousPath: string, nextPath: string): Promise<void> {
@@ -578,6 +602,86 @@ export class FileSystemOperations {
             } catch (error) {
                 console.error('[Notebook Navigator] Failed to update created note tags', error);
                 showNotice(strings.dragDrop.errors.failedToAddTag.replace('{tag}', `#${resolvedTagPath}`), { variant: 'warning' });
+            }
+
+            const leaf = this.app.workspace.getLeaf(openInNewTab);
+            await leaf.openFile(file, { state: { mode: 'source' }, active: true });
+
+            window.setTimeout(() => {
+                executeCommand(this.app, OBSIDIAN_COMMANDS.EDIT_FILE_TITLE);
+            }, TIMEOUTS.FILE_OPERATION_DELAY);
+
+            return file;
+        } catch (error) {
+            this.notifyError(strings.fileSystem.errors.createFile, error);
+            return null;
+        }
+    }
+
+    /**
+     * Creates a new markdown file in the user's configured default location and applies the selected property.
+     * Uses Obsidian's markdown file creation API so plugin hooks run on creation.
+     * @param propertyNodeId - Canonical property node id (`key:<property>` or `key:<property>=<value>`)
+     * @param sourcePath - Current file path used for "same folder as current file" preference
+     * @param openInNewTab - Whether the file should open in a new tab
+     * @returns The created file or null when creation fails
+     */
+    async createNewFileForProperty(propertyNodeId: string, sourcePath?: string, openInNewTab = false): Promise<TFile | null> {
+        if (propertyNodeId === PROPERTIES_ROOT_VIRTUAL_FOLDER_ID) {
+            return null;
+        }
+
+        const requestedNode = parsePropertyNodeId(propertyNodeId);
+        if (!requestedNode) {
+            return null;
+        }
+
+        const normalizedNodeId = normalizePropertyNodeId(propertyNodeId);
+        if (!normalizedNodeId) {
+            return null;
+        }
+
+        const parsed = parsePropertyNodeId(normalizedNodeId);
+        if (!parsed) {
+            return null;
+        }
+
+        const propertyTreeService = this.getPropertyTreeService();
+        const keyNode = propertyTreeService?.getKeyNode(parsed.key) ?? null;
+        const valueNode = parsed.valuePath ? (propertyTreeService?.findNode(normalizedNodeId) ?? null) : null;
+
+        const propertyKey = keyNode?.name?.trim() || this.resolveConfiguredPropertyDisplayKey(parsed.key) || parsed.key;
+        if (!propertyKey) {
+            return null;
+        }
+
+        const requestedValuePath = requestedNode.valuePath?.trim() ?? null;
+        const propertyValue: unknown =
+            parsed.valuePath === null
+                ? true
+                : valueNode && valueNode.kind === 'value' && valueNode.name.trim().length > 0
+                  ? valueNode.name.trim()
+                  : requestedValuePath || parsed.valuePath;
+
+        try {
+            const activeFilePath = this.app.workspace.getActiveFile()?.path ?? '';
+            const sourceFilePath = sourcePath?.trim().length ? sourcePath : activeFilePath;
+            const defaultParent = this.app.fileManager.getNewFileParent(sourceFilePath ?? '');
+            const targetFolder = defaultParent instanceof TFolder ? defaultParent : this.app.vault.getRoot();
+            const fileName = generateUniqueFilename(targetFolder.path, strings.fileSystem.defaultNames.untitled, 'md', this.app);
+            const file = await this.app.fileManager.createNewMarkdownFile(targetFolder, fileName);
+
+            try {
+                // Mutate frontmatter through Obsidian's API so YAML serialization matches other property operations.
+                await this.app.fileManager.processFrontMatter(file, (frontmatter: Record<string, unknown>) => {
+                    frontmatter[propertyKey] = propertyValue;
+                });
+            } catch (error) {
+                console.error('[Notebook Navigator] Failed to update created note properties', error);
+                showNotice(
+                    strings.dragDrop.errors.failedToSetProperty.replace('{error}', getErrorMessage(error, strings.common.unknownError)),
+                    { variant: 'warning' }
+                );
             }
 
             const leaf = this.app.workspace.getLeaf(openInNewTab);

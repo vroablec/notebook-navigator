@@ -707,6 +707,16 @@ export const NotebookNavigatorComponent = React.memo(
                         return;
                     }
 
+                    if (
+                        selectionState.selectionType === ItemType.PROPERTY &&
+                        selectionState.selectedProperty &&
+                        selectionState.selectedProperty !== PROPERTIES_ROOT_VIRTUAL_FOLDER_ID
+                    ) {
+                        const sourcePath = selectionState.selectedFile?.path ?? app.workspace.getActiveFile()?.path ?? '';
+                        await fileSystemOps.createNewFileForProperty(selectionState.selectedProperty, sourcePath, openInNewTab);
+                        return;
+                    }
+
                     showNotice(strings.fileSystem.errors.noFolderSelected, { variant: 'warning' });
                 },
                 createNoteFromTemplateInSelectedFolder: async () => {

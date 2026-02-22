@@ -207,7 +207,12 @@ export function determinePropertyToReveal(
     settings: NotebookNavigatorSettings,
     includeDescendantNotes: boolean
 ): PropertySelectionNodeId | null {
-    if (!properties || properties.length === 0) {
+    if (properties === null) {
+        // Keep current selection while property metadata is still hydrating for the active file.
+        return currentSelection;
+    }
+
+    if (properties.length === 0) {
         return null;
     }
 

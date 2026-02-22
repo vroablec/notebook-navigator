@@ -24,7 +24,7 @@ import { useSettingsState, useSettingsUpdate } from '../context/SettingsContext'
 import { useUXPreferenceActions, useUXPreferences } from '../context/UXPreferencesContext';
 import { strings } from '../i18n';
 import type { SortOption } from '../settings';
-import { ItemType, TAGGED_TAG_ID, UNTAGGED_TAG_ID } from '../types';
+import { ItemType, PROPERTIES_ROOT_VIRTUAL_FOLDER_ID, TAGGED_TAG_ID, UNTAGGED_TAG_ID } from '../types';
 import { getEffectiveSortOption, getSortIcon as getSortIconName, isPropertySortOption, SORT_OPTIONS } from '../utils/sortUtils';
 import { showListPaneAppearanceMenu } from '../components/ListPaneAppearanceMenu';
 import { getDefaultListMode } from './useListPaneAppearance';
@@ -58,8 +58,10 @@ export function useListActions() {
     const hasTagSelection = selectionState.selectionType === ItemType.TAG && Boolean(selectionState.selectedTag);
     const hasCreatableTagSelection =
         hasTagSelection && selectionState.selectedTag !== TAGGED_TAG_ID && selectionState.selectedTag !== UNTAGGED_TAG_ID;
+    const hasPropertySelection = selectionState.selectionType === ItemType.PROPERTY && Boolean(selectionState.selectedProperty);
+    const hasCreatablePropertySelection = hasPropertySelection && selectionState.selectedProperty !== PROPERTIES_ROOT_VIRTUAL_FOLDER_ID;
     const hasFolderOrTagSelection = hasFolderSelection || hasTagSelection;
-    const canCreateNewFile = Boolean(selectionState.selectedFolder) || hasCreatableTagSelection;
+    const canCreateNewFile = Boolean(selectionState.selectedFolder) || hasCreatableTagSelection || hasCreatablePropertySelection;
 
     const handleNewFile = useCallback(async () => {
         try {
@@ -71,6 +73,12 @@ export function useListActions() {
             if (hasCreatableTagSelection && selectionState.selectedTag) {
                 const sourcePath = selectionState.selectedFile?.path ?? app.workspace.getActiveFile()?.path ?? '';
                 await fileSystemOps.createNewFileForTag(selectionState.selectedTag, sourcePath, settings.createNewNotesInNewTab);
+                return;
+            }
+
+            if (hasCreatablePropertySelection && selectionState.selectedProperty) {
+                const sourcePath = selectionState.selectedFile?.path ?? app.workspace.getActiveFile()?.path ?? '';
+                await fileSystemOps.createNewFileForProperty(selectionState.selectedProperty, sourcePath, settings.createNewNotesInNewTab);
             }
         } catch {
             // Error is handled by FileSystemOperations with user notification
@@ -78,8 +86,10 @@ export function useListActions() {
     }, [
         selectionState.selectedFolder,
         selectionState.selectedTag,
+        selectionState.selectedProperty,
         selectionState.selectedFile,
         hasCreatableTagSelection,
+        hasCreatablePropertySelection,
         settings.createNewNotesInNewTab,
         fileSystemOps,
         app
