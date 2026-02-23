@@ -1710,7 +1710,7 @@ export const STRINGS_FR = {
             },
             moveFileConflicts: {
                 name: 'Conflits de déplacement',
-                desc: 'Lors du déplacement d\'un fichier dans un dossier où un fichier du même nom existe déjà. Demander à chaque fois (renommer, écraser, annuler) ou toujours renommer.',
+                desc: "Lors du déplacement d'un fichier dans un dossier où un fichier du même nom existe déjà. Demander à chaque fois (renommer, écraser, annuler) ou toujours renommer.",
                 options: {
                     ask: 'Demander à chaque fois',
                     rename: 'Toujours renommer'
