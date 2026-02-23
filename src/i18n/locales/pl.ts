@@ -35,7 +35,6 @@ export const STRINGS_PL = {
         clipboardWriteError: 'Nie można zapisać do schowka',
         updateBannerTitle: 'Aktualizacja Notebook Navigator dostępna',
         updateBannerInstruction: 'Zaktualizuj w Ustawienia -> Wtyczki społeczności',
-        updateIndicatorLabel: 'Nowa wersja dostępna',
         previous: 'Poprzedni', // Generic aria label for previous navigation (English: Previous)
         next: 'Następny' // Generic aria label for next navigation (English: Next)
     },

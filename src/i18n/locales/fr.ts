@@ -35,7 +35,6 @@ export const STRINGS_FR = {
         clipboardWriteError: "Impossible d'écrire dans le presse-papiers",
         updateBannerTitle: 'Mise à jour Notebook Navigator disponible',
         updateBannerInstruction: 'Mettre à jour dans Paramètres -> Extensions communautaires',
-        updateIndicatorLabel: 'Nouvelle version disponible',
         previous: 'Précédent', // Generic aria label for previous navigation (English: Previous)
         next: 'Suivant' // Generic aria label for next navigation (English: Next)
     },

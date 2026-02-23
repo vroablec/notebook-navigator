@@ -35,7 +35,6 @@ export const STRINGS_UK = {
         clipboardWriteError: 'Не вдалося записати в буфер обміну',
         updateBannerTitle: 'Доступне оновлення Notebook Navigator',
         updateBannerInstruction: 'Оновіть у Налаштування -> Плагіни спільноти',
-        updateIndicatorLabel: 'Доступна нова версія',
         previous: 'Назад', // Generic aria label for previous navigation (English: Previous)
         next: 'Вперед' // Generic aria label for next navigation (English: Next)
     },

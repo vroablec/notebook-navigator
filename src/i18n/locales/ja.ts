@@ -35,7 +35,6 @@ export const STRINGS_JA = {
         clipboardWriteError: 'クリップボードに書き込めませんでした',
         updateBannerTitle: 'Notebook Navigator の更新があります',
         updateBannerInstruction: '設定 -> コミュニティプラグイン で更新',
-        updateIndicatorLabel: '新しいバージョンがあります',
         previous: '前へ', // Generic aria label for previous navigation (English: Previous)
         next: '次へ' // Generic aria label for next navigation (English: Next)
     },

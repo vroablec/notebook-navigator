@@ -35,7 +35,6 @@ export const STRINGS_EN = {
         clipboardWriteError: 'Could not write to clipboard',
         updateBannerTitle: 'Notebook Navigator update available',
         updateBannerInstruction: 'Update in Settings -> Community plugins',
-        updateIndicatorLabel: 'New version available',
         previous: 'Previous', // Generic aria label for previous navigation (English: Previous)
         next: 'Next' // Generic aria label for next navigation (English: Next)
     },

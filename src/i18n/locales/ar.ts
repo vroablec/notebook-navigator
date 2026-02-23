@@ -35,7 +35,6 @@ export const STRINGS_AR = {
         clipboardWriteError: 'تعذرت الكتابة إلى الحافظة',
         updateBannerTitle: 'تحديث متصفح الدفتر متاح',
         updateBannerInstruction: 'قم بالتحديث في الإعدادات -> إضافات المجتمع',
-        updateIndicatorLabel: 'إصدار جديد متاح',
         previous: 'السابق', // Generic aria label for previous navigation (English: Previous)
         next: 'التالي' // Generic aria label for next navigation (English: Next)
     },

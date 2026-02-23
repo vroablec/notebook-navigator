@@ -35,7 +35,6 @@ export const STRINGS_VI = {
         clipboardWriteError: 'Không thể ghi vào clipboard',
         updateBannerTitle: 'Có bản cập nhật Notebook Navigator',
         updateBannerInstruction: 'Cập nhật trong Cài đặt -> Plugin cộng đồng',
-        updateIndicatorLabel: 'Có phiên bản mới',
         previous: 'Trước', // Generic aria label for previous navigation (English: Previous)
         next: 'Sau' // Generic aria label for next navigation (English: Next)
     },

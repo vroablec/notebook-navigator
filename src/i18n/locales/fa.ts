@@ -35,7 +35,6 @@ export const STRINGS_FA = {
         clipboardWriteError: 'نمی‌توان در کلیپ‌بورد نوشت',
         updateBannerTitle: 'به‌روزرسانی Notebook Navigator موجود است',
         updateBannerInstruction: 'در تنظیمات -> افزونه‌های انجمن به‌روزرسانی کنید',
-        updateIndicatorLabel: 'نسخه جدید موجود است',
         previous: 'قبلی', // Generic aria label for previous navigation (English: Previous)
         next: 'بعدی' // Generic aria label for next navigation (English: Next)
     },

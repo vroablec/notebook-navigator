@@ -35,7 +35,6 @@ export const STRINGS_KO = {
         clipboardWriteError: '클립보드에 쓸 수 없습니다',
         updateBannerTitle: 'Notebook Navigator 업데이트 사용 가능',
         updateBannerInstruction: '설정 -> 커뮤니티 플러그인에서 업데이트',
-        updateIndicatorLabel: '새 버전이 있습니다',
         previous: '이전', // Generic aria label for previous navigation (English: Previous)
         next: '다음' // Generic aria label for next navigation (English: Next)
     },

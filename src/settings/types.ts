@@ -472,7 +472,6 @@ export interface NotebookNavigatorSettings {
     navigationSeparators: Record<string, boolean>;
     userColors: string[];
     lastShownVersion: string;
-    lastAnnouncedRelease: string;
     rootFolderOrder: string[];
     rootTagOrder: string[];
     rootPropertyOrder: string[];

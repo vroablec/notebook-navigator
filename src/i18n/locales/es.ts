@@ -35,7 +35,6 @@ export const STRINGS_ES = {
         clipboardWriteError: 'No se pudo escribir en el portapapeles',
         updateBannerTitle: 'Actualización de Notebook Navigator disponible',
         updateBannerInstruction: 'Actualiza en Ajustes -> Complementos de la comunidad',
-        updateIndicatorLabel: 'Nueva versión disponible',
         previous: 'Anterior', // Generic aria label for previous navigation (English: Previous)
         next: 'Siguiente' // Generic aria label for next navigation (English: Next)
     },

@@ -319,7 +319,6 @@ export const DEFAULT_SETTINGS: NotebookNavigatorSettings = {
     navigationSeparators: {},
     userColors: [...DEFAULT_CUSTOM_COLORS],
     lastShownVersion: '',
-    lastAnnouncedRelease: '',
     rootFolderOrder: [],
     rootTagOrder: [],
     rootPropertyOrder: []

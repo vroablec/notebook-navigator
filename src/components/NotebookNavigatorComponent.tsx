@@ -69,7 +69,6 @@ import type { NavigationPaneHandle } from './NavigationPane';
 import { Calendar } from './calendar';
 import type { SearchShortcut } from '../types/shortcuts';
 import { UpdateNoticeBanner } from './UpdateNoticeBanner';
-import { UpdateNoticeIndicator } from './UpdateNoticeIndicator';
 import { showNotice } from '../utils/noticeUtils';
 import { EMPTY_SEARCH_NAV_FILTER_STATE, type SearchNavFilterState } from '../types/search';
 import { getListPaneMeasurements } from '../utils/listPaneMeasurements';
@@ -176,7 +175,7 @@ export const NotebookNavigatorComponent = React.memo(
             removeShortcut
         } = useShortcuts();
         const { stopAllProcessing, rebuildCache } = useFileCache();
-        const { bannerNotice, updateAvailableVersion, markAsDisplayed } = useUpdateNotice();
+        const { bannerNotice, markAsDisplayed } = useUpdateNotice();
         // Keep stable references to avoid stale closures in imperative handles
         const stopProcessingRef = useRef(stopAllProcessing);
         useEffect(() => {
@@ -1110,8 +1109,6 @@ export const NotebookNavigatorComponent = React.memo(
                     }}
                 >
                     {settings.checkForUpdatesOnStart && <UpdateNoticeBanner notice={bannerNotice} onDismiss={markAsDisplayed} />}
-                    {/* Floating indicator button that appears when a new version is available */}
-                    <UpdateNoticeIndicator updateVersion={updateAvailableVersion} isEnabled={settings.checkForUpdatesOnStart} />
                     {/* KEYBOARD EVENT FLOW:
                 1. Both NavigationPane and ListPane receive the same containerRef
                 2. Each pane sets up keyboard listeners on this shared container

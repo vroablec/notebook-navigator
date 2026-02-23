@@ -35,7 +35,6 @@ export const STRINGS_IT = {
         clipboardWriteError: 'Impossibile scrivere negli appunti',
         updateBannerTitle: 'Aggiornamento Notebook Navigator disponibile',
         updateBannerInstruction: 'Aggiorna in Impostazioni -> Plugin della community',
-        updateIndicatorLabel: 'Nuova versione disponibile',
         previous: 'Precedente', // Generic aria label for previous navigation (English: Previous)
         next: 'Successivo' // Generic aria label for next navigation (English: Next)
     },

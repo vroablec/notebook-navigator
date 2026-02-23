@@ -35,7 +35,6 @@ export const STRINGS_ZH_TW = {
         clipboardWriteError: '無法寫入剪貼簿',
         updateBannerTitle: 'Notebook Navigator 有可用更新',
         updateBannerInstruction: '在設定 -> 社群外掛中更新',
-        updateIndicatorLabel: '有新版本可用',
         previous: '上一個', // Generic aria label for previous navigation (English: Previous)
         next: '下一個' // Generic aria label for next navigation (English: Next)
     },

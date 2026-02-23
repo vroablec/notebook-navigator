@@ -35,7 +35,6 @@ export const STRINGS_ID = {
         clipboardWriteError: 'Tidak dapat menulis ke clipboard',
         updateBannerTitle: 'Pembaruan Notebook Navigator tersedia',
         updateBannerInstruction: 'Perbarui di Pengaturan -> Plugin komunitas',
-        updateIndicatorLabel: 'Versi baru tersedia',
         previous: 'Sebelumnya', // Generic aria label for previous navigation (English: Previous)
         next: 'Berikutnya' // Generic aria label for next navigation (English: Next)
     },

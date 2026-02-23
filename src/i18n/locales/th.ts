@@ -35,7 +35,6 @@ export const STRINGS_TH = {
         clipboardWriteError: 'ไม่สามารถเขียนลงคลิปบอร์ด',
         updateBannerTitle: 'มีการอัปเดต Notebook Navigator',
         updateBannerInstruction: 'อัปเดตใน การตั้งค่า -> ปลั๊กอินชุมชน',
-        updateIndicatorLabel: 'มีเวอร์ชันใหม่',
         previous: 'ก่อนหน้า', // Generic aria label for previous navigation (English: Previous)
         next: 'ถัดไป' // Generic aria label for next navigation (English: Next)
     },

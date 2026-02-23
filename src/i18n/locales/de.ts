@@ -35,7 +35,6 @@ export const STRINGS_DE = {
         clipboardWriteError: 'Konnte nicht in Zwischenablage schreiben',
         updateBannerTitle: 'Notebook Navigator-Update verfügbar',
         updateBannerInstruction: 'In Einstellungen -> Community-Plugins aktualisieren',
-        updateIndicatorLabel: 'Neue Version verfügbar',
         previous: 'Zurück', // Generic aria label for previous navigation (English: Previous)
         next: 'Weiter' // Generic aria label for next navigation (English: Next)
     },

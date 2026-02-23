@@ -444,6 +444,7 @@ export default class NotebookNavigatorPlugin extends Plugin implements ISettings
         // Start with default settings
         this.settings = { ...DEFAULT_SETTINGS, ...(storedSettings ?? {}) };
         const hadLegacySearchProviderInSettings = Boolean(storedData && 'searchProvider' in storedData);
+        const hadLegacyLastAnnouncedReleaseInSettings = Boolean(storedData && 'lastAnnouncedRelease' in storedData);
         const storedSearchProvider = localStorage.get<unknown>(this.keys.searchProviderKey);
         if (storedSearchProvider === 'internal' || storedSearchProvider === 'omnisearch') {
             this.settings.searchProvider = storedSearchProvider;
@@ -456,6 +457,7 @@ export default class NotebookNavigatorPlugin extends Plugin implements ISettings
         delete settingsRecord['showCalendar'];
         delete settingsRecord['calendarCustomPromptForTitle'];
         delete settingsRecord['saveMetadataToFrontmatter'];
+        delete settingsRecord['lastAnnouncedRelease'];
         // Validate and normalize keyboard shortcuts to use standard modifier names
         this.settings.keyboardShortcuts = sanitizeKeyboardShortcuts(this.settings.keyboardShortcuts);
         this.normalizeSyncModes({ storedData, isFirstLaunch });
@@ -577,6 +579,7 @@ export default class NotebookNavigatorPlugin extends Plugin implements ISettings
             migratedRecentColors ||
             hadLocalValuesInSettings ||
             hadLegacySearchProviderInSettings ||
+            hadLegacyLastAnnouncedReleaseInSettings ||
             hadLegacyPropertyFieldsInStoredData ||
             uiScaleMigrated ||
             migratedMomentFormats ||
@@ -821,20 +824,12 @@ export default class NotebookNavigatorPlugin extends Plugin implements ISettings
     }
 
     /**
-     * Marks the update notice as shown so it will not display again.
+     * Dismisses the current update notice for the active session.
      */
-    public async markUpdateNoticeAsDisplayed(version: string): Promise<void> {
-        if (this.settings.lastAnnouncedRelease === version) {
-            return;
-        }
-
-        this.settings.lastAnnouncedRelease = version;
-
+    public markUpdateNoticeAsDisplayed(version: string): void {
         if (this.pendingUpdateNotice && this.pendingUpdateNotice.version === version) {
             this.setPendingUpdateNotice(null);
         }
-
-        await this.saveSettingsAndUpdate();
     }
 
     /**

@@ -35,7 +35,6 @@ export const STRINGS_NL = {
         clipboardWriteError: 'Kon niet naar klembord schrijven',
         updateBannerTitle: 'Notebook Navigator update beschikbaar',
         updateBannerInstruction: 'Werk bij in Instellingen -> Community plugins',
-        updateIndicatorLabel: 'Nieuwe versie beschikbaar',
         previous: 'Vorige', // Generic aria label for previous navigation (English: Previous)
         next: 'Volgende' // Generic aria label for next navigation (English: Next)
     },

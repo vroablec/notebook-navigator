@@ -17,7 +17,7 @@
  */
 
 /** Duration to display update notices before starting fade-out */
-export const UPDATE_NOTICE_DISPLAY_DURATION_MS = 7000;
+export const UPDATE_NOTICE_DISPLAY_DURATION_MS = 5000;
 
 /** Duration of the fade-out animation for update notices */
 export const UPDATE_NOTICE_FADE_DURATION_MS = 500;

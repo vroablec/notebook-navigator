@@ -35,7 +35,6 @@ export const STRINGS_TR = {
         clipboardWriteError: 'Panoya yazılamadı',
         updateBannerTitle: 'Notebook Navigator güncellemesi mevcut',
         updateBannerInstruction: 'Ayarlar -> Topluluk eklentileri bölümünden güncelleyin',
-        updateIndicatorLabel: 'Yeni sürüm mevcut',
         previous: 'Önceki', // Generic aria label for previous navigation (English: Previous)
         next: 'Sonraki' // Generic aria label for next navigation (English: Next)
     },

@@ -35,7 +35,6 @@ export const STRINGS_PT_BR = {
         clipboardWriteError: 'Não foi possível gravar na área de transferência',
         updateBannerTitle: 'Atualização do Notebook Navigator disponível',
         updateBannerInstruction: 'Atualize em Configurações -> Plugins da comunidade',
-        updateIndicatorLabel: 'Nova versão disponível',
         previous: 'Anterior', // Generic aria label for previous navigation (English: Previous)
         next: 'Próximo' // Generic aria label for next navigation (English: Next)
     },

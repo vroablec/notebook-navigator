@@ -112,7 +112,6 @@ graph TD
     NC -->|isStorageReady=false| SK["SkeletonView"];
     NC -->|isStorageReady=true| NNC["NotebookNavigatorComponent"];
     NNC --> UNB["UpdateNoticeBanner"];
-    NNC --> UNI["UpdateNoticeIndicator"];
     NNC --> NPR["NavigationPane"];
     NNC --> LPR["ListPane"];
 ```
@@ -223,8 +222,8 @@ graph TD
   commands, drag activation, swipe gestures, and update notices.
 - Bridges list search tag filters into `NavigationPane` for tag highlighting via `searchTagFilters`.
 - Applies CSS custom properties for navigation item height, indentation, and font sizes once per settings change.
-- Renders `UpdateNoticeBanner`, `UpdateNoticeIndicator`, `NavigationPane` (with banner and reorder panel), and
-  `ListPane` in the correct pane arrangement (single or dual).
+- Renders `UpdateNoticeBanner`, `NavigationPane` (with banner and reorder panel), and `ListPane` in the correct pane
+  arrangement (single or dual).
 
 ### UpdateNoticeBanner
 
@@ -232,14 +231,6 @@ graph TD
 
 - Displays a temporary banner when `ReleaseCheckService` reports an available update.
 - Uses `useAutoDismissFade` to manage banner visibility and fade-out timing.
-- Opens Obsidian’s plugin manager via `obsidian://show-plugin?id=notebook-navigator` when clicked.
-
-### UpdateNoticeIndicator
-
-**Location**: `src/components/UpdateNoticeIndicator.tsx`
-
-- Renders a floating indicator button when an update version is available and update checks are enabled.
-- Uses `useAutoDismissFade` to manage visibility and fade-out timing.
 - Opens Obsidian’s plugin manager via `obsidian://show-plugin?id=notebook-navigator` when clicked.
 
 ### NavigationPaneHeader
