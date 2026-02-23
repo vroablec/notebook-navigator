@@ -14,7 +14,8 @@
     max-width: calc(100% - 32px);
     background-color: var(--interactive-accent);
     color: var(--text-on-accent);
-    padding: 10px 16px;
+    padding: 12px 20px;
+    height: auto;
     border-radius: 10px;
     border: none;
     cursor: pointer;
@@ -35,7 +36,7 @@
     background: var(--interactive-accent);
     border: none;
     color: var(--text-on-accent);
-    padding: 10px 16px;
+    padding: 12px 20px;
     appearance: none;
 }
 
