@@ -42,12 +42,19 @@ export function getWelcomeVideoBaseUrl(): string {
 }
 export const WELCOME_VIDEO_THUMBNAIL_URL = `${NOTEBOOK_NAVIGATOR_RAW_BASE_URL}/images/youtube-thumbnail.jpg`;
 
-export function getReleaseBannerUrl(bannerUrl: string): string {
-    const normalizedBannerUrl = bannerUrl.trim();
-
-    if (normalizedBannerUrl.startsWith('http://') || normalizedBannerUrl.startsWith('https://')) {
-        return normalizedBannerUrl;
+export function getReleaseBannerUrl(bannerUrl: boolean | string | undefined, version: string): string | null {
+    if (!bannerUrl) {
+        return null;
     }
 
-    return `${NOTEBOOK_NAVIGATOR_RAW_BASE_URL}/images/version-banners/${normalizedBannerUrl}.jpg`;
+    const bannerSource = bannerUrl === true ? version : bannerUrl.trim();
+    if (bannerSource.length === 0) {
+        return null;
+    }
+
+    if (/^https?:\/\//i.test(bannerSource)) {
+        return bannerSource;
+    }
+
+    return `${NOTEBOOK_NAVIGATOR_RAW_BASE_URL}/images/version-banners/${bannerSource}.jpg`;
 }

@@ -97,7 +97,7 @@ export class WhatsNewModal extends Modal {
         }
     }
 
-    private renderReleaseBanner(container: HTMLElement, bannerUrl: string): void {
+    private renderReleaseBanner(container: HTMLElement, imageUrl: string): void {
         const banner = container.createDiv({ cls: 'nn-whats-new-banner' });
         const image = banner.createEl('img', { cls: 'nn-whats-new-banner-image' });
         image.setAttr('alt', '');
@@ -108,7 +108,7 @@ export class WhatsNewModal extends Modal {
             banner.remove();
         });
 
-        image.src = getReleaseBannerUrl(bannerUrl);
+        image.src = imageUrl;
     }
 
     private renderYoutubeLink(container: HTMLElement, youtubeUrl: string): void {
@@ -184,8 +184,9 @@ export class WhatsNewModal extends Modal {
                 cls: 'nn-whats-new-date'
             });
 
-            if (note.bannerUrl) {
-                this.renderReleaseBanner(versionContainer, note.bannerUrl);
+            const bannerUrl = getReleaseBannerUrl(note.bannerUrl, note.version);
+            if (bannerUrl) {
+                this.renderReleaseBanner(versionContainer, bannerUrl);
             }
 
             if (note.youtubeUrl) {

@@ -57,8 +57,8 @@ export interface ReleaseNote {
     date: string;
     /** If false, skip automatic modal display for this version during startup */
     showOnUpdate?: boolean;
-    /** Optional banner image URL or banner id shown above the release notes for this version */
-    bannerUrl?: string;
+    /** Optional banner image source. true uses version as banner id, string uses explicit URL or banner id */
+    bannerUrl?: boolean | string;
     /** Optional YouTube video URL shown above the release notes for this version */
     youtubeUrl?: string;
     info?: string; // General information about the release, shown at top without bullets
@@ -78,9 +78,9 @@ export interface ReleaseNote {
 const RELEASE_NOTES: ReleaseNote[] = [
     {
         version: '2.4.2',
-        date: '2026-02-23',
+        date: '2026-02-24',
         showOnUpdate: true,
-        bannerUrl: '2.4.2',
+        bannerUrl: true,
         new: [
             '**Greatly improved the way you work with properties!**',
             'First up, a new ==Property key selection modal== was added with property search, select all/deselect all properties, and the option to choose if each property should be shown in the navigation pane, in the list pane, or both. You access this by right-clicking "Properties" and choose "Configure property keys".',
@@ -148,138 +148,6 @@ const RELEASE_NOTES: ReleaseNote[] = [
             'Fixed an issue where moving files did not update list pane until refreshing the view.',
             'Fixed an issue where full month calendar in navigation pane always reserved 6 lines, even if month had 4 or 5 weeks.',
             'Fixed an issue where clicking on a week in calendar view opened wrong week in some locales.'
-        ]
-    },
-    {
-        version: '2.3.1',
-        date: '2026-02-10',
-        showOnUpdate: false,
-        fixed: ['Fixed an issue in task parsing that could freeze Obsidian during startup in vaults with large task datasets.']
-    },
-    {
-        version: '2.3.0',
-        date: '2026-02-10',
-        showOnUpdate: true,
-        new: [
-            '==Tasks==. Notebook Navigator now keeps track of tasks for each document. You can now show notes with unfinished tasks in search, list pane and the calendar. You can also set a custom icon for notes with unfinished tasks in settings.',
-            '==Custom SVG icons==. You can now use SVG images from your vault for icons. Just pick the new "Vault" tab in the icon picker.',
-            '==Date filters in search==! You can now filter notes by date using the "@" symbol. Some examples: @today, @2026W02, @2026-Q1, @13/02/2026, or ranges like @2026-01-01..2026-02-07. You can specifically choose created date with @c:, modified date with @m:, or exclude date matches with -@.',
-            '==Date filters in calendar==! You can CMD+Click day, week, month, quarter or year in the calendar to show all notes for that period in the list pane!',
-            '==Quickly switch between filter search and Omnisearch==! Quickly switch between filter search and Omnisearch by pressing the search icon or pressing UP/DOWN when the search input is focused.',
-            '==Emojis in tags==! You can now use emojis when naming and renaming tags. Inline tag operations show a warning confirmation when a tag contains characters Obsidian cannot parse inline (example: ‼ can split an inline tag). YAML frontmatter tags can contain any characters.',
-            'You can now set individual colors for property values in ==Notes > Property colors==! Use property:value=color to set colors for individual property values, like status:done=green and status:todo=red. If no value color is set it will fall back to the property color if defined.',
-            'New setting: ==Notes > Show icon for notes with unfinished tasks==. Enable to show an icon in listpane for notes with unfinished tasks. Tasks now will also show in the calendar for daily notes with unfinished tasks. You can also set a custom color for the task icon in Style settings.',
-            'New setting: ==Folders & tags > Folder note name pattern==. You can now add prefixes and suffixes to folder note names, like _foldername to make them appear on top of alphabetically sorted lists.',
-            'New setting: ==Folders & tags > Folder note template==. You can now set a template file for folder notes.',
-            'New setting: ==Navigation pane > Show indent guides==. You can now show vertical indent guides in the navigation pane to better visualize the folder and tag hierarchy.',
-            'New setting: ==Calendar > Single pane placement==. You can now choose to show the left sidebar calendar in the navigation pane (default) or below both panes.',
-            'New command: ==Toggle compact mode==. Quickly toggle between default and compact mode in list pane. Bind it to a hot key or a button with the Commander plugin.',
-            'New search filter: ==has:task==. Use this to filter notes that have unfinished tasks.',
-            'Many new ==theming variables for borders==! You can now set border width and border color for most visual elements.'
-        ],
-        improved: [
-            'Folders with folder notes can now be clicked in the list pane header! This means you can go straight from the file list to your folder note.',
-            'Folder notes with "frontmatter metadata name" now show that name in the navigation pane instead of the folder name.',
-            'Many visual improvements to calendar. Days with notes now show as dots, and the overall look and feel is much improved.',
-            'The calendar now also shows a small circle for notes with unfinished tasks.',
-            'You can now remove individual icons from the recently used icons list.',
-            'Omnisearch now scopes searches to the selected folder when possible. In folder view, notes from the selected folder and its subfolders are now less likely to be pushed out by matches from other parts of the vault.',
-            'Many improvements to Omnisearch match highlights in the search results.'
-        ],
-        changed: [
-            '==Breaking change== - the setting "Folder note properties" used to set frontmatter properties for folder notes was removed. If you were using that setting, please migrate by creating a template file with the desired frontmatter properties and setting that as the new "Folder note template".',
-            '==Breaking change== - The search bar now uses "-" instead of "!" to exclude terms from search to match industry standards. To exclude a term you now use "-term" instead of "!term". Saved searches will be migrated on first launch.',
-            'All date format settings now use **Moment format**. Existing date-fns formats migrate automatically on first launch.',
-            'Removed the settings tab **Settings > "Search & hotkeys"**. The search setting is now local and toggled in the list pane by pressing up/down or clicking the magnifying glass.'
-        ],
-        fixed: [
-            'The setting Folders & tags > “Auto-select first note” did not work correctly and was fixed. Also significantly improved performance when navigating in navpane by debouncing file open commands just like in list pane, so scrolling through folders and tags should now be blazingly fast.',
-            'Weekly periodic note patterns previously used custom calendar locale, where others like month and year used display locale. Now all note patterns use display locale for consistency. The user defined locale is now only used for week numbers and first day of the week.',
-            'Fixed two display issues in Android: A small gap at the bottom of the left sidebar and text fonts were cropped on some devices.',
-            'Fixed a crash/reload issue on mobile devices when generating PDF cover thumbnails for PDFs with extreme amounts of embedded images (example: PDFs with hundreds of unique images stacked on top of each other). PDF thumbnails on mobile now run a two-stage preflight before rendering: Stage A scans the raw PDF bytes for embedded image dictionaries and transparency/soft mask signals, and Stage B parses the page 1 operator list to count image paint operations. If the preflight is uncertain or the estimate exceeds the mobile memory budget, the PDF is logged and thumbnail is skipped.',
-            'Fixed an issue where some emojis like Unicode keycap emojis (like 1️⃣) were not saved to frontmatter.'
-        ]
-    },
-    {
-        version: '2.2.3',
-        date: '2026-02-01',
-        showOnUpdate: false,
-        fixed: [
-            'Fixed an issue introduced in 2.2 where drag-moving a note to another folder could clear its feature image and preview text in the list pane.'
-        ]
-    },
-    {
-        version: '2.2.2',
-        date: '2026-01-31',
-        showOnUpdate: false,
-        info: 'The new tooltips introduced in 2.2.1 caused performance issues in large vaults so they were removed in this update. To compensate I added folder and tag sort overrides so you can now sort each folder or tag individually using A to Z or Z to A in the navigation pane!',
-        new: [
-            'New setting: ==Folders & tags > Folder sort order==. You can now set default sort order for folders in navigation pane (A to Z, or Z to A).',
-            'You can now right-click to change ==sort order for folders and tags in the navigation pane==! So if you have a folder with child folders with date as names, you can now show the latest date on top in the navigation pane.'
-        ],
-        improved: [
-            'Further optimizations to keyboard navigation performance when holding down UP, DOWN, PAGE UP, or PAGE DOWN keys in the list pane. Notebook Navigator now debounces visual updates to improve performance even more, try it and let me know if you like it!',
-            'If you hide all toolbar buttons in navigation pane and do not show vault title in header, the toolbar area is now hidden to save space.',
-            'Same with the list pane - if you hide all toolbar buttons and do not show folder name in header, this toolbar area is also hidden to save space.'
-        ],
-        changed: [],
-        fixed: [
-            'Removed tooltips for truncated items in navigation pane since it caused performance issues. If you want to show tooltips for all items, enable it from Settings > General > Show tooltips.'
-        ]
-    },
-    {
-        version: '2.2.1',
-        date: '2026-01-30',
-        showOnUpdate: true,
-        new: [
-            '==Periodic notes can now use template files== (daily, weekly, monthly, quarterly, yearly). Configure templates in Settings > Calendar.',
-            'New iOS / iPadOS setting: Settings > General > ==Use floating toolbars== on iOS/iPadOS. Default enabled. Disable to use fixed toolbars on iOS/iPadOS.',
-            'New Style setting: Calendar > ==Right sidebar date placement==. Show dates in the calendar in the right sidebar bottom right (default) or centered.'
-        ],
-        improved: [
-            'Weekly periodic note patterns now accept nested year/quarter/month/week folder paths.',
-            'Greatly improved keyboard performance in list pane when scrolling through large lists by holding the UP or DOWN key.',
-            'Folders and tags now show tooltips for truncated names on desktop devices, similar to how shortcuts and recent files works.'
-        ],
-        changed: [
-            'Due to issues with React native, scrollbar positioning and multiple themes, ==the UI panels are no longer shown with transparency== in front of the list scrollers. Notebook Navigator now again works fine with themes like Baseline and Cupertino.'
-        ],
-        fixed: [
-            'Fixed an issue where some customized user icons were not applying consistently to all UI elements.',
-            'Increased image size limit on mobile devices for feature image thumbnails from 15 MB to 50 MB (matches desktop).',
-            'Right sidebar calendar now properly sets background color to **--background-primary** on desktop for theme support.'
-        ]
-    },
-    {
-        version: '2.2.0',
-        date: '2026-01-25',
-        showOnUpdate: true,
-        new: [
-            '==Calendar now supports weekly, monthly, quarterly, and yearly notes!== Configure custom file patterns in Settings > Calendar. Click week numbers, month names, quarter labels, or year to create or open periodic notes.',
-            'New setting: Calendar > ==Placement==. Display the calendar in the **left** or **right sidebar**. 🎉',
-            'New setting: Notes > ==Show properties on separate rows==. Display each custom property on its own line. 🎉',
-            'New setting: List pane > Keyboard navigation > ==Press Enter to open files==. 🎉 Open selected files on Enter. Configure Shift+Enter and Cmd/Ctrl+Enter to open in a new tab, to the right, or new window!',
-            'New setting: ==List pane > Sort notes by > **File name** and **Property**==. You can now also sort files on file name or a custom property. 🎉 This is the first step towards custom sorting in list pane!',
-            'New command: ==Search in vault root==. Selects the vault root folder and focuses the search input.',
-            'New setting: Navigation pane > Appearance > ==Pin banner==. Keep the banner pinned to top or let it scroll with the navigation tree.',
-            'New setting: Calendar > ==Show feature image==. Disable to hide feature images in the calendar.',
-            'You can now press ==Enter to open folder notes== when a folder with folder note is selected. Shift+Enter opens in a new tab and Cmd/Ctrl+Enter opens to the right (configurable).',
-            '==New commands==: Open daily note, Open weekly note, Open monthly note, Open quarterly note, Open yearly note.',
-            'Public API: Added a new ==Menus API== for extending context menus. Use **registerFileMenu(callback)** and **registerFolderMenu(callback)** to add custom menu items.'
-        ],
-        improved: [
-            'Calendar > Root folder is now stored per vault profile so you can have different periodic notes for each profile.',
-            'Preview text now strips Obsidian block IDs like ^37066f and ^quote-of-the-day.',
-            'Copy path now shows a submenu with options: Obsidian URL, from vault folder, from system root.',
-            'Feature image thumbnails now apply image orientation for JPEG, AVIF, HEIC, and HEIF images.'
-        ],
-        changed: [
-            'Replaced ==Property for color== setting with ==Property color map==. You can now define colors with a simple **key=color** format using a visual editor. 🎉',
-            'Folders with folder notes no longer show a note icon by default.'
-        ],
-        fixed: [
-            "Fixed an issue where the What's New modal never appeared after updating the plugin.",
-            'Fixed calendar cells rendering with variable width on some devices and themes.'
         ]
     }
 ];
