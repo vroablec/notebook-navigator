@@ -41,3 +41,13 @@ export function getWelcomeVideoBaseUrl(): string {
     return WELCOME_VIDEO_URL;
 }
 export const WELCOME_VIDEO_THUMBNAIL_URL = `${NOTEBOOK_NAVIGATOR_RAW_BASE_URL}/images/youtube-thumbnail.jpg`;
+
+export function getReleaseBannerUrl(bannerUrl: string): string {
+    const normalizedBannerUrl = bannerUrl.trim();
+
+    if (normalizedBannerUrl.startsWith('http://') || normalizedBannerUrl.startsWith('https://')) {
+        return normalizedBannerUrl;
+    }
+
+    return `${NOTEBOOK_NAVIGATOR_RAW_BASE_URL}/images/version-banners/${normalizedBannerUrl}.jpg`;
+}

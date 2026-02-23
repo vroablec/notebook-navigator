@@ -57,6 +57,8 @@ export interface ReleaseNote {
     date: string;
     /** If false, skip automatic modal display for this version during startup */
     showOnUpdate?: boolean;
+    /** Optional banner image URL or banner id shown above the release notes for this version */
+    bannerUrl?: string;
     /** Optional YouTube video URL shown above the release notes for this version */
     youtubeUrl?: string;
     info?: string; // General information about the release, shown at top without bullets
@@ -78,27 +80,28 @@ const RELEASE_NOTES: ReleaseNote[] = [
         version: '2.4.2',
         date: '2026-02-23',
         showOnUpdate: true,
+        bannerUrl: '2.4.2',
         new: [
             '**Greatly improved the way you work with properties!**',
             'First up, a new ==Property key selection modal== was added with property search, select all/deselect all properties, and the option to choose if each property should be shown in the navigation pane, in the list pane, or both. You access this by right-clicking "Properties" and choose "Configure property keys".',
             'Secondly, you can now ==rename and delete property keys== in the property tree.',
             'You can also ==create a new note directly in property view==. You can create new notes in properties using context menu, the toolbar button or using "Create new note".',
             'New setting: ==General > Open new notes in new tab==. New notes open in a new tab instead of replacing the current tab. Default disabled.',
-            'New setting: ==Advanced > Delete attachments==. Optionally delete linked attachments when deleting files, works just like Obsidian 1.12.2 and later. Default value "Ask each time".',
-            'New setting: ==Advanced > Move conflicts==. When moving a file to a folder that already has a file with the same name, you can now choose to automatically rename the moved file with a suffix (example: "Untitled.md" -> "Untitled 1.md"). Options are "Ask each time" (default) and "Always rename".',
-            'The command "Add to shortcuts" now removes the selected item from shortcuts if it is already pinned.'
+            'New setting: ==General > Files > Delete attachments==. Optionally delete linked attachments when deleting files, works just like Obsidian 1.12.2 and later. Default value "Ask each time".',
+            'New setting: ==General > Files > Move conflicts==. When moving a file to a folder that already has a file with the same name, you can now choose to automatically rename the moved file with a suffix (example: "Untitled.md" -> "Untitled 1.md"). Options are "Ask each time" (default) and "Always rename".',
+            'The command **"Add to shortcuts" now removes the selected item from shortcuts** if it is already pinned.'
         ],
         improved: [
-            'Custom folder sort order is now applied when grouping by folder in list pane.',
-            'Saving a search shortcut now shows the option: "Always start in: {path}". This means the shortcut will always start in the folder, tag or property where you saved it.',
-            'Visible property keys are now saved per vault profile.',
-            'Moving files with conflicts now show a modal dialog where you can choose to overwrite, keep both (rename), or cancel the move operation.',
-            'If you hide a folder note (using filter, tag or property rules) the folder with the folder note is now also hidden in the navigation pane.',
-            'Date no longer shows for pinned items when "Variable note height" is enabled.'
+            '**Custom folder sort order** is now applied when grouping by folder in list pane.',
+            '**Saving a search shortcut** now shows the option: "Always start in: {path}". This means the shortcut will always start in the folder, tag or property where you saved it.',
+            '**Visible property keys** are now saved per vault profile.',
+            '**Moving files with conflicts** now show a modal dialog where you can choose to overwrite, keep both (rename), or cancel the move operation.',
+            '**Hiding a folder note** (using filter, tag or property rules) now also hides the folder with the folder note in the navigation pane.',
+            '**Date display for pinned items** is now hidden when "Variable note height" is enabled.'
         ],
         changed: [
-            'Property key configuration was moved from Navigation Pane to the General settings tab.',
-            'In list pane, property keys with no values are no longer showing (previously the key was showing). Also if a property key is not visible in navigation pane the property is not clickable in list pane (unless it is a wiki link).'
+            '**Property key configuration** was moved from Navigation Pane to the General settings tab.',
+            'In list pane, **property keys with no values** are no longer displayed (previously the property key was showing).'
         ],
         fixed: [
             "Fixed an issue where today's date and file list did not update when a new day started.",

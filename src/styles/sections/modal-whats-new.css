@@ -91,6 +91,26 @@
     margin-bottom: 8px;
 }
 
+/* Release banner image */
+.nn-whats-new-banner {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    border-radius: 8px;
+    background: var(--background-secondary);
+    border: 1px solid var(--background-modifier-border);
+    margin-bottom: 12px;
+}
+
+.nn-whats-new-banner-image {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
 /* YouTube link preview */
 .nn-whats-new-youtube-link {
     display: block;

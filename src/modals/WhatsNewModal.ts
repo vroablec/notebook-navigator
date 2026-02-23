@@ -17,7 +17,7 @@
  */
 
 import { App, Modal } from 'obsidian';
-import { SUPPORT_BUY_ME_A_COFFEE_URL } from '../constants/urls';
+import { getReleaseBannerUrl, SUPPORT_BUY_ME_A_COFFEE_URL } from '../constants/urls';
 import { strings } from '../i18n';
 import { ReleaseNote } from '../releaseNotes';
 import { DateUtils } from '../utils/dateUtils';
@@ -97,6 +97,20 @@ export class WhatsNewModal extends Modal {
         }
     }
 
+    private renderReleaseBanner(container: HTMLElement, bannerUrl: string): void {
+        const banner = container.createDiv({ cls: 'nn-whats-new-banner' });
+        const image = banner.createEl('img', { cls: 'nn-whats-new-banner-image' });
+        image.setAttr('alt', '');
+        image.setAttr('loading', 'lazy');
+        image.setAttr('decoding', 'async');
+
+        image.addEventListener('error', () => {
+            banner.remove();
+        });
+
+        image.src = getReleaseBannerUrl(bannerUrl);
+    }
+
     private renderYoutubeLink(container: HTMLElement, youtubeUrl: string): void {
         const link = container.createEl('a', { cls: 'nn-whats-new-youtube-link' });
         link.setAttr('href', youtubeUrl);
@@ -169,6 +183,10 @@ export class WhatsNewModal extends Modal {
                 text: formattedDate,
                 cls: 'nn-whats-new-date'
             });
+
+            if (note.bannerUrl) {
+                this.renderReleaseBanner(versionContainer, note.bannerUrl);
+            }
 
             if (note.youtubeUrl) {
                 this.renderYoutubeLink(versionContainer, note.youtubeUrl);
