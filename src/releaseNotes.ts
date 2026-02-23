@@ -79,11 +79,12 @@ const RELEASE_NOTES: ReleaseNote[] = [
         date: '2026-02-23',
         showOnUpdate: true,
         new: [
-            'Greatly improved the way you work with Properties! Firstup, a new ==Property key selection modal== was added with property search, select all/deselect all properties, and the option to choose if each property should be shown in the navigation pane, in the list pane, or both.',
+            '**Greatly improved the way you work with properties!**',
+            'First up, a new ==Property key selection modal== was added with property search, select all/deselect all properties, and the option to choose if each property should be shown in the navigation pane, in the list pane, or both. You access this by right-clicking "Properties" and choose "Configure property keys".',
             'Secondly, you can now ==rename and delete property keys== in the property tree.',
             'You can also ==create a new note directly in property view==. You can create new notes in properties using context menu, the toolbar button or using "Create new note".',
             'New setting: ==General > Open new notes in new tab==. New notes open in a new tab instead of replacing the current tab. Default disabled.',
-            'New setting: ==Advanced > Delete attachments==. Optionally delete linked attachments when deleting files, works just like Obsidian 1.12.2 and later. Default value <ask>.',
+            'New setting: ==Advanced > Delete attachments==. Optionally delete linked attachments when deleting files, works just like Obsidian 1.12.2 and later. Default value "Ask each time".',
             'New setting: ==Advanced > Move conflicts==. When moving a file to a folder that already has a file with the same name, you can now choose to automatically rename the moved file with a suffix (example: "Untitled.md" -> "Untitled 1.md"). Options are "Ask each time" (default) and "Always rename".',
             'The command "Add to shortcuts" now removes the selected item from shortcuts if it is already pinned.'
         ],
