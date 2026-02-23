@@ -42,9 +42,15 @@ interface PendingRootOrderChanges {
 /**
  * Parameters for the useRootFolderOrder hook
  */
+export interface RootFileChangeEvent {
+    type: 'create' | 'delete' | 'rename';
+    path: string;
+    oldPath?: string;
+}
+
 export interface UseRootFolderOrderParams {
     settings: NotebookNavigatorSettings;
-    onFileChange?: () => void; // Callback triggered when files change
+    onFileChange?: (change: RootFileChangeEvent) => void; // Callback triggered when files change
 }
 
 /**
@@ -241,9 +247,9 @@ export function useRootFolderOrder({ settings, onFileChange }: UseRootFolderOrde
         };
 
         // Notifies parent component of file changes
-        const notifyFileChange = () => {
+        const notifyFileChange = (change: RootFileChangeEvent) => {
             if (onFileChange) {
-                onFileChange();
+                onFileChange(change);
             }
         };
 
@@ -295,7 +301,7 @@ export function useRootFolderOrder({ settings, onFileChange }: UseRootFolderOrde
                     handleFolderCreate(file);
                 }
                 if (file instanceof TFile) {
-                    notifyFileChange();
+                    notifyFileChange({ type: 'create', path: file.path });
                 }
             }),
             app.vault.on('delete', file => {
@@ -303,7 +309,7 @@ export function useRootFolderOrder({ settings, onFileChange }: UseRootFolderOrde
                     handleFolderDelete(file);
                 }
                 if (file instanceof TFile) {
-                    notifyFileChange();
+                    notifyFileChange({ type: 'delete', path: file.path });
                 }
             }),
             app.vault.on('rename', (file, oldPath) => {
@@ -311,7 +317,7 @@ export function useRootFolderOrder({ settings, onFileChange }: UseRootFolderOrde
                     handleFolderRename(file, oldPath);
                 }
                 if (file instanceof TFile) {
-                    notifyFileChange();
+                    notifyFileChange({ type: 'rename', path: file.path, oldPath });
                 }
             })
         ];

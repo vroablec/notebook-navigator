@@ -28,6 +28,7 @@ import { getDBInstanceOrNull } from '../../storage/fileOperations';
 import type { FileContentChange } from '../../storage/IndexedDBStorage';
 import { normalizeCanonicalIconId, serializeIconForFrontmatter } from '../../utils/iconizeFormat';
 import { ensureRecord, isStringRecordValue } from '../../utils/recordUtils';
+import { getParentFolderPath } from '../../utils/pathUtils';
 
 /**
  * Service for managing folder-specific metadata operations
@@ -509,7 +510,7 @@ export class FolderMetadataService extends BaseMetadataService {
             }
             checkedCandidatePaths.add(change.path);
 
-            const parentFolderPath = this.getParentFolderPath(change.path);
+            const parentFolderPath = getParentFolderPath(change.path);
             let expectedFolderNoteName = expectedFolderNoteNameByFolderPath.get(parentFolderPath);
             if (expectedFolderNoteName === undefined) {
                 const folderName = this.getFolderNameFromPath(parentFolderPath);
@@ -523,14 +524,6 @@ export class FolderMetadataService extends BaseMetadataService {
         }
 
         return false;
-    }
-
-    private getParentFolderPath(path: string): string {
-        const separatorIndex = path.lastIndexOf('/');
-        if (separatorIndex === -1 || separatorIndex === 0) {
-            return '/';
-        }
-        return path.slice(0, separatorIndex);
     }
 
     private getFolderNameFromPath(folderPath: string): string {
@@ -595,7 +588,7 @@ export class FolderMetadataService extends BaseMetadataService {
     private invalidateFolderDisplayCacheForVaultFilePath(path: string): void {
         this.invalidateFolderDisplayCacheForContentChanges([{ path, changes: {} }]);
 
-        const parentFolderPath = this.getParentFolderPath(path);
+        const parentFolderPath = getParentFolderPath(path);
         if (!this.isFolderNotePathForFolder(path, parentFolderPath)) {
             return;
         }
@@ -612,7 +605,7 @@ export class FolderMetadataService extends BaseMetadataService {
             return;
         }
 
-        const parentFolderPath = this.getParentFolderPath(file.path);
+        const parentFolderPath = getParentFolderPath(file.path);
         const isTrackedFolderNotePath = this.folderDisplayCacheFolderPathsByFolderNotePath.has(file.path);
         const isFolderNotePath = this.isFolderNotePathForFolder(file.path, parentFolderPath);
         this.invalidateFolderDisplayCacheForVaultFilePath(file.path);
@@ -631,8 +624,8 @@ export class FolderMetadataService extends BaseMetadataService {
             return;
         }
 
-        const oldParentFolderPath = this.getParentFolderPath(oldPath);
-        const newParentFolderPath = this.getParentFolderPath(file.path);
+        const oldParentFolderPath = getParentFolderPath(oldPath);
+        const newParentFolderPath = getParentFolderPath(file.path);
         const hadTrackedOldPath = this.folderDisplayCacheFolderPathsByFolderNotePath.has(oldPath);
         const hasTrackedNewPath = this.folderDisplayCacheFolderPathsByFolderNotePath.has(file.path);
         const oldPathWasFolderNote = this.isFolderNotePathForFolder(oldPath, oldParentFolderPath);

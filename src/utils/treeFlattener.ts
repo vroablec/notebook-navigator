@@ -35,6 +35,8 @@ interface FlattenFolderTreeOptions {
     childSortOrderOverrides?: Record<string, AlphaSortOrder>;
     /** Resolves the string used when alphabetically sorting folders */
     getFolderSortName?: (folder: TFolder) => string;
+    /** Additional exclusion check applied per folder */
+    isFolderExcluded?: (folder: TFolder) => boolean;
 }
 
 /** Options for flattenTagTree function */
@@ -155,7 +157,7 @@ export function flattenFolderTree(
     options: FlattenFolderTreeOptions = {}
 ): FolderTreeItem[] {
     const items: FolderTreeItem[] = [];
-    const { rootOrderMap, childSortOrderOverrides, getFolderSortName } = options;
+    const { rootOrderMap, childSortOrderOverrides, getFolderSortName, isFolderExcluded } = options;
     const defaultSortOrder = options.defaultSortOrder ?? 'alpha-asc';
     const childSortOrderSettings = {
         folderSortOrder: defaultSortOrder,
@@ -188,7 +190,9 @@ export function flattenFolderTree(
         }
 
         // Check if folder matches exclusion patterns or is within an excluded parent
-        const isExcluded = excludePatterns.length > 0 && isFolderInExcludedFolder(folder, excludePatterns);
+        const isExcludedByPattern = excludePatterns.length > 0 && isFolderInExcludedFolder(folder, excludePatterns);
+        const isExcludedByRule = isFolderExcluded ? isFolderExcluded(folder) : false;
+        const isExcluded = isExcludedByPattern || isExcludedByRule;
 
         // Create folder item for display
         const folderItem: FolderTreeItem = {

@@ -70,4 +70,21 @@ describe('treeFlattener flattenFolderTree', () => {
         const childPaths = items.filter(item => item.level === 1).map(item => item.data.path);
         expect(childPaths).toEqual(['zeta', 'alpha']);
     });
+
+    it('marks folders as excluded when custom exclusion resolver returns true', () => {
+        const visible = createFolder('visible');
+        const archived = createFolder('archived');
+        const root = createFolder('/', [visible, archived]);
+        const expandedFolders = new Set<string>(['/']);
+
+        const items = flattenFolderTree([root], expandedFolders, [], 0, new Set(), {
+            defaultSortOrder: 'alpha-asc',
+            isFolderExcluded: folder => folder.path === 'archived'
+        });
+
+        const archivedItem = items.find(item => item.data.path === 'archived');
+        const visibleItem = items.find(item => item.data.path === 'visible');
+        expect(archivedItem?.isExcluded).toBe(true);
+        expect(visibleItem?.isExcluded).toBeUndefined();
+    });
 });

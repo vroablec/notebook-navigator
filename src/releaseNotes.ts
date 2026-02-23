@@ -92,6 +92,7 @@ const RELEASE_NOTES: ReleaseNote[] = [
             'Saving a search shortcut now shows the option: "Always start in: {path}". This means the shortcut will always start in the folder, tag or property where you saved it.',
             'Visible property keys are now saved per vault profile.',
             'Moving files with conflicts now show a modal dialog where you can choose to overwrite, keep both (rename), or cancel the move operation.',
+            'If you hide a folder note (using filter, tag or property rules) the folder with the folder note is now also hidden in the navigation pane.',
             'Date no longer shows for pinned items when "Variable note height" is enabled.'
         ],
         changed: [

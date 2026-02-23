@@ -72,10 +72,10 @@ import { setNavigationIndex } from '../utils/navigationIndex';
 import { resolveCanonicalTagPath } from '../utils/tagUtils';
 import { getCachedFileTags } from '../utils/tagUtils';
 import { isFolderShortcut, isNoteShortcut, isSearchShortcut, isTagShortcut, isPropertyShortcut } from '../types/shortcuts';
-import { useRootFolderOrder } from './useRootFolderOrder';
+import { useRootFolderOrder, type RootFileChangeEvent } from './useRootFolderOrder';
 import { useRootPropertyOrder } from './useRootPropertyOrder';
 import { useRootTagOrder } from './useRootTagOrder';
-import { getFolderNoteDetectionSettings } from '../utils/folderNotes';
+import { getFolderNote, getFolderNoteDetectionSettings } from '../utils/folderNotes';
 import { getDBInstance, getDBInstanceOrNull } from '../storage/fileOperations';
 import { naturalCompare } from '../utils/sortUtils';
 import type { NoteCountInfo } from '../types/noteCounts';
@@ -103,6 +103,10 @@ import {
 import { resolveUXIcon } from '../utils/uxIcons';
 import type { MetadataService } from '../services/MetadataService';
 import { useSettingsDerived, type ActiveProfileState } from '../context/SettingsContext';
+import { getParentFolderPath, getPathBaseName } from '../utils/pathUtils';
+import { resolveFolderNoteName } from '../utils/folderNoteName';
+import { EXCALIDRAW_BASENAME_SUFFIX } from '../utils/fileNameUtils';
+import { FOLDER_NOTE_TYPE_EXTENSIONS } from '../types/folderNote';
 
 // Checks if a navigation item is a shortcut-related item (virtual folder, shortcut, or header)
 const isShortcutNavigationItem = (item: CombinedNavigationItem): boolean => {
@@ -147,6 +151,7 @@ const isRootSpacingCandidate = (item: CombinedNavigationItem, options: RootSpaci
 };
 
 const FOLDER_SORT_NAME_CACHE_MAX_ENTRIES = 2000;
+const FOLDER_NOTE_EXTENSIONS = new Set<string>(Object.values(FOLDER_NOTE_TYPE_EXTENSIONS));
 
 function decorateNavigationItems(
     source: CombinedNavigationItem[],
@@ -577,17 +582,75 @@ export function useNavigationPaneData({
     const folderCountFileNameMatcher = useMemo(() => {
         return createHiddenFileNameMatcherForVisibility(hiddenFileNames, showHiddenItems);
     }, [hiddenFileNames, showHiddenItems]);
+    const folderVisibilityFileNameMatcher = useMemo(() => {
+        return createHiddenFileNameMatcherForVisibility(hiddenFileNames, false);
+    }, [hiddenFileNames]);
     const hiddenFilePropertyMatcher = useMemo(
         () => createFrontmatterPropertyExclusionMatcher(hiddenFileProperties),
         [hiddenFileProperties]
     );
+    const folderNoteSettings = useMemo(() => {
+        return getFolderNoteDetectionSettings({
+            enableFolderNotes: settings.enableFolderNotes,
+            folderNoteName: settings.folderNoteName,
+            folderNoteNamePattern: settings.folderNoteNamePattern
+        });
+    }, [settings.enableFolderNotes, settings.folderNoteName, settings.folderNoteNamePattern]);
+    const shouldEvaluateFolderNoteExclusions = useMemo(() => {
+        return (
+            settings.enableFolderNotes &&
+            (hiddenFilePropertyMatcher.hasCriteria || folderVisibilityFileNameMatcher !== null || hiddenFileTags.length > 0)
+        );
+    }, [settings.enableFolderNotes, hiddenFilePropertyMatcher, hiddenFileTags, folderVisibilityFileNameMatcher]);
+    const isFolderNoteRelatedPath = useCallback(
+        (path: string): boolean => {
+            if (!shouldEvaluateFolderNoteExclusions) {
+                return false;
+            }
+
+            const parentPath = getParentFolderPath(path);
+            // Root folder notes are unsupported, so root-level files are never treated as folder notes.
+            if (parentPath === '/') {
+                return false;
+            }
+
+            const fileName = path.split('/').pop();
+            if (!fileName) {
+                return false;
+            }
+
+            const dotIndex = fileName.lastIndexOf('.');
+            if (dotIndex <= 0 || dotIndex === fileName.length - 1) {
+                return false;
+            }
+
+            const basename = fileName.slice(0, dotIndex);
+            const extension = fileName.slice(dotIndex + 1).toLowerCase();
+            const folderName = getPathBaseName(parentPath);
+            const expectedName = resolveFolderNoteName(folderName, folderNoteSettings);
+
+            if (basename === expectedName && FOLDER_NOTE_EXTENSIONS.has(extension)) {
+                return true;
+            }
+
+            return extension === 'md' && basename === `${expectedName}${EXCALIDRAW_BASENAME_SUFFIX}`;
+        },
+        [folderNoteSettings, shouldEvaluateFolderNoteExclusions]
+    );
 
     // Version counter that increments when vault files change
     const [fileChangeVersion, setFileChangeVersion] = useState(0);
+    const [folderExclusionVersion, setFolderExclusionVersion] = useState(0);
     // Increments version counter to trigger dependent recalculations
-    const handleRootFileChange = useCallback(() => {
-        setFileChangeVersion(value => value + 1);
-    }, []);
+    const handleRootFileChange = useCallback(
+        (change: RootFileChangeEvent) => {
+            setFileChangeVersion(value => value + 1);
+            if (isFolderNoteRelatedPath(change.path) || (change.oldPath !== undefined && isFolderNoteRelatedPath(change.oldPath))) {
+                setFolderExclusionVersion(value => value + 1);
+            }
+        },
+        [isFolderNoteRelatedPath]
+    );
     // Get ordered root folders and notify on file changes
     const { rootFolders, rootLevelFolders, rootFolderOrderMap, missingRootFolderPaths } = useRootFolderOrder({
         settings,
@@ -701,14 +764,53 @@ export function useNavigationPaneData({
 
     useEffect(() => {
         const db = getDBInstance();
+        const bumpFolderExclusionVersion = debounce(
+            () => {
+                setFolderExclusionVersion(version => version + 1);
+            },
+            TIMEOUTS.FILE_OPERATION_DELAY,
+            true
+        );
         const unsubscribe = db.onContentChange(changes => {
-            const hasMetadataChange = changes.some(change => change.changeType === 'metadata' || change.changeType === 'both');
+            let hasMetadataChange = false;
+            let shouldRefreshFolderExclusions = false;
+            const folderNotePathByParentPath = new Map<string, string | null>();
+
+            for (const change of changes) {
+                if (change.changeType !== 'metadata' && change.changeType !== 'both') {
+                    continue;
+                }
+
+                hasMetadataChange = true;
+                if (!shouldEvaluateFolderNoteExclusions || shouldRefreshFolderExclusions) {
+                    continue;
+                }
+
+                const parentPath = getParentFolderPath(change.path);
+                let cachedFolderNotePath = folderNotePathByParentPath.get(parentPath);
+                if (cachedFolderNotePath === undefined) {
+                    const parentFolder = app.vault.getFolderByPath(parentPath);
+                    cachedFolderNotePath = parentFolder ? (getFolderNote(parentFolder, folderNoteSettings)?.path ?? null) : null;
+                    folderNotePathByParentPath.set(parentPath, cachedFolderNotePath);
+                }
+
+                if (cachedFolderNotePath === change.path) {
+                    shouldRefreshFolderExclusions = true;
+                }
+            }
+
             if (hasMetadataChange) {
                 setMetadataDecorationVersion(version => version + 1);
+                if (shouldRefreshFolderExclusions) {
+                    bumpFolderExclusionVersion();
+                }
             }
         });
-        return unsubscribe;
-    }, []);
+        return () => {
+            unsubscribe();
+            bumpFolderExclusionVersion.cancel();
+        };
+    }, [app, folderNoteSettings, shouldEvaluateFolderNoteExclusions]);
 
     const visiblePropertyNavigationKeySet = useMemo(() => {
         const keys = new Set<string>();
@@ -766,6 +868,89 @@ export function useNavigationPaneData({
         };
     }, [app, settings.customVaultName, settings.useFrontmatterMetadata, metadataService, folderDisplayNameVersion]);
 
+    const folderExclusionByFolderNote = useMemo(() => {
+        // Recreate the exclusion cache when vault metadata changes.
+        void folderExclusionVersion;
+        if (!shouldEvaluateFolderNoteExclusions) {
+            return undefined;
+        }
+
+        const hiddenFileTagVisibility = createHiddenTagVisibility(hiddenFileTags, false);
+        const shouldFilterHiddenFileTags = hiddenFileTagVisibility.hasHiddenRules;
+        const db = shouldFilterHiddenFileTags ? getDBInstanceOrNull() : null;
+        const directExclusionCache = new Map<string, boolean>();
+        const inheritedExclusionCache = new Map<string, boolean>();
+        const recursionGuard = new Set<string>();
+
+        const isDirectlyExcludedByFolderNote = (folder: TFolder): boolean => {
+            const cached = directExclusionCache.get(folder.path);
+            if (cached !== undefined) {
+                return cached;
+            }
+
+            const folderNote = getFolderNote(folder, folderNoteSettings);
+            if (!folderNote) {
+                directExclusionCache.set(folder.path, false);
+                return false;
+            }
+
+            let isExcluded = false;
+            if (hiddenFilePropertyMatcher.hasCriteria && shouldExcludeFileWithMatcher(folderNote, hiddenFilePropertyMatcher, app)) {
+                isExcluded = true;
+            }
+
+            if (!isExcluded && folderVisibilityFileNameMatcher && folderVisibilityFileNameMatcher.matches(folderNote)) {
+                isExcluded = true;
+            }
+
+            if (!isExcluded && shouldFilterHiddenFileTags) {
+                const tags = getCachedFileTags({ app, file: folderNote, db });
+                if (tags.some(tagValue => !hiddenFileTagVisibility.isTagVisible(tagValue))) {
+                    isExcluded = true;
+                }
+            }
+
+            directExclusionCache.set(folder.path, isExcluded);
+            return isExcluded;
+        };
+
+        const isExcludedByFolderNote = (folder: TFolder): boolean => {
+            if (folder.path === '/') {
+                // Root folder notes are unsupported, so the vault root is never excluded by folder-note rules.
+                return false;
+            }
+
+            const cached = inheritedExclusionCache.get(folder.path);
+            if (cached !== undefined) {
+                return cached;
+            }
+
+            if (recursionGuard.has(folder.path)) {
+                return false;
+            }
+            recursionGuard.add(folder.path);
+
+            let isExcluded = isDirectlyExcludedByFolderNote(folder);
+            if (!isExcluded && folder.parent instanceof TFolder) {
+                isExcluded = isExcludedByFolderNote(folder.parent);
+            }
+
+            recursionGuard.delete(folder.path);
+            inheritedExclusionCache.set(folder.path, isExcluded);
+            return isExcluded;
+        };
+
+        return (folder: TFolder): boolean => isExcludedByFolderNote(folder);
+    }, [
+        app,
+        folderExclusionVersion,
+        hiddenFilePropertyMatcher,
+        hiddenFileTags,
+        folderVisibilityFileNameMatcher,
+        folderNoteSettings,
+        shouldEvaluateFolderNoteExclusions
+    ]);
+
     /**
      * Build folder items from vault structure
      */
@@ -774,7 +959,8 @@ export function useNavigationPaneData({
             rootOrderMap: rootFolderOrderMap,
             defaultSortOrder: settings.folderSortOrder,
             childSortOrderOverrides: settings.folderTreeSortOverrides,
-            getFolderSortName
+            getFolderSortName,
+            isFolderExcluded: folderExclusionByFolderNote
         });
     }, [
         rootFolders,
@@ -783,7 +969,8 @@ export function useNavigationPaneData({
         rootFolderOrderMap,
         settings.folderSortOrder,
         settings.folderTreeSortOverrides,
-        getFolderSortName
+        getFolderSortName,
+        folderExclusionByFolderNote
     ]);
 
     /**

@@ -50,6 +50,7 @@ import {
 } from './vaultProfiles';
 import { getCachedFileTags } from './tagUtils';
 import { casefold, normalizePinnedNoteContext } from './recordUtils';
+import { getParentFolderPath } from './pathUtils';
 import {
     buildPropertyKeyNodeId,
     buildPropertyValueNodeId,
@@ -64,14 +65,6 @@ import type { ITagTreeProvider } from '../interfaces/ITagTreeProvider';
 
 interface CollectPinnedPathsOptions {
     restrictToFolderPath?: string;
-}
-
-function getParentFolderPath(path: string): string {
-    const separatorIndex = path.lastIndexOf('/');
-    if (separatorIndex === -1 || separatorIndex === 0) {
-        return '/';
-    }
-    return path.slice(0, separatorIndex);
 }
 
 function matchesPathSelection(candidatePath: string, selectedPath: string, includeDescendants: boolean): boolean {
