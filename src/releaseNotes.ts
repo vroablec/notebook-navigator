@@ -92,7 +92,10 @@ const RELEASE_NOTES: ReleaseNote[] = [
             'Visible property keys are now saved per vault profile.',
             'Date no longer shows for pinned items when "Variable note height" is enabled.'
         ],
-        changed: ['Property key configuration was moved from Navigation Pane to the General settings tab.'],
+        changed: [
+            'Property key configuration was moved from Navigation Pane to the General settings tab.',
+            'In list pane, property keys with no values are no longer showing (previously the key was showing). Also if a property key is not visible in navigation pane the property is not clickable in list pane (unless it is a wiki link).'
+        ],
         fixed: ["Fixed an issue where today's date and file list did not update when a new day started."]
     },
     {
