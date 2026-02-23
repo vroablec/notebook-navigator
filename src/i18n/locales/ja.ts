@@ -499,6 +499,7 @@ export const STRINGS_JA = {
             deleteFolderTitle: "'{name}'を削除しますか？",
             deleteFileTitle: "'{name}'を削除しますか？",
             deleteFileAttachmentsTitle: 'ファイルの添付ファイルを削除しますか？',
+            moveFileConflictTitle: '移動の競合',
             folderNamePrompt: 'フォルダ名を入力：',
             hideInOtherVaultProfiles: '他の保管庫プロファイルで非表示にする',
             renamePrompt: '新しい名前を入力：',
@@ -510,6 +511,13 @@ export const STRINGS_JA = {
             deleteFileAttachmentsDescriptionMultiple: 'これらの添付ファイルはどのノートでも使用されていません。削除しますか？',
             deleteFileAttachmentsViewFileTreeAriaLabel: 'ファイルツリー',
             deleteFileAttachmentsViewGalleryAriaLabel: 'ギャラリー',
+            moveFileConflictDescriptionSingle: '「{folder}」でファイルの競合が見つかりました。',
+            moveFileConflictDescriptionMultiple: '「{folder}」で{count}件のファイルの競合が見つかりました。',
+            moveFileConflictAffectedFiles: '影響を受けるファイル',
+            moveFileConflictItem: '「{name}」→「{suggested}」{renameOnly}',
+            moveFileConflictRenameOnly: '（名前変更のみ）',
+            moveFileConflictRename: '名前を変更',
+            moveFileConflictOverwrite: '上書き',
             removeAllTagsTitle: 'すべてのタグを削除',
             removeAllTagsFromNote: 'このノートからすべてのタグを削除してもよろしいですか？',
             removeAllTagsFromNotes: '{count}個のノートからすべてのタグを削除してもよろしいですか？'
@@ -1693,6 +1701,14 @@ export const STRINGS_JA = {
                     ask: '毎回確認',
                     always: '常に',
                     never: 'しない'
+                }
+            },
+            moveFileConflicts: {
+                name: '移動の競合',
+                desc: '同名のファイルが既に存在するフォルダーにファイルを移動する場合。毎回確認（名前変更、上書き、キャンセル）するか、常に名前を変更します。',
+                options: {
+                    ask: '毎回確認',
+                    rename: '常に名前を変更'
                 }
             },
             metadataCleanup: {

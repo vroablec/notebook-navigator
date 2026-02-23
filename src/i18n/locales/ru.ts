@@ -498,6 +498,7 @@ export const STRINGS_RU = {
             deleteFolderTitle: "Удалить '{name}'?",
             deleteFileTitle: "Удалить '{name}'?",
             deleteFileAttachmentsTitle: 'Удалить вложения файла?',
+            moveFileConflictTitle: 'Конфликт перемещения',
             folderNamePrompt: 'Введите название папки:',
             hideInOtherVaultProfiles: 'Скрыть в других профилях хранилища',
             renamePrompt: 'Введите новое название:',
@@ -509,6 +510,13 @@ export const STRINGS_RU = {
             deleteFileAttachmentsDescriptionMultiple: 'Эти вложения больше не используются ни в одной заметке. Хотите их удалить?',
             deleteFileAttachmentsViewFileTreeAriaLabel: 'Дерево файлов',
             deleteFileAttachmentsViewGalleryAriaLabel: 'Галерея',
+            moveFileConflictDescriptionSingle: 'Обнаружен конфликт файла в «{folder}».',
+            moveFileConflictDescriptionMultiple: 'Обнаружено {count} конфликтов файлов в «{folder}».',
+            moveFileConflictAffectedFiles: 'Затронутые файлы',
+            moveFileConflictItem: '«{name}» -> «{suggested}»{renameOnly}',
+            moveFileConflictRenameOnly: '(только переименование)',
+            moveFileConflictRename: 'Переименовать',
+            moveFileConflictOverwrite: 'Перезаписать',
             removeAllTagsTitle: 'Удалить все теги',
             removeAllTagsFromNote: 'Вы уверены, что хотите удалить все теги из этой заметки?',
             removeAllTagsFromNotes: 'Вы уверены, что хотите удалить все теги из {count} заметок?'
@@ -1690,6 +1698,14 @@ export const STRINGS_RU = {
                     ask: 'Спрашивать каждый раз',
                     always: 'Всегда',
                     never: 'Никогда'
+                }
+            },
+            moveFileConflicts: {
+                name: 'Конфликты перемещения',
+                desc: 'При перемещении файла в папку, где уже существует файл с таким же именем. Спрашивать каждый раз (переименовать, перезаписать, отменить) или всегда переименовывать.',
+                options: {
+                    ask: 'Спрашивать каждый раз',
+                    rename: 'Всегда переименовывать'
                 }
             },
             metadataCleanup: {

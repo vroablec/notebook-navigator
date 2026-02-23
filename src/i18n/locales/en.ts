@@ -497,6 +497,7 @@ export const STRINGS_EN = {
             deleteFolderTitle: "Delete '{name}'?",
             deleteFileTitle: "Delete '{name}'?",
             deleteFileAttachmentsTitle: 'Delete file attachments?',
+            moveFileConflictTitle: 'Move conflict',
             folderNamePrompt: 'Enter folder name:',
             hideInOtherVaultProfiles: 'Hide in other vault profiles',
             renamePrompt: 'Enter new name:',
@@ -508,6 +509,13 @@ export const STRINGS_EN = {
             deleteFileAttachmentsDescriptionMultiple: 'These attachments are no longer used in any notes. Would you like to delete them?',
             deleteFileAttachmentsViewFileTreeAriaLabel: 'File tree',
             deleteFileAttachmentsViewGalleryAriaLabel: 'Gallery',
+            moveFileConflictDescriptionSingle: 'A file conflict was found in "{folder}".',
+            moveFileConflictDescriptionMultiple: '{count} file conflicts were found in "{folder}".',
+            moveFileConflictAffectedFiles: 'Affected files',
+            moveFileConflictItem: '"{name}" -> "{suggested}"{renameOnly}',
+            moveFileConflictRenameOnly: '(rename only)',
+            moveFileConflictRename: 'Rename',
+            moveFileConflictOverwrite: 'Overwrite',
             removeAllTagsTitle: 'Remove all tags',
             removeAllTagsFromNote: 'Are you sure you want to remove all tags from this note?',
             removeAllTagsFromNotes: 'Are you sure you want to remove all tags from {count} notes?'
@@ -1686,6 +1694,14 @@ export const STRINGS_EN = {
                     ask: 'Ask each time',
                     always: 'Always',
                     never: 'Never'
+                }
+            },
+            moveFileConflicts: {
+                name: 'Move conflicts',
+                desc: 'When moving a file into a folder where a file with the same name already exists. Ask each time (rename, overwrite, cancel) or always rename.',
+                options: {
+                    ask: 'Ask each time',
+                    rename: 'Always rename'
                 }
             },
             metadataCleanup: {

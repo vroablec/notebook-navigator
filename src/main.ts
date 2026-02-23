@@ -108,6 +108,7 @@ import {
     isRecentNotesHideMode,
     isPropertySortSecondaryOption,
     resolveDeleteAttachmentsSetting,
+    resolveMoveFileConflictsSetting,
     isSettingSyncMode,
     isSortOption,
     isTagSortOrder,
@@ -510,6 +511,11 @@ export default class NotebookNavigatorPlugin extends Plugin implements ISettings
         this.settings.deleteAttachments = resolveDeleteAttachmentsSetting(
             this.settings.deleteAttachments,
             DEFAULT_SETTINGS.deleteAttachments
+        );
+
+        this.settings.moveFileConflicts = resolveMoveFileConflictsSetting(
+            this.settings.moveFileConflicts,
+            DEFAULT_SETTINGS.moveFileConflicts
         );
 
         let uiScaleMigrated = false;
@@ -971,7 +977,7 @@ export default class NotebookNavigatorPlugin extends Plugin implements ISettings
             () => this.saveSettingsAndUpdate(),
             () => this.propertyTreeService
         );
-        this.commandQueue = new CommandQueueService(this.app);
+        this.commandQueue = new CommandQueueService();
         this.fileSystemOps = new FileSystemOperations(
             this.app,
             () => this.tagTreeService,

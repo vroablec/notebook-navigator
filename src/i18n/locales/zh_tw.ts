@@ -496,6 +496,7 @@ export const STRINGS_ZH_TW = {
             deleteFolderTitle: "刪除 '{name}'？",
             deleteFileTitle: "刪除 '{name}'？",
             deleteFileAttachmentsTitle: '刪除檔案附件？',
+            moveFileConflictTitle: '移動衝突',
             folderNamePrompt: '輸入資料夾名稱：',
             hideInOtherVaultProfiles: '在其他保險庫設定檔中隱藏',
             renamePrompt: '輸入新名稱：',
@@ -507,6 +508,13 @@ export const STRINGS_ZH_TW = {
             deleteFileAttachmentsDescriptionMultiple: '這些附件不再被任何筆記使用。是否要刪除？',
             deleteFileAttachmentsViewFileTreeAriaLabel: '檔案樹',
             deleteFileAttachmentsViewGalleryAriaLabel: '圖庫',
+            moveFileConflictDescriptionSingle: '在「{folder}」中發現檔案衝突。',
+            moveFileConflictDescriptionMultiple: '在「{folder}」中發現 {count} 個檔案衝突。',
+            moveFileConflictAffectedFiles: '受影響的檔案',
+            moveFileConflictItem: '「{name}」->「{suggested}」{renameOnly}',
+            moveFileConflictRenameOnly: '（僅重新命名）',
+            moveFileConflictRename: '重新命名',
+            moveFileConflictOverwrite: '覆蓋',
             removeAllTagsTitle: '移除所有標籤',
             removeAllTagsFromNote: '您確定要從這個筆記中移除所有標籤嗎？',
             removeAllTagsFromNotes: '您確定要從 {count} 個筆記中移除所有標籤嗎？'
@@ -1686,6 +1694,14 @@ export const STRINGS_ZH_TW = {
                     ask: '每次詢問',
                     always: '始終',
                     never: '從不'
+                }
+            },
+            moveFileConflicts: {
+                name: '移動衝突',
+                desc: '將檔案移動到已有同名檔案的資料夾時。每次詢問（重新命名、覆蓋、取消）或始終重新命名。',
+                options: {
+                    ask: '每次詢問',
+                    rename: '始終重新命名'
                 }
             },
             metadataCleanup: {

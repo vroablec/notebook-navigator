@@ -501,6 +501,7 @@ export const STRINGS_PT = {
             deleteFolderTitle: "Eliminar '{name}'?",
             deleteFileTitle: "Eliminar '{name}'?",
             deleteFileAttachmentsTitle: 'Eliminar anexos do ficheiro?',
+            moveFileConflictTitle: 'Conflito de movimentação',
             folderNamePrompt: 'Introduza o nome da pasta:',
             hideInOtherVaultProfiles: 'Ocultar noutros perfis do cofre',
             renamePrompt: 'Introduza o novo nome:',
@@ -512,6 +513,13 @@ export const STRINGS_PT = {
             deleteFileAttachmentsDescriptionMultiple: 'Estes anexos já não são utilizados em nenhuma nota. Deseja eliminá-los?',
             deleteFileAttachmentsViewFileTreeAriaLabel: 'Árvore de ficheiros',
             deleteFileAttachmentsViewGalleryAriaLabel: 'Galeria',
+            moveFileConflictDescriptionSingle: 'Um conflito de ficheiro foi encontrado em "{folder}".',
+            moveFileConflictDescriptionMultiple: '{count} conflitos de ficheiros foram encontrados em "{folder}".',
+            moveFileConflictAffectedFiles: 'Ficheiros afetados',
+            moveFileConflictItem: '"{name}" -> "{suggested}"{renameOnly}',
+            moveFileConflictRenameOnly: '(apenas renomear)',
+            moveFileConflictRename: 'Renomear',
+            moveFileConflictOverwrite: 'Substituir',
             removeAllTagsTitle: 'Remover todas as etiquetas',
             removeAllTagsFromNote: 'Tem a certeza de que deseja remover todas as etiquetas desta nota?',
             removeAllTagsFromNotes: 'Tem a certeza de que deseja remover todas as etiquetas de {count} notas?'
@@ -1695,6 +1703,14 @@ export const STRINGS_PT = {
                     ask: 'Perguntar sempre',
                     always: 'Sempre',
                     never: 'Nunca'
+                }
+            },
+            moveFileConflicts: {
+                name: 'Conflitos de movimentação',
+                desc: 'Ao mover um ficheiro para uma pasta onde já existe um ficheiro com o mesmo nome. Perguntar sempre (renomear, substituir, cancelar) ou renomear sempre.',
+                options: {
+                    ask: 'Perguntar sempre',
+                    rename: 'Renomear sempre'
                 }
             },
             metadataCleanup: {

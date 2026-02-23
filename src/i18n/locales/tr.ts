@@ -501,6 +501,7 @@ export const STRINGS_TR = {
             deleteFolderTitle: "'{name}' silinsin mi?",
             deleteFileTitle: "'{name}' silinsin mi?",
             deleteFileAttachmentsTitle: 'Dosya ekleri silinsin mi?',
+            moveFileConflictTitle: 'Taşıma çakışması',
             folderNamePrompt: 'Klasör adını girin:',
             hideInOtherVaultProfiles: 'Diğer kasa profillerinde gizle',
             renamePrompt: 'Yeni adı girin:',
@@ -512,6 +513,13 @@ export const STRINGS_TR = {
             deleteFileAttachmentsDescriptionMultiple: 'Bu ekler artık hiçbir notta kullanılmıyor. Silmek ister misiniz?',
             deleteFileAttachmentsViewFileTreeAriaLabel: 'Dosya ağacı',
             deleteFileAttachmentsViewGalleryAriaLabel: 'Galeri',
+            moveFileConflictDescriptionSingle: '"{folder}" içinde bir dosya çakışması bulundu.',
+            moveFileConflictDescriptionMultiple: '"{folder}" içinde {count} dosya çakışması bulundu.',
+            moveFileConflictAffectedFiles: 'Etkilenen dosyalar',
+            moveFileConflictItem: '"{name}" -> "{suggested}"{renameOnly}',
+            moveFileConflictRenameOnly: '(yalnızca yeniden adlandır)',
+            moveFileConflictRename: 'Yeniden adlandır',
+            moveFileConflictOverwrite: 'Üzerine yaz',
             removeAllTagsTitle: 'Tüm etiketleri kaldır',
             removeAllTagsFromNote: 'Bu nottan tüm etiketleri kaldırmak istediğinizden emin misiniz?',
             removeAllTagsFromNotes: '{count} nottan tüm etiketleri kaldırmak istediğinizden emin misiniz?'
@@ -1692,6 +1700,14 @@ export const STRINGS_TR = {
                     ask: 'Her seferinde sor',
                     always: 'Her zaman',
                     never: 'Asla'
+                }
+            },
+            moveFileConflicts: {
+                name: 'Taşıma çakışmaları',
+                desc: 'Aynı ada sahip bir dosyanın zaten bulunduğu klasöre dosya taşınırken. Her seferinde sor (yeniden adlandır, üzerine yaz, iptal) veya her zaman yeniden adlandır.',
+                options: {
+                    ask: 'Her seferinde sor',
+                    rename: 'Her zaman yeniden adlandır'
                 }
             },
             metadataCleanup: {

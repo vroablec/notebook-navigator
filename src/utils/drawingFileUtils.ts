@@ -16,10 +16,10 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { App, Plugin, TFile, TFolder, normalizePath } from 'obsidian';
+import { App, Plugin, TFile, TFolder } from 'obsidian';
 import { EXCALIDRAW_PLUGIN_ID, TLDRAW_PLUGIN_ID } from '../constants/pluginIds';
 import { EXCALIDRAW_BASENAME_SUFFIX, stripInvalidLinkCharacters } from './fileNameUtils';
-import { generateUniqueFilename } from './fileCreationUtils';
+import { buildFilePathInFolder, generateUniqueFilename } from './fileCreationUtils';
 import { getMomentApi } from './moment';
 import { ensureRecord, isBooleanRecordValue, isStringRecordValue } from './recordUtils';
 import { getPluginById } from './typeGuards';
@@ -285,9 +285,7 @@ function getUniqueDrawingFilePath(app: App, parent: TFolder, fileName: string): 
     const baseName = hasExtension ? fileName.slice(0, dotIndex) : fileName;
     const extension = hasExtension ? fileName.slice(dotIndex + 1) : '';
     const uniqueBaseName = generateUniqueFilename(parent.path, baseName, extension, app);
-    const folderPath = parent.path === '/' ? '' : `${parent.path}/`;
-    const suffix = extension ? `.${extension}` : '';
-    return normalizePath(`${folderPath}${uniqueBaseName}${suffix}`);
+    return buildFilePathInFolder(parent.path, uniqueBaseName, extension);
 }
 
 /** Type guard checking if a plugin exposes the Excalidraw API */

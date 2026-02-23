@@ -501,6 +501,7 @@ export const STRINGS_NL = {
             deleteFolderTitle: "'{name}' verwijderen?",
             deleteFileTitle: "'{name}' verwijderen?",
             deleteFileAttachmentsTitle: 'Bestandsbijlagen verwijderen?',
+            moveFileConflictTitle: 'Verplaatsingsconflict',
             folderNamePrompt: 'Voer mapnaam in:',
             hideInOtherVaultProfiles: 'Verbergen in andere kluisprofielen',
             renamePrompt: 'Voer nieuwe naam in:',
@@ -512,6 +513,13 @@ export const STRINGS_NL = {
             deleteFileAttachmentsDescriptionMultiple: 'Deze bijlagen worden niet meer gebruikt in notities. Wilt u ze verwijderen?',
             deleteFileAttachmentsViewFileTreeAriaLabel: 'Bestandsboom',
             deleteFileAttachmentsViewGalleryAriaLabel: 'Galerij',
+            moveFileConflictDescriptionSingle: 'Een bestandsconflict is gevonden in "{folder}".',
+            moveFileConflictDescriptionMultiple: '{count} bestandsconflicten zijn gevonden in "{folder}".',
+            moveFileConflictAffectedFiles: 'Betrokken bestanden',
+            moveFileConflictItem: '"{name}" -> "{suggested}"{renameOnly}',
+            moveFileConflictRenameOnly: '(alleen hernoemen)',
+            moveFileConflictRename: 'Hernoemen',
+            moveFileConflictOverwrite: 'Overschrijven',
             removeAllTagsTitle: 'Alle tags verwijderen',
             removeAllTagsFromNote: 'Weet u zeker dat u alle tags van deze notitie wilt verwijderen?',
             removeAllTagsFromNotes: 'Weet u zeker dat u alle tags van {count} notities wilt verwijderen?'
@@ -1695,6 +1703,14 @@ export const STRINGS_NL = {
                     ask: 'Elke keer vragen',
                     always: 'Altijd',
                     never: 'Nooit'
+                }
+            },
+            moveFileConflicts: {
+                name: 'Verplaatsingsconflicten',
+                desc: 'Bij het verplaatsen van een bestand naar een map waar al een bestand met dezelfde naam bestaat. Elke keer vragen (hernoemen, overschrijven, annuleren) of altijd hernoemen.',
+                options: {
+                    ask: 'Elke keer vragen',
+                    rename: 'Altijd hernoemen'
                 }
             },
             metadataCleanup: {

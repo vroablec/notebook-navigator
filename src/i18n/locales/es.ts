@@ -501,6 +501,7 @@ export const STRINGS_ES = {
             deleteFolderTitle: "¿Eliminar '{name}'?",
             deleteFileTitle: "¿Eliminar '{name}'?",
             deleteFileAttachmentsTitle: '¿Eliminar archivos adjuntos?',
+            moveFileConflictTitle: 'Conflicto de movimiento',
             folderNamePrompt: 'Introduce el nombre de la carpeta:',
             hideInOtherVaultProfiles: 'Ocultar en otros perfiles de bóveda',
             renamePrompt: 'Introduce el nuevo nombre:',
@@ -512,6 +513,13 @@ export const STRINGS_ES = {
             deleteFileAttachmentsDescriptionMultiple: 'Estos adjuntos ya no se usan en ninguna nota. ¿Desea eliminarlos?',
             deleteFileAttachmentsViewFileTreeAriaLabel: 'Árbol de archivos',
             deleteFileAttachmentsViewGalleryAriaLabel: 'Galería',
+            moveFileConflictDescriptionSingle: 'Se encontró un conflicto de archivo en "{folder}".',
+            moveFileConflictDescriptionMultiple: 'Se encontraron {count} conflictos de archivos en "{folder}".',
+            moveFileConflictAffectedFiles: 'Archivos afectados',
+            moveFileConflictItem: '"{name}" -> "{suggested}"{renameOnly}',
+            moveFileConflictRenameOnly: '(solo renombrar)',
+            moveFileConflictRename: 'Renombrar',
+            moveFileConflictOverwrite: 'Sobrescribir',
             removeAllTagsTitle: 'Eliminar todas las etiquetas',
             removeAllTagsFromNote: '¿Estás seguro de que quieres eliminar todas las etiquetas de esta nota?',
             removeAllTagsFromNotes: '¿Estás seguro de que quieres eliminar todas las etiquetas de {count} notas?'
@@ -1695,6 +1703,14 @@ export const STRINGS_ES = {
                     ask: 'Preguntar cada vez',
                     always: 'Siempre',
                     never: 'Nunca'
+                }
+            },
+            moveFileConflicts: {
+                name: 'Conflictos de movimiento',
+                desc: 'Al mover un archivo a una carpeta donde ya existe un archivo con el mismo nombre. Preguntar cada vez (renombrar, sobrescribir, cancelar) o siempre renombrar.',
+                options: {
+                    ask: 'Preguntar cada vez',
+                    rename: 'Siempre renombrar'
                 }
             },
             metadataCleanup: {

@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { App, TFile, TFolder } from 'obsidian';
+import { TFile, TFolder } from 'obsidian';
 import type { PaneType } from 'obsidian';
 
 const RECENT_BACKGROUND_OPEN_MARKER_TTL_MS = 250;
@@ -119,6 +119,14 @@ export interface CommandResult<T = unknown> {
     error?: Error;
 }
 
+export interface MoveFilesCommandData {
+    movedCount: number;
+    skippedCount: number;
+    cancelledCount: number;
+    movedSourcePaths: string[];
+    errors: { filePath: string; error: unknown }[];
+}
+
 /**
  * Service for managing operations and their context, replacing global window flags.
  * This provides a centralized, encapsulated way to track ongoing operations
@@ -134,7 +142,7 @@ export class CommandQueueService {
     private latestOpenActiveFileOperationId: string | null = null;
     private recentBackgroundOpenByPath = new Map<string, number>();
 
-    constructor(private app: App) {}
+    constructor() {}
 
     private cleanupRecentBackgroundOpens(now: number): void {
         for (const [path, openedAt] of this.recentBackgroundOpenByPath) {
@@ -291,8 +299,9 @@ export class CommandQueueService {
      */
     async executeMoveFiles(
         files: TFile[],
-        targetFolder: TFolder
-    ): Promise<CommandResult<{ movedCount: number; skippedCount: number; errors: { filePath: string; error: unknown }[] }>> {
+        targetFolder: TFolder,
+        performMove: () => Promise<MoveFilesCommandData>
+    ): Promise<CommandResult<MoveFilesCommandData>> {
         const operationId = this.generateOperationId();
         const operation: MoveFileOperation = {
             id: operationId,
@@ -306,48 +315,8 @@ export class CommandQueueService {
         this.markActive(OperationType.MOVE_FILE);
 
         try {
-            let movedCount = 0;
-            let skippedCount = 0;
-            const errors: { filePath: string; error: unknown }[] = [];
-
-            // First, collect all valid moves (non-conflicting files)
-            const filesToMove: { file: TFile; newPath: string }[] = [];
-
-            for (const file of files) {
-                const base = targetFolder.path === '/' ? '' : `${targetFolder.path}/`;
-                const newPath = `${base}${file.name}`;
-
-                // Check for name conflicts
-                if (this.app.vault.getFileByPath(newPath)) {
-                    skippedCount++;
-                    continue;
-                }
-
-                filesToMove.push({ file, newPath });
-            }
-
-            // Move all non-conflicting files in parallel for instant operation
-            await Promise.allSettled(
-                filesToMove.map(async ({ file, newPath }) => {
-                    // Re-check just before move to avoid TOCTOU conflicts
-                    if (this.app.vault.getAbstractFileByPath(newPath)) {
-                        skippedCount++;
-                        return;
-                    }
-                    try {
-                        await this.app.fileManager.renameFile(file, newPath);
-                        movedCount++;
-                    } catch (err) {
-                        console.error('Error moving file:', file.path, err);
-                        errors.push({ filePath: file.path, error: err });
-                    }
-                })
-            );
-
-            return {
-                success: true,
-                data: { movedCount, skippedCount, errors }
-            };
+            const data = await performMove();
+            return { success: true, data };
         } catch (error) {
             return {
                 success: false,

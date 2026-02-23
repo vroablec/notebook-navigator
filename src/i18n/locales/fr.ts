@@ -501,6 +501,7 @@ export const STRINGS_FR = {
             deleteFolderTitle: "Supprimer '{name}' ?",
             deleteFileTitle: "Supprimer '{name}' ?",
             deleteFileAttachmentsTitle: 'Supprimer les pièces jointes ?',
+            moveFileConflictTitle: 'Conflit de déplacement',
             folderNamePrompt: 'Entrez le nom du dossier :',
             hideInOtherVaultProfiles: 'Masquer dans les autres profils du coffre',
             renamePrompt: 'Entrez le nouveau nom :',
@@ -513,6 +514,13 @@ export const STRINGS_FR = {
                 'Ces pièces jointes ne sont plus utilisées dans aucune note. Voulez-vous les supprimer ?',
             deleteFileAttachmentsViewFileTreeAriaLabel: 'Arborescence',
             deleteFileAttachmentsViewGalleryAriaLabel: 'Galerie',
+            moveFileConflictDescriptionSingle: 'Un conflit de fichier a été trouvé dans « {folder} ».',
+            moveFileConflictDescriptionMultiple: '{count} conflits de fichiers ont été trouvés dans « {folder} ».',
+            moveFileConflictAffectedFiles: 'Fichiers concernés',
+            moveFileConflictItem: '« {name} » -> « {suggested} »{renameOnly}',
+            moveFileConflictRenameOnly: '(renommer uniquement)',
+            moveFileConflictRename: 'Renommer',
+            moveFileConflictOverwrite: 'Écraser',
             removeAllTagsTitle: 'Supprimer toutes les étiquettes',
             removeAllTagsFromNote: 'Êtes-vous sûr de vouloir supprimer toutes les étiquettes de cette note ?',
             removeAllTagsFromNotes: 'Êtes-vous sûr de vouloir supprimer toutes les étiquettes de {count} notes ?'
@@ -1698,6 +1706,14 @@ export const STRINGS_FR = {
                     ask: 'Demander à chaque fois',
                     always: 'Toujours',
                     never: 'Jamais'
+                }
+            },
+            moveFileConflicts: {
+                name: 'Conflits de déplacement',
+                desc: 'Lors du déplacement d\'un fichier dans un dossier où un fichier du même nom existe déjà. Demander à chaque fois (renommer, écraser, annuler) ou toujours renommer.',
+                options: {
+                    ask: 'Demander à chaque fois',
+                    rename: 'Toujours renommer'
                 }
             },
             metadataCleanup: {

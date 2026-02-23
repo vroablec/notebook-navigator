@@ -499,6 +499,7 @@ export const STRINGS_KO = {
             deleteFolderTitle: "'{name}'을(를) 삭제하시겠습니까?",
             deleteFileTitle: "'{name}'을(를) 삭제하시겠습니까?",
             deleteFileAttachmentsTitle: '파일 첨부 파일을 삭제하시겠습니까?',
+            moveFileConflictTitle: '이동 충돌',
             folderNamePrompt: '폴더 이름 입력:',
             hideInOtherVaultProfiles: '다른 보관소 프로필에서 숨기기',
             renamePrompt: '새 이름 입력:',
@@ -510,6 +511,13 @@ export const STRINGS_KO = {
             deleteFileAttachmentsDescriptionMultiple: '이 첨부 파일들은 더 이상 어떤 노트에서도 사용되지 않습니다. 삭제하시겠습니까?',
             deleteFileAttachmentsViewFileTreeAriaLabel: '파일 트리',
             deleteFileAttachmentsViewGalleryAriaLabel: '갤러리',
+            moveFileConflictDescriptionSingle: '"{folder}"에서 파일 충돌이 발견되었습니다.',
+            moveFileConflictDescriptionMultiple: '"{folder}"에서 {count}개의 파일 충돌이 발견되었습니다.',
+            moveFileConflictAffectedFiles: '영향받는 파일',
+            moveFileConflictItem: '"{name}" -> "{suggested}"{renameOnly}',
+            moveFileConflictRenameOnly: '(이름 변경만)',
+            moveFileConflictRename: '이름 변경',
+            moveFileConflictOverwrite: '덮어쓰기',
             removeAllTagsTitle: '모든 태그 제거',
             removeAllTagsFromNote: '이 노트에서 모든 태그를 제거하시겠습니까?',
             removeAllTagsFromNotes: '{count}개의 노트에서 모든 태그를 제거하시겠습니까?'
@@ -1691,6 +1699,14 @@ export const STRINGS_KO = {
                     ask: '매번 확인',
                     always: '항상',
                     never: '안 함'
+                }
+            },
+            moveFileConflicts: {
+                name: '이동 충돌',
+                desc: '같은 이름의 파일이 이미 존재하는 폴더로 파일을 이동할 때. 매번 확인(이름 변경, 덮어쓰기, 취소)하거나 항상 이름을 변경합니다.',
+                options: {
+                    ask: '매번 확인',
+                    rename: '항상 이름 변경'
                 }
             },
             metadataCleanup: {

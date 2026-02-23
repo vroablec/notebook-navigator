@@ -497,6 +497,7 @@ export const STRINGS_IT = {
             deleteFolderTitle: "Eliminare '{name}'?",
             deleteFileTitle: "Eliminare '{name}'?",
             deleteFileAttachmentsTitle: 'Eliminare gli allegati del file?',
+            moveFileConflictTitle: 'Conflitto di spostamento',
             folderNamePrompt: 'Inserisci nome cartella:',
             hideInOtherVaultProfiles: 'Nascondi in altri profili vault',
             renamePrompt: 'Inserisci nuovo nome:',
@@ -508,6 +509,13 @@ export const STRINGS_IT = {
             deleteFileAttachmentsDescriptionMultiple: 'Questi allegati non sono più utilizzati in nessuna nota. Vuoi eliminarli?',
             deleteFileAttachmentsViewFileTreeAriaLabel: 'Albero dei file',
             deleteFileAttachmentsViewGalleryAriaLabel: 'Galleria',
+            moveFileConflictDescriptionSingle: 'Un conflitto di file è stato trovato in "{folder}".',
+            moveFileConflictDescriptionMultiple: '{count} conflitti di file sono stati trovati in "{folder}".',
+            moveFileConflictAffectedFiles: 'File interessati',
+            moveFileConflictItem: '"{name}" -> "{suggested}"{renameOnly}',
+            moveFileConflictRenameOnly: '(solo rinomina)',
+            moveFileConflictRename: 'Rinomina',
+            moveFileConflictOverwrite: 'Sovrascrivi',
             removeAllTagsTitle: 'Rimuovi tutti i tag',
             removeAllTagsFromNote: 'Sei sicuro di voler rimuovere tutti i tag da questa nota?',
             removeAllTagsFromNotes: 'Sei sicuro di voler rimuovere tutti i tag da {count} note?'
@@ -1691,6 +1699,14 @@ export const STRINGS_IT = {
                     ask: 'Chiedi ogni volta',
                     always: 'Sempre',
                     never: 'Mai'
+                }
+            },
+            moveFileConflicts: {
+                name: 'Conflitti di spostamento',
+                desc: 'Quando si sposta un file in una cartella dove esiste già un file con lo stesso nome. Chiedi ogni volta (rinomina, sovrascrivi, annulla) o rinomina sempre.',
+                options: {
+                    ask: 'Chiedi ogni volta',
+                    rename: 'Rinomina sempre'
                 }
             },
             metadataCleanup: {

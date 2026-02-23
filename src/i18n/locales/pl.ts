@@ -502,6 +502,7 @@ export const STRINGS_PL = {
             deleteFolderTitle: "Usunąć '{name}'?",
             deleteFileTitle: "Usunąć '{name}'?",
             deleteFileAttachmentsTitle: 'Usunąć załączniki pliku?',
+            moveFileConflictTitle: 'Konflikt przenoszenia',
             folderNamePrompt: 'Wprowadź nazwę folderu:',
             hideInOtherVaultProfiles: 'Ukryj w innych profilach sejfu',
             renamePrompt: 'Wprowadź nową nazwę:',
@@ -513,6 +514,13 @@ export const STRINGS_PL = {
             deleteFileAttachmentsDescriptionMultiple: 'Te załączniki nie są już używane w żadnej notatce. Czy chcesz je usunąć?',
             deleteFileAttachmentsViewFileTreeAriaLabel: 'Drzewo plików',
             deleteFileAttachmentsViewGalleryAriaLabel: 'Galeria',
+            moveFileConflictDescriptionSingle: 'Znaleziono konflikt pliku w „{folder}".',
+            moveFileConflictDescriptionMultiple: 'Znaleziono {count} konfliktów plików w „{folder}".',
+            moveFileConflictAffectedFiles: 'Dotknięte pliki',
+            moveFileConflictItem: '„{name}" -> „{suggested}"{renameOnly}',
+            moveFileConflictRenameOnly: '(tylko zmiana nazwy)',
+            moveFileConflictRename: 'Zmień nazwę',
+            moveFileConflictOverwrite: 'Nadpisz',
             removeAllTagsTitle: 'Usuń wszystkie tagi',
             removeAllTagsFromNote: 'Czy na pewno chcesz usunąć wszystkie tagi z tej notatki?',
             removeAllTagsFromNotes: 'Czy na pewno chcesz usunąć wszystkie tagi ({count}) z notatek?'
@@ -1696,6 +1704,14 @@ export const STRINGS_PL = {
                     ask: 'Pytaj za każdym razem',
                     always: 'Zawsze',
                     never: 'Nigdy'
+                }
+            },
+            moveFileConflicts: {
+                name: 'Konflikty przenoszenia',
+                desc: 'Podczas przenoszenia pliku do folderu, w którym istnieje już plik o tej samej nazwie. Pytaj za każdym razem (zmień nazwę, nadpisz, anuluj) lub zawsze zmieniaj nazwę.',
+                options: {
+                    ask: 'Pytaj za każdym razem',
+                    rename: 'Zawsze zmieniaj nazwę'
                 }
             },
             metadataCleanup: {

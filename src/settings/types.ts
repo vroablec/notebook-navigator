@@ -40,6 +40,16 @@ export function resolveDeleteAttachmentsSetting(value: unknown, fallback: Delete
     return isDeleteAttachmentsSetting(value) ? value : fallback;
 }
 
+export type MoveFileConflictsSetting = 'ask' | 'rename';
+
+export function isMoveFileConflictsSetting(value: unknown): value is MoveFileConflictsSetting {
+    return value === 'ask' || value === 'rename';
+}
+
+export function resolveMoveFileConflictsSetting(value: unknown, fallback: MoveFileConflictsSetting): MoveFileConflictsSetting {
+    return isMoveFileConflictsSetting(value) ? value : fallback;
+}
+
 /** Identifiers for settings that can be switched between synced and local storage. */
 export const SYNC_MODE_SETTING_IDS = [
     'vaultProfile',
@@ -289,6 +299,7 @@ export interface NotebookNavigatorSettings {
     checkForUpdatesOnStart: boolean;
     confirmBeforeDelete: boolean;
     deleteAttachments: DeleteAttachmentsSetting;
+    moveFileConflicts: MoveFileConflictsSetting;
 
     // Navigation pane tab - Appearance
     pinNavigationBanner: boolean;

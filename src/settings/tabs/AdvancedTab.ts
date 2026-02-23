@@ -26,7 +26,7 @@ import { localStorage } from '../../utils/localStorage';
 import { runAsyncAction } from '../../utils/async';
 import { showNotice } from '../../utils/noticeUtils';
 import { createSettingGroupFactory } from '../settingGroups';
-import { isDeleteAttachmentsSetting } from '../types';
+import { isDeleteAttachmentsSetting, isMoveFileConflictsSetting } from '../types';
 
 /** Renders the advanced settings tab */
 export function renderAdvancedTab(context: SettingsTabContext): void {
@@ -80,6 +80,25 @@ export function renderAdvancedTab(context: SettingsTabContext): void {
                             return;
                         }
                         plugin.settings.deleteAttachments = value;
+                        await plugin.saveSettingsAndUpdate();
+                    });
+            });
+    });
+
+    advancedGroup.addSetting(setting => {
+        setting
+            .setName(strings.settings.items.moveFileConflicts.name)
+            .setDesc(strings.settings.items.moveFileConflicts.desc)
+            .addDropdown(dropdown => {
+                dropdown
+                    .addOption('ask', strings.settings.items.moveFileConflicts.options.ask)
+                    .addOption('rename', strings.settings.items.moveFileConflicts.options.rename)
+                    .setValue(plugin.settings.moveFileConflicts)
+                    .onChange(async value => {
+                        if (!isMoveFileConflictsSetting(value)) {
+                            return;
+                        }
+                        plugin.settings.moveFileConflicts = value;
                         await plugin.saveSettingsAndUpdate();
                     });
             });

@@ -22,11 +22,18 @@ import { strings } from '../i18n';
 import { ConfirmModal } from '../modals/ConfirmModal';
 import { FolderSuggestModal } from '../modals/FolderSuggestModal';
 import { InputModal } from '../modals/InputModal';
+import { MoveFileConflictModal, type MoveFileConflictItem, type MoveFileConflictResolution } from '../modals/MoveFileConflictModal';
 import { NotebookNavigatorSettings } from '../settings';
 import { NavigationItemType, PROPERTIES_ROOT_VIRTUAL_FOLDER_ID, TAGGED_TAG_ID, UNTAGGED_TAG_ID } from '../types';
 import type { VisibilityPreferences } from '../types';
 import { ExtendedApp, TIMEOUTS, OBSIDIAN_COMMANDS } from '../types/obsidian-extended';
-import { createFileWithOptions, createDatabaseContent, generateUniqueFilename } from '../utils/fileCreationUtils';
+import {
+    buildFilePathInFolder,
+    buildPathInFolder,
+    createFileWithOptions,
+    createDatabaseContent,
+    generateUniqueFilename
+} from '../utils/fileCreationUtils';
 import { cleanupExclusionPatterns, isPathInExcludedFolder } from '../utils/fileFilters';
 import {
     containsForbiddenNameCharactersAllPlatforms,
@@ -46,7 +53,7 @@ import { executeCommand, isPluginInstalled } from '../utils/typeGuards';
 import { getErrorMessage } from '../utils/errorUtils';
 import { TagTreeService } from './TagTreeService';
 import type { PropertyTreeService } from './PropertyTreeService';
-import { CommandQueueService } from './CommandQueueService';
+import { CommandQueueService, type MoveFilesCommandData } from './CommandQueueService';
 import type { MaybePromise } from '../utils/async';
 import { showNotice } from '../utils/noticeUtils';
 import { normalizePropertyNodeId, parsePropertyNodeId, type PropertySelectionNodeId } from '../utils/propertyTree';
@@ -65,7 +72,12 @@ import { createDrawingWithPlugin, DrawingType, getDrawingFilePath, getDrawingTem
 import { resolveFolderDisplayName } from '../utils/folderDisplayName';
 import { normalizeTagPath } from '../utils/tagUtils';
 import { isPrimaryDocumentFile } from '../utils/fileTypeUtils';
-import { type DeleteAttachmentsSetting, resolveDeleteAttachmentsSetting } from '../settings/types';
+import {
+    type DeleteAttachmentsSetting,
+    type MoveFileConflictsSetting,
+    resolveDeleteAttachmentsSetting,
+    resolveMoveFileConflictsSetting
+} from '../settings/types';
 
 /**
  * Selection context for file operations
@@ -104,9 +116,48 @@ interface MoveFilesResult {
     movedCount: number;
     /** Number of files skipped due to conflicts */
     skippedCount: number;
+    /** Number of files skipped due to user cancellation */
+    cancelledCount: number;
     /** Files that failed to move with their errors */
     errors: { file: TFile; error: Error }[];
 }
+
+interface PlannedFileMove {
+    file: TFile;
+    originalPath: string;
+    targetPath: string;
+    overwrite: boolean;
+}
+
+interface DeferredMoveConflict {
+    file: TFile;
+    originalPath: string;
+    desiredPath: string;
+    suggestedPath: string;
+    canOverwrite: boolean;
+}
+
+interface PlannedMoveExecutionOutcomeMoved {
+    status: 'moved';
+    originalPath: string;
+}
+
+interface PlannedMoveExecutionOutcomeSkipped {
+    status: 'skipped';
+}
+
+interface PlannedMoveExecutionOutcomeErrored {
+    status: 'error';
+    originalPath: string;
+    error: unknown;
+}
+
+type PlannedMoveExecutionOutcome =
+    | PlannedMoveExecutionOutcomeMoved
+    | PlannedMoveExecutionOutcomeSkipped
+    | PlannedMoveExecutionOutcomeErrored;
+
+const FILE_MOVE_BATCH_SIZE = 12;
 
 /**
  * Result of a folder move initiated from the context menu
@@ -308,6 +359,10 @@ export class FileSystemOperations {
 
     private resolveAttachmentDeletionSetting(): DeleteAttachmentsSetting {
         return resolveDeleteAttachmentsSetting(this.settingsProvider.settings.deleteAttachments, 'ask');
+    }
+
+    private resolveMoveFileConflictsSetting(): MoveFileConflictsSetting {
+        return resolveMoveFileConflictsSetting(this.settingsProvider.settings.moveFileConflicts, 'ask');
     }
 
     private collectAttachmentCandidatesBySourcePath(
@@ -755,8 +810,7 @@ export class FileSystemOperations {
                 }
 
                 try {
-                    const base = parent.path === '/' ? '' : `${parent.path}/`;
-                    const path = normalizePath(`${base}${filteredName}`);
+                    const path = buildPathInFolder(parent.path, filteredName);
                     await this.app.vault.createFolder(path);
                     if (showHiddenOption && context?.checkboxValue) {
                         await this.hideFolderInOtherVaultProfiles(path);
@@ -956,8 +1010,7 @@ export class FileSystemOperations {
                     if (folderNote && folderNoteNamingSettings) {
                         const newFolderNoteBaseName = resolveFolderNoteName(filteredName, folderNoteNamingSettings);
                         renamedFolderNoteFileName = this.getFolderNoteFileName(newFolderNoteBaseName, folderNote);
-                        const folderBase = folder.path === '/' ? '' : `${folder.path}/`;
-                        const conflictPath = normalizePath(`${folderBase}${renamedFolderNoteFileName}`);
+                        const conflictPath = buildPathInFolder(folder.path, renamedFolderNoteFileName);
                         const conflict = this.app.vault.getFileByPath(conflictPath);
                         if (conflict) {
                             showNotice(strings.fileSystem.errors.renameFolderNoteConflict.replace('{name}', renamedFolderNoteFileName), {
@@ -968,8 +1021,7 @@ export class FileSystemOperations {
                     }
 
                     const parentPath = folder.parent?.path ?? '/';
-                    const base = parentPath === '/' ? '' : `${parentPath}/`;
-                    const newFolderPath = normalizePath(`${base}${filteredName}`);
+                    const newFolderPath = buildPathInFolder(parentPath, filteredName);
 
                     // Rename the folder (moves contents including the folder note)
                     await this.app.fileManager.renameFile(folder, newFolderPath);
@@ -977,7 +1029,7 @@ export class FileSystemOperations {
 
                     // Rename folder note when naming is tied to the folder name.
                     if (folderNote && renamedFolderNoteFileName !== null) {
-                        const newNotePath = normalizePath(`${newFolderPath}/${renamedFolderNoteFileName}`);
+                        const newNotePath = buildPathInFolder(newFolderPath, renamedFolderNoteFileName);
                         await this.app.fileManager.renameFile(folderNote, newNotePath);
                     }
                 } catch (error) {
@@ -1056,8 +1108,7 @@ export class FileSystemOperations {
 
                 try {
                     const parentPath = file.parent?.path ?? '/';
-                    const base = parentPath === '/' ? '' : `${parentPath}/`;
-                    const newPath = normalizePath(`${base}${finalFileName}`);
+                    const newPath = buildPathInFolder(parentPath, finalFileName);
                     await this.app.fileManager.renameFile(file, newPath);
                 } catch (error) {
                     this.notifyError(strings.fileSystem.errors.renameFile, error);
@@ -1283,48 +1334,220 @@ export class FileSystemOperations {
      */
     async moveFilesToFolder(options: MoveFilesOptions): Promise<MoveFilesResult> {
         const { files, targetFolder, selectionContext, showNotifications = true } = options;
-        const result: MoveFilesResult = { movedCount: 0, skippedCount: 0, errors: [] };
+        const result: MoveFilesResult = { movedCount: 0, skippedCount: 0, cancelledCount: 0, errors: [] };
 
         if (files.length === 0) return result;
 
-        // Determine if we need to handle selection updates
-        const pathsToMove = new Set(files.map(f => f.path));
-        const isMovingSelectedFile = selectionContext?.selectedFile && pathsToMove.has(selectionContext.selectedFile.path);
-
-        // Only find next file if we're moving the selected file
-        let nextFileToSelect: TFile | null = null;
-        if (isMovingSelectedFile && selectionContext) {
-            nextFileToSelect = findNextFileAfterRemoval(selectionContext.allFiles, pathsToMove);
-        }
+        const selectedFileOriginalPath = selectionContext?.selectedFile?.path ?? null;
 
         const commandQueue = this.getCommandQueue();
         if (commandQueue) {
-            const moveResult = await commandQueue.executeMoveFiles(files, targetFolder);
-            if (moveResult.success && moveResult.data) {
-                result.movedCount = moveResult.data.movedCount;
-                result.skippedCount = moveResult.data.skippedCount;
-                // Map per-file errors back to TFile where possible for downstream notices
-                if (Array.isArray(moveResult.data.errors) && moveResult.data.errors.length > 0) {
-                    for (const err of moveResult.data.errors) {
-                        const f = this.app.vault.getFileByPath(err.filePath);
-                        if (f) {
-                            result.errors.push({ file: f, error: err.error as Error });
-                        } else {
-                            // Fall back to first of the requested files with matching path
-                            const fallback = files.find(x => x.path === err.filePath) || files[0];
-                            result.errors.push({ file: fallback, error: err.error as Error });
+            const moveConflictsSetting = this.resolveMoveFileConflictsSetting();
+            const targetFolderLabel = this.resolveFolderDisplayLabel(targetFolder);
+
+            const performMove = async (): Promise<MoveFilesCommandData> => {
+                let cancelledCount = 0;
+                const movedSourcePaths: string[] = [];
+                const errors: { filePath: string; error: unknown }[] = [];
+
+                const plannedMoves: PlannedFileMove[] = [];
+                const deferredConflicts: DeferredMoveConflict[] = [];
+                const existingDestinationEntries = new Map<string, TAbstractFile>();
+                const reservedPaths = new Set<string>();
+                const suggestionReservedPaths = new Set<string>();
+
+                targetFolder.children.forEach(child => {
+                    const childPath = normalizePath(child.path);
+                    existingDestinationEntries.set(childPath, child);
+                    suggestionReservedPaths.add(childPath);
+                });
+
+                const computeUniqueTargetPath = (file: TFile, additionalReserved: ReadonlySet<string>, useVaultLookup: boolean): string => {
+                    const excalidraw = isExcalidrawFile(file);
+                    const baseName = excalidraw ? stripExcalidrawSuffix(file.basename) : file.basename;
+                    const uniqueFileName = generateUniqueFilename(targetFolder.path, baseName, file.extension, this.app, {
+                        occupiedPaths: additionalReserved,
+                        useVaultLookup,
+                        baseNameSuffix: excalidraw ? EXCALIDRAW_BASENAME_SUFFIX : ''
+                    });
+                    return buildFilePathInFolder(targetFolder.path, uniqueFileName, file.extension);
+                };
+
+                for (const file of files) {
+                    const originalPath = file.path;
+                    const desiredPath = buildPathInFolder(targetFolder.path, file.name);
+
+                    if (desiredPath === originalPath) {
+                        continue;
+                    }
+
+                    const reservedCollision = reservedPaths.has(desiredPath);
+                    const existingEntry = reservedCollision ? null : (existingDestinationEntries.get(desiredPath) ?? null);
+
+                    if (!reservedCollision && !existingEntry) {
+                        plannedMoves.push({ file, originalPath, targetPath: desiredPath, overwrite: false });
+                        reservedPaths.add(desiredPath);
+                        suggestionReservedPaths.add(desiredPath);
+                        continue;
+                    }
+
+                    const suggestedPath = computeUniqueTargetPath(file, suggestionReservedPaths, false);
+                    suggestionReservedPaths.add(suggestedPath);
+                    const canOverwrite = existingEntry instanceof TFile;
+
+                    if (moveConflictsSetting === 'rename') {
+                        plannedMoves.push({ file, originalPath, targetPath: suggestedPath, overwrite: false });
+                        reservedPaths.add(suggestedPath);
+                        continue;
+                    }
+
+                    deferredConflicts.push({
+                        file,
+                        originalPath,
+                        desiredPath,
+                        suggestedPath,
+                        canOverwrite
+                    });
+                }
+
+                if (moveConflictsSetting === 'ask' && deferredConflicts.length > 0) {
+                    const conflictItems: MoveFileConflictItem[] = deferredConflicts.map(conflict => {
+                        const suggestedFileName = conflict.suggestedPath.split('/').pop() ?? conflict.file.name;
+                        return {
+                            sourceFileName: conflict.file.name,
+                            suggestedFileName,
+                            canOverwrite: conflict.canOverwrite
+                        };
+                    });
+
+                    const resolution = await new Promise<MoveFileConflictResolution | null>(resolve => {
+                        const modal = new MoveFileConflictModal(this.app, {
+                            targetFolderName: targetFolderLabel,
+                            conflicts: conflictItems,
+                            onResolve: resolve
+                        });
+                        modal.open();
+                    });
+
+                    if (!resolution) {
+                        cancelledCount = deferredConflicts.length;
+                        return { movedCount: 0, skippedCount: 0, cancelledCount, movedSourcePaths: [], errors: [] };
+                    }
+
+                    for (const conflict of deferredConflicts) {
+                        const shouldOverwrite =
+                            resolution === 'overwrite' && conflict.canOverwrite && !reservedPaths.has(conflict.desiredPath);
+                        let targetPath = shouldOverwrite ? conflict.desiredPath : conflict.suggestedPath;
+
+                        if (!shouldOverwrite && reservedPaths.has(targetPath)) {
+                            targetPath = computeUniqueTargetPath(conflict.file, suggestionReservedPaths, false);
+                            suggestionReservedPaths.add(targetPath);
                         }
+
+                        plannedMoves.push({
+                            file: conflict.file,
+                            originalPath: conflict.originalPath,
+                            targetPath,
+                            overwrite: shouldOverwrite
+                        });
+                        reservedPaths.add(targetPath);
                     }
                 }
-            } else if (moveResult.error) {
-                console.error('Error during move operation:', moveResult.error);
-                throw moveResult.error;
-            }
-        }
 
-        // Handle selection updates if needed
-        if (result.movedCount > 0 && isMovingSelectedFile && selectionContext) {
-            await updateSelectionAfterFileOperation(nextFileToSelect, selectionContext.dispatch, this.app);
+                let movedCount = 0;
+                let skippedCount = 0;
+
+                const executePlannedMove = async (plan: PlannedFileMove): Promise<PlannedMoveExecutionOutcome> => {
+                    let finalTargetPath = plan.targetPath;
+
+                    if (!plan.overwrite && this.app.vault.getAbstractFileByPath(finalTargetPath)) {
+                        finalTargetPath = computeUniqueTargetPath(plan.file, reservedPaths, true);
+                        reservedPaths.add(finalTargetPath);
+                    }
+
+                    try {
+                        if (plan.overwrite) {
+                            const entryToOverwrite = this.app.vault.getAbstractFileByPath(finalTargetPath);
+                            if (entryToOverwrite instanceof TFile) {
+                                await this.app.fileManager.trashFile(entryToOverwrite);
+                            } else if (entryToOverwrite) {
+                                return { status: 'skipped' };
+                            }
+                        }
+
+                        await this.app.fileManager.renameFile(plan.file, finalTargetPath);
+                        return {
+                            status: 'moved',
+                            originalPath: plan.originalPath
+                        };
+                    } catch (error) {
+                        console.error('Error moving file:', plan.originalPath, error);
+                        return {
+                            status: 'error',
+                            originalPath: plan.originalPath,
+                            error
+                        };
+                    }
+                };
+
+                for (let index = 0; index < plannedMoves.length; index += FILE_MOVE_BATCH_SIZE) {
+                    const batch = plannedMoves.slice(index, index + FILE_MOVE_BATCH_SIZE);
+                    const outcomes = await Promise.all(batch.map(plan => executePlannedMove(plan)));
+
+                    for (const outcome of outcomes) {
+                        if (outcome.status === 'moved') {
+                            movedCount++;
+                            movedSourcePaths.push(outcome.originalPath);
+                            continue;
+                        }
+
+                        if (outcome.status === 'skipped') {
+                            skippedCount++;
+                            continue;
+                        }
+
+                        errors.push({ filePath: outcome.originalPath, error: outcome.error });
+                    }
+                }
+
+                return { movedCount, skippedCount, cancelledCount, movedSourcePaths, errors };
+            };
+
+            const moveResult = await commandQueue.executeMoveFiles(files, targetFolder, performMove);
+            if (!moveResult.success || !moveResult.data) {
+                if (moveResult.error) {
+                    console.error('Error during move operation:', moveResult.error);
+                    throw moveResult.error;
+                }
+                throw new Error('Move operation failed');
+            }
+
+            result.movedCount = moveResult.data.movedCount;
+            result.skippedCount = moveResult.data.skippedCount;
+            result.cancelledCount = moveResult.data.cancelledCount;
+
+            // Handle selection updates if needed
+            if (selectionContext && selectedFileOriginalPath) {
+                const movedPathSet = new Set(moveResult.data.movedSourcePaths);
+                if (movedPathSet.has(selectedFileOriginalPath)) {
+                    const nextFileToSelect = findNextFileAfterRemoval(selectionContext.allFiles, movedPathSet);
+                    await updateSelectionAfterFileOperation(nextFileToSelect, selectionContext.dispatch, this.app);
+                }
+            }
+
+            // Map per-file errors back to TFile where possible for downstream notices
+            if (Array.isArray(moveResult.data.errors) && moveResult.data.errors.length > 0) {
+                for (const err of moveResult.data.errors) {
+                    const f = this.app.vault.getFileByPath(err.filePath);
+                    if (f) {
+                        result.errors.push({ file: f, error: err.error as Error });
+                    } else {
+                        // Fall back to first of the requested files with matching path
+                        const fallback = files.find(x => x.path === err.filePath) || files[0];
+                        result.errors.push({ file: fallback, error: err.error as Error });
+                    }
+                }
+            }
         }
 
         // Show notifications if enabled
@@ -1450,8 +1673,7 @@ export class FileSystemOperations {
                         return;
                     }
 
-                    const destinationBase = targetFolder.path === '/' ? '' : `${targetFolder.path}/`;
-                    const newPath = normalizePath(`${destinationBase}${folder.name}`);
+                    const newPath = buildPathInFolder(targetFolder.path, folder.name);
 
                     // No-op if destination equals current location
                     if (newPath === folder.path) {
@@ -1501,8 +1723,7 @@ export class FileSystemOperations {
             throw new FolderMoveError('invalid-target');
         }
 
-        const destinationBase = targetFolder.path === '/' ? '' : `${targetFolder.path}/`;
-        const newPath = normalizePath(`${destinationBase}${folder.name}`);
+        const newPath = buildPathInFolder(targetFolder.path, folder.name);
         if (newPath === folder.path) {
             throw new FolderMoveError('invalid-target');
         }
@@ -1575,8 +1796,7 @@ export class FileSystemOperations {
         }
 
         const targetFileName = this.buildFolderNoteFileName(targetBaseName, file.extension, isExcalidraw);
-        const parentBase = parent.path === '/' ? '' : `${parent.path}/`;
-        const targetPath = normalizePath(`${parentBase}${targetFileName}`);
+        const targetPath = buildPathInFolder(parent.path, targetFileName);
 
         if (file.path === targetPath) {
             return;
@@ -1643,8 +1863,7 @@ export class FileSystemOperations {
         }
 
         // Build target folder path using the file's basename
-        const parentPath = parent.path === '/' ? '' : `${parent.path}/`;
-        const targetFolderPath = normalizePath(`${parentPath}${folderName}`);
+        const targetFolderPath = buildPathInFolder(parent.path, folderName);
 
         // Check if folder already exists to avoid conflicts
         if (this.app.vault.getAbstractFileByPath(targetFolderPath)) {
@@ -1695,7 +1914,7 @@ export class FileSystemOperations {
             }
 
             // Get reference to the moved file
-            const movedFilePath = normalizePath(`${targetFolder.path}/${file.name}`);
+            const movedFilePath = buildPathInFolder(targetFolder.path, file.name);
             const movedFileEntry = this.app.vault.getAbstractFileByPath(movedFilePath);
             if (!movedFileEntry || !(movedFileEntry instanceof TFile)) {
                 showNotice(strings.fileSystem.errors.folderNoteConversionFailed, { variant: 'warning' });
@@ -1705,7 +1924,7 @@ export class FileSystemOperations {
 
             // Rename file if folder note name setting requires it
             const finalFileName = this.buildFolderNoteFileName(finalBaseName, file.extension, isExcalidraw);
-            const finalPath = normalizePath(`${targetFolder.path}/${finalFileName}`);
+            const finalPath = buildPathInFolder(targetFolder.path, finalFileName);
 
             if (movedFile.path !== finalPath) {
                 if (this.app.vault.getAbstractFileByPath(finalPath)) {
@@ -1784,17 +2003,9 @@ export class FileSystemOperations {
         try {
             const baseName = file.basename;
             const extension = file.extension;
-            let counter = 1;
-            let newName = `${baseName} ${counter}`;
             const parentPath = file.parent?.path ?? '/';
-            const base = parentPath === '/' ? '' : `${parentPath}/`;
-            let newPath = normalizePath(`${base}${newName}.${extension}`);
-
-            while (this.app.vault.getFileByPath(newPath)) {
-                counter++;
-                newName = `${baseName} ${counter}`;
-                newPath = normalizePath(`${base}${newName}.${extension}`);
-            }
+            const newName = generateUniqueFilename(parentPath, baseName, extension, this.app);
+            const newPath = buildFilePathInFolder(parentPath, newName, extension);
 
             const newFile = await this.app.vault.copy(file, newPath);
 
@@ -1840,13 +2051,12 @@ export class FileSystemOperations {
             let counter = 1;
             let newName = `${baseName} ${counter}`;
             const parentPath = folder.parent?.path ?? '/';
-            const base = parentPath === '/' ? '' : `${parentPath}/`;
-            let newPath = normalizePath(`${base}${newName}`);
+            let newPath = buildPathInFolder(parentPath, newName);
 
             while (this.app.vault.getFolderByPath(newPath)) {
                 counter++;
                 newName = `${baseName} ${counter}`;
-                newPath = normalizePath(`${base}${newName}`);
+                newPath = buildPathInFolder(parentPath, newName);
             }
 
             await this.app.vault.copy(folder, newPath);

@@ -17,7 +17,6 @@
  */
 
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { App } from 'obsidian';
 import { CommandQueueService } from '../../src/services/CommandQueueService';
 import { createTestTFile } from '../utils/createTestTFile';
 
@@ -43,8 +42,7 @@ describe('CommandQueueService', () => {
     });
 
     it('tracks recent preview opens after completion', async () => {
-        const app = new App();
-        const commandQueue = new CommandQueueService(app);
+        const commandQueue = new CommandQueueService();
         const file = createTestTFile('notes/test.md');
 
         const openGate = createDeferredVoid();
@@ -65,8 +63,7 @@ describe('CommandQueueService', () => {
     });
 
     it('does not report active:true opens as background', async () => {
-        const app = new App();
-        const commandQueue = new CommandQueueService(app);
+        const commandQueue = new CommandQueueService();
         const file = createTestTFile('notes/test.md');
 
         const openGate = createDeferredVoid();

@@ -497,6 +497,7 @@ export const STRINGS_TH = {
             deleteFolderTitle: "ลบ '{name}'?",
             deleteFileTitle: "ลบ '{name}'?",
             deleteFileAttachmentsTitle: 'ลบไฟล์แนบ?',
+            moveFileConflictTitle: 'ข้อขัดแย้งการย้าย',
             folderNamePrompt: 'กรอกชื่อโฟลเดอร์:',
             hideInOtherVaultProfiles: 'ซ่อนในโปรไฟล์ห้องนิรภัยอื่น',
             renamePrompt: 'กรอกชื่อใหม่:',
@@ -508,6 +509,13 @@ export const STRINGS_TH = {
             deleteFileAttachmentsDescriptionMultiple: 'ไฟล์แนบเหล่านี้ไม่ได้ถูกใช้ในโน้ตใดแล้ว คุณต้องการลบหรือไม่?',
             deleteFileAttachmentsViewFileTreeAriaLabel: 'โครงสร้างไฟล์',
             deleteFileAttachmentsViewGalleryAriaLabel: 'แกลเลอรี',
+            moveFileConflictDescriptionSingle: 'พบข้อขัดแย้งของไฟล์ใน "{folder}"',
+            moveFileConflictDescriptionMultiple: 'พบข้อขัดแย้งของไฟล์ {count} รายการใน "{folder}"',
+            moveFileConflictAffectedFiles: 'ไฟล์ที่ได้รับผลกระทบ',
+            moveFileConflictItem: '"{name}" -> "{suggested}"{renameOnly}',
+            moveFileConflictRenameOnly: '(เปลี่ยนชื่อเท่านั้น)',
+            moveFileConflictRename: 'เปลี่ยนชื่อ',
+            moveFileConflictOverwrite: 'เขียนทับ',
             removeAllTagsTitle: 'นำแท็กทั้งหมดออก',
             removeAllTagsFromNote: 'คุณแน่ใจหรือไม่ว่าต้องการนำแท็กทั้งหมดออกจากโน้ตนี้?',
             removeAllTagsFromNotes: 'คุณแน่ใจหรือไม่ว่าต้องการนำแท็กทั้งหมดออกจาก {count} โน้ต?'
@@ -1688,6 +1696,14 @@ export const STRINGS_TH = {
                     ask: 'ถามทุกครั้ง',
                     always: 'เสมอ',
                     never: 'ไม่เลย'
+                }
+            },
+            moveFileConflicts: {
+                name: 'ข้อขัดแย้งการย้าย',
+                desc: 'เมื่อย้ายไฟล์ไปยังโฟลเดอร์ที่มีไฟล์ชื่อเดียวกันอยู่แล้ว ถามทุกครั้ง (เปลี่ยนชื่อ, เขียนทับ, ยกเลิก) หรือเปลี่ยนชื่อเสมอ',
+                options: {
+                    ask: 'ถามทุกครั้ง',
+                    rename: 'เปลี่ยนชื่อเสมอ'
                 }
             },
             metadataCleanup: {

@@ -500,6 +500,7 @@ export const STRINGS_ID = {
             deleteFolderTitle: "Hapus '{name}'?",
             deleteFileTitle: "Hapus '{name}'?",
             deleteFileAttachmentsTitle: 'Hapus lampiran file?',
+            moveFileConflictTitle: 'Konflik pemindahan',
             folderNamePrompt: 'Masukkan nama folder:',
             hideInOtherVaultProfiles: 'Sembunyikan di profil vault lain',
             renamePrompt: 'Masukkan nama baru:',
@@ -512,6 +513,13 @@ export const STRINGS_ID = {
                 'Lampiran-lampiran ini tidak lagi digunakan di catatan manapun. Apakah Anda ingin menghapusnya?',
             deleteFileAttachmentsViewFileTreeAriaLabel: 'Pohon file',
             deleteFileAttachmentsViewGalleryAriaLabel: 'Galeri',
+            moveFileConflictDescriptionSingle: 'Konflik file ditemukan di "{folder}".',
+            moveFileConflictDescriptionMultiple: '{count} konflik file ditemukan di "{folder}".',
+            moveFileConflictAffectedFiles: 'File yang terpengaruh',
+            moveFileConflictItem: '"{name}" -> "{suggested}"{renameOnly}',
+            moveFileConflictRenameOnly: '(ganti nama saja)',
+            moveFileConflictRename: 'Ganti nama',
+            moveFileConflictOverwrite: 'Timpa',
             removeAllTagsTitle: 'Hapus semua tag',
             removeAllTagsFromNote: 'Anda yakin ingin menghapus semua tag dari catatan ini?',
             removeAllTagsFromNotes: 'Anda yakin ingin menghapus semua tag dari {count} catatan?'
@@ -1693,6 +1701,14 @@ export const STRINGS_ID = {
                     ask: 'Tanya setiap kali',
                     always: 'Selalu',
                     never: 'Tidak pernah'
+                }
+            },
+            moveFileConflicts: {
+                name: 'Konflik pemindahan',
+                desc: 'Saat memindahkan file ke folder yang sudah memiliki file dengan nama yang sama. Tanya setiap kali (ganti nama, timpa, batal) atau selalu ganti nama.',
+                options: {
+                    ask: 'Tanya setiap kali',
+                    rename: 'Selalu ganti nama'
                 }
             },
             metadataCleanup: {

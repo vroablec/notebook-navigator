@@ -500,6 +500,7 @@ export const STRINGS_VI = {
             deleteFolderTitle: "Xóa '{name}'?",
             deleteFileTitle: "Xóa '{name}'?",
             deleteFileAttachmentsTitle: 'Xóa tệp đính kèm?',
+            moveFileConflictTitle: 'Xung đột di chuyển',
             folderNamePrompt: 'Nhập tên thư mục:',
             hideInOtherVaultProfiles: 'Ẩn trong các hồ sơ vault khác',
             renamePrompt: 'Nhập tên mới:',
@@ -513,6 +514,13 @@ export const STRINGS_VI = {
                 'Các tệp đính kèm này không còn được sử dụng trong bất kỳ ghi chú nào. Bạn có muốn xóa không?',
             deleteFileAttachmentsViewFileTreeAriaLabel: 'Cây tệp',
             deleteFileAttachmentsViewGalleryAriaLabel: 'Thư viện ảnh',
+            moveFileConflictDescriptionSingle: 'Đã tìm thấy xung đột tệp trong "{folder}".',
+            moveFileConflictDescriptionMultiple: 'Đã tìm thấy {count} xung đột tệp trong "{folder}".',
+            moveFileConflictAffectedFiles: 'Các tệp bị ảnh hưởng',
+            moveFileConflictItem: '"{name}" -> "{suggested}"{renameOnly}',
+            moveFileConflictRenameOnly: '(chỉ đổi tên)',
+            moveFileConflictRename: 'Đổi tên',
+            moveFileConflictOverwrite: 'Ghi đè',
             removeAllTagsTitle: 'Gỡ tất cả thẻ',
             removeAllTagsFromNote: 'Bạn có chắc muốn gỡ tất cả thẻ khỏi ghi chú này?',
             removeAllTagsFromNotes: 'Bạn có chắc muốn gỡ tất cả thẻ khỏi {count} ghi chú?'
@@ -1693,6 +1701,14 @@ export const STRINGS_VI = {
                     ask: 'Hỏi mỗi lần',
                     always: 'Luôn luôn',
                     never: 'Không bao giờ'
+                }
+            },
+            moveFileConflicts: {
+                name: 'Xung đột di chuyển',
+                desc: 'Khi di chuyển tệp vào thư mục đã có tệp cùng tên. Hỏi mỗi lần (đổi tên, ghi đè, hủy) hoặc luôn đổi tên.',
+                options: {
+                    ask: 'Hỏi mỗi lần',
+                    rename: 'Luôn đổi tên'
                 }
             },
             metadataCleanup: {

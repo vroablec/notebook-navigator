@@ -18,7 +18,7 @@
 
 // src/hooks/useDragAndDrop.ts
 import { useCallback, useEffect, useMemo, useRef } from 'react';
-import { TFile, TFolder, normalizePath } from 'obsidian';
+import { TFile, TFolder } from 'obsidian';
 import { useSelectionState, useSelectionDispatch } from '../context/SelectionContext';
 import { useServices, useFileSystemOps, useTagOperations } from '../context/ServicesContext';
 import { useSettingsState } from '../context/SettingsContext';
@@ -30,7 +30,7 @@ import { ItemType, TAGGED_TAG_ID, UNTAGGED_TAG_ID } from '../types';
 import { SHORTCUT_DRAG_MIME } from '../types/shortcuts';
 import { DragManagerPayload, PROPERTY_DRAG_MIME, TAG_DRAG_MIME, hasDragManager, TIMEOUTS } from '../types/obsidian-extended';
 import { getPathFromDataAttribute } from '../utils/domUtils';
-import { generateUniqueFilename } from '../utils/fileCreationUtils';
+import { buildFilePathInFolder, generateUniqueFilename } from '../utils/fileCreationUtils';
 import { createDragGhostManager } from '../utils/dragGhost';
 import { normalizeTagPathValue } from '../utils/tagPrefixMatcher';
 import { runAsyncAction } from '../utils/async';
@@ -897,10 +897,7 @@ export function useDragAndDrop(containerRef: React.RefObject<HTMLElement | null>
 
                     // Generate unique filename if needed
                     const uniqueBaseName = generateUniqueFilename(targetFolder.path, baseName, extension, app);
-                    const base = targetFolder.path === '/' ? '' : `${targetFolder.path}/`;
-                    const finalPath = extension
-                        ? normalizePath(`${base}${uniqueBaseName}.${extension}`)
-                        : normalizePath(`${base}${uniqueBaseName}`);
+                    const finalPath = buildFilePathInFolder(targetFolder.path, uniqueBaseName, extension);
 
                     // Decide text vs binary import
                     const lowerName = file.name.toLowerCase();

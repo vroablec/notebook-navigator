@@ -498,6 +498,7 @@ export const STRINGS_UK = {
             deleteFolderTitle: "Видалити '{name}'?",
             deleteFileTitle: "Видалити '{name}'?",
             deleteFileAttachmentsTitle: 'Видалити вкладення файлу?',
+            moveFileConflictTitle: 'Конфлікт переміщення',
             folderNamePrompt: 'Введіть назву папки:',
             hideInOtherVaultProfiles: 'Сховати в інших профілях сховища',
             renamePrompt: 'Введіть нову назву:',
@@ -509,6 +510,13 @@ export const STRINGS_UK = {
             deleteFileAttachmentsDescriptionMultiple: 'Ці вкладення більше не використовуються в жодній нотатці. Бажаєте їх видалити?',
             deleteFileAttachmentsViewFileTreeAriaLabel: 'Дерево файлів',
             deleteFileAttachmentsViewGalleryAriaLabel: 'Галерея',
+            moveFileConflictDescriptionSingle: 'Виявлено конфлікт файлу в «{folder}».',
+            moveFileConflictDescriptionMultiple: 'Виявлено {count} конфліктів файлів у «{folder}».',
+            moveFileConflictAffectedFiles: 'Зачеплені файли',
+            moveFileConflictItem: '«{name}» -> «{suggested}»{renameOnly}',
+            moveFileConflictRenameOnly: '(лише перейменування)',
+            moveFileConflictRename: 'Перейменувати',
+            moveFileConflictOverwrite: 'Перезаписати',
             removeAllTagsTitle: 'Вилучити всі теги',
             removeAllTagsFromNote: 'Ви впевнені, що хочете вилучити всі теги з цієї нотатки?',
             removeAllTagsFromNotes: 'Ви впевнені, що хочете вилучити всі теги з {count} нотаток?'
@@ -1690,6 +1698,14 @@ export const STRINGS_UK = {
                     ask: 'Запитувати щоразу',
                     always: 'Завжди',
                     never: 'Ніколи'
+                }
+            },
+            moveFileConflicts: {
+                name: 'Конфлікти переміщення',
+                desc: 'При переміщенні файлу до теки, де вже існує файл з такою ж назвою. Запитувати щоразу (перейменувати, перезаписати, скасувати) або завжди перейменовувати.',
+                options: {
+                    ask: 'Запитувати щоразу',
+                    rename: 'Завжди перейменовувати'
                 }
             },
             metadataCleanup: {

@@ -41,6 +41,15 @@ export interface CreateFileOptions {
     errorKey?: string;
 }
 
+export interface GenerateUniqueFilenameOptions {
+    /** Paths that should be treated as already occupied */
+    occupiedPaths?: ReadonlySet<string>;
+    /** Whether to consult vault contents while checking candidates (default: true) */
+    useVaultLookup?: boolean;
+    /** Optional suffix inserted before numeric increments and extension */
+    baseNameSuffix?: string;
+}
+
 interface CreateMarkdownFileFromTemplateOptions {
     app: App;
     folder: TFolder;
@@ -50,35 +59,59 @@ interface CreateMarkdownFileFromTemplateOptions {
 }
 
 /**
+ * Builds a normalized path inside a folder.
+ */
+export function buildPathInFolder(folderPath: string, name: string): string {
+    const base = folderPath === '/' || folderPath === '' ? '' : `${folderPath}/`;
+    return normalizePath(`${base}${name}`);
+}
+
+/**
+ * Builds a normalized file path inside a folder from name and extension.
+ */
+export function buildFilePathInFolder(folderPath: string, fileName: string, extension: string): string {
+    if (!extension) {
+        return buildPathInFolder(folderPath, fileName);
+    }
+    return buildPathInFolder(folderPath, `${fileName}.${extension}`);
+}
+
+/**
  * Generates a unique filename by appending a number if the file already exists
  * @param folderPath - The folder path where the file will be created
  * @param baseName - The base name of the file (without extension)
  * @param extension - The file extension (without dot)
  * @param app - The Obsidian app instance
+ * @param options - Optional collision controls and naming suffix
  * @returns A unique filename
  */
-export function generateUniqueFilename(folderPath: string, baseName: string, extension: string, app: App): string {
-    let fileName = baseName;
-    let counter = 1;
+export function generateUniqueFilename(
+    folderPath: string,
+    baseName: string,
+    extension: string,
+    app: App,
+    options?: GenerateUniqueFilenameOptions
+): string {
+    const occupiedPaths = options?.occupiedPaths;
+    const useVaultLookup = options?.useVaultLookup !== false;
+    const baseNameSuffix = options?.baseNameSuffix ?? '';
+    let counter = 0;
 
-    const makePath = (name: string) => {
-        const base = folderPath === '/' ? '' : `${folderPath}/`;
-        if (!extension) {
-            return normalizePath(`${base}${name}`);
-        }
-        return normalizePath(`${base}${name}.${extension}`);
-    };
-
-    let path = makePath(fileName);
+    const makePath = (name: string) => buildFilePathInFolder(folderPath, name, extension);
 
     // Keep incrementing until we find a unique name
-    while (app.vault.getFileByPath(path)) {
-        fileName = `${baseName} ${counter}`;
-        path = makePath(fileName);
+    while (true) {
+        const nameWithCounter = counter === 0 ? baseName : `${baseName} ${counter}`;
+        const fileName = `${nameWithCounter}${baseNameSuffix}`;
+        const path = makePath(fileName);
+        const occupied = occupiedPaths?.has(path) ?? false;
+        const existsInVault = useVaultLookup && Boolean(app.vault.getAbstractFileByPath(path));
+        if (!occupied && !existsInVault) {
+            return fileName;
+        }
+
         counter++;
     }
-
-    return fileName;
 }
 
 /**
@@ -102,9 +135,7 @@ export async function createFileWithOptions(parent: TFolder, app: App, options: 
         if (extension === 'md' && content.length === 0) {
             file = await app.fileManager.createNewMarkdownFile(parent, fileName);
         } else {
-            const base = parent.path === '/' ? '' : `${parent.path}/`;
-            const suffix = extension ? `.${extension}` : '';
-            const path = normalizePath(`${base}${fileName}${suffix}`);
+            const path = buildFilePathInFolder(parent.path, fileName, extension);
             file = await app.vault.create(path, content);
         }
 

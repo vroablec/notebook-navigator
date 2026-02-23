@@ -499,6 +499,7 @@ export const STRINGS_AR = {
             deleteFolderTitle: "حذف '{name}'؟",
             deleteFileTitle: "حذف '{name}'؟",
             deleteFileAttachmentsTitle: 'حذف مرفقات الملف؟',
+            moveFileConflictTitle: 'تعارض النقل',
             folderNamePrompt: 'أدخل اسم المجلد:',
             hideInOtherVaultProfiles: 'إخفاء في ملفات الخزنة الأخرى',
             renamePrompt: 'أدخل الاسم الجديد:',
@@ -510,6 +511,13 @@ export const STRINGS_AR = {
             deleteFileAttachmentsDescriptionMultiple: 'هذه المرفقات لم تعد مستخدمة في أي ملاحظات. هل تريد حذفها؟',
             deleteFileAttachmentsViewFileTreeAriaLabel: 'شجرة الملفات',
             deleteFileAttachmentsViewGalleryAriaLabel: 'المعرض',
+            moveFileConflictDescriptionSingle: 'تم العثور على تعارض ملف في "{folder}".',
+            moveFileConflictDescriptionMultiple: 'تم العثور على {count} تعارضات ملفات في "{folder}".',
+            moveFileConflictAffectedFiles: 'الملفات المتأثرة',
+            moveFileConflictItem: '"{name}" -> "{suggested}"{renameOnly}',
+            moveFileConflictRenameOnly: '(إعادة تسمية فقط)',
+            moveFileConflictRename: 'إعادة التسمية',
+            moveFileConflictOverwrite: 'الكتابة فوق',
             removeAllTagsTitle: 'إزالة جميع الوسوم',
             removeAllTagsFromNote: 'هل أنت متأكد من إزالة جميع الوسوم من هذه الملاحظة؟',
             removeAllTagsFromNotes: 'هل أنت متأكد من إزالة جميع الوسوم من {count} ملاحظة؟'
@@ -1690,6 +1698,14 @@ export const STRINGS_AR = {
                     ask: 'السؤال في كل مرة',
                     always: 'دائمًا',
                     never: 'أبدًا'
+                }
+            },
+            moveFileConflicts: {
+                name: 'تعارضات النقل',
+                desc: 'عند نقل ملف إلى مجلد يحتوي بالفعل على ملف بنفس الاسم. اسأل في كل مرة (إعادة تسمية، الكتابة فوق، إلغاء) أو أعد التسمية دائمًا.',
+                options: {
+                    ask: 'اسأل في كل مرة',
+                    rename: 'إعادة التسمية دائمًا'
                 }
             },
             metadataCleanup: {

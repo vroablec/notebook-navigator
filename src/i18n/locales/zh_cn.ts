@@ -496,6 +496,7 @@ export const STRINGS_ZH_CN = {
             deleteFolderTitle: "删除 '{name}'？",
             deleteFileTitle: "删除 '{name}'？",
             deleteFileAttachmentsTitle: '删除文件附件？',
+            moveFileConflictTitle: '移动冲突',
             folderNamePrompt: '输入文件夹名称：',
             hideInOtherVaultProfiles: '在其他仓库配置中隐藏',
             renamePrompt: '输入新名称：',
@@ -507,6 +508,13 @@ export const STRINGS_ZH_CN = {
             deleteFileAttachmentsDescriptionMultiple: '这些附件不再被任何笔记使用。是否要删除？',
             deleteFileAttachmentsViewFileTreeAriaLabel: '文件树',
             deleteFileAttachmentsViewGalleryAriaLabel: '图库',
+            moveFileConflictDescriptionSingle: '在 "{folder}" 中发现文件冲突。',
+            moveFileConflictDescriptionMultiple: '在 "{folder}" 中发现 {count} 个文件冲突。',
+            moveFileConflictAffectedFiles: '受影响的文件',
+            moveFileConflictItem: '"{name}" -> "{suggested}"{renameOnly}',
+            moveFileConflictRenameOnly: '（仅重命名）',
+            moveFileConflictRename: '重命名',
+            moveFileConflictOverwrite: '覆盖',
             removeAllTagsTitle: '移除所有标签',
             removeAllTagsFromNote: '您确定要从这个笔记中移除所有标签吗？',
             removeAllTagsFromNotes: '您确定要从 {count} 个笔记中移除所有标签吗？'
@@ -1687,6 +1695,14 @@ export const STRINGS_ZH_CN = {
                     ask: '每次询问',
                     always: '始终',
                     never: '从不'
+                }
+            },
+            moveFileConflicts: {
+                name: '移动冲突',
+                desc: '将文件移动到已有同名文件的文件夹时。每次询问（重命名、覆盖、取消）或始终重命名。',
+                options: {
+                    ask: '每次询问',
+                    rename: '始终重命名'
                 }
             },
             metadataCleanup: {

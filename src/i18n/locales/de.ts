@@ -501,6 +501,7 @@ export const STRINGS_DE = {
             deleteFolderTitle: "'{name}' löschen?",
             deleteFileTitle: "'{name}' löschen?",
             deleteFileAttachmentsTitle: 'Dateianhänge löschen?',
+            moveFileConflictTitle: 'Verschiebekonflikt',
             folderNamePrompt: 'Ordnernamen eingeben:',
             hideInOtherVaultProfiles: 'In anderen Tresorprofilen ausblenden',
             renamePrompt: 'Neuen Namen eingeben:',
@@ -512,6 +513,13 @@ export const STRINGS_DE = {
             deleteFileAttachmentsDescriptionMultiple: 'Diese Anhänge werden in keiner Notiz mehr verwendet. Möchten Sie sie löschen?',
             deleteFileAttachmentsViewFileTreeAriaLabel: 'Dateibaum',
             deleteFileAttachmentsViewGalleryAriaLabel: 'Galerie',
+            moveFileConflictDescriptionSingle: 'Ein Dateikonflikt wurde in „{folder}" gefunden.',
+            moveFileConflictDescriptionMultiple: '{count} Dateikonflikte wurden in „{folder}" gefunden.',
+            moveFileConflictAffectedFiles: 'Betroffene Dateien',
+            moveFileConflictItem: '„{name}" -> „{suggested}"{renameOnly}',
+            moveFileConflictRenameOnly: '(nur umbenennen)',
+            moveFileConflictRename: 'Umbenennen',
+            moveFileConflictOverwrite: 'Überschreiben',
             removeAllTagsTitle: 'Alle Tags entfernen',
             removeAllTagsFromNote: 'Sind Sie sicher, dass Sie alle Tags von dieser Notiz entfernen möchten?',
             removeAllTagsFromNotes: 'Sind Sie sicher, dass Sie alle Tags von {count} Notizen entfernen möchten?'
@@ -1694,6 +1702,14 @@ export const STRINGS_DE = {
                     ask: 'Jedes Mal fragen',
                     always: 'Immer',
                     never: 'Nie'
+                }
+            },
+            moveFileConflicts: {
+                name: 'Verschiebungskonflikte',
+                desc: 'Wenn eine Datei in einen Ordner verschoben wird, in dem bereits eine Datei mit demselben Namen existiert. Jedes Mal fragen (umbenennen, überschreiben, abbrechen) oder immer umbenennen.',
+                options: {
+                    ask: 'Jedes Mal fragen',
+                    rename: 'Immer umbenennen'
                 }
             },
             metadataCleanup: {

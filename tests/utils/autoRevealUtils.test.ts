@@ -17,7 +17,6 @@
  */
 
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { App } from 'obsidian';
 import { CommandQueueService } from '../../src/services/CommandQueueService';
 import { shouldSkipNavigatorAutoReveal } from '../../src/utils/autoRevealUtils';
 import { createTestTFile } from './createTestTFile';
@@ -33,8 +32,7 @@ describe('shouldSkipNavigatorAutoReveal', () => {
     });
 
     it('skips auto-reveal for navigator preview opens (active: false)', async () => {
-        const app = new App();
-        const commandQueue = new CommandQueueService(app);
+        const commandQueue = new CommandQueueService();
         const file = createTestTFile('notes/note.md');
 
         let resolveOpenFile: () => void = () => {
@@ -71,8 +69,7 @@ describe('shouldSkipNavigatorAutoReveal', () => {
     });
 
     it('does not treat active opens as preview opens (active: true)', async () => {
-        const app = new App();
-        const commandQueue = new CommandQueueService(app);
+        const commandQueue = new CommandQueueService();
         const file = createTestTFile('notes/note.md');
 
         let resolveOpenFile: () => void = () => {
