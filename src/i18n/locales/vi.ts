@@ -794,6 +794,7 @@ export const STRINGS_VI = {
             general: 'Chung',
             navigationPane: 'Điều hướng',
             calendar: 'Lịch',
+            files: 'Tệp',
             icons: 'Gói biểu tượng',
             folders: 'Thư mục',
             folderNotes: 'Ghi chú thư mục',

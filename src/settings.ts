@@ -38,6 +38,7 @@ import { renderPropertiesTab } from './settings/tabs/PropertiesTab';
 import { renderListPaneTab } from './settings/tabs/ListTab';
 import { renderFrontmatterTab } from './settings/tabs/FrontmatterTab';
 import { renderNotesTab } from './settings/tabs/NotesTab';
+import { renderFilesTab } from './settings/tabs/FilesTab';
 import { renderIconPacksTab } from './settings/tabs/IconPacksTab';
 import { renderAdvancedTab } from './settings/tabs/AdvancedTab';
 import type {
@@ -72,6 +73,7 @@ const SETTINGS_TAB_ICONS: Record<SettingsPaneId, SettingsTabIconDefinition> = {
     'navigation-pane': { kind: 'fixed', iconId: 'panel-left' },
     'list-pane': { kind: 'fixed', iconId: 'list' },
     calendar: { kind: 'fixed', iconId: 'calendar-days' },
+    files: { kind: 'fixed', iconId: 'file' },
     'icon-packs': { kind: 'fixed', iconId: 'package' },
     advanced: { kind: 'fixed', iconId: 'sliders-horizontal' },
     shortcuts: { kind: 'ux', uxIconId: 'nav-shortcuts' },
@@ -83,7 +85,7 @@ const SETTINGS_TAB_ICONS: Record<SettingsPaneId, SettingsTabIconDefinition> = {
 };
 
 const SETTINGS_GROUP_SECONDARY_TAB_IDS: Record<SettingsGroupId, SettingsPaneId[]> = {
-    general: ['icon-packs', 'advanced'],
+    general: ['files', 'icon-packs', 'advanced'],
     'navigation-pane': ['shortcuts', 'folders', 'tags', 'properties'],
     'list-pane': ['frontmatter', 'notes'],
     calendar: []
@@ -91,6 +93,7 @@ const SETTINGS_GROUP_SECONDARY_TAB_IDS: Record<SettingsGroupId, SettingsPaneId[]
 
 const SETTINGS_TAB_GROUP_MAP: Record<SettingsPaneId, SettingsGroupId> = {
     general: 'general',
+    files: 'general',
     'icon-packs': 'general',
     advanced: 'general',
     'navigation-pane': 'navigation-pane',
@@ -133,6 +136,7 @@ const SETTINGS_PANE_DEFINITIONS: SettingsPaneDefinition[] = [
     { id: 'list-pane', getLabel: () => strings.settings.sections.listPane, render: renderListPaneTab },
     { id: 'frontmatter', getLabel: () => strings.settings.groups.notes.frontmatter, render: renderFrontmatterTab },
     { id: 'notes', getLabel: () => strings.settings.sections.notes, render: renderNotesTab },
+    { id: 'files', getLabel: () => strings.settings.sections.files, render: renderFilesTab },
     { id: 'icon-packs', getLabel: () => strings.settings.sections.icons, render: renderIconPacksTab },
     { id: 'advanced', getLabel: () => strings.settings.sections.advanced, render: renderAdvancedTab }
 ];
@@ -744,7 +748,7 @@ export class NotebookNavigatorSettingTab extends PluginSettingTab {
     /**
      * Renders the settings tab UI
      * Organizes settings into grouped tabs:
-     * - General: General, Icon packs, Advanced
+     * - General: General, Files, Icon packs, Advanced
      * - Navigation pane: Navigation pane, Shortcuts, Folders, Tags, Properties
      * - List pane: List pane, Frontmatter, Notes
      * - Calendar: Calendar

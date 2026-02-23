@@ -788,6 +788,7 @@ export const STRINGS_ZH_CN = {
             notes: '笔记',
             navigationPane: '导航',
             calendar: '导航日历',
+            files: '文件',
             icons: '图标包',
             tags: '标签',
             folders: '文件夹',

@@ -791,6 +791,7 @@ export const STRINGS_AR = {
             general: 'عام',
             navigationPane: 'التنقل',
             calendar: 'التقويم',
+            files: 'الملفات',
             icons: 'حزم الأيقونات',
             folders: 'مجلدات',
             folderNotes: 'ملاحظات المجلد',

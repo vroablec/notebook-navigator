@@ -793,6 +793,7 @@ export const STRINGS_TR = {
             general: 'Genel',
             navigationPane: 'Gezinme',
             calendar: 'Takvim',
+            files: 'Dosyalar',
             icons: 'Simge paketleri',
             folders: 'Klasörler',
             folderNotes: 'Klasör notları',

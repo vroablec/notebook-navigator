@@ -23,6 +23,11 @@
     overflow: hidden;
 }
 
+.modal.nn-property-keys-modal .modal-title {
+    width: 100%;
+    text-align: center;
+}
+
 .is-mobile .modal.nn-property-keys-modal .modal-content {
     gap: var(--size-2-3);
     padding: var(--size-4-6);

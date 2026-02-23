@@ -26,7 +26,6 @@ import { localStorage } from '../../utils/localStorage';
 import { runAsyncAction } from '../../utils/async';
 import { showNotice } from '../../utils/noticeUtils';
 import { createSettingGroupFactory } from '../settingGroups';
-import { isDeleteAttachmentsSetting, isMoveFileConflictsSetting } from '../types';
 
 /** Renders the advanced settings tab */
 export function renderAdvancedTab(context: SettingsTabContext): void {
@@ -51,57 +50,6 @@ export function renderAdvancedTab(context: SettingsTabContext): void {
                     }
                 })
             );
-    });
-
-    advancedGroup.addSetting(setting => {
-        setting
-            .setName(strings.settings.items.confirmBeforeDelete.name)
-            .setDesc(strings.settings.items.confirmBeforeDelete.desc)
-            .addToggle(toggle =>
-                toggle.setValue(plugin.settings.confirmBeforeDelete).onChange(async value => {
-                    plugin.settings.confirmBeforeDelete = value;
-                    await plugin.saveSettingsAndUpdate();
-                })
-            );
-    });
-
-    advancedGroup.addSetting(setting => {
-        setting
-            .setName(strings.settings.items.deleteAttachments.name)
-            .setDesc(strings.settings.items.deleteAttachments.desc)
-            .addDropdown(dropdown => {
-                dropdown
-                    .addOption('ask', strings.settings.items.deleteAttachments.options.ask)
-                    .addOption('always', strings.settings.items.deleteAttachments.options.always)
-                    .addOption('never', strings.settings.items.deleteAttachments.options.never)
-                    .setValue(plugin.settings.deleteAttachments)
-                    .onChange(async value => {
-                        if (!isDeleteAttachmentsSetting(value)) {
-                            return;
-                        }
-                        plugin.settings.deleteAttachments = value;
-                        await plugin.saveSettingsAndUpdate();
-                    });
-            });
-    });
-
-    advancedGroup.addSetting(setting => {
-        setting
-            .setName(strings.settings.items.moveFileConflicts.name)
-            .setDesc(strings.settings.items.moveFileConflicts.desc)
-            .addDropdown(dropdown => {
-                dropdown
-                    .addOption('ask', strings.settings.items.moveFileConflicts.options.ask)
-                    .addOption('rename', strings.settings.items.moveFileConflicts.options.rename)
-                    .setValue(plugin.settings.moveFileConflicts)
-                    .onChange(async value => {
-                        if (!isMoveFileConflictsSetting(value)) {
-                            return;
-                        }
-                        plugin.settings.moveFileConflicts = value;
-                        await plugin.saveSettingsAndUpdate();
-                    });
-            });
     });
 
     if (!Platform.isMobile) {

@@ -793,6 +793,7 @@ export const STRINGS_ID = {
             general: 'Umum',
             navigationPane: 'Navigasi',
             calendar: 'Kalender',
+            files: 'File',
             icons: 'Paket ikon',
             folders: 'Folder',
             folderNotes: 'Catatan folder',

@@ -796,6 +796,7 @@ export const STRINGS_FR = {
             notes: 'Notes',
             navigationPane: 'Navigation',
             calendar: 'Calendrier',
+            files: 'Fichiers',
             icons: "Packs d'icônes",
             tags: 'Étiquettes',
             folders: 'Dossiers',

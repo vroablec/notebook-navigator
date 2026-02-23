@@ -793,6 +793,7 @@ export const STRINGS_FA = {
             general: 'عمومی',
             navigationPane: 'ناوبری',
             calendar: 'تقویم',
+            files: 'فایل‌ها',
             icons: 'بسته‌های آیکون',
             folders: 'پوشه‌ها',
             folderNotes: 'یادداشت‌های پوشه',

@@ -794,6 +794,7 @@ export const STRINGS_NL = {
             general: 'Algemeen',
             navigationPane: 'Navigatie',
             calendar: 'Kalender',
+            files: 'Bestanden',
             icons: 'Pictogrampakketten',
             folders: 'Mappen',
             folderNotes: 'Mapnotities',

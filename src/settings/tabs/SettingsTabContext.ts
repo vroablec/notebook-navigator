@@ -30,6 +30,7 @@ export type SettingsTabId =
     | 'list-pane'
     | 'frontmatter'
     | 'notes'
+    | 'files'
     | 'icon-packs'
     | 'advanced';
 

@@ -795,6 +795,7 @@ export const STRINGS_PL = {
             general: 'Ogólne',
             navigationPane: 'Nawigacja',
             calendar: 'Kalendarz',
+            files: 'Pliki',
             icons: 'Pakiety ikon',
             folders: 'Foldery',
             folderNotes: 'Notatki folderu',

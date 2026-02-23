@@ -788,6 +788,7 @@ export const STRINGS_ZH_TW = {
             notes: '筆記',
             navigationPane: '導覽',
             calendar: '導覽日曆',
+            files: '檔案',
             icons: '圖示包',
             tags: '標籤',
             folders: '資料夾',

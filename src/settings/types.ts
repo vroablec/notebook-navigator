@@ -292,14 +292,16 @@ export interface NotebookNavigatorSettings {
     timeFormat: string;
     calendarTemplateFolder: string;
 
+    // Files tab
+    confirmBeforeDelete: boolean;
+    deleteAttachments: DeleteAttachmentsSetting;
+    moveFileConflicts: MoveFileConflictsSetting;
+
     // Icon packs tab
     externalIconProviders: Record<string, boolean>;
 
     // Advanced tab
     checkForUpdatesOnStart: boolean;
-    confirmBeforeDelete: boolean;
-    deleteAttachments: DeleteAttachmentsSetting;
-    moveFileConflicts: MoveFileConflictsSetting;
 
     // Navigation pane tab - Appearance
     pinNavigationBanner: boolean;

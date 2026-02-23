@@ -789,6 +789,7 @@ export const STRINGS_IT = {
             general: 'Generale',
             navigationPane: 'Navigazione',
             calendar: 'Calendario',
+            files: 'File',
             icons: 'Pacchetti icone',
             folders: 'Cartelle',
             folderNotes: 'Note cartella',

@@ -790,6 +790,7 @@ export const STRINGS_RU = {
             general: 'Общие',
             navigationPane: 'Навигация',
             calendar: 'Календарь',
+            files: 'Файлы',
             icons: 'Наборы иконок',
             folders: 'Папки',
             folderNotes: 'Заметки папок',

@@ -789,6 +789,7 @@ export const STRINGS_TH = {
             general: 'ทั่วไป',
             navigationPane: 'นำทาง',
             calendar: 'ปฏิทิน',
+            files: 'ไฟล์',
             icons: 'ชุดไอคอน',
             folders: 'โฟลเดอร์',
             folderNotes: 'โน้ตโฟลเดอร์',

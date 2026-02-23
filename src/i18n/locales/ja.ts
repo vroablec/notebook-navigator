@@ -793,6 +793,7 @@ export const STRINGS_JA = {
             notes: 'ノート表示',
             navigationPane: 'ナビゲーション',
             calendar: 'カレンダー',
+            files: 'ファイル',
             icons: 'アイコンパック',
             tags: 'タグ表示',
             folders: 'フォルダノート',

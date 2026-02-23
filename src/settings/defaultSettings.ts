@@ -128,14 +128,16 @@ export const DEFAULT_SETTINGS: NotebookNavigatorSettings = {
     timeFormat: 'h:mm a',
     calendarTemplateFolder: '',
 
+    // Files tab
+    confirmBeforeDelete: true,
+    deleteAttachments: 'ask',
+    moveFileConflicts: 'ask',
+
     // Icon packs tab
     externalIconProviders: {},
 
     // Advanced tab
     checkForUpdatesOnStart: true,
-    confirmBeforeDelete: true,
-    deleteAttachments: 'ask',
-    moveFileConflicts: 'ask',
 
     // Navigation pane tab - Appearance
     pinNavigationBanner: true,
