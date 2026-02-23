@@ -897,7 +897,12 @@ export const ListPane = React.memo(
 
         // Flag to prevent automatic scroll to top when search is triggered from shortcut
         const suppressSearchTopScrollRef = useRef(false);
-        const visibleListPropertyKeys = useMemo(() => getActivePropertyKeySet(settings, 'list'), [settings]);
+        const { visibleListPropertyKeys, visibleNavigationPropertyKeys } = useMemo(() => {
+            return {
+                visibleListPropertyKeys: getActivePropertyKeySet(settings, 'list'),
+                visibleNavigationPropertyKeys: getActivePropertyKeySet(settings, 'navigation')
+            };
+        }, [settings]);
         const visibleListPropertyKeySignature = useMemo(() => {
             if (visibleListPropertyKeys.size === 0) {
                 return '';
@@ -2059,6 +2064,7 @@ export const ListPane = React.memo(
                                                             localDayReference={localDayReference}
                                                             fileIconSize={listMeasurements.fileIconSize}
                                                             visiblePropertyKeys={visibleListPropertyKeys}
+                                                            visibleNavigationPropertyKeys={visibleNavigationPropertyKeys}
                                                         />
                                                     ) : null}
                                                 </div>

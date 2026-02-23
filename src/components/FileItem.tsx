@@ -85,6 +85,7 @@ import { openAddTagToFilesModal } from '../utils/tagModalHelpers';
 import { casefold } from '../utils/recordUtils';
 import { resolveUXIcon } from '../utils/uxIcons';
 import type { InclusionOperator } from '../utils/filterSearch';
+import { isRecord } from '../utils/typeGuards';
 import {
     buildPropertyKeyNodeId,
     buildPropertyValueNodeId,
@@ -149,6 +150,15 @@ const sortPropertyPillGroup = (pills: readonly PropertyPill[], prioritizeColored
     return [...coloredPills, ...regularPills];
 };
 
+function isKeyOnlyTruePropertyEntry(entry: PropertyItem): boolean {
+    const normalizedValuePath = normalizePropertyTreeValuePath(entry.value);
+    if (normalizedValuePath !== 'true') {
+        return false;
+    }
+
+    return isPropertyKeyOnlyValuePath(normalizedValuePath, entry.valueKind);
+}
+
 type PropertyPill = {
     value: string;
     label: string;
@@ -161,6 +171,7 @@ type PropertyPill = {
     propertyNodeId?: string;
     propertySearchKey?: string;
     propertySearchValuePath?: string | null;
+    canNavigateToProperty?: boolean;
 };
 
 function resolveNormalizedPropertyKeyNodeId(fieldKey: string | undefined): string | undefined {
@@ -215,6 +226,8 @@ interface FileItemProps {
     fileIconSize: number;
     /** Visible frontmatter property keys for file list pills (normalized keys) */
     visiblePropertyKeys: ReadonlySet<string>;
+    /** Visible frontmatter property keys in navigation pane (normalized keys) */
+    visibleNavigationPropertyKeys: ReadonlySet<string>;
 }
 
 /**
@@ -397,7 +410,8 @@ export const FileItem = React.memo(function FileItem({
     onModifySearchWithProperty,
     localDayReference,
     fileIconSize,
-    visiblePropertyKeys
+    visiblePropertyKeys,
+    visibleNavigationPropertyKeys
 }: FileItemProps) {
     // === Hooks (all hooks together at the top) ===
     const { app, isMobile, plugin, commandQueue, tagOperations } = useServices();
@@ -631,9 +645,10 @@ export const FileItem = React.memo(function FileItem({
         (event: React.MouseEvent, pill: PropertyPill) => {
             const propertyNodeId = pill.propertyNodeId;
             const propertySearchKey = pill.propertySearchKey;
+            const canNavigateToProperty = pill.canNavigateToProperty === true;
             event.stopPropagation();
 
-            if (onModifySearchWithProperty && propertySearchKey) {
+            if (canNavigateToProperty && onModifySearchWithProperty && propertySearchKey) {
                 const operator = getTagSearchModifierOperator(event, settings.multiSelectModifier, isMobile);
                 if (operator) {
                     event.preventDefault();
@@ -649,7 +664,7 @@ export const FileItem = React.memo(function FileItem({
                 return;
             }
 
-            if (!propertyNodeId || !propertySearchKey) {
+            if (!canNavigateToProperty || !propertyNodeId || !propertySearchKey) {
                 return;
             }
 
@@ -748,6 +763,68 @@ export const FileItem = React.memo(function FileItem({
         return true;
     }, [categorizedTags, isCompactMode, settings.showFileTags, settings.showFileTagsInCompactMode, settings.showTags]);
 
+    const keyOnlyTrueVisiblePropertyKeys = useMemo(() => {
+        const keyOnlyTrueKeys = new Set<string>();
+        if (!properties || properties.length === 0) {
+            return keyOnlyTrueKeys;
+        }
+        if (visiblePropertyKeys.size === 0) {
+            return keyOnlyTrueKeys;
+        }
+
+        for (const entry of properties) {
+            const normalizedFieldKey = casefold(entry.fieldKey);
+            if (!visiblePropertyKeys.has(normalizedFieldKey)) {
+                continue;
+            }
+            if (!isKeyOnlyTruePropertyEntry(entry)) {
+                continue;
+            }
+
+            keyOnlyTrueKeys.add(normalizedFieldKey);
+        }
+
+        return keyOnlyTrueKeys;
+    }, [properties, visiblePropertyKeys]);
+
+    const nullScalarFrontmatterPropertyKeys = useMemo(() => {
+        void metadataVersion;
+        const nullScalarKeys = new Set<string>();
+        if (file.extension !== 'md') {
+            return nullScalarKeys;
+        }
+        if (keyOnlyTrueVisiblePropertyKeys.size === 0) {
+            return nullScalarKeys;
+        }
+
+        const frontmatter = app.metadataCache.getFileCache(file)?.frontmatter;
+        if (!isRecord(frontmatter)) {
+            return nullScalarKeys;
+        }
+
+        for (const [rawKey, rawValue] of Object.entries(frontmatter)) {
+            if (rawValue !== null) {
+                continue;
+            }
+
+            const normalizedKey = casefold(rawKey);
+            if (!normalizedKey) {
+                continue;
+            }
+
+            if (!keyOnlyTrueVisiblePropertyKeys.has(normalizedKey)) {
+                continue;
+            }
+
+            nullScalarKeys.add(normalizedKey);
+            if (nullScalarKeys.size === keyOnlyTrueVisiblePropertyKeys.size) {
+                break;
+            }
+        }
+
+        return nullScalarKeys;
+    }, [app.metadataCache, file, keyOnlyTrueVisiblePropertyKeys, metadataVersion]);
+
     const visibleProperties = useMemo(() => {
         if (!properties || properties.length === 0) {
             return properties;
@@ -756,8 +833,19 @@ export const FileItem = React.memo(function FileItem({
             return [];
         }
 
-        return properties.filter(entry => visiblePropertyKeys.has(casefold(entry.fieldKey)));
-    }, [properties, visiblePropertyKeys]);
+        return properties.filter(entry => {
+            const normalizedFieldKey = casefold(entry.fieldKey);
+            if (!visiblePropertyKeys.has(normalizedFieldKey)) {
+                return false;
+            }
+
+            if (!nullScalarFrontmatterPropertyKeys.has(normalizedFieldKey)) {
+                return true;
+            }
+
+            return !isKeyOnlyTruePropertyEntry(entry);
+        });
+    }, [nullScalarFrontmatterPropertyKeys, properties, visiblePropertyKeys]);
 
     const propertyColorSignature = useMemo(() => {
         if (!settings.showFileProperties || !settings.colorFileProperties || !visibleProperties || visibleProperties.length === 0) {
@@ -908,6 +996,11 @@ export const FileItem = React.memo(function FileItem({
                 : resolveNormalizedPropertyKeyNodeId(trimmedFieldKey);
             const propertySearchKey = parsedPropertyNode?.key || trimmedFieldKey;
             const propertySearchValuePath = isKeyOnlyValue ? null : (parsedPropertyNode?.valuePath ?? normalizedValuePath);
+            const normalizedPropertySearchKey = casefold(propertySearchKey);
+            const canNavigateToProperty =
+                propertyNodeId !== undefined &&
+                normalizedPropertySearchKey.length > 0 &&
+                visibleNavigationPropertyKeys.has(normalizedPropertySearchKey);
 
             frontmatterPills.push({
                 value: rawValue,
@@ -919,7 +1012,8 @@ export const FileItem = React.memo(function FileItem({
                 background: colorData.background,
                 propertyNodeId,
                 propertySearchKey: propertySearchKey.length > 0 ? propertySearchKey : undefined,
-                propertySearchValuePath
+                propertySearchValuePath,
+                canNavigateToProperty
             });
         }
 
@@ -956,7 +1050,8 @@ export const FileItem = React.memo(function FileItem({
         propertyColorSignature,
         settings.colorFileProperties,
         settings.prioritizeColoredFileProperties,
-        settings.showFileProperties
+        settings.showFileProperties,
+        visibleNavigationPropertyKeys
     ]);
 
     const propertyColorData = useMemo(() => {
@@ -1191,8 +1286,9 @@ export const FileItem = React.memo(function FileItem({
 
     const renderPropertyPill = useCallback(
         (pill: PropertyPill, index: number) => {
-            const isClickable = Boolean(pill.propertyNodeId) && Boolean(pill.propertySearchKey);
+            const canNavigateToProperty = pill.canNavigateToProperty === true;
             const isWikiLink = Boolean(pill.wikiLink);
+            const isClickable = canNavigateToProperty || isWikiLink;
             const className = [
                 'nn-file-tag',
                 'nn-file-property',
@@ -1490,6 +1586,8 @@ export const FileItem = React.memo(function FileItem({
 
         const db = getDB();
         const unsubscribe = db.onFileContentChange(file.path, (changes: FileContentChange['changes']) => {
+            let shouldRefreshFrontmatterState = false;
+
             // Update preview text when it changes
             if (changes.preview !== undefined && appearanceSettings.showPreview && file.extension === 'md') {
                 const nextPreview = changes.preview || '';
@@ -1520,9 +1618,14 @@ export const FileItem = React.memo(function FileItem({
             if (changes.properties !== undefined) {
                 const nextProperties = clonePropertyItems(changes.properties ?? null);
                 setProperties(prev => (arePropertyItemsEqual(prev, nextProperties) ? prev : nextProperties));
+                shouldRefreshFrontmatterState = true;
             }
             // Trigger metadata refresh when frontmatter changes
             if (changes.metadata !== undefined) {
+                shouldRefreshFrontmatterState = true;
+            }
+
+            if (shouldRefreshFrontmatterState) {
                 setMetadataVersion(v => v + 1);
             }
         });
