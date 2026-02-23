@@ -229,4 +229,26 @@ export interface FileContentChange {
         properties?: FileData['properties'];
     };
     changeType?: 'metadata' | 'content' | 'both';
+    /** True when metadata.name changes between persisted values */
+    metadataNameChanged?: boolean;
+}
+
+function normalizeMetadataNameForComparison(metadata: FileData['metadata'] | null | undefined): string | undefined {
+    const rawName = metadata?.name;
+    if (typeof rawName !== 'string') {
+        return undefined;
+    }
+
+    const normalizedName = rawName.trim();
+    if (normalizedName.length === 0) {
+        return undefined;
+    }
+    return normalizedName;
+}
+
+export function hasMetadataNameChanged(
+    previousMetadata: FileData['metadata'] | null | undefined,
+    nextMetadata: FileData['metadata'] | null | undefined
+): boolean {
+    return normalizeMetadataNameForComparison(previousMetadata) !== normalizeMetadataNameForComparison(nextMetadata);
 }

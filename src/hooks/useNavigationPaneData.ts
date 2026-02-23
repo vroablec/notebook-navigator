@@ -80,6 +80,7 @@ import { getDBInstance, getDBInstanceOrNull } from '../storage/fileOperations';
 import { naturalCompare } from '../utils/sortUtils';
 import type { NoteCountInfo } from '../types/noteCounts';
 import { calculateFolderNoteCounts } from '../utils/noteCountUtils';
+import { resolveFolderDisplayName } from '../utils/folderDisplayName';
 import { getEffectiveFrontmatterExclusions } from '../utils/exclusionUtils';
 import { sanitizeNavigationSectionOrder } from '../utils/navigationSections';
 import { getVirtualTagCollection, isVirtualTagCollectionId, VIRTUAL_TAG_COLLECTION_IDS } from '../utils/virtualTagCollections';
@@ -145,6 +146,8 @@ const isRootSpacingCandidate = (item: CombinedNavigationItem, options: RootSpaci
     return false;
 };
 
+const FOLDER_SORT_NAME_CACHE_MAX_ENTRIES = 2000;
+
 function decorateNavigationItems(
     source: CombinedNavigationItem[],
     app: App,
@@ -153,9 +156,9 @@ function decorateNavigationItems(
     getFileDisplayName: (file: TFile) => string,
     metadataService: MetadataService,
     parsedExcludedFolders: string[],
-    frontmatterMetadataVersion: number
+    metadataDecorationVersion: number
 ): CombinedNavigationItem[] {
-    void frontmatterMetadataVersion;
+    void metadataDecorationVersion;
     const shouldResolveFileNameIcons = settings.showFilenameMatchIcons;
     const fileIconSettings = {
         showFilenameMatchIcons: settings.showFilenameMatchIcons,
@@ -670,6 +673,43 @@ export function useNavigationPaneData({
         comparator: propertyKeyComparator
     });
 
+    // Tracks folder display-name metadata changes for folder sorting and label refresh.
+    const [folderDisplayNameVersion, setFolderDisplayNameVersion] = useState(() => metadataService.getFolderDisplayNameVersion());
+
+    // Subscribe to folder display-name changes and batch version updates.
+    useEffect(() => {
+        setFolderDisplayNameVersion(metadataService.getFolderDisplayNameVersion());
+        const applyFolderDisplayNameVersion = debounce(
+            (version: number) => {
+                setFolderDisplayNameVersion(version);
+            },
+            TIMEOUTS.FILE_OPERATION_DELAY,
+            true
+        );
+        const unsubscribe = metadataService.subscribeToFolderDisplayNameChanges(version => {
+            applyFolderDisplayNameVersion(version);
+        });
+
+        return () => {
+            unsubscribe();
+            applyFolderDisplayNameVersion.cancel();
+        };
+    }, [metadataService]);
+
+    // Tracks metadata content updates so note decorations refresh when frontmatter-backed names change.
+    const [metadataDecorationVersion, setMetadataDecorationVersion] = useState(0);
+
+    useEffect(() => {
+        const db = getDBInstance();
+        const unsubscribe = db.onContentChange(changes => {
+            const hasMetadataChange = changes.some(change => change.changeType === 'metadata' || change.changeType === 'both');
+            if (hasMetadataChange) {
+                setMetadataDecorationVersion(version => version + 1);
+            }
+        });
+        return unsubscribe;
+    }, []);
+
     const visiblePropertyNavigationKeySet = useMemo(() => {
         const keys = new Set<string>();
         const seen = new Set<string>();
@@ -691,6 +731,41 @@ export function useNavigationPaneData({
         return keys;
     }, [activeProfile.profile.propertyKeys]);
 
+    const getFolderSortName = useMemo(() => {
+        void folderDisplayNameVersion;
+        const folderSortNameByPath = new Map<string, string>();
+        const cacheFolderSortName = (path: string, name: string): string => {
+            // Keep cache size bounded during long sessions with vault churn.
+            if (folderSortNameByPath.size >= FOLDER_SORT_NAME_CACHE_MAX_ENTRIES) {
+                folderSortNameByPath.clear();
+            }
+            folderSortNameByPath.set(path, name);
+            return name;
+        };
+
+        return (folder: TFolder): string => {
+            const cachedName = folderSortNameByPath.get(folder.path);
+            if (cachedName !== undefined) {
+                return cachedName;
+            }
+
+            if (!settings.useFrontmatterMetadata) {
+                return cacheFolderSortName(folder.path, folder.name);
+            }
+
+            const resolvedName = resolveFolderDisplayName({
+                app,
+                metadataService,
+                settings: {
+                    customVaultName: settings.customVaultName
+                },
+                folderPath: folder.path,
+                fallbackName: folder.name
+            });
+            return cacheFolderSortName(folder.path, resolvedName);
+        };
+    }, [app, settings.customVaultName, settings.useFrontmatterMetadata, metadataService, folderDisplayNameVersion]);
+
     /**
      * Build folder items from vault structure
      */
@@ -698,7 +773,8 @@ export function useNavigationPaneData({
         return flattenFolderTree(rootFolders, expansionState.expandedFolders, hiddenFolders, 0, new Set(), {
             rootOrderMap: rootFolderOrderMap,
             defaultSortOrder: settings.folderSortOrder,
-            childSortOrderOverrides: settings.folderTreeSortOverrides
+            childSortOrderOverrides: settings.folderTreeSortOverrides,
+            getFolderSortName
         });
     }, [
         rootFolders,
@@ -706,7 +782,8 @@ export function useNavigationPaneData({
         hiddenFolders,
         rootFolderOrderMap,
         settings.folderSortOrder,
-        settings.folderTreeSortOverrides
+        settings.folderTreeSortOverrides,
+        getFolderSortName
     ]);
 
     /**
@@ -1689,21 +1766,6 @@ export function useNavigationPaneData({
         pinShortcuts
     ]);
 
-    // Tracks frontmatter metadata updates from IndexedDB content events.
-    const [frontmatterMetadataVersion, setFrontmatterMetadataVersion] = useState(0);
-
-    // Subscribe to IndexedDB content changes to detect frontmatter metadata updates
-    useEffect(() => {
-        const db = getDBInstance();
-        const unsubscribe = db.onContentChange(changes => {
-            const hasMetadataChange = changes.some(change => change.changeType === 'metadata' || change.changeType === 'both');
-            if (hasMetadataChange) {
-                setFrontmatterMetadataVersion(version => version + 1);
-            }
-        });
-        return unsubscribe;
-    }, []);
-
     const [navigationSeparatorVersion, setNavigationSeparatorVersion] = useState(() => metadataService.getNavigationSeparatorsVersion());
 
     useEffect(() => {
@@ -1891,9 +1953,9 @@ export function useNavigationPaneData({
                 getFileDisplayName,
                 metadataService,
                 parsedExcludedFolders,
-                frontmatterMetadataVersion
+                metadataDecorationVersion
             ),
-        [app, settings, fileNameIconNeedles, getFileDisplayName, metadataService, parsedExcludedFolders, frontmatterMetadataVersion]
+        [app, settings, fileNameIconNeedles, getFileDisplayName, metadataService, parsedExcludedFolders, metadataDecorationVersion]
     );
 
     /**

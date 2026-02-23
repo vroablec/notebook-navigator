@@ -98,7 +98,10 @@ const RELEASE_NOTES: ReleaseNote[] = [
             'Property key configuration was moved from Navigation Pane to the General settings tab.',
             'In list pane, property keys with no values are no longer showing (previously the key was showing). Also if a property key is not visible in navigation pane the property is not clickable in list pane (unless it is a wiki link).'
         ],
-        fixed: ["Fixed an issue where today's date and file list did not update when a new day started."]
+        fixed: [
+            "Fixed an issue where today's date and file list did not update when a new day started.",
+            'Folder sorting now uses the resolved folder display name (including folder-note frontmatter name) instead of only folder.name.'
+        ]
     },
     {
         version: '2.4.1',

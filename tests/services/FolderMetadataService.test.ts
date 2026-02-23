@@ -29,6 +29,7 @@ type MetadataChangeEvent = {
         metadata?: Record<string, unknown>;
         preview?: string | null;
     };
+    metadataNameChanged?: boolean;
 };
 
 function isMetadataChangeListener(value: unknown): value is (changes: MetadataChangeEvent[]) => void {
@@ -1039,5 +1040,215 @@ describe('FolderMetadataService folder note frontmatter integration', () => {
         expect(result.backgroundColor).toBeUndefined();
         expect(result.icon).toBeUndefined();
         expect(getFileMock).not.toHaveBeenCalled();
+    });
+
+    it('detects folder display-name metadata changes for folder-note paths', () => {
+        const unrelatedChanges: MetadataChangeEvent[] = [
+            {
+                path: 'Notes/General.md',
+                changes: { metadata: { name: 'General' } },
+                metadataNameChanged: true
+            }
+        ];
+        expect(service.hasFolderDisplayNameMetadataChanges(unrelatedChanges)).toBe(false);
+
+        const folderNoteChanges: MetadataChangeEvent[] = [
+            {
+                path: 'Projects/Projects.md',
+                changes: { metadata: { name: 'Work' } },
+                metadataNameChanged: true
+            }
+        ];
+        expect(service.hasFolderDisplayNameMetadataChanges(folderNoteChanges)).toBe(true);
+    });
+
+    it('detects folder display-name metadata changes without folder lookups for matching candidate paths', () => {
+        const folderNoteChanges: MetadataChangeEvent[] = [
+            {
+                path: 'Projects/Projects.md',
+                changes: { metadata: { name: 'Work' } },
+                metadataNameChanged: true
+            }
+        ];
+
+        expect(service.hasFolderDisplayNameMetadataChanges(folderNoteChanges)).toBe(true);
+        expect(getFolderByPath).not.toHaveBeenCalled();
+    });
+
+    it('detects root folder display-name metadata changes using the root folder name', () => {
+        Object.defineProperty(app.vault, 'getRoot', {
+            configurable: true,
+            value: () => ({ name: 'VaultRoot' })
+        });
+        settingsProvider.settings.folderNoteName = '';
+        settingsProvider.settings.folderNoteNamePattern = '';
+
+        const rootFolderNoteChanges: MetadataChangeEvent[] = [
+            {
+                path: 'VaultRoot.md',
+                changes: { metadata: { name: 'Vault home' } },
+                metadataNameChanged: true
+            }
+        ];
+
+        expect(service.hasFolderDisplayNameMetadataChanges(rootFolderNoteChanges)).toBe(true);
+    });
+
+    it('detects folder display-name metadata changes when another file in the same folder changed first', () => {
+        const batchedChanges: MetadataChangeEvent[] = [
+            {
+                path: 'Projects/Unrelated.md',
+                changes: { metadata: { name: 'Unrelated' } },
+                metadataNameChanged: true
+            },
+            {
+                path: 'Projects/Projects.md',
+                changes: { metadata: { name: 'Work' } },
+                metadataNameChanged: true
+            }
+        ];
+
+        expect(service.hasFolderDisplayNameMetadataChanges(batchedChanges)).toBe(true);
+    });
+
+    it('ignores folder display-name metadata changes when metadata name was not changed', () => {
+        const folderMetadataChanges: MetadataChangeEvent[] = [
+            {
+                path: 'Projects/Projects.md',
+                changes: { metadata: { color: '#112233' } },
+                metadataNameChanged: false
+            }
+        ];
+        expect(service.hasFolderDisplayNameMetadataChanges(folderMetadataChanges)).toBe(false);
+    });
+
+    it('ignores folder display-name metadata changes when frontmatter metadata is disabled', () => {
+        settingsProvider.settings.useFrontmatterMetadata = false;
+
+        const folderNoteChanges: MetadataChangeEvent[] = [
+            {
+                path: 'Projects/Projects.md',
+                changes: { metadata: { name: 'Work' } },
+                metadataNameChanged: true
+            }
+        ];
+        expect(service.hasFolderDisplayNameMetadataChanges(folderNoteChanges)).toBe(false);
+    });
+
+    it('notifies folder display-name listeners for metadata name updates', () => {
+        service.getFolderDisplayData('Projects', {
+            includeDisplayName: true,
+            includeColor: false,
+            includeBackgroundColor: false,
+            includeIcon: false
+        });
+
+        const initialVersion = service.getFolderDisplayNameVersion();
+        const listener = vi.fn();
+        const unsubscribe = service.subscribeToFolderDisplayNameChanges(listener);
+
+        const listenerCandidate = onContentChangeMock.mock.calls[0]?.[0];
+        if (!isMetadataChangeListener(listenerCandidate)) {
+            throw new Error('Expected content change listener');
+        }
+
+        listenerCandidate([
+            {
+                path: 'Projects/Projects.md',
+                changes: { metadata: { name: 'Work' } },
+                metadataNameChanged: true
+            }
+        ]);
+
+        expect(service.getFolderDisplayNameVersion()).toBe(initialVersion + 1);
+        expect(listener).toHaveBeenCalledWith(initialVersion + 1);
+
+        listenerCandidate([
+            {
+                path: 'Projects/Projects.md',
+                changes: { metadata: { color: '#112233' } },
+                metadataNameChanged: false
+            }
+        ]);
+
+        expect(service.getFolderDisplayNameVersion()).toBe(initialVersion + 1);
+        unsubscribe();
+    });
+
+    it('notifies folder display-name listeners when display-name settings change', () => {
+        service.getFolderDisplayData('Projects', {
+            includeDisplayName: true,
+            includeColor: false,
+            includeBackgroundColor: false,
+            includeIcon: false
+        });
+
+        const initialVersion = service.getFolderDisplayNameVersion();
+        const listener = vi.fn();
+        const unsubscribe = service.subscribeToFolderDisplayNameChanges(listener);
+
+        settingsProvider.settings.folderNoteName = 'index';
+        settingsProvider.notifySettingsUpdate();
+
+        expect(service.getFolderDisplayNameVersion()).toBe(initialVersion + 1);
+        expect(listener).toHaveBeenCalledWith(initialVersion + 1);
+
+        unsubscribe();
+    });
+
+    it('does not notify folder display-name listeners when non-display-name settings change', () => {
+        service.getFolderDisplayData('Projects', {
+            includeDisplayName: true,
+            includeColor: false,
+            includeBackgroundColor: false,
+            includeIcon: false
+        });
+
+        const initialVersion = service.getFolderDisplayNameVersion();
+        const listener = vi.fn();
+        const unsubscribe = service.subscribeToFolderDisplayNameChanges(listener);
+
+        settingsProvider.settings.frontmatterColorField = 'folderColor';
+        settingsProvider.notifySettingsUpdate();
+
+        expect(service.getFolderDisplayNameVersion()).toBe(initialVersion);
+        expect(listener).not.toHaveBeenCalled();
+
+        unsubscribe();
+    });
+
+    it('notifies folder display-name listeners for folder-note vault file events', () => {
+        service.getFolderDisplayData('Projects', {
+            includeDisplayName: true,
+            includeColor: false,
+            includeBackgroundColor: false,
+            includeIcon: false
+        });
+
+        const initialVersion = service.getFolderDisplayNameVersion();
+        const listener = vi.fn();
+        const unsubscribe = service.subscribeToFolderDisplayNameChanges(listener);
+
+        const createdFolderNote = new TFile();
+        createdFolderNote.path = 'Projects/Projects.md';
+        createdFolderNote.extension = 'md';
+        app.vault.trigger('create', createdFolderNote);
+
+        const renamedFolderNote = new TFile();
+        renamedFolderNote.path = 'Projects/Projects.canvas';
+        renamedFolderNote.extension = 'canvas';
+        app.vault.trigger('rename', renamedFolderNote, 'Projects/Projects.md');
+
+        const deletedFolderNote = new TFile();
+        deletedFolderNote.path = 'Projects/Projects.canvas';
+        deletedFolderNote.extension = 'canvas';
+        app.vault.trigger('delete', deletedFolderNote);
+
+        expect(service.getFolderDisplayNameVersion()).toBe(initialVersion + 3);
+        expect(listener).toHaveBeenNthCalledWith(1, initialVersion + 1);
+        expect(listener).toHaveBeenNthCalledWith(2, initialVersion + 2);
+        expect(listener).toHaveBeenNthCalledWith(3, initialVersion + 3);
+
+        unsubscribe();
     });
 });

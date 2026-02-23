@@ -21,7 +21,14 @@ import { FeatureImageBlobStore, FEATURE_IMAGE_STORE_NAME, computeFeatureImageMut
 import { MemoryFileCache } from '../MemoryFileCache';
 import { getProviderProcessedMtimeField } from '../providerMtime';
 import { PREVIEW_STORE_NAME, STORE_NAME } from './constants';
-import { createDefaultFileData, normalizeTaskCounters, type FileContentChange, type FileData, type PreviewStatus } from './fileData';
+import {
+    createDefaultFileData,
+    hasMetadataNameChanged,
+    normalizeTaskCounters,
+    type FileContentChange,
+    type FileData,
+    type PreviewStatus
+} from './fileData';
 import { rejectWithTransactionError } from './idbErrors';
 
 export interface BatchContentUpdate {
@@ -134,6 +141,7 @@ export async function runBatchUpdateFileContentAndProviderProcessedMtimes(
                 }
                 const newData: FileData = { ...existing };
                 const changes: FileContentChange['changes'] = {};
+                let metadataNameChanged = false;
                 let hasContentChanges = false;
                 const providerField = provider ? getProviderProcessedMtimeField(provider) : null;
                 const shouldApplyProviderContent =
@@ -232,6 +240,7 @@ export async function runBatchUpdateFileContentAndProviderProcessedMtimes(
                     }
 
                     if (guardedUpdate.metadata !== undefined) {
+                        metadataNameChanged = hasMetadataNameChanged(existing.metadata, guardedUpdate.metadata);
                         newData.metadata = guardedUpdate.metadata;
                         changes.metadata = guardedUpdate.metadata;
                         hasContentChanges = true;
@@ -305,7 +314,11 @@ export async function runBatchUpdateFileContentAndProviderProcessedMtimes(
                             changes.properties !== undefined;
                         const hasMetadataUpdates = changes.metadata !== undefined || changes.tags !== undefined;
                         const updateType = hasContentUpdates && hasMetadataUpdates ? 'both' : hasContentUpdates ? 'content' : 'metadata';
-                        changeNotifications.push({ path, changes, changeType: updateType });
+                        const contentChange: FileContentChange = { path, changes, changeType: updateType };
+                        if (changes.metadata !== undefined) {
+                            contentChange.metadataNameChanged = metadataNameChanged;
+                        }
+                        changeNotifications.push(contentChange);
                     }
                 }
                 // noop

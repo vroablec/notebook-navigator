@@ -33,7 +33,7 @@ import {
     type FileMetadataMigrationResult
 } from './metadata';
 import { TagTreeNode } from '../types/storage';
-import { FileData } from '../storage/IndexedDBStorage';
+import type { FileData } from '../storage/IndexedDBStorage';
 import { getDBInstance } from '../storage/fileOperations';
 import { NavigatorContext } from '../types';
 import type { NavigationSeparatorTarget } from '../utils/navigationSeparators';
@@ -178,6 +178,14 @@ export class MetadataService {
         }
     ): FolderDisplayData {
         return this.folderService.getFolderDisplayData(folderPath, options);
+    }
+
+    getFolderDisplayNameVersion(): number {
+        return this.folderService.getFolderDisplayNameVersion();
+    }
+
+    subscribeToFolderDisplayNameChanges(listener: (version: number) => void): () => void {
+        return this.folderService.subscribeToFolderDisplayNameChanges(listener);
     }
 
     async setFolderSortOverride(folderPath: string, sortOption: SortOption): Promise<void> {

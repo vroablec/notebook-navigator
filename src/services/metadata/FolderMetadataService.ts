@@ -73,6 +73,18 @@ interface SettingsUpdateListenerProvider {
     unregisterSettingsUpdateListener(id: string): void;
 }
 
+interface FolderDisplayCacheSettingsSnapshot {
+    useFrontmatterMetadata: boolean;
+    enableFolderNotes: boolean;
+    inheritFolderColors: boolean;
+    folderNoteName: string;
+    folderNoteNamePattern: string;
+    frontmatterNameField: string;
+    frontmatterIconField: string;
+    frontmatterColorField: string;
+    frontmatterBackgroundField: string;
+}
+
 interface FolderStyleRecordSnapshot {
     icons: Record<string, string> | null;
     colors: Record<string, string> | null;
@@ -106,6 +118,8 @@ export class FolderMetadataService extends BaseMetadataService {
     private folderDisplayCacheSettingsFrontmatterColorField = '';
     private folderDisplayCacheSettingsFrontmatterBackgroundField = '';
     private folderDisplayCacheUnsubscribe: (() => void) | null = null;
+    private folderDisplayNameVersion = 0;
+    private folderDisplayNameListeners = new Set<(version: number) => void>();
     private static readonly FOLDER_DISPLAY_CACHE_MAX_ENTRIES = 1000;
     private static readonly FOLDER_NOTE_CANDIDATE_EXTENSIONS = new Set<string>(['md', 'canvas', 'base']);
     private static readonly EXCALIDRAW_BASENAME_SUFFIX = '.excalidraw';
@@ -145,43 +159,63 @@ export class FolderMetadataService extends BaseMetadataService {
         this.folderDisplayCacheStyleRecordSnapshotInitialized = false;
     }
 
-    private captureFolderDisplayCacheSettingsSnapshot(): void {
+    private getCurrentFolderDisplayCacheSettingsSnapshot(): FolderDisplayCacheSettingsSnapshot {
         const settings = this.settingsProvider.settings;
-        this.folderDisplayCacheSettingsUseFrontmatterMetadata = settings.useFrontmatterMetadata;
-        this.folderDisplayCacheSettingsEnableFolderNotes = settings.enableFolderNotes;
-        this.folderDisplayCacheSettingsInheritFolderColors = settings.inheritFolderColors;
-        this.folderDisplayCacheSettingsFolderNoteName = settings.folderNoteName.trim();
-        this.folderDisplayCacheSettingsFolderNoteNamePattern = settings.folderNoteNamePattern.trim();
-        this.folderDisplayCacheSettingsFrontmatterNameField = settings.frontmatterNameField.trim();
-        this.folderDisplayCacheSettingsFrontmatterIconField = settings.frontmatterIconField.trim();
-        this.folderDisplayCacheSettingsFrontmatterColorField = settings.frontmatterColorField.trim();
-        this.folderDisplayCacheSettingsFrontmatterBackgroundField = settings.frontmatterBackgroundField.trim();
+        return {
+            useFrontmatterMetadata: settings.useFrontmatterMetadata,
+            enableFolderNotes: settings.enableFolderNotes,
+            inheritFolderColors: settings.inheritFolderColors,
+            folderNoteName: settings.folderNoteName.trim(),
+            folderNoteNamePattern: settings.folderNoteNamePattern.trim(),
+            frontmatterNameField: settings.frontmatterNameField.trim(),
+            frontmatterIconField: settings.frontmatterIconField.trim(),
+            frontmatterColorField: settings.frontmatterColorField.trim(),
+            frontmatterBackgroundField: settings.frontmatterBackgroundField.trim()
+        };
+    }
+
+    private captureFolderDisplayCacheSettingsSnapshot(snapshot: FolderDisplayCacheSettingsSnapshot): void {
+        this.folderDisplayCacheSettingsUseFrontmatterMetadata = snapshot.useFrontmatterMetadata;
+        this.folderDisplayCacheSettingsEnableFolderNotes = snapshot.enableFolderNotes;
+        this.folderDisplayCacheSettingsInheritFolderColors = snapshot.inheritFolderColors;
+        this.folderDisplayCacheSettingsFolderNoteName = snapshot.folderNoteName;
+        this.folderDisplayCacheSettingsFolderNoteNamePattern = snapshot.folderNoteNamePattern;
+        this.folderDisplayCacheSettingsFrontmatterNameField = snapshot.frontmatterNameField;
+        this.folderDisplayCacheSettingsFrontmatterIconField = snapshot.frontmatterIconField;
+        this.folderDisplayCacheSettingsFrontmatterColorField = snapshot.frontmatterColorField;
+        this.folderDisplayCacheSettingsFrontmatterBackgroundField = snapshot.frontmatterBackgroundField;
         this.folderDisplayCacheSettingsSnapshotInitialized = true;
     }
 
-    private hasFolderDisplayCacheSettingsSnapshotChanged(): boolean {
-        const settings = this.settingsProvider.settings;
-        const folderNoteName = settings.folderNoteName.trim();
-        const folderNoteNamePattern = settings.folderNoteNamePattern.trim();
-        const frontmatterNameField = settings.frontmatterNameField.trim();
-        const frontmatterIconField = settings.frontmatterIconField.trim();
-        const frontmatterColorField = settings.frontmatterColorField.trim();
-        const frontmatterBackgroundField = settings.frontmatterBackgroundField.trim();
-
+    private hasFolderDisplayCacheSettingsSnapshotChanged(snapshot: FolderDisplayCacheSettingsSnapshot): boolean {
         if (!this.folderDisplayCacheSettingsSnapshotInitialized) {
             return true;
         }
 
         return (
-            this.folderDisplayCacheSettingsUseFrontmatterMetadata !== settings.useFrontmatterMetadata ||
-            this.folderDisplayCacheSettingsEnableFolderNotes !== settings.enableFolderNotes ||
-            this.folderDisplayCacheSettingsInheritFolderColors !== settings.inheritFolderColors ||
-            this.folderDisplayCacheSettingsFolderNoteName !== folderNoteName ||
-            this.folderDisplayCacheSettingsFolderNoteNamePattern !== folderNoteNamePattern ||
-            this.folderDisplayCacheSettingsFrontmatterNameField !== frontmatterNameField ||
-            this.folderDisplayCacheSettingsFrontmatterIconField !== frontmatterIconField ||
-            this.folderDisplayCacheSettingsFrontmatterColorField !== frontmatterColorField ||
-            this.folderDisplayCacheSettingsFrontmatterBackgroundField !== frontmatterBackgroundField
+            this.folderDisplayCacheSettingsUseFrontmatterMetadata !== snapshot.useFrontmatterMetadata ||
+            this.folderDisplayCacheSettingsEnableFolderNotes !== snapshot.enableFolderNotes ||
+            this.folderDisplayCacheSettingsInheritFolderColors !== snapshot.inheritFolderColors ||
+            this.folderDisplayCacheSettingsFolderNoteName !== snapshot.folderNoteName ||
+            this.folderDisplayCacheSettingsFolderNoteNamePattern !== snapshot.folderNoteNamePattern ||
+            this.folderDisplayCacheSettingsFrontmatterNameField !== snapshot.frontmatterNameField ||
+            this.folderDisplayCacheSettingsFrontmatterIconField !== snapshot.frontmatterIconField ||
+            this.folderDisplayCacheSettingsFrontmatterColorField !== snapshot.frontmatterColorField ||
+            this.folderDisplayCacheSettingsFrontmatterBackgroundField !== snapshot.frontmatterBackgroundField
+        );
+    }
+
+    private hasFolderDisplayNameSettingsSnapshotChanged(snapshot: FolderDisplayCacheSettingsSnapshot): boolean {
+        if (!this.folderDisplayCacheSettingsSnapshotInitialized) {
+            return true;
+        }
+
+        return (
+            this.folderDisplayCacheSettingsUseFrontmatterMetadata !== snapshot.useFrontmatterMetadata ||
+            this.folderDisplayCacheSettingsEnableFolderNotes !== snapshot.enableFolderNotes ||
+            this.folderDisplayCacheSettingsFolderNoteName !== snapshot.folderNoteName ||
+            this.folderDisplayCacheSettingsFolderNoteNamePattern !== snapshot.folderNoteNamePattern ||
+            this.folderDisplayCacheSettingsFrontmatterNameField !== snapshot.frontmatterNameField
         );
     }
 
@@ -260,9 +294,11 @@ export class FolderMetadataService extends BaseMetadataService {
 
     private handleFolderDisplayCacheSettingsUpdate(): void {
         let shouldClear = false;
+        const settingsSnapshot = this.getCurrentFolderDisplayCacheSettingsSnapshot();
+        const folderDisplayNameSettingsChanged = this.hasFolderDisplayNameSettingsSnapshotChanged(settingsSnapshot);
 
-        if (this.hasFolderDisplayCacheSettingsSnapshotChanged()) {
-            this.captureFolderDisplayCacheSettingsSnapshot();
+        if (this.hasFolderDisplayCacheSettingsSnapshotChanged(settingsSnapshot)) {
+            this.captureFolderDisplayCacheSettingsSnapshot(settingsSnapshot);
             shouldClear = true;
         }
 
@@ -276,6 +312,9 @@ export class FolderMetadataService extends BaseMetadataService {
 
         if (shouldClear) {
             this.clearFolderDisplayDataCache();
+        }
+        if (folderDisplayNameSettingsChanged) {
+            this.markFolderDisplayNamesChanged();
         }
     }
 
@@ -412,14 +451,16 @@ export class FolderMetadataService extends BaseMetadataService {
         return folderNote ? folderNote.path : null;
     }
 
-    private invalidateFolderDisplayCacheForContentChanges(changes: FileContentChange[]): void {
+    private invalidateFolderDisplayCacheForContentChanges(changes: FileContentChange[]): boolean {
         const settings = this.settingsProvider.settings;
         if (!settings.useFrontmatterMetadata || !settings.enableFolderNotes) {
-            return;
+            return false;
         }
 
+        const hasFolderDisplayNameChange = this.hasFolderDisplayNameMetadataChanges(changes);
+
         if (this.folderDisplayDataCache.size === 0) {
-            return;
+            return hasFolderDisplayNameChange;
         }
 
         const affectedFolderPaths = new Set<string>();
@@ -437,6 +478,51 @@ export class FolderMetadataService extends BaseMetadataService {
         for (const folderPath of affectedFolderPaths) {
             this.invalidateFolderDisplayCacheForFolderAndDescendants(folderPath);
         }
+
+        return hasFolderDisplayNameChange;
+    }
+
+    hasFolderDisplayNameMetadataChanges(changes: FileContentChange[]): boolean {
+        const settings = this.settingsProvider.settings;
+        if (!settings.useFrontmatterMetadata || !settings.enableFolderNotes) {
+            return false;
+        }
+
+        const folderNoteSettings = getFolderNoteDetectionSettings(settings);
+        const checkedCandidatePaths = new Set<string>();
+        const expectedFolderNoteNameByFolderPath = new Map<string, string>();
+        for (const change of changes) {
+            if (change.changes.metadata === undefined || change.metadataNameChanged !== true) {
+                continue;
+            }
+
+            if (this.folderDisplayCacheFolderPathsByFolderNotePath.has(change.path)) {
+                return true;
+            }
+
+            if (!this.isFolderNoteCandidatePath(change.path)) {
+                continue;
+            }
+
+            if (checkedCandidatePaths.has(change.path)) {
+                continue;
+            }
+            checkedCandidatePaths.add(change.path);
+
+            const parentFolderPath = this.getParentFolderPath(change.path);
+            let expectedFolderNoteName = expectedFolderNoteNameByFolderPath.get(parentFolderPath);
+            if (expectedFolderNoteName === undefined) {
+                const folderName = this.getFolderNameFromPath(parentFolderPath);
+                expectedFolderNoteName = resolveFolderNoteName(folderName, folderNoteSettings);
+                expectedFolderNoteNameByFolderPath.set(parentFolderPath, expectedFolderNoteName);
+            }
+
+            if (this.isFolderNotePathForExpectedName(change.path, expectedFolderNoteName)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private getParentFolderPath(path: string): string {
@@ -445,6 +531,18 @@ export class FolderMetadataService extends BaseMetadataService {
             return '/';
         }
         return path.slice(0, separatorIndex);
+    }
+
+    private getFolderNameFromPath(folderPath: string): string {
+        if (folderPath === '/') {
+            return this.app.vault.getRoot().name;
+        }
+
+        const separatorIndex = folderPath.lastIndexOf('/');
+        if (separatorIndex === -1) {
+            return folderPath;
+        }
+        return folderPath.slice(separatorIndex + 1);
     }
 
     private getPathExtension(path: string): string {
@@ -470,17 +568,11 @@ export class FolderMetadataService extends BaseMetadataService {
         return FolderMetadataService.FOLDER_NOTE_CANDIDATE_EXTENSIONS.has(extension);
     }
 
-    private isFolderNotePathForFolder(path: string, folderPath: string): boolean {
+    private isFolderNotePathForExpectedName(path: string, expectedName: string): boolean {
         if (!this.isFolderNoteCandidatePath(path)) {
             return false;
         }
 
-        const folder = this.app.vault.getFolderByPath(folderPath);
-        if (!folder) {
-            return false;
-        }
-
-        const expectedName = resolveFolderNoteName(folder.name, getFolderNoteDetectionSettings(this.settingsProvider.settings));
         const extension = this.getPathExtension(path);
         const basename = this.getPathBasename(path);
         if (basename === expectedName) {
@@ -488,6 +580,16 @@ export class FolderMetadataService extends BaseMetadataService {
         }
 
         return extension === 'md' && basename === `${expectedName}${FolderMetadataService.EXCALIDRAW_BASENAME_SUFFIX}`;
+    }
+
+    private isFolderNotePathForFolder(path: string, folderPath: string): boolean {
+        const folder = this.app.vault.getFolderByPath(folderPath);
+        if (!folder) {
+            return false;
+        }
+
+        const expectedName = resolveFolderNoteName(folder.name, getFolderNoteDetectionSettings(this.settingsProvider.settings));
+        return this.isFolderNotePathForExpectedName(path, expectedName);
     }
 
     private invalidateFolderDisplayCacheForVaultFilePath(path: string): void {
@@ -510,7 +612,13 @@ export class FolderMetadataService extends BaseMetadataService {
             return;
         }
 
+        const parentFolderPath = this.getParentFolderPath(file.path);
+        const isTrackedFolderNotePath = this.folderDisplayCacheFolderPathsByFolderNotePath.has(file.path);
+        const isFolderNotePath = this.isFolderNotePathForFolder(file.path, parentFolderPath);
         this.invalidateFolderDisplayCacheForVaultFilePath(file.path);
+        if (isTrackedFolderNotePath || isFolderNotePath) {
+            this.markFolderDisplayNamesChanged();
+        }
     }
 
     private handleFolderDisplayCacheVaultRename(file: unknown, oldPath: unknown): void {
@@ -523,8 +631,17 @@ export class FolderMetadataService extends BaseMetadataService {
             return;
         }
 
+        const oldParentFolderPath = this.getParentFolderPath(oldPath);
+        const newParentFolderPath = this.getParentFolderPath(file.path);
+        const hadTrackedOldPath = this.folderDisplayCacheFolderPathsByFolderNotePath.has(oldPath);
+        const hasTrackedNewPath = this.folderDisplayCacheFolderPathsByFolderNotePath.has(file.path);
+        const oldPathWasFolderNote = this.isFolderNotePathForFolder(oldPath, oldParentFolderPath);
+        const newPathIsFolderNote = this.isFolderNotePathForFolder(file.path, newParentFolderPath);
         this.invalidateFolderDisplayCacheForVaultFilePath(oldPath);
         this.invalidateFolderDisplayCacheForVaultFilePath(file.path);
+        if (hadTrackedOldPath || hasTrackedNewPath || oldPathWasFolderNote || newPathIsFolderNote) {
+            this.markFolderDisplayNamesChanged();
+        }
     }
 
     private ensureFolderDisplayCacheVaultListeners(): void {
@@ -545,8 +662,9 @@ export class FolderMetadataService extends BaseMetadataService {
     }
 
     private ensureFolderDisplayCacheState(): void {
-        if (this.hasFolderDisplayCacheSettingsSnapshotChanged()) {
-            this.captureFolderDisplayCacheSettingsSnapshot();
+        const settingsSnapshot = this.getCurrentFolderDisplayCacheSettingsSnapshot();
+        if (this.hasFolderDisplayCacheSettingsSnapshotChanged(settingsSnapshot)) {
+            this.captureFolderDisplayCacheSettingsSnapshot(settingsSnapshot);
             this.clearFolderDisplayDataCache();
         }
         this.ensureFolderDisplayCacheSettingsListener();
@@ -555,17 +673,37 @@ export class FolderMetadataService extends BaseMetadataService {
             const db = getDBInstanceOrNull();
             if (db) {
                 this.folderDisplayCacheUnsubscribe = db.onContentChange(changes => {
-                    this.invalidateFolderDisplayCacheForContentChanges(changes);
+                    const hasFolderDisplayNameChanges = this.invalidateFolderDisplayCacheForContentChanges(changes);
+                    if (hasFolderDisplayNameChanges) {
+                        this.markFolderDisplayNamesChanged();
+                    }
                 });
             }
         }
         this.ensureFolderDisplayCacheVaultListeners();
     }
 
+    private markFolderDisplayNamesChanged(): void {
+        this.folderDisplayNameVersion += 1;
+        this.folderDisplayNameListeners.forEach(listener => listener(this.folderDisplayNameVersion));
+    }
+
+    getFolderDisplayNameVersion(): number {
+        return this.folderDisplayNameVersion;
+    }
+
+    subscribeToFolderDisplayNameChanges(listener: (version: number) => void): () => void {
+        this.folderDisplayNameListeners.add(listener);
+        return () => this.folderDisplayNameListeners.delete(listener);
+    }
+
     dispose(): void {
         if (this.folderDisplayCacheUnsubscribe) {
             this.folderDisplayCacheUnsubscribe();
             this.folderDisplayCacheUnsubscribe = null;
+        }
+        if (this.folderDisplayNameListeners.size > 0) {
+            this.folderDisplayNameListeners.clear();
         }
         if (this.folderDisplayCacheSettingsListenerProvider) {
             this.folderDisplayCacheSettingsListenerProvider.unregisterSettingsUpdateListener(this.folderDisplayCacheSettingsListenerId);

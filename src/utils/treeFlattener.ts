@@ -33,6 +33,8 @@ interface FlattenFolderTreeOptions {
     defaultSortOrder?: AlphaSortOrder;
     /** Per-folder child sort order overrides */
     childSortOrderOverrides?: Record<string, AlphaSortOrder>;
+    /** Resolves the string used when alphabetically sorting folders */
+    getFolderSortName?: (folder: TFolder) => string;
 }
 
 /** Options for flattenTagTree function */
@@ -153,7 +155,7 @@ export function flattenFolderTree(
     options: FlattenFolderTreeOptions = {}
 ): FolderTreeItem[] {
     const items: FolderTreeItem[] = [];
-    const { rootOrderMap, childSortOrderOverrides } = options;
+    const { rootOrderMap, childSortOrderOverrides, getFolderSortName } = options;
     const defaultSortOrder = options.defaultSortOrder ?? 'alpha-asc';
     const childSortOrderSettings = {
         folderSortOrder: defaultSortOrder,
@@ -165,7 +167,9 @@ export function flattenFolderTree(
     };
 
     const compareFolderNames = (order: AlphaSortOrder) => (a: TFolder, b: TFolder) => {
-        const cmp = compareByAlphaSortOrder(a.name, b.name, order);
+        const leftName = getFolderSortName ? getFolderSortName(a) : a.name;
+        const rightName = getFolderSortName ? getFolderSortName(b) : b.name;
+        const cmp = compareByAlphaSortOrder(leftName, rightName, order);
         if (cmp !== 0) {
             return cmp;
         }
